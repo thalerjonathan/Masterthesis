@@ -1,0 +1,94 @@
+Vorbereitung
+	September - Dezember 2014
+		-> Themenfindung
+		-> Papers lesen
+
+	Jänner 2014
+		-> Orginalpaper nochmal genau durchgehen
+			-> Andere Papers anschauen:
+			-> Geanakoplos
+			-> Gode & Sunders
+
+	Februar
+		-> Buch über Entscheidungstheorie
+		-> Meetings mit HV und Thomas Breuer
+		-> LaTex aufsetzen 
+		-> Struktur der Masterarbeit definieren
+		-> Literaturrecherche	
+		-> Softwarerecherche
+			-> Java weil: das ursprüngliche framework von breuer & al. in Java, ausserdem vielzahl an existierenden frameworks, die leicht zu integrieren sind
+			-> C++ nicht: wäre zwar schneller aber nur wenn richtig verwendet => mehraufwand und geschwindigkeit nicht unbedingt so extrem kritisch, ausserdem immer großer puff mit frameworks
+			-> Graphenbibliothek für Java
+		-> Abstract & Einleitung schreiben
+		
+Arbeitsschritte & Meilensteine bis zur Abgabe
+	Implementieren von netzwerken in das existierende framework: visualisieren der vorgänge des frameworks
+		- Gui: SWING
+		- Netzwerk-visualisierng: JUNG
+		- Diagramme: JFreeChart
+		- Network generator: selber bauen
+			- random
+			- scale-free
+			- small-world
+			- clustering
+	
+	3 Netzwerke überlegen bei denen Hypothese erfüllt und 3 bei denen nicht.
+		- 3 die ok sind
+			1: linearer graph: d.h. aufsteigend paarweise verbunden
+		- 3 die nicht ok sind
+			1: watts-strogatz
+			2: barbasi modell
+			3: ?
+		
+	Javaprogramm
+		- Realtime-Visualisierung der Vermögensverteilungen der Agenten
+		- Realtime-Visualisierung der Netzwerke
+		- Netzwerke generieren: fixe Anzahl Agenten, verbindungen unter ihnen nach einer gewissen Topologie
+			1. paarweise aufsteigend
+			2. Watts-Strogatz
+			3. Barbasi
+		- Replikationen auch über die Vermögensverteilung der Agenten
+		- Handelsbeziehungen über das Netzwerk auswählen d.h. das matching probiert nur zwischen diesen zwei benachbarten agenten
+		- Code refaktoring und aufräumen
+		
+	Simulationen laufen
+	
+	Ergebnisse analysieren und interpretieren
+	
+	Beweis wieso Hypothese richtig/falsch?
+	
+Zeitpunkte
+	Bis Februar
+		-> Thema fixieren
+		-> Literaturübersicht
+		-> Orginalpaper komplett verstanden
+		-> Softwareframeworks ausgesucht
+		-> Grundlegend mit Softwareframeworks und Code vom Paper vertraut gemacht
+		-> LaTex Software und Template eingerichtet 
+		
+	März
+		-> OK		Realtime-Visualisierung der Vermögensverteilungen der Agenten
+		-> OK		Realtime-Visualisierung der Netzwerke
+		-> OK		Netzwerke generieren: fixe Anzahl Agenten, verbindungen unter ihnen nach einer gewissen Topologie
+		-> OK		Handelsbeziehungen über das Netzwerk auswählen d.h. das matching probiert nur zwischen diesen zwei benachbarten agenten
+		-> OK		gewichte bei erfolgreicher transaktion: inkrementieren/einmal auf 1 setzen
+		-> OK		Auch für Auktionen mit Loan funktioniert: AuctionWithLoan, AgentsWithLoan, TransactionWithLoan
+				-> OK		schönere layouts
+		-> TODO		Java 7 & 8 features
+		-> TODO		Code refaktoring und aufräumen: inner classes herausziehen wo sinnvoll
+		-> TODO		Netzwerkgenerierungsalgorithmen teilweise parametrierbar
+
+		-> TODO		Einleitung schreiben
+		-> Wie kann man zuverlässig sagen, dass ein lauf NICHT bzw. SCHON das equilibrium erreicht hat
+		
+	Juni
+		-> Kapitel 1 "Theorie" schreiben. Dieser erst ganz zum schluss, damit der theorieteil einen sinnvollen kontext bekommt und nicht bloß als trockener nackter theorieteil daherkommt, 
+				den man vor jede andere x-beliebige masterthesis setzen kann die sich auch mit komplexeren netzwerken auseinandersetzt.
+		-> Kapitel 5 "Conclusions and Perspectives" schreiben.
+		
+	Juli
+		-> Feintuning und Überarbeitung
+		-> Finale Abgabe am 27.
+			-> wenn auf das Kinderlager mit am 17. Juli abgabe
+
+

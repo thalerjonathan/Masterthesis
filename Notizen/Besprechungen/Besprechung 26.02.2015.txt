@@ -1,0 +1,31 @@
+Besprechung 26.02.2015
+
+Anwesende Personen:
+Breuer Thomas
+Vollbrecht Hans
+Thaler Jonathan
+
+Mein Modell wurde als viel zu umfangreich "abgelehnt" d.h. mir empfohlen, diese richtung nicht zu verfolgen.
+Das Hauptproblem ist, dass ich mir keine wirkliche Forschungsfrage bzw. Hypothese zu meinem Modell überlegt habe.
+
+Hans hat dann ein neues Modell vorgestellt, in dem er die Märkte Bond gegen Asset auflöst und einen neuen "Trader"
+Agenten einführt, der diesen Markt mit einer anderen Utility bedienen soll.
+
+Schlussendlich wieder rückkehr zum ursprünglichen Thema: "Unter welchen Netzwerken stellt sich ein Gleichgewicht ein bzw.
+unter welchen Nicht und aus welchem Grund?"
+Die Hypothese: "Ist es möglich zwei beliebige Agenten A und B (mit optimismusfaktor Ah und Bh ) mit einem Pfad zu verbinden, 
+in denen zwischenliegende Agenten F (für alle Fh > A und Fh < B) einen immer höheren Optimismusfaktor (Fnh > F(n-1)h > F(n-2)h ... ) haben, 
+so stellt sich das Gleichgewicht ein, ansonsten nicht.
+
+Vorgehensweise Vorschlag von Thomas Breuer:
+- Ausschließlich statische Netzwerke
+- Größe: 30 Agenten (weil sich bei diesen auch bereits das gleichgewicht einstellt)
+- jeweils 3 Netzwerke überlegen, in denen die Hypothese zutrifft
+- jeweils 3 Netzwerke überlegen, in denen die Hypothese NICHT zutrifft
+- Simulieren und Ergebnisse betrachten:
+- Entweder entsprechen die Ergebnisse den Erwartungen d.h. die Hypothese wurde experimentell bestätigt
+	-> dann: theoretischen beweis für die hypothese finden
+- Oder die Ergebnisse widerlegen die Hypothese
+	-> dann: wieso?
+
+	

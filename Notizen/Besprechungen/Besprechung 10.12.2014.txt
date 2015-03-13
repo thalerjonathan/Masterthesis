@@ -1,0 +1,31 @@
+Verschiedene Netzwerke analysieren
+
+-> auf Gleichgewicht
+-> Hubs NICHT zero intelligence
+-> Hubs repräsentieren eine bestimmte Institution/Intermediäre d.h. sie sind nicht völlig abstrakt sondern haben eine identität
+	-> Banken
+	-> Trading Pools
+	-> Börsen
+	-> Staaten
+	-> Firmen
+-> Eventuell noch zusätzliche Produkte die gehandelt werden
+	-> Stocks?
+		-> ändern ständig den preis: wenn gekauft, steigt preis, wenn verkauft, sinkt preis
+	
+-> Informatik-Anteil
+	-> Existierende Programme (Java und C++) auf Flexibilität prüfen. Derzeit alles Hardgecoded, wo wird mehr flexiblität benötigt?
+		-> Strategien für Agenten
+		-> Netzwerkstrukturen
+		-> Netzwerkhubs
+		-> Märkte und deren Mechanismen
+		-> Produkte die gehandelt werden
+	-> Dafür eine beschreibungssprache definieren (XML, in LISP, JS, ?)
+	
+
+Forschungsfrage von Thomas Breuer formuliert:
+"Welche Eigenschaften des Handelsnetzwerks und/oder Handlungsstrategien sind hinreichend für einen stabilen Endzustand, 
+der durch den Gleichgewichtszustand der Geanakoplos-Zane Theorie beschrieben wird?"
+
+
+Titelvorschlag von mir:
+Influence of Tradingnetworks on Equilibrium.

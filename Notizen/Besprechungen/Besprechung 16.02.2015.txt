@@ -1,0 +1,29 @@
+Mit: Hans Vollbrecht
+
+
+Grundsätzlich zwei Richtungen
+
+1. Dynamischer Ansatz: Wie bilden sich Netzwerke?
+	-> Bankenformation bzw. Formation von Interessensgemeinschaften
+		- Bond-Ausgabe über neuen Knoten: = bank aber andere utility function
+		- inter-bank beziehungen ?
+		- staat als regulator: kennt jede bank/interessensgemeinschaft
+		- utilityfunktion: allgemeinwohl geht vor individuellen
+		- wie verteilt sich hier das vermögen?
+		- wie bilden sich beziehungen?
+		http://en.wikipedia.org/wiki/Dynamic_network_analysis
+		
+2. Statischer Ansatz: Wie verhält sich ein fertiges Netzwerk?
+	-> Wir haben verschiedene Netzwerktypen, zu welchen Gleichgewichten kommen sie?
+		- aber nicht nur klassisches gleichgewicht sondern auch andere formen von gleichgewicht?
+		- im orginalpaper 4 phasen, aber wieso?
+	-> Robustheit von Netzwerken
+		- ungleiche Verteilung von Endowments
+		- default von agenten
+		
+Hans meint ich soll mich für einen der beiden Punkte entscheiden, weil sonst zu aufwändig.
+Ich tendiere im Moment zu Punkt 1 weil sicherlich spannender aber auch aufwändiger:
+	- entwickeln eines modells (viel recherche)
+	- sicher interessante dynamik 
+	- sicher interessanter zu simulieren
+	
