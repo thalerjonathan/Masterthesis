@@ -1,0 +1,95 @@
+\begin{thebibliography}{ASBS00}
+
+\bibitem[ACL01]{AielloChungLu_RandomEvolution}
+William Aiello, Fan R.~K. Chung, and Linyuan Lu.
+\newblock Random evolution in massive graphs.
+\newblock {\em In FOCS}, page 510–519, 2001.
+
+\bibitem[AlB99]{BarabasiAlbert_StatisticalMechanics}
+Réka Albert and Albert lászló Barabási.
+\newblock Statistical mechanics of complex networks.
+\newblock {\em Rev. Mod. Phys}, page 2002, 1999.
+
+\bibitem[AlB02]{BarabasiAlbert_EmergenceScaling}
+Réka Albert and Albert lászló Barabási.
+\newblock Emergence of scaling in random networks.
+\newblock {\em Science}, page 286(5439):509–512, 2002.
+
+\bibitem[ASBS00]{AmaralScalaStanley_ClassesSmallWorld}
+L.~A.~N. Amaral, A.~Scala, M.~Barth´el´emy, and H.~E. Stanley.
+\newblock Classes of small-world networks.
+\newblock In {\em Proceedings of the National Academy of Sciences of the United
+  States of America}, page 97(21):11149–11152, 2000.
+
+\bibitem[BV59]{Breuer2015}
+T.~Breuer and H.~Vollbrecht.
+\newblock Endogenous leverage.
+\newblock {\em Publicationes Mathematicae}, pages 6:290–--297, 1959.
+
+\bibitem[BW00]{BarratWeigt_PropertiesSmallWorld}
+A.~Barrat and M.~Weigt.
+\newblock On the properties of small-world network models.
+\newblock In {\em The European Physical Journal B - Condensed Matter and
+  Complex Systems}, page 13(3):547–560, 2000.
+
+\bibitem[EMB02]{EbelMielschBornholdt_TopologyEmail}
+Holger Ebel, Lutz-Ingo Mielsch, and Stefan Bornholdt.
+\newblock Scale-free topology of e-mail networks.
+\newblock {\em Phys. Rev. E}, page 66:035103, 2002.
+
+\bibitem[ER59]{ErdosRenyi_RandomGraphs}
+P.~Erdős and A~Rényi.
+\newblock On random graphs.
+\newblock In {\em Publicationes Mathematicae}, pages 6:290–--297, 1959.
+
+\bibitem[ER60]{ErdosRenyi_EvolutionRandomGraphs}
+P.~Erdős and A~Rényi.
+\newblock On the evolution of random graphs.
+\newblock In {\em PUBLICATION OF THE MATHEMATICAL INSTITUTE OF THE HUNGARIAN
+  ACADEMY OF SCIENCES}, pages 17--61, 1960.
+
+\bibitem[GP04]{GaertlerPatrignani_AutonomousSystem}
+M.~Gaertler and M.~Patrignani.
+\newblock Dynamic analysis of the autonomous system graph.
+\newblock {\em In IPS 2004, International Workshop on Inter-domain Performance
+  and Simulation}, page pages 13–24, 2004.
+
+\bibitem[Kle00]{Kleinberg_SmallworldAlgorithmic}
+Jon Kleinberg.
+\newblock The small-world phenomenon: An algorithmic perspective.
+\newblock In {\em in Proceedings of the 32nd ACM Symposium on Theory of
+  Computing}, pages 163--170, 2000.
+
+\bibitem[Kle02]{Kleinfeld_BigWorld}
+Judith~S. Kleinfeld.
+\newblock Could it be a big world after all ?
+\newblock {\em Society}, page 39(2):61–66, 2002.
+
+\bibitem[Mil67]{Milgram_SmallWorld}
+Stanley Milgram.
+\newblock The small world problem.
+\newblock {\em Pyschology Today}, page 1:61–67, 1967.
+
+\bibitem[New03]{Newman_ComplexNetworks}
+M.~E.~J. Newman.
+\newblock The structure and function of complex networks.
+\newblock {\em SIAM REVIEW}, 45:167--256, 2003.
+
+\bibitem[New06]{Newman_Eigenvectors}
+M.~E.~J. Newman.
+\newblock Finding community structure in networks using the eigenvectors of
+  matrices.
+\newblock {\em Physical Review E (Statistical, Nonlinear, and Soft Matter
+  Physics)}, 74(3), 2006.
+
+\bibitem[TM69]{TraverMilgram_StudySmallWorld}
+J.~Travers and Stanley Milgram.
+\newblock An experimental study of the small world problem.
+\newblock {\em Sociometry}, page 32:425–443, 1969.
+
+\bibitem[WS98]{WattsStrogatz_DynamicsSmallWorld}
+D.~J. Watts and S.~H. Strogatz.
+\newblock Collective dynamics of ’small-world’ networks.
+\newblock In {\em Nature}, page 393:440–442, June 1998.
+
+\end{thebibliography}

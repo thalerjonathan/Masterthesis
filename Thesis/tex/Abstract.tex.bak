@@ -1,0 +1,7 @@
+\documentclass[Bachelorarbeit.tex]{subfiles}
+\begin{document}
+\chapter*{Abstract}
+[Englischen Titel anführen]
+
+Formatvorlage für den Fließtext.
+\end{document}
