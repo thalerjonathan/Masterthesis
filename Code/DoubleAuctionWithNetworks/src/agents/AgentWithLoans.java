@@ -35,6 +35,10 @@ public class AgentWithLoans extends Agent {
 		this.loans = loans;
 		this.jJ = loans.getJ();
 		NUMLOANS = Loans.NUMLOANS;
+		init();
+	}
+
+	private void init() {
 		limitPricesLoansBuy = new double[NUMLOANS];
 		limitPricesLoansSell = new double[NUMLOANS];
 		detLimitPricesLoansSeller();
@@ -49,7 +53,7 @@ public class AgentWithLoans extends Agent {
 		}
 		freeAssetEndow = assetEndow;
 	}
-
+	
 	public double[] getLoanGiven() {
 		return loanGiven;
 	}
@@ -64,6 +68,11 @@ public class AgentWithLoans extends Agent {
 
 	public void setFreeAssetEndow(double freeAssetEndow) {
 		this.freeAssetEndow = freeAssetEndow;
+	}
+	
+	public void reset( double consumEndow, double assetEndow ) {
+		super.reset( consumEndow, assetEndow );
+		init();
 	}
 
 	@Override

@@ -81,7 +81,6 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 	private JComboBox<String> optimismSelection;
 	
 	private JSpinner agentCountSpinner;
-	private JSpinner pauseAfterTXCountSpinner;
 	
 	private JLabel succTxCounterLabel;
 	private JLabel totalTxCounterLabel;
@@ -168,8 +167,7 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 		this.optimismSelection = new JComboBox<String>( new String[] { "Linear", "Triangle"  } );
 		
 		this.agentCountSpinner = new JSpinner( new SpinnerNumberModel( 30, 10, 100, 1 ) );
-		this.pauseAfterTXCountSpinner = new JSpinner( new SpinnerNumberModel( 1000, 0, 10000, 100 ) );
-		
+
 		JLabel succTxCounterInfoLabel = new JLabel( "Successful TX: " );
 		JLabel noSuccTxCounterInfoLabel = new JLabel( "No Succ. TX: " );
 		JLabel totalTxCounterInfoLabel = new JLabel( "Total TX: " );
@@ -221,9 +219,11 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 			@Override
 			public void valueChanged( ListSelectionEvent e ) {
 				if (e.getValueIsAdjusting() == false) {
+					/*
 					if ( null == MainWindow.this.simulationThread || false == MainWindow.this.simulationThread.isPause() ) {
 						return;
 					}
+					*/
 					
 					int index = MainWindow.this.txHistoryList.getSelectedIndex();
 					if ( -1 == index ) {
@@ -264,11 +264,9 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 				if ( MainWindow.this.pauseButton.isSelected() ) {
 					MainWindow.this.pauseButton.setText( "Paused" );
 					MainWindow.this.nextTxButton.setEnabled( true );
-					MainWindow.this.pauseAfterTXCountSpinner.setEnabled( true );
 				} else {
 					MainWindow.this.pauseButton.setText( "Pause" );
 					MainWindow.this.nextTxButton.setEnabled( false );
-					MainWindow.this.pauseAfterTXCountSpinner.setEnabled( false );
 				}
 				
 				MainWindow.this.simulationThread.togglePause();
@@ -292,16 +290,7 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 		this.optimismSelection.addActionListener( this );
 		
 		this.agentCountSpinner.addChangeListener( this );
-		
-		this.pauseAfterTXCountSpinner.addChangeListener( new ChangeListener() {
-			@Override
-			public void stateChanged(ChangeEvent arg0) {
-				if ( null != MainWindow.this.simulationThread ) {
-					MainWindow.this.simulationThread.setPauseAfterNonSuccTxCount( (int) MainWindow.this.pauseAfterTXCountSpinner.getValue() );
-				}
-			}
-		});
-		
+
 		// adding components ////////////////////////////////////
 		this.controlsPanel.add( this.recreateButton );
 		this.controlsPanel.add( this.agentCountSpinner );
@@ -311,7 +300,6 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 		this.controlsPanel.add( this.simulateButton );
 		this.controlsPanel.add( this.pauseButton );
 		this.controlsPanel.add( this.nextTxButton );
-		this.controlsPanel.add( this.pauseAfterTXCountSpinner );
 		this.controlsPanel.add( this.keepSuccTXHighCheck );
 		
 		JPanel txLabelsPanel = new JPanel( new GridBagLayout() );
@@ -585,7 +573,6 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 			
 			// let simulation run in a separate thread to prevent blocking of gui
 			this.simulationThread = new SimulationThread( simulation );
-			this.simulationThread.setPauseAfterNonSuccTxCount( (int) this.pauseAfterTXCountSpinner.getValue() );
 			this.simulationThread.start();
 			
 		// simulation is running
@@ -606,7 +593,6 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 			this.nextTxButton.setVisible( false );
 			this.pauseButton.setVisible( false );
 			
-			this.pauseAfterTXCountSpinner.setEnabled( true );
 			this.agentCountSpinner.setEnabled( true );
 			this.topologySelection.setEnabled( true );
 			this.optimismSelection.setEnabled( true );
@@ -680,76 +666,88 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 		}
 	}
 	
+	private enum SimulationState {
+		EXIT,
+		RUNNING,
+		PAUSED,
+		NEXT_TX;
+	}
+	
 	private class SimulationThread extends Thread {
-		private Auction simulation;
-		private boolean runFlag;
-
 		private Lock lock = new ReentrantLock();
 		private Condition condition = lock.newCondition();
 		   
+		private Auction simulation;
+
 		private int succTX;
 		private int totalTX;
 		private int noSuccTXCounter;
-		private int pauseSuccTXCounter;
 		
-		private boolean pauseFlag;
-		
-		private boolean doNextTX;
 		private Transaction lastSuccTX;
 		
 		private Thread nextTxThread;
 		
-		private int pauseAfterNonSuccTxCount;
-		
+		private SimulationState state;
+
 		public SimulationThread( Auction simulation ) {
 			this.simulation = simulation;
 			
-			// run thread as soon start is called
-			this.runFlag = true;
-			
 			// start in pause-mode: thread must block bevore doing first transaction
-			this.doNextTX = false;
-			this.pauseFlag = true;
+			this.state = SimulationState.PAUSED;
+			
+			// give nice name for debugging purposes
+			this.setName( "Simulation Thread" );
 			
 			this.updateTXCounter();
 		}
-		
-		public void setPauseAfterNonSuccTxCount(int pauseAfterNonSuccTxCount) {
-			this.pauseAfterNonSuccTxCount = pauseAfterNonSuccTxCount;
-		}
 
 		public boolean isPause() {
-			return this.pauseFlag;
+			return this.state == SimulationState.PAUSED;
 		}
 		
 		// NOTE: must be called from other thread than SimulationThread
 		public void stopSimulation() {
-			this.runFlag = false;
-			
-			// when in paused mode: need to switch back
-			if ( this.pauseFlag || false == this.doNextTX ) {
-				this.pauseFlag = false;
+			// simulation-thread is running and no nextTX-thread exists, just switch state to exit
+			if ( SimulationState.RUNNING == this.state ) {
+				this.state = SimulationState.EXIT;
 				
-				this.nextTX();
+			// simulation-thread is running but need to stop nextTX-thread
+			} else if ( SimulationState.NEXT_TX == this.state ) {
+				this.state = SimulationState.EXIT;
+				
+				this.stopNextTXThread();
+				
+			// simulation-thread is blocked, switch state and signal to continue
+			} else if ( SimulationState.PAUSED == this.state ) {
+				MainWindow.this.restoreTXHistoryList();
+				
+				// signal the thread to exit
+				this.lock.lock();
+				this.state = SimulationState.EXIT;
+				this.condition.signal();
+				this.lock.unlock();
 			}
 		}
 
 		// NOTE: must be called from other thread than SimulationThread
 		public void togglePause() {
-			this.pauseFlag = ! this.pauseFlag;
-			
-			// switched to pause
-			if ( this.pauseFlag ) {
-				// thread will hit on this
-				this.doNextTX = false;
+			// simulation-thread is running, no nextTX-thread exists, just switch to pause-state
+			if ( SimulationState.RUNNING == this.state ) {
+				this.state = SimulationState.PAUSED;
 				
-			// resume from pause
-			} else {
+				// simulation-thread is running but need to stop nextTX-thread
+			} else if ( SimulationState.NEXT_TX == this.state ) {
+				this.state = SimulationState.PAUSED;
+				this.stopNextTXThread();
+				
+			// simulation-thread is blocked, switch state and signal to continue
+			} else if ( SimulationState.PAUSED == this.state ) {
+				// switch to running
 				MainWindow.this.restoreTXHistoryList();
 				
 				// signal the thread to resume
 				this.lock.lock();
-				this.doNextTX = true;
+				this.state = SimulationState.RUNNING;
 				this.condition.signal();
 				this.lock.unlock();
 			}
@@ -757,9 +755,13 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 		
 		// NOTE: must be called from other thread than SimulationThread
 		public void nextTX() {
+			// switch state to next-tx (will always be already in paused-mode at this point, next-tx can only be reached from paused-mode)
+			this.state = SimulationState.NEXT_TX;
+			
 			MainWindow.this.nextTxButton.setEnabled( false );
-			MainWindow.this.pauseButton.setEnabled( false );
-			MainWindow.this.pauseAfterTXCountSpinner.setEnabled( false );
+			
+			MainWindow.this.pauseButton.setSelected( false );
+			MainWindow.this.pauseButton.setText( "Pause" );
 			
 			MainWindow.this.restoreTXHistoryList();			
 
@@ -773,97 +775,95 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 					SimulationThread.this.lock.lock();
 					
 					try {
-						// let simulation run till next successfull transaction
-						SimulationThread.this.doNextTX = true;
-						// signal the blocking thread
+						// (re-) set to null to wait for successful TX
+						SimulationThread.this.lastSuccTX = null;
+						
+						// signal the blocking simulation-thread because nextTX can only be called from pause-state 
+						// thus in pause-state simulation-thread is blocking already
 						SimulationThread.this.condition.signal();
 
-						// wait blocking till lastSuccTX is not null & doNext is true
-						// either thread has found a successfull transaction and signals or it hasn't found one and 
-						// has set doNextTX to false because hasnt found a new TX for pauseAfterNonSuccTxCount
-						while ( null == SimulationThread.this.lastSuccTX && true == SimulationThread.this.doNextTX ) {
+						// wait blocking till either a next successful TX has been found OR the state has changed 
+						// if successful TX has been found: simulation-thread will set lastSuccTX to the given TX and switch state back to pause and give signal
+						// if state-switch occured through GUI e.g. back to pause or exit, signal came from GUI-Thread and lastSuccTX will be null
+						while ( null == SimulationThread.this.lastSuccTX || SimulationThread.this.state == SimulationState.NEXT_TX ) {
 							SimulationThread.this.condition.await();
 						}
 						
-						// set to null to run into blocked-waiting again
-						SimulationThread.this.lastSuccTX = null;
-						
 					} catch (InterruptedException e) {
 						e.printStackTrace();
+						
 					} finally {
 						SimulationThread.this.lock.unlock();
-						
+						SimulationThread.this.nextTxThread = null;
+
 						// running in thread => need to update SWING through SwingUtilities.invokeLater
 						SwingUtilities.invokeLater( new Runnable() {
 							@Override
 							public void run() {
 								MainWindow.this.nextTxButton.setEnabled( true );
-								MainWindow.this.pauseButton.setEnabled( true );
-								MainWindow.this.pauseAfterTXCountSpinner.setEnabled( true );
+								MainWindow.this.pauseButton.setSelected( true );
+								MainWindow.this.pauseButton.setText( "Paused" );
+
 							}
 						});
 					}
 				}
 			});
 			
+			// give nice name for debugging purposes
+			this.nextTxThread.setName( "Next-TX Thread" );
 			this.nextTxThread.start();
 		}
 		
 		@Override
 		public void run() {
-			while ( this.runFlag ) {
+			// run this thread until simulation-state tells to exit
+			while ( SimulationState.EXIT != this.state ) {
 				// need to lock section bevore we can signal and to prevent concurrent modification of data
 				this.lock.lock();
 				
 				try {
-					// wait blocking till main-thread (gui) requests next successful transaction
-					while ( false == this.doNextTX ) {
+					// wait blocking while in pause mode. GUI-Thread or NextTX-thread will change state and give signal
+					while ( SimulationState.PAUSED == this.state ) {
 						this.condition.await();
 					}
 
+					// count total number of TX so far
 					this.totalTX++;
 					
+					// execute the next transaction
 					Transaction tx = this.simulation.executeSingleTransaction();
+					// tx was successful
 					if ( tx.wasSuccessful() ) {
+						// count number of successful TX so far
 						this.succTX++;
+						// reset counter of how many unsuccessful TX in a row occured
 						this.noSuccTXCounter = 0;
-						this.pauseSuccTXCounter = 0;
-						
-						// found successfull transaction: store in consumer-data
-						this.lastSuccTX = tx;
-						// continue with next transaction based upon if we are in paused-mode or not
-						this.doNextTX = ! this.pauseFlag;
-						
-						// signal the waiting GUI-thread (if any)
+
+						// we are in nextTX-state and found one successful TX => switch back to paused-state
+						if ( SimulationState.NEXT_TX == this.state ) {
+							// found successfull transaction: store in consumer-data to 
+							this.lastSuccTX = tx;
+							// next-tx can only happen in paused-state, switch back to paused when finished
+							this.state = SimulationState.PAUSED;
+						}
+	
+						// signal the waiting GUI/next-TX-thread (if any)
 						this.condition.signal();
 						
+					// not successful
 					} else {
+						// count how many unsuccessful TX in a row occured
 						this.noSuccTXCounter++;
-						this.pauseSuccTXCounter++;
-						
-						if ( this.pauseAfterNonSuccTxCount != 0 && this.pauseAfterNonSuccTxCount <= this.pauseSuccTXCounter ) {
-							// switch to pause
-							this.lock.lock();
-							this.doNextTX = false;
-							this.pauseFlag = true;
-							this.pauseSuccTXCounter = 0;
-							this.condition.signal();
-							this.lock.unlock();
-							
-							MainWindow.this.pauseAfterTXCountSpinner.setEnabled( true );
-							MainWindow.this.pauseButton.setSelected( true );
-							MainWindow.this.nextTxButton.setEnabled( true );
-							MainWindow.this.pauseButton.setEnabled( true );
-						}
-						
 						// need to reset to null, otherwise will stick to the last known until hit the NextTX-Button again
-						this.lastSuccTX = null;
+						//this.lastSuccTX = null;
 					}
 					
 					// running in thread => need to update SWING through SwingUtilities.invokeLater
 					SwingUtilities.invokeLater( new Runnable() {
 						@Override
 						public void run() {
+							// update gui if TX was successful
 							if ( tx.wasSuccessful() ) {
 								MainWindow.this.agentWealthPanel.repaint();
 								
@@ -890,6 +890,27 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 			MainWindow.this.succTxCounterLabel.setText( "" + this.succTX );
 			MainWindow.this.noSuccTxCounterLabel.setText( "" + this.noSuccTXCounter );
 			MainWindow.this.totalTxCounterLabel.setText( "" + this.totalTX );
+		}
+		
+		private void stopNextTXThread() {
+			// next TX-Thread is existing, needs to be terminated too, 
+			// signal that condition has changed
+			if ( null != this.nextTxThread ) {
+				// signal the thread to resume
+				this.lock.lock();
+				this.condition.signal();
+				this.lock.unlock();
+				
+				// race-condition here: next-tx thread sets itself to null when finished
+				// thus if this is satisfied, we don't need to wait for join
+				if ( null != this.nextTxThread ) {
+					try {
+						this.nextTxThread.join();
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+				}
+			}
 		}
 	}
 }

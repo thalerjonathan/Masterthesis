@@ -43,7 +43,8 @@ public class Transaction  {
 	protected AskOffering matchingAskOffer;
 	protected BidOffering matchingBidOffer;
 	
-	protected static final DecimalFormat df = new DecimalFormat("0.00");
+	protected static final DecimalFormat agentHFormat = new DecimalFormat("0.00");
+	protected static final DecimalFormat tradingValuesFormat = new DecimalFormat("0.0000");
 	
 	public Transaction(Auction auct) {
 		NUMMARKETS = Auction.NUMMARKETS;
@@ -452,6 +453,11 @@ public class Transaction  {
 
 	@Override
 	public String toString() {
-		return df.format( this.getMatchingAskOffer().getAgent().getH() ) + " -> " + df.format( this.getMatchingBidOffer().getAgent().getH() );
+		return agentHFormat.format( this.getMatchingAskOffer().getAgent().getH() ) + 
+				" sells " + 
+				tradingValuesFormat.format( this.assetAmount ) + " units for " + 
+				tradingValuesFormat.format( this.assetAmount * this.assetPrice ) + 
+				" to "
+				+ agentHFormat.format( this.getMatchingBidOffer().getAgent().getH() );
 	}
 }
