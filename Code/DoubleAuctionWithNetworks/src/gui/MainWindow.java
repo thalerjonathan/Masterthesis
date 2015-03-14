@@ -15,16 +15,15 @@ import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSpinner;
+import javax.swing.JTable;
 import javax.swing.JToggleButton;
 import javax.swing.ListSelectionModel;
 import javax.swing.SpinnerNumberModel;
@@ -33,6 +32,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import javax.swing.table.DefaultTableModel;
 
 import agents.Agent;
 import agents.AgentWithLoans;
@@ -91,14 +91,15 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 	private JLabel finalLoanAskLabel;
 	private JLabel finalLoanBidLabel;
 
-	private JList<Transaction> txHistoryList;
-	private DefaultListModel<Transaction> txListModel;
+	private JTable txHistoryTable;
+	private DefaultTableModel txTableModel;
 	
 	private Timer spinnerChangedTimer;
 	
 	private SimulationThread simulationThread;
 	
-	private static final DecimalFormat df = new DecimalFormat("0.0000");
+	private static final DecimalFormat agentHFormat = new DecimalFormat("0.00");
+	private static final DecimalFormat tradingValuesFormat = new DecimalFormat("0.0000");
 	
 	private Agent selectedAgent;
 	
@@ -110,7 +111,6 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 		this.successfulTx = new ArrayList<Transaction>();
 		
 		BorderLayout layout = new BorderLayout();
-		//layout.setHgap( 10 );
 		layout.setVgap( 5 );
 		
 		this.setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
@@ -202,11 +202,12 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 			}
 		});
 		
-		this.txListModel = new DefaultListModel<Transaction>();
-		this.txHistoryList = new JList<Transaction>( this.txListModel );
-		this.txHistoryList.setSelectionMode( ListSelectionModel.SINGLE_SELECTION );
+		this.txTableModel = new DefaultTableModel( new Object[] { "TX", "Buyer", "Seller", "Asset Amount", "Asset Price", "Loan Amount", "Loan Price", "Loan Type" }, 0 );
+
+		this.txHistoryTable = new JTable( this.txTableModel );
+		this.txHistoryTable.setSelectionMode( ListSelectionModel.SINGLE_SELECTION );
 		
-		JScrollPane txHistoryScrollPane = new JScrollPane( this.txHistoryList );
+		JScrollPane txHistoryScrollPane = new JScrollPane( this.txHistoryTable );
 		txHistoryScrollPane.setVerticalScrollBarPolicy( JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED );
 		txHistoryScrollPane.setHorizontalScrollBarPolicy( JScrollPane.HORIZONTAL_SCROLLBAR_NEVER );
 		
@@ -215,7 +216,7 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 		this.pauseButton.setVisible( false );
 
 		// setting up event-listeners of components ////////////////////////////////////
-		this.txHistoryList.addListSelectionListener( new ListSelectionListener() {
+		this.txHistoryTable.getSelectionModel().addListSelectionListener( new ListSelectionListener() {
 			@Override
 			public void valueChanged( ListSelectionEvent e ) {
 				if (e.getValueIsAdjusting() == false) {
@@ -225,7 +226,7 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 					}
 					*/
 					
-					int index = MainWindow.this.txHistoryList.getSelectedIndex();
+					int index = MainWindow.this.txHistoryTable.getSelectedRow();
 					if ( -1 == index ) {
 						MainWindow.this.finalAssetAskLabel.setText( "-" );
 						MainWindow.this.finalAssetBidLabel.setText( "-" );
@@ -235,7 +236,7 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 						return;
 					}
 					
-					Transaction tx = MainWindow.this.txListModel.get( index );
+					Transaction tx = MainWindow.this.successfulTx.get( index );
 					MainWindow.this.highlightTx( tx );
 		        }
 			}
@@ -383,8 +384,9 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 				}
 				
 				MainWindow.this.resetNetworkHighlights();
-				MainWindow.this.txListModel.clear();
-				
+				MainWindow.this.txTableModel.setRowCount( 0 );
+				MainWindow.this.txHistoryTable.revalidate();
+
 				if ( agentSelectedEvent.isCtrlDownFlag() && null != MainWindow.this.selectedAgent ) {
 					MainWindow.this.selectedAgent.setHighlighted( true );
 					agentSelectedEvent.getSelectedAgent().setHighlighted( true );
@@ -411,7 +413,7 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 						}
 						
 						if ( null != a2 ) {
-							MainWindow.this.txListModel.addElement( tx );
+							MainWindow.this.addTxToTable( tx );
 							MainWindow.this.agents.getConnection( a1, a2 ).setHighlighted( true );
 						}
 					}
@@ -426,7 +428,8 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 			@Override
 			public void connectionSeleted( ConnectionSelectedEvent connSelectedEvent ) {
 				MainWindow.this.resetNetworkHighlights();
-				MainWindow.this.txListModel.clear();
+				MainWindow.this.txTableModel.setRowCount( 0 );
+				MainWindow.this.txHistoryTable.revalidate();
 
 				connSelectedEvent.getSelectedConnection().setHighlighted( true );
 				
@@ -440,7 +443,7 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 						a1.setHighlighted( true );
 						a2.setHighlighted( true );
 						
-						MainWindow.this.txListModel.addElement( tx );
+						MainWindow.this.addTxToTable( tx );
 					}
 				}
 				
@@ -543,8 +546,10 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 			this.agents.reset( 1.0, 1.0 );
 
 			this.successfulTx.clear();
-			this.txListModel.clear();
 			
+			this.txTableModel.setRowCount( 0 );
+			this.txHistoryTable.revalidate();
+
 			// disable controls, to prevent changes by user
 			this.agentCountSpinner.setEnabled( false );
 			this.topologySelection.setEnabled( false );
@@ -622,19 +627,19 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 		
 		this.networkPanel.repaint();
 		
-		this.finalAssetAskLabel.setText( df.format( tx.getFinalAskAssetPrice() ) );
-		this.finalAssetBidLabel.setText( df.format( tx.getFinalBidAssetPrice() ) );
+		this.finalAssetAskLabel.setText( tradingValuesFormat.format( tx.getFinalAskAssetPrice() ) );
+		this.finalAssetBidLabel.setText( tradingValuesFormat.format( tx.getFinalBidAssetPrice() ) );
 		
 		String finalLoanAskLabelText = "-";
 		String finalLoanBidLabelText = "-";
 		
 		if ( tx instanceof TransactionWithLoans ) {
 			if ( askOffering instanceof AskOfferingWithLoans ) {
-				finalLoanAskLabelText = df.format( ( (TransactionWithLoans) tx ).getFinalAskLoanPrice() );
+				finalLoanAskLabelText = tradingValuesFormat.format( ( (TransactionWithLoans) tx ).getFinalAskLoanPrice() );
 			}
 			
 			if ( bidOffering instanceof BidOfferingWithLoans ) {
-				finalLoanBidLabelText = df.format( ( (TransactionWithLoans) tx ).getFinalBidLoanPrice() );
+				finalLoanBidLabelText = tradingValuesFormat.format( ( (TransactionWithLoans) tx ).getFinalBidLoanPrice() );
 			}
 		}
 		
@@ -655,14 +660,40 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 	}
 	
 	private void restoreTXHistoryList() {
-		if ( this.txListModel.size() != this.successfulTx.size() ) {
-			this.txHistoryList.clearSelection();
+		if ( this.txTableModel.getRowCount() != this.successfulTx.size() ) {
+			this.txHistoryTable.clearSelection();
 			
-			this.txListModel.clear();
+			this.txTableModel.setRowCount( 0 );
+			this.txHistoryTable.revalidate();
 			
 			for ( Transaction tx : this.successfulTx ) {
-				this.txListModel.addElement( tx );
+				this.addTxToTable( tx );
 			}
+		}
+	}
+
+	private void addTxToTable( Transaction tx ) {
+		//"TX", "Buyer", "Seller", "Asset Amount", "Asset Price", "Loan Amount", "Loan Price", "Loan Type"
+		
+		if ( tx.getMatchingAskOffer() instanceof AskOfferingWithLoans ) {
+			this.txTableModel.addRow( new Object[] {
+					tx.getTransNum(),
+					agentHFormat.format( tx.getFinalAskH() ),
+					agentHFormat.format( tx.getFinalBidH() ),
+					tradingValuesFormat.format( tx.getAssetAmount() ),
+					tradingValuesFormat.format( tx.getAssetPrice() ),
+					tradingValuesFormat.format( ( ( TransactionWithLoans ) tx ).getLoanAmount() ),
+					tradingValuesFormat.format( ( ( TransactionWithLoans ) tx ).getLoanPrice() ),
+					( ( TransactionWithLoans ) tx ).getLoanType() } );
+			
+		} else {
+			this.txTableModel.addRow( new Object[] {
+					tx.getTransNum(),
+					agentHFormat.format( tx.getFinalAskH() ),
+					agentHFormat.format( tx.getFinalBidH() ),
+					tradingValuesFormat.format( tx.getAssetAmount() ),
+					tradingValuesFormat.format( tx.getAssetPrice() ),
+					"-", "-", "-"} );
 		}
 	}
 	
@@ -868,8 +899,8 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 								MainWindow.this.agentWealthPanel.repaint();
 								
 								MainWindow.this.successfulTx.add( tx );
-								MainWindow.this.txListModel.addElement( tx );
-								
+								MainWindow.this.addTxToTable( tx );
+		
 								MainWindow.this.highlightTx( tx );
 							}
 	

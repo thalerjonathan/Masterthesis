@@ -52,6 +52,8 @@ public class Auction {
 	public Auction( AgentNetwork agents, Asset asset ) {
 		this.agents = agents;
 		this.asset = asset;
+		
+		this.num_trans = 1;
 	}
 	
 	protected void initializeTrace()  {
@@ -497,7 +499,7 @@ public class Auction {
 		int MAXSWEEPS = 500;
 		int numSweeps = 0;  //number of sweeps through all agents in a random order
 		Transaction transaction = getNewTransaction();
-		transaction.setTransNum(num_trans);
+		transaction.setTransNum(num_trans++);
 		
 		while (numSweeps < MAXSWEEPS)  {
 			numSweeps++;

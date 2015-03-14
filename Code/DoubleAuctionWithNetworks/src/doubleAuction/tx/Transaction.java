@@ -450,14 +450,4 @@ public class Transaction  {
 	public void setFinalBidH(double finalBidH) {
 		this.finalBidH = finalBidH;
 	}
-
-	@Override
-	public String toString() {
-		return agentHFormat.format( this.getMatchingAskOffer().getAgent().getH() ) + 
-				" sells " + 
-				tradingValuesFormat.format( this.assetAmount ) + " units for " + 
-				tradingValuesFormat.format( this.assetAmount * this.assetPrice ) + 
-				" to "
-				+ agentHFormat.format( this.getMatchingBidOffer().getAgent().getH() );
-	}
 }

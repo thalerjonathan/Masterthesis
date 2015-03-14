@@ -395,32 +395,4 @@ public class TransactionWithLoans extends Transaction {
 	public void setFinalAskH(double finalAskH) {
 		this.finalAskH = finalAskH;
 	}
-	
-	@Override
-	public String toString() {		
-		String str = super.toString();
-		
-		AskOffering askOffering = this.getMatchingAskOffer();
-		BidOffering bidOffering = this.getMatchingBidOffer();
-		
-		if ( askOffering instanceof AskOfferingWithLoans ) {
-			str += " loanAmount: " + tradingValuesFormat.format( loanAmount ) + 
-				" loanPrice: " + tradingValuesFormat.format( loanPrice ) + 
-				" loanType: " + loanType;
-		}
-		
-		/*
-		if ( askOffering instanceof AskOfferingWithLoans ) {
-			str += " AskOfferingWithLoans: ";
-			str += tradingValuesFormat.format( this.getFinalAskLoanPrice() );
-		}
-		
-		if ( bidOffering instanceof BidOfferingWithLoans ) {
-			str += " BidOfferingWithLoans: ";
-			str += tradingValuesFormat.format( this.getFinalBidLoanPrice() );
-		}
-		*/
-				
-		return str;
-	}
 }
