@@ -220,12 +220,6 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 			@Override
 			public void valueChanged( ListSelectionEvent e ) {
 				if (e.getValueIsAdjusting() == false) {
-					/*
-					if ( null == MainWindow.this.simulationThread || false == MainWindow.this.simulationThread.isPause() ) {
-						return;
-					}
-					*/
-					
 					int index = MainWindow.this.txHistoryTable.getSelectedRow();
 					if ( -1 == index ) {
 						MainWindow.this.finalAssetAskLabel.setText( "-" );
@@ -361,6 +355,8 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 		
 		this.add( this.controlsPanel, BorderLayout.NORTH );
 		this.add( this.txInfoPanel, BorderLayout.SOUTH );
+		
+		this.pack();
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -384,8 +380,8 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 				}
 				
 				MainWindow.this.resetNetworkHighlights();
-				MainWindow.this.txTableModel.setRowCount( 0 );
-				MainWindow.this.txHistoryTable.revalidate();
+				//MainWindow.this.txTableModel.setRowCount( 0 );
+				//MainWindow.this.txHistoryTable.revalidate();
 
 				if ( agentSelectedEvent.isCtrlDownFlag() && null != MainWindow.this.selectedAgent ) {
 					MainWindow.this.selectedAgent.setHighlighted( true );
@@ -428,8 +424,8 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 			@Override
 			public void connectionSeleted( ConnectionSelectedEvent connSelectedEvent ) {
 				MainWindow.this.resetNetworkHighlights();
-				MainWindow.this.txTableModel.setRowCount( 0 );
-				MainWindow.this.txHistoryTable.revalidate();
+				//MainWindow.this.txTableModel.setRowCount( 0 );
+				//MainWindow.this.txHistoryTable.revalidate();
 
 				connSelectedEvent.getSelectedConnection().setHighlighted( true );
 				
@@ -547,8 +543,8 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 
 			this.successfulTx.clear();
 			
-			this.txTableModel.setRowCount( 0 );
-			this.txHistoryTable.revalidate();
+			//this.txTableModel.setRowCount( 0 );
+			//this.txHistoryTable.revalidate();
 
 			// disable controls, to prevent changes by user
 			this.agentCountSpinner.setEnabled( false );
@@ -663,8 +659,8 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 		if ( this.txTableModel.getRowCount() != this.successfulTx.size() ) {
 			this.txHistoryTable.clearSelection();
 			
-			this.txTableModel.setRowCount( 0 );
-			this.txHistoryTable.revalidate();
+			//this.txTableModel.setRowCount( 0 );
+			//this.txHistoryTable.revalidate();
 			
 			for ( Transaction tx : this.successfulTx ) {
 				this.addTxToTable( tx );
@@ -706,8 +702,9 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 	
 	private class SimulationThread extends Thread {
 		private Lock lock = new ReentrantLock();
-		private Condition condition = lock.newCondition();
-		   
+		private Condition nextTXCondition = lock.newCondition();
+		private Condition simulationCondition = lock.newCondition();
+		  
 		private Auction simulation;
 
 		private int succTX;
@@ -744,9 +741,10 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 				
 			// simulation-thread is running but need to stop nextTX-thread
 			} else if ( SimulationState.NEXT_TX == this.state ) {
+				// this will lead the simulation-thread to exit
 				this.state = SimulationState.EXIT;
-				
-				this.stopNextTXThread();
+				// if next-tx thread is active, it will be blocking on its signal, interrupt it
+				this.interruptNextTXThread();
 				
 			// simulation-thread is blocked, switch state and signal to continue
 			} else if ( SimulationState.PAUSED == this.state ) {
@@ -755,7 +753,7 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 				// signal the thread to exit
 				this.lock.lock();
 				this.state = SimulationState.EXIT;
-				this.condition.signal();
+				this.simulationCondition.signal();
 				this.lock.unlock();
 			}
 		}
@@ -764,22 +762,25 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 		public void togglePause() {
 			// simulation-thread is running, no nextTX-thread exists, just switch to pause-state
 			if ( SimulationState.RUNNING == this.state ) {
+				// this will lead the simulation-thread to run into await of its signal and thus freeing its lock
 				this.state = SimulationState.PAUSED;
 				
 				// simulation-thread is running but need to stop nextTX-thread
 			} else if ( SimulationState.NEXT_TX == this.state ) {
+				// this will lead the simulation-thread to run into await of its signal and thus freeing its lock
 				this.state = SimulationState.PAUSED;
-				this.stopNextTXThread();
+				// if next-tx thread is active, it will be blocking on its signal, interrupt it
+				this.interruptNextTXThread();
 				
 			// simulation-thread is blocked, switch state and signal to continue
 			} else if ( SimulationState.PAUSED == this.state ) {
 				// switch to running
 				MainWindow.this.restoreTXHistoryList();
 				
-				// signal the thread to resume
+				// signal the simulation-thread to resume
 				this.lock.lock();
 				this.state = SimulationState.RUNNING;
-				this.condition.signal();
+				this.simulationCondition.signal();
 				this.lock.unlock();
 			}
 		}
@@ -811,17 +812,19 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 						
 						// signal the blocking simulation-thread because nextTX can only be called from pause-state 
 						// thus in pause-state simulation-thread is blocking already
-						SimulationThread.this.condition.signal();
+						SimulationThread.this.simulationCondition.signal();
 
 						// wait blocking till either a next successful TX has been found OR the state has changed 
 						// if successful TX has been found: simulation-thread will set lastSuccTX to the given TX and switch state back to pause and give signal
 						// if state-switch occured through GUI e.g. back to pause or exit, signal came from GUI-Thread and lastSuccTX will be null
 						while ( null == SimulationThread.this.lastSuccTX || SimulationThread.this.state == SimulationState.NEXT_TX ) {
-							SimulationThread.this.condition.await();
+							SimulationThread.this.nextTXCondition.await();
 						}
 						
 					} catch (InterruptedException e) {
-						e.printStackTrace();
+						if ( SimulationThread.this.state == SimulationState.NEXT_TX ) {
+							e.printStackTrace();
+						}
 						
 					} finally {
 						SimulationThread.this.lock.unlock();
@@ -856,9 +859,14 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 				try {
 					// wait blocking while in pause mode. GUI-Thread or NextTX-thread will change state and give signal
 					while ( SimulationState.PAUSED == this.state ) {
-						this.condition.await();
+						this.simulationCondition.await();
 					}
 
+					// switched to exit after signaled, don't calculate a transaction anymore, exit immediately
+					if ( SimulationState.EXIT == this.state ) {
+						return;
+					}
+					
 					// count total number of TX so far
 					this.totalTX++;
 					
@@ -877,17 +885,14 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 							this.lastSuccTX = tx;
 							// next-tx can only happen in paused-state, switch back to paused when finished
 							this.state = SimulationState.PAUSED;
+							// signal the waiting GUI/next-TX-thread (if any)
+							this.nextTXCondition.signalAll();
 						}
-	
-						// signal the waiting GUI/next-TX-thread (if any)
-						this.condition.signal();
-						
+
 					// not successful
 					} else {
 						// count how many unsuccessful TX in a row occured
 						this.noSuccTXCounter++;
-						// need to reset to null, otherwise will stick to the last known until hit the NextTX-Button again
-						//this.lastSuccTX = null;
 					}
 					
 					// running in thread => need to update SWING through SwingUtilities.invokeLater
@@ -923,24 +928,10 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 			MainWindow.this.totalTxCounterLabel.setText( "" + this.totalTX );
 		}
 		
-		private void stopNextTXThread() {
-			// next TX-Thread is existing, needs to be terminated too, 
-			// signal that condition has changed
+		private void interruptNextTXThread() {
+			// if next-tx thread exists, interrupt it because it is blocked waiting
 			if ( null != this.nextTxThread ) {
-				// signal the thread to resume
-				this.lock.lock();
-				this.condition.signal();
-				this.lock.unlock();
-				
-				// race-condition here: next-tx thread sets itself to null when finished
-				// thus if this is satisfied, we don't need to wait for join
-				if ( null != this.nextTxThread ) {
-					try {
-						this.nextTxThread.join();
-					} catch (InterruptedException e) {
-						e.printStackTrace();
-					}
-				}
+				this.nextTxThread.interrupt();
 			}
 		}
 	}
