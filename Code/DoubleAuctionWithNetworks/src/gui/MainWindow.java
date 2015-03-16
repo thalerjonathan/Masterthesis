@@ -1,12 +1,14 @@
 package gui;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Timer;
@@ -26,13 +28,18 @@ import javax.swing.JSpinner;
 import javax.swing.JTable;
 import javax.swing.JToggleButton;
 import javax.swing.ListSelectionModel;
+import javax.swing.RowSorter;
+import javax.swing.SortOrder;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import javax.swing.event.RowSorterEvent;
+import javax.swing.event.RowSorterListener;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableRowSorter;
 
 import agents.Agent;
 import agents.AgentWithLoans;
@@ -71,10 +78,9 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 	private JButton nextTxButton;
 	private JToggleButton pauseButton;
 	
-	private JPanel controlsPanel;
-	private JPanel txInfoPanel;
 	private NetworkRenderPanel networkPanel;
 	private JPanel agentWealthPanel;
+	private JPanel visualizationPanel;
 	
 	private JComboBox<String> topologySelection;
 	private JComboBox<String> layoutSelection;
@@ -114,17 +120,18 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 		layout.setVgap( 5 );
 		
 		this.setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
-        this.setLayout( layout );
+        this.getContentPane().setLayout( layout );
         
         this.createControlsPanel();
         this.createAgents();
         
+        this.pack();
         this.setVisible( true );
 	}
 	
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		MainWindow.this.createAgents();
+		this.createAgents();
 	}
 
 	@Override
@@ -159,9 +166,15 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 		layout.setHgap( 10 );
 		layout.setVgap( 10 );
 		
-		this.controlsPanel = new JPanel();
-		this.txInfoPanel = new JPanel( layout );
-
+		this.visualizationPanel = new JPanel( layout );
+		this.visualizationPanel.setBackground( Color.GREEN );
+		
+		JPanel controlsPanel = new JPanel();
+		controlsPanel.setBackground(Color.RED);
+		
+		JPanel txInfoPanel = new JPanel( layout );
+		txInfoPanel.setBackground(Color.BLUE);
+		
 		this.topologySelection = new JComboBox<String>( new String[] { "Ascending-Connected", "Ascending Shortcuts", "Hub-Connected", "Fully-Connected", "Erdos-Renyi", "Barbasi-Albert", "Watts-Strogatz" } );
 		this.layoutSelection = new JComboBox<String>( new String[] { "Circle", "KK" } );
 		this.optimismSelection = new JComboBox<String>( new String[] { "Linear", "Triangle"  } );
@@ -202,10 +215,94 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 			}
 		});
 		
-		this.txTableModel = new DefaultTableModel( new Object[] { "TX", "Buyer", "Seller", "Asset Amount", "Asset Price", "Loan Amount", "Loan Price", "Loan Type" }, 0 );
+		Class[] columnClasses = new Class[]{ Integer.class, String.class, String.class, String.class,
+				String.class, String.class, String.class, String.class };
+		
+		this.txTableModel = new DefaultTableModel(
+				new Object[] { "TX", "Buyer", "Seller", "Asset Amount",
+						"Asset Price", "Loan Amount", "Loan Price", "Loan Type" }, 0 ) {
+
+		    @Override
+		    public boolean isCellEditable(int row, int column) {
+		       return false;
+		    }
+
+			@Override
+			public Class<?> getColumnClass(int columnIndex) {
+				return columnClasses[ columnIndex ];
+			}
+		};
+
+		Comparator<String> ascComp = new Comparator<String>() {
+			@Override
+			public int compare(String o1, String o2) {
+				if ( o1.equals( "-" ) ) {
+					return 1;
+				}
+				
+				if ( o2.equals( "-" ) ) {
+					return -1;
+				}
+				
+				if ( o1.equals( o2 ) ) {
+					return 0;
+				}
+				
+				return o1.compareTo( o2 );
+			}
+		};
+		
+		Comparator<String> descComp = new Comparator<String>() {
+			@Override
+			public int compare(String o1, String o2) {
+				if ( o1.equals( "-" ) ) {
+					return -1;
+				}
+				
+				if ( o2.equals( "-" ) ) {
+					return 1;
+				}
+				
+				if ( o1.equals( o2 ) ) {
+					return 0;
+				}
+				
+				return o1.compareTo( o2 );
+			}
+		};
+		
+		
+		TableRowSorter<DefaultTableModel> rowSorter = new TableRowSorter<>( this.txTableModel );
+		
+		rowSorter.addRowSorterListener( new RowSorterListener() {
+			@Override
+			public void sorterChanged(RowSorterEvent e) {
+				if ( RowSorterEvent.Type.SORT_ORDER_CHANGED == e.getType() ) {
+					List<RowSorter.SortKey> sortKeys = e.getSource().getSortKeys();
+					
+					for ( RowSorter.SortKey sorting : sortKeys ) {
+						if ( sorting.getColumn() < 5 ) {
+							continue;
+						}
+						
+						if ( SortOrder.ASCENDING == sorting.getSortOrder() ) {
+							rowSorter.setComparator( sorting.getColumn(), ascComp );
+						} else {
+							rowSorter.setComparator( sorting.getColumn(), descComp );
+						}
+					}
+				}
+			}
+		});
+		
+		rowSorter.setComparator( 5, ascComp );
+		rowSorter.setComparator( 6, ascComp );
+		rowSorter.setComparator( 7, ascComp );
 
 		this.txHistoryTable = new JTable( this.txTableModel );
 		this.txHistoryTable.setSelectionMode( ListSelectionModel.SINGLE_SELECTION );
+		this.txHistoryTable.setAutoCreateRowSorter( true );
+		this.txHistoryTable.setRowSorter( rowSorter );
 		
 		JScrollPane txHistoryScrollPane = new JScrollPane( this.txHistoryTable );
 		txHistoryScrollPane.setVerticalScrollBarPolicy( JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED );
@@ -287,15 +384,15 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 		this.agentCountSpinner.addChangeListener( this );
 
 		// adding components ////////////////////////////////////
-		this.controlsPanel.add( this.recreateButton );
-		this.controlsPanel.add( this.agentCountSpinner );
-		this.controlsPanel.add( this.topologySelection );
-		this.controlsPanel.add( this.optimismSelection );
-		this.controlsPanel.add( this.layoutSelection );
-		this.controlsPanel.add( this.simulateButton );
-		this.controlsPanel.add( this.pauseButton );
-		this.controlsPanel.add( this.nextTxButton );
-		this.controlsPanel.add( this.keepSuccTXHighCheck );
+		controlsPanel.add( this.recreateButton );
+		controlsPanel.add( this.agentCountSpinner );
+		controlsPanel.add( this.topologySelection );
+		controlsPanel.add( this.optimismSelection );
+		controlsPanel.add( this.layoutSelection );
+		controlsPanel.add( this.simulateButton );
+		controlsPanel.add( this.pauseButton );
+		controlsPanel.add( this.nextTxButton );
+		controlsPanel.add( this.keepSuccTXHighCheck );
 		
 		JPanel txLabelsPanel = new JPanel( new GridBagLayout() );
 		GridBagConstraints c = new GridBagConstraints();
@@ -350,13 +447,12 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 	    c.gridy = 6;
 		txLabelsPanel.add( this.finalLoanBidLabel, c );
 
-		this.txInfoPanel.add( txHistoryScrollPane, BorderLayout.CENTER );
-		this.txInfoPanel.add( txLabelsPanel, BorderLayout.EAST );
+		//txInfoPanel.add( txHistoryScrollPane, BorderLayout.WEST );
+		txInfoPanel.add( txLabelsPanel, BorderLayout.EAST );
 		
-		this.add( this.controlsPanel, BorderLayout.NORTH );
-		this.add( this.txInfoPanel, BorderLayout.SOUTH );
-		
-		this.pack();
+		this.getContentPane().add( controlsPanel, BorderLayout.NORTH );
+		this.getContentPane().add( this.visualizationPanel, BorderLayout.CENTER );
+		this.getContentPane().add( txInfoPanel, BorderLayout.SOUTH );
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -369,7 +465,7 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 		
 		// remove network-visualization panel when already there
 		if ( null != this.networkPanel ) {
-			this.remove( MainWindow.this.networkPanel );
+			this.visualizationPanel.remove( MainWindow.this.networkPanel );
 		}
 		
 		this.networkPanel = MainWindow.this.agents.getNetworkRenderingPanel( layout, new INetworkSelectionObserver() {
@@ -380,8 +476,8 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 				}
 				
 				MainWindow.this.resetNetworkHighlights();
-				//MainWindow.this.txTableModel.setRowCount( 0 );
-				//MainWindow.this.txHistoryTable.revalidate();
+				MainWindow.this.txTableModel.setRowCount( 0 );
+				MainWindow.this.txHistoryTable.revalidate();
 
 				if ( agentSelectedEvent.isCtrlDownFlag() && null != MainWindow.this.selectedAgent ) {
 					MainWindow.this.selectedAgent.setHighlighted( true );
@@ -424,8 +520,8 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 			@Override
 			public void connectionSeleted( ConnectionSelectedEvent connSelectedEvent ) {
 				MainWindow.this.resetNetworkHighlights();
-				//MainWindow.this.txTableModel.setRowCount( 0 );
-				//MainWindow.this.txHistoryTable.revalidate();
+				MainWindow.this.txTableModel.setRowCount( 0 );
+				MainWindow.this.txHistoryTable.revalidate();
 
 				connSelectedEvent.getSelectedConnection().setHighlighted( true );
 				
@@ -447,7 +543,7 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 			}
 		} );
 		
-		this.add( MainWindow.this.networkPanel, BorderLayout.WEST );
+		this.visualizationPanel.add( MainWindow.this.networkPanel, BorderLayout.WEST );
 		this.pack();
 	}
 
@@ -525,11 +621,17 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 		
 		// if agent-wealth-visualisation panel is already there, remove it bevore adding a new instance
 		if ( null != this.agentWealthPanel ) {
-			this.remove( this.agentWealthPanel );
+			this.visualizationPanel.remove( this.agentWealthPanel );
 		}
 		
 		this.agentWealthPanel = this.agents.getWealthVisualizer();
-		this.add( this.agentWealthPanel, BorderLayout.EAST );
+		this.visualizationPanel.add( this.agentWealthPanel, BorderLayout.EAST );
+
+		// if there are still items in table-model, delete them
+		if ( 0 < this.txTableModel.getRowCount() ) {
+			this.txTableModel.setRowCount( 0 );
+			this.txHistoryTable.revalidate();
+		}
 		
 		// need to create the layout too, will do the final pack-call on this frame
 		this.createLayout();
@@ -543,8 +645,8 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 
 			this.successfulTx.clear();
 			
-			//this.txTableModel.setRowCount( 0 );
-			//this.txHistoryTable.revalidate();
+			this.txTableModel.setRowCount( 0 );
+			this.txHistoryTable.revalidate();
 
 			// disable controls, to prevent changes by user
 			this.agentCountSpinner.setEnabled( false );
@@ -575,6 +677,9 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 			// let simulation run in a separate thread to prevent blocking of gui
 			this.simulationThread = new SimulationThread( simulation );
 			this.simulationThread.start();
+			
+			this.networkPanel.repaint();
+			this.agentWealthPanel.repaint();
 			
 		// simulation is running
 		} else {
@@ -659,8 +764,8 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 		if ( this.txTableModel.getRowCount() != this.successfulTx.size() ) {
 			this.txHistoryTable.clearSelection();
 			
-			//this.txTableModel.setRowCount( 0 );
-			//this.txHistoryTable.revalidate();
+			this.txTableModel.setRowCount( 0 );
+			this.txHistoryTable.revalidate();
 			
 			for ( Transaction tx : this.successfulTx ) {
 				this.addTxToTable( tx );
@@ -680,7 +785,7 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 					tradingValuesFormat.format( tx.getAssetPrice() ),
 					tradingValuesFormat.format( ( ( TransactionWithLoans ) tx ).getLoanAmount() ),
 					tradingValuesFormat.format( ( ( TransactionWithLoans ) tx ).getLoanPrice() ),
-					( ( TransactionWithLoans ) tx ).getLoanType() } );
+					Integer.toString( ( ( TransactionWithLoans ) tx ).getLoanType() ) } );
 			
 		} else {
 			this.txTableModel.addRow( new Object[] {
@@ -691,6 +796,7 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 					tradingValuesFormat.format( tx.getAssetPrice() ),
 					"-", "-", "-"} );
 		}
+		
 	}
 	
 	private enum SimulationState {
