@@ -499,7 +499,6 @@ public class Auction {
 		int MAXSWEEPS = 500;
 		int numSweeps = 0;  //number of sweeps through all agents in a random order
 		Transaction transaction = getNewTransaction();
-		transaction.setTransNum(num_trans++);
 		
 		while (numSweeps < MAXSWEEPS)  {
 			numSweeps++;
@@ -531,6 +530,8 @@ public class Auction {
 					//successful transaction execution
 					transaction.matched( match );
 					transaction.calcStatistics();
+					transaction.setTransNum(num_trans++);
+					
 					return transaction;
 				}
 			}

@@ -50,8 +50,7 @@ public class TXColumnComparator implements Comparator<String>, RowSorterListener
 			List<RowSorter.SortKey> sortKeys = e.getSource().getSortKeys();
 			
 			for ( RowSorter.SortKey sorting : sortKeys ) {
-				if ( this.column == sorting.getColumn() ) {
-						
+				if ( this.column == sorting.getColumn() ) {	
 					if ( SortOrder.ASCENDING == sorting.getSortOrder() ) {
 						this.ascDescValue = 1;
 					} else {

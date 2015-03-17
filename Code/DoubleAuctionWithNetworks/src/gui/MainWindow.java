@@ -1,6 +1,5 @@
 package gui;
 
-import java.awt.BorderLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
@@ -39,10 +38,6 @@ import agents.markets.Asset;
 import agents.markets.Loans;
 import agents.network.AgentConnection;
 import agents.network.AgentNetwork;
-import agents.network.AgentNetwork.AgentSelectedEvent;
-import agents.network.AgentNetwork.ConnectionSelectedEvent;
-import agents.network.AgentNetwork.INetworkSelectionObserver;
-import agents.network.AgentNetwork.NetworkRenderPanel;
 import doubleAuction.Auction;
 import doubleAuction.AuctionWithLoans;
 import doubleAuction.offer.AskOffering;
@@ -54,6 +49,10 @@ import doubleAuction.tx.TransactionWithLoans;
 import edu.uci.ics.jung.algorithms.layout.CircleLayout;
 import edu.uci.ics.jung.algorithms.layout.KKLayout;
 import edu.uci.ics.jung.algorithms.layout.Layout;
+import gui.visualisation.AgentSelectedEvent;
+import gui.visualisation.ConnectionSelectedEvent;
+import gui.visualisation.INetworkSelectionObserver;
+import gui.visualisation.NetworkRenderPanel;
 
 @SuppressWarnings("serial")
 public class MainWindow extends JFrame implements ActionListener, ChangeListener {
@@ -95,7 +94,7 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 	
 	private SimulationThread simulationThread;
 	
-	private static final DecimalFormat agentHFormat = new DecimalFormat("0.00");
+	private static final DecimalFormat agentHFormat = new DecimalFormat("0.000");
 	private static final DecimalFormat tradingValuesFormat = new DecimalFormat("0.000000");
 	
 	private Agent selectedAgent;
@@ -107,12 +106,13 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 		
 		this.successfulTx = new ArrayList<Transaction>();
 		
+		this.setExtendedState( JFrame.MAXIMIZED_BOTH ); 
 		this.setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
         this.getContentPane().setLayout( new GridBagLayout() );
         
         this.createControlsPanel();
         this.createAgents();
-        
+       
         this.pack();
         this.setVisible( true );
 	}
@@ -153,7 +153,7 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 		// instancing of components ////////////////////////////////////
 		GridBagConstraints c = new GridBagConstraints();
 
-		this.visualizationPanel = new JPanel( new BorderLayout() );
+		this.visualizationPanel = new JPanel( new GridBagLayout() );
 		JPanel controlsPanel = new JPanel();
 		JPanel txInfoPanel = new JPanel( new GridBagLayout() );
 
@@ -238,8 +238,8 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 			@Override
 			public void valueChanged( ListSelectionEvent e ) {
 				if (e.getValueIsAdjusting() == false) {
-					int index = MainWindow.this.txHistoryTable.getSelectedRow();
-					if ( -1 == index ) {
+					int rowIndex = MainWindow.this.txHistoryTable.getSelectedRow();
+					if ( -1 == rowIndex ) {
 						MainWindow.this.finalAssetAskLabel.setText( "-" );
 						MainWindow.this.finalAssetBidLabel.setText( "-" );
 						MainWindow.this.finalLoanAskLabel.setText( "-" );
@@ -248,7 +248,12 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 						return;
 					}
 					
-					Transaction tx = MainWindow.this.successfulTx.get( index );
+					int txIndex = (int) MainWindow.this.txHistoryTable.getValueAt( rowIndex, 0 );
+
+					// starts with 1
+					txIndex--;
+					
+					Transaction tx = MainWindow.this.successfulTx.get( txIndex );
 					MainWindow.this.highlightTx( tx );
 		        }
 			}
@@ -409,7 +414,7 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 	    c.gridy = 1;
 		this.getContentPane().add( this.visualizationPanel, c );
 		
-		c.weighty = 0.2;
+		c.weighty = 0.1;
 		c.gridheight = 2;
 	    c.gridy = 11;
 		this.getContentPane().add( txInfoPanel, c );
@@ -525,8 +530,15 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 			}
 		} );
 		
-		this.visualizationPanel.add( MainWindow.this.networkPanel, BorderLayout.WEST );
-		this.pack();
+		GridBagConstraints c = new GridBagConstraints();
+		c.fill = GridBagConstraints.BOTH;
+		c.weightx = 0.5;
+		c.gridwidth = 1;
+		c.gridx = 0;
+		c.gridy = 0;
+		
+		this.visualizationPanel.add( MainWindow.this.networkPanel, c );
+		this.revalidate();
 	}
 
 	private void createAgents() {
@@ -606,7 +618,14 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 		}
 		
 		this.agentWealthPanel = this.agents.getWealthVisualizer();
-		this.visualizationPanel.add( this.agentWealthPanel, BorderLayout.EAST );
+		
+		GridBagConstraints c = new GridBagConstraints();
+		c.fill = GridBagConstraints.BOTH;
+		c.weightx = 0.5;
+		c.gridwidth = 1;
+		c.gridx = 1;
+		c.gridy = 0;
+		this.visualizationPanel.add( this.agentWealthPanel, c );
 
 		// if there are still items in table-model, delete them
 		if ( 0 < this.txTableModel.getRowCount() ) {

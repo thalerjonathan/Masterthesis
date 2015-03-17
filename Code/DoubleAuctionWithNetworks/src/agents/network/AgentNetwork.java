@@ -1,25 +1,10 @@
 package agents.network;
 
-import java.awt.BasicStroke;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Graphics;
-import java.awt.Paint;
-import java.awt.Shape;
-import java.awt.Stroke;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.geom.AffineTransform;
-import java.awt.geom.Ellipse2D;
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 
@@ -36,16 +21,14 @@ import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 
 import agents.Agent;
-import agents.AgentWithLoans;
 import agents.IAgentFactory;
-import edu.uci.ics.jung.algorithms.layout.CircleLayout;
-import edu.uci.ics.jung.algorithms.layout.GraphElementAccessor;
 import edu.uci.ics.jung.algorithms.layout.Layout;
 import edu.uci.ics.jung.algorithms.shortestpath.DijkstraShortestPath;
 import edu.uci.ics.jung.graph.Graph;
 import edu.uci.ics.jung.graph.SparseGraph;
-import edu.uci.ics.jung.visualization.VisualizationViewer;
-import edu.uci.ics.jung.visualization.renderers.Renderer;
+import gui.visualisation.INetworkSelectionObserver;
+import gui.visualisation.NetworkRenderPanel;
+import gui.visualisation.WealthVisualizer;
 
 public class AgentNetwork {
 	private String networkName;
@@ -506,12 +489,13 @@ public class AgentNetwork {
 		return new ChartPanel( chart );
 	}
 	
-	public NetworkRenderPanel getNetworkRenderingPanel( Class<? extends Layout<Agent, AgentConnection>> layoutClazz, INetworkSelectionObserver selectionObserver ) {
-		return new NetworkRenderPanel( layoutClazz, selectionObserver );
+	public NetworkRenderPanel getNetworkRenderingPanel( Class<? extends Layout<Agent, AgentConnection>> layoutClazz, 
+			INetworkSelectionObserver selectionObserver ) {
+		return new NetworkRenderPanel( this.graph, layoutClazz, selectionObserver );
 	}
 	
 	public JPanel getWealthVisualizer() {
-		return new WealthVisualizer();
+		return new WealthVisualizer( this.orderedAgents );
 	}
 	
 	private void populate( IAgentFactory agentFactory ) {
@@ -565,295 +549,5 @@ public class AgentNetwork {
 		}
 		
 		return chart;
-	}
-	
-	@SuppressWarnings("serial")
-	private class WealthVisualizer extends JPanel {
-		private final static double Y_ACHSIS_RANGE = 10.0;
-		
-		private final static int POINT_RADIUS = 2;
-		private final static int POINT_DIAMETER = POINT_RADIUS * 2;
-
-		private final static int LEGEND_BOX_X = 10;
-		private final static int LEGEND_BOX_Y = 100;
-		
-		public WealthVisualizer() {
-			this.setPreferredSize( new Dimension( 640, 300 ) );
-			this.setBackground( Color.WHITE );
-		}
-		
-		@Override
-		protected void paintComponent(Graphics g) {
-			super.paintComponent(g);
-			
-			int lastX = 0;
-			int lastYCash = 0;
-			int lastYAsset = 0;
-			int lastYBonds = 0;
-			int lastYUnpledged = 0;
-			
-			// NOTE: Center Of Origin is TOP-LEFT => need to transform y-achsis to origin of CENTER-LEFT (x-achsis origin is already left)
-			Dimension d = this.getSize();
-			double yHalf = d.height / 2.0;
-	
-			// draw grid 
-			g.drawLine( 0, ( int ) yHalf, d.width, ( int ) yHalf ); 
-			for ( int i = 0; i < 10; i++ ) {
-				double h = i / 10.0;
-				int x = ( int ) ( d.width * h );
-				String str = "" + h;
-				
-				g.drawLine( x, 0, x, d.height );
-				g.drawChars( str.toCharArray(), 0, str.length(), x, d.height );
-			}
-			
-			// draw points and lines of agents
-			for ( int i = 0; i < orderedAgents.size(); ++i ) {
-				Agent a = orderedAgents.get( i );
-				double cash = a.getCE();
-				double assets = a.getAE();
-				double optimism = a.getH();
-				
-				int x = ( int ) ( d.width * optimism );
-				int yCash = ( int ) ( yHalf - ( yHalf  * ( cash / Y_ACHSIS_RANGE ) ) );
-				int yAssets = ( int ) ( yHalf - ( yHalf  * ( assets / Y_ACHSIS_RANGE ) ) );
-				
-				g.setColor( Color.BLUE );
-				if ( i > 0 )
-					g.drawLine( lastX, lastYCash, x, yCash );
-				g.fillOval( x - POINT_RADIUS, yCash - POINT_RADIUS, POINT_DIAMETER, POINT_DIAMETER );
-				
-				g.setColor( Color.GREEN );
-				if ( i > 0 )
-					g.drawLine( lastX, lastYAsset, x, yAssets );
-				g.fillOval( x - POINT_RADIUS, yAssets - POINT_RADIUS, POINT_DIAMETER, POINT_DIAMETER );
-				
-				// TODO: replace by dynamic-binding: use visitor pattern
-				if ( a instanceof AgentWithLoans ) {
-					AgentWithLoans aLoans = ( AgentWithLoans ) a;
-					//double bonds = aLoans.getLoanGiven()[0] - aLoans.getLoanTaken()[0];
-					double bonds = aLoans.getLoanGiven()[0];
-					double unpledgedAssets = assets - aLoans.getLoanTaken()[0];
-					
-					int yBonds = ( int ) ( yHalf - ( yHalf  * ( bonds / Y_ACHSIS_RANGE ) ) );
-					int yUnpledged = ( int ) ( yHalf - ( yHalf  * ( unpledgedAssets / Y_ACHSIS_RANGE ) ) );
-					
-					g.setColor( Color.RED );
-					if ( i > 0 )
-						g.drawLine( lastX, lastYBonds, x, yBonds );
-					g.fillOval( x - POINT_RADIUS, yBonds - POINT_RADIUS, POINT_DIAMETER, POINT_DIAMETER );
-					
-					g.setColor( Color.CYAN );
-					if ( i > 0 )
-						g.drawLine( lastX, lastYUnpledged, x, yUnpledged );
-					g.fillOval( x - POINT_RADIUS, yUnpledged - POINT_RADIUS, POINT_DIAMETER, POINT_DIAMETER );
-					
-					lastYBonds = yBonds;
-					lastYUnpledged = yUnpledged;
-				}
-				
-				lastX = x;
-				lastYCash = yCash;
-				lastYAsset = yAssets;
-			}
-
-			// draw legend-box
-			g.setColor( Color.WHITE );
-			g.fillRect( LEGEND_BOX_X, d.height - LEGEND_BOX_Y, 155, 85 );
-			g.setColor( Color.BLACK );
-			g.drawRect( LEGEND_BOX_X, d.height - LEGEND_BOX_Y, 155, 85 );
-			
-			// draw legend
-			g.setColor( Color.BLUE );
-			g.drawLine( LEGEND_BOX_X + 5, d.height - LEGEND_BOX_Y + 15, 50, d.height - LEGEND_BOX_Y + 15 );
-			g.setColor( Color.BLACK );
-			g.drawChars( "cash".toCharArray(), 0, "cash".length(), 60, d.height - LEGEND_BOX_Y + 18 );
-			
-			g.setColor( Color.GREEN );
-			g.drawLine( LEGEND_BOX_X + 5, d.height - LEGEND_BOX_Y + 35, 50, d.height - LEGEND_BOX_Y + 35 );
-			g.setColor( Color.BLACK );
-			g.drawChars( "assets".toCharArray(), 0, "assets".length(), 60, d.height - LEGEND_BOX_Y + 38 );
-			
-			g.setColor( Color.RED );
-			g.drawLine( LEGEND_BOX_X + 5, d.height - LEGEND_BOX_Y + 55, 50, d.height - LEGEND_BOX_Y + 55 );
-			g.setColor( Color.BLACK );
-			g.drawChars( "bonds".toCharArray(), 0, "bonds".length(), 60, d.height - LEGEND_BOX_Y + 58 );
-			
-			g.setColor( Color.CYAN );
-			g.drawLine( LEGEND_BOX_X + 5, d.height - LEGEND_BOX_Y + 75, 50, d.height - LEGEND_BOX_Y + 75 );
-			g.setColor( Color.BLACK );
-			g.drawChars( "unpledged assets".toCharArray(), 0, "unpledged assets".length(), 60, d.height - LEGEND_BOX_Y + 78 );
-		}
-	}
-
-	public interface INetworkSelectionObserver {
-		public void agentSeleted( AgentSelectedEvent agentSelectedEvent );
-		public void connectionSeleted( ConnectionSelectedEvent connSelectedEvent );
-		
-	}
-	
-	public class SelectionEvent {
-		private boolean ctrlDownFlag;
-		
-		public SelectionEvent( boolean b ) {
-			this.ctrlDownFlag = b;
-		}
-
-		public boolean isCtrlDownFlag() {
-			return ctrlDownFlag;
-		}
-	}
-	
-	public class AgentSelectedEvent extends SelectionEvent {
-		private Agent selectedAgent;
-		
-		public AgentSelectedEvent( boolean b, Agent a ) {
-			super(b);
-
-			this.selectedAgent = a;
-		}
-
-		public Agent getSelectedAgent() {
-			return selectedAgent;
-		}
-	}
-	
-	public class ConnectionSelectedEvent extends SelectionEvent {
-		private AgentConnection selectedConnection;
-		
-		public ConnectionSelectedEvent(boolean b, AgentConnection c ) {
-			super(b);
-			
-			this.selectedConnection = c;
-		}
-
-		public AgentConnection getSelectedConnection() {
-			return selectedConnection;
-		}
-	}
-	
-	@SuppressWarnings("serial")
-	public class NetworkRenderPanel extends JPanel {
-		private boolean keepTXHighlighted;
-		private VisualizationViewer<Agent, AgentConnection> visualizationViewer;
-		private Class<? extends Layout<Agent, AgentConnection>> layoutClazz;
-		private INetworkSelectionObserver selectionObserver;
-		
-		private final Shape EDGE_SHAPE = AffineTransform.getScaleInstance(3, 3).createTransformedShape( new Ellipse2D.Double(-5, -5, 10, 10 ) );
-		private final BasicStroke HIGHLIGHTED_CONNECTION = new BasicStroke( 3.0f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, 10.0f );
-		private final BasicStroke NORMAL_CONNECTION = new BasicStroke( 1.0f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, 10.0f );
-	
-		private NetworkRenderPanel( Class<? extends Layout<Agent, AgentConnection>> layoutClazz, INetworkSelectionObserver selectionObserver ) {
-			this.layoutClazz = layoutClazz;
-			this.selectionObserver = selectionObserver;
-			this.keepTXHighlighted = false;
-			this.initVisualizationViewer();
-		}
-		
-		public void setKeepTXHighlighted( boolean flag ) {
-			this.keepTXHighlighted = flag;
-		}
-		
-		private void initVisualizationViewer() {
-			final DecimalFormat df = new DecimalFormat("#.##");
-			Layout<Agent, AgentConnection> layout = this.createLayout();
-			
-			this.visualizationViewer = new VisualizationViewer<Agent, AgentConnection>( layout );
-			
-			this.visualizationViewer.getRenderer().getVertexLabelRenderer().setPosition(Renderer.VertexLabel.Position.CNTR);
-			this.visualizationViewer.getRenderContext().setVertexLabelTransformer(new Transformer<Agent, String>() {
-				@Override
-				public String transform( Agent arg ) {	
-					return "" + df.format( arg.getH() );
-				}
-			});
-
-			this.visualizationViewer.getRenderContext().setVertexFillPaintTransformer( new Transformer<Agent, Paint>() {
-				@Override
-				public Paint transform( Agent arg ) {
-					if ( arg.isHighlighted() )
-						return Color.BLUE;
-					
-					return Color.RED;
-				}
-			});
-			
-			this.visualizationViewer.getRenderContext().setVertexShapeTransformer(new Transformer<Agent, Shape>(){
-				@Override
-				public Shape transform(Agent arg0) {
-	                return NetworkRenderPanel.this.EDGE_SHAPE;
-				}
-	        });
-			
-			this.visualizationViewer.getRenderContext().setEdgeDrawPaintTransformer( new Transformer<AgentConnection, Paint>() {
-				@Override
-				public Paint transform(AgentConnection arg) {
-					if ( false == NetworkRenderPanel.this.keepTXHighlighted && arg.isHighlighted() )
-						return Color.GREEN;
-					
-					// when weight is different from DOUBLE.MAX then this edge has a successful TX
-					if ( NetworkRenderPanel.this.keepTXHighlighted && arg.getWeight() != Double.MAX_VALUE )
-						return Color.GREEN;
-					
-					return Color.BLACK;
-				}
-			});
-			
-			this.visualizationViewer.getRenderContext().setEdgeStrokeTransformer( new Transformer<AgentConnection, Stroke>() {
-				@Override
-				public Stroke transform(AgentConnection arg) {
-					if ( arg.isHighlighted() )
-						return HIGHLIGHTED_CONNECTION;
-					
-					return NORMAL_CONNECTION;
-				}
-			});
-			
-			this.visualizationViewer.setForeground(Color.white);
-			
-			this.visualizationViewer.addMouseListener(new MouseAdapter() {
-				@Override
-				public void mousePressed(MouseEvent arg) {
-					GraphElementAccessor<Agent, AgentConnection> pickSupport = visualizationViewer.getPickSupport();
-			        if(pickSupport != null) {
-			        	Agent a = pickSupport.getVertex(visualizationViewer.getGraphLayout(), arg.getX(), arg.getY());
-			            if(a != null) {
-			            	NetworkRenderPanel.this.selectionObserver.agentSeleted( new AgentSelectedEvent( arg.isControlDown(), a) );
-			            } else {
-			            	AgentConnection conn = pickSupport.getEdge(visualizationViewer.getGraphLayout(), arg.getX(), arg.getY());
-			            	if ( null != conn ) {
-			            		NetworkRenderPanel.this.selectionObserver.connectionSeleted( new ConnectionSelectedEvent( arg.isControlDown(), conn ) );
-			            	}
-			            }
-			        }
-				}
-	        } );
-			
-			this.add(this.visualizationViewer);
-		}
-		
-		private Layout<Agent, AgentConnection> createLayout() {
-			Layout<Agent, AgentConnection> layout = null;
-			
-			try {
-				Constructor<? extends Layout<Agent, AgentConnection>> constr = this.layoutClazz.getConstructor( Graph.class );
-				layout = constr.newInstance( graph );
-				
-			} catch (InstantiationException | IllegalAccessException | NoSuchMethodException | SecurityException | IllegalArgumentException | InvocationTargetException e) {
-				e.printStackTrace();
-				return null;
-			}
-			
-			if ( this.layoutClazz.equals( CircleLayout.class ) ) {
-				( ( CircleLayout<Agent, AgentConnection> ) layout ).setVertexOrder(new Comparator<Agent>() {
-					@Override
-					public int compare(Agent arg0, Agent arg1 ) {
-						return arg0.getId() - arg1.getId();
-					}			
-				} );
-			}
-			
-	        return layout;
-		}
 	}
 }
