@@ -11,9 +11,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.concurrent.locks.Condition;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -99,7 +96,7 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 	private SimulationThread simulationThread;
 	
 	private static final DecimalFormat agentHFormat = new DecimalFormat("0.00");
-	private static final DecimalFormat tradingValuesFormat = new DecimalFormat("0.0000");
+	private static final DecimalFormat tradingValuesFormat = new DecimalFormat("0.000000");
 	
 	private Agent selectedAgent;
 	
@@ -151,6 +148,7 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 		this.spinnerChangedTimer.schedule( task, 500 );
 	}
 	
+	@SuppressWarnings("rawtypes")
 	private void createControlsPanel() {
 		// instancing of components ////////////////////////////////////
 		GridBagConstraints c = new GridBagConstraints();
@@ -268,6 +266,13 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 			public void actionPerformed(ActionEvent e) {
 				MainWindow.this.resetNetworkHighlights();
 				MainWindow.this.networkPanel.repaint();
+
+				MainWindow.this.nextTxButton.setEnabled( false );
+				
+				MainWindow.this.pauseButton.setSelected( false );
+				MainWindow.this.pauseButton.setText( "Pause" );
+				
+				MainWindow.this.restoreTXHistoryList();			
 
 				MainWindow.this.simulationThread.nextTX();
 			}
@@ -410,6 +415,40 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 		this.getContentPane().add( txInfoPanel, c );
 	}
 	
+	void restoreTXHistoryList() {
+		if ( this.txTableModel.getRowCount() != this.successfulTx.size() ) {
+			this.txHistoryTable.clearSelection();
+			
+			this.txTableModel.setRowCount( 0 );
+			this.txHistoryTable.revalidate();
+			
+			for ( Transaction tx : this.successfulTx ) {
+				this.addTxToTable( tx );
+			}
+		}
+	}
+	
+	void addSuccessfulTX( Transaction tx ) {
+		this.agentWealthPanel.repaint();
+		
+		this.successfulTx.add( tx );
+		this.addTxToTable( tx );
+
+		this.highlightTx( tx );
+	}
+	
+	void updateTXCounter( int succTx, int noSuccTX, int totalTX ) {
+		this.succTxCounterLabel.setText( "" + succTx );
+		this.noSuccTxCounterLabel.setText( "" + noSuccTX );
+		this.totalTxCounterLabel.setText( "" + totalTX );
+	}
+	
+	void nextTXFinished() {
+		this.nextTxButton.setEnabled( true );
+		this.pauseButton.setSelected( true );
+		this.pauseButton.setText( "Paused" );
+	}
+	
 	@SuppressWarnings("unchecked")
 	private void createLayout() {
 		Class<? extends Layout<Agent, AgentConnection>> layout = (Class<? extends Layout<Agent, AgentConnection>>) CircleLayout.class;
@@ -491,7 +530,6 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 	}
 
 	private void createAgents() {
-		// retrieve params from GUI
 		int agentCount = (int) this.agentCountSpinner.getValue();
 		double assetPrice = 0.6;
 		double consumEndow = 1.0;
@@ -499,8 +537,8 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 		int topologyIndex = this.topologySelection.getSelectedIndex();
 		int optimismFunctionIndex = this.optimismSelection.getSelectedIndex();
 		
-		double[] J = new double[] {0.2};
-		double[] initialLoanPrices = new double[] {0.2};
+		double[] J = new double[] { 0.2 };
+		double[] initialLoanPrices = new double[] { 0.2 };
 		
 		// create asset-market
 		this.asset = new Asset( assetPrice, agentCount * assetEndow );
@@ -523,7 +561,7 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 						double halfAgentCount = agentCount / 2.0;
 						double totalArea = ( agentCount * halfAgentCount ) / 2.0;
 						double halfArea = totalArea / 2.0;
-						double agentArea = ( ( ( halfAgentCount - i ) * ( halfAgentCount - i ) ) / 2.0 );
+						double agentArea = ( ( ( halfAgentCount - this.i ) * ( halfAgentCount - this.i ) ) / 2.0 );
 						
 						if ( i <= halfAgentCount ) {
 							agentArea = halfArea - agentArea;
@@ -536,9 +574,9 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 					}
 					
 					//a = new Agent( i, optimism, consumEndow, assetEndow, asset );
-					a = new AgentWithLoans( i, optimism, consumEndow, assetEndow, loans, asset );
+					a = new AgentWithLoans( this.i, optimism, consumEndow, assetEndow, loans, asset );
 					
-					i++;
+					this.i++;
 				}
 				
 				return a;
@@ -614,12 +652,12 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 			this.pauseButton.setEnabled( true );
 			this.pauseButton.setVisible( true );
 			
-			Auction simulation = new AuctionWithLoans( MainWindow.this.agents, MainWindow.this.asset ); // or new AuctionWithLoans
-			simulation.init();
+			Auction auction = new AuctionWithLoans( this.agents, this.asset );
+			auction.init();
 			
 			// let simulation run in a separate thread to prevent blocking of gui
-			this.simulationThread = new SimulationThread( simulation );
-			this.simulationThread.start();
+			this.simulationThread = new SimulationThread( auction, this );
+			this.simulationThread.startSimulation();
 			
 			this.networkPanel.repaint();
 			this.agentWealthPanel.repaint();
@@ -627,14 +665,6 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 		// simulation is running
 		} else {
 			this.simulationThread.stopSimulation();
-			
-			try {
-				// wait for thread to join
-				this.simulationThread.join();
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-			
 			this.simulationThread = null;
 
 			// simulation has finished => enable controls
@@ -703,19 +733,6 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 		}
 	}
 	
-	private void restoreTXHistoryList() {
-		if ( this.txTableModel.getRowCount() != this.successfulTx.size() ) {
-			this.txHistoryTable.clearSelection();
-			
-			this.txTableModel.setRowCount( 0 );
-			this.txHistoryTable.revalidate();
-			
-			for ( Transaction tx : this.successfulTx ) {
-				this.addTxToTable( tx );
-			}
-		}
-	}
-
 	private void addTxToTable( Transaction tx ) {
 		//"TX", "Buyer", "Seller", "Asset Amount", "Asset Price", "Loan Amount", "Loan Price", "Loan Type"
 		
@@ -753,249 +770,6 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 				a2.setHighlighted( true );
 				
 				MainWindow.this.addTxToTable( tx );
-			}
-		}
-	}
-	
-	private enum SimulationState {
-		EXIT,
-		RUNNING,
-		PAUSED,
-		NEXT_TX;
-	}
-	
-	private class SimulationThread extends Thread {
-		private Lock lock = new ReentrantLock();
-		private Condition nextTXCondition = lock.newCondition();
-		private Condition simulationCondition = lock.newCondition();
-		  
-		private Auction simulation;
-
-		private int succTX;
-		private int totalTX;
-		private int noSuccTXCounter;
-		
-		private Transaction lastSuccTX;
-		
-		private Thread nextTxThread;
-		
-		private SimulationState state;
-
-		public SimulationThread( Auction simulation ) {
-			this.simulation = simulation;
-			
-			// start in pause-mode: thread must block bevore doing first transaction
-			this.state = SimulationState.PAUSED;
-			
-			// give nice name for debugging purposes
-			this.setName( "Simulation Thread" );
-			
-			this.updateTXCounter();
-		}
-
-		public boolean isPause() {
-			return this.state == SimulationState.PAUSED;
-		}
-		
-		// NOTE: must be called from other thread than SimulationThread
-		public void stopSimulation() {
-			// simulation-thread is running and no nextTX-thread exists, just switch state to exit
-			if ( SimulationState.RUNNING == this.state ) {
-				this.state = SimulationState.EXIT;
-				
-			// simulation-thread is running but need to stop nextTX-thread
-			} else if ( SimulationState.NEXT_TX == this.state ) {
-				// this will lead the simulation-thread to exit
-				this.state = SimulationState.EXIT;
-				// if next-tx thread is active, it will be blocking on its signal, interrupt it
-				this.interruptNextTXThread();
-				
-			// simulation-thread is blocked, switch state and signal to continue
-			} else if ( SimulationState.PAUSED == this.state ) {
-				MainWindow.this.restoreTXHistoryList();
-				
-				// signal the thread to exit
-				this.lock.lock();
-				this.state = SimulationState.EXIT;
-				this.simulationCondition.signal();
-				this.lock.unlock();
-			}
-		}
-
-		// NOTE: must be called from other thread than SimulationThread
-		public void togglePause() {
-			// simulation-thread is running, no nextTX-thread exists, just switch to pause-state
-			if ( SimulationState.RUNNING == this.state ) {
-				// this will lead the simulation-thread to run into await of its signal and thus freeing its lock
-				this.state = SimulationState.PAUSED;
-				
-				// simulation-thread is running but need to stop nextTX-thread
-			} else if ( SimulationState.NEXT_TX == this.state ) {
-				// this will lead the simulation-thread to run into await of its signal and thus freeing its lock
-				this.state = SimulationState.PAUSED;
-				// if next-tx thread is active, it will be blocking on its signal, interrupt it
-				this.interruptNextTXThread();
-				
-			// simulation-thread is blocked, switch state and signal to continue
-			} else if ( SimulationState.PAUSED == this.state ) {
-				// switch to running
-				MainWindow.this.restoreTXHistoryList();
-				
-				// signal the simulation-thread to resume
-				this.lock.lock();
-				this.state = SimulationState.RUNNING;
-				this.simulationCondition.signal();
-				this.lock.unlock();
-			}
-		}
-		
-		// NOTE: must be called from other thread than SimulationThread
-		public void nextTX() {
-			// switch state to next-tx (will always be already in paused-mode at this point, next-tx can only be reached from paused-mode)
-			this.state = SimulationState.NEXT_TX;
-			
-			MainWindow.this.nextTxButton.setEnabled( false );
-			
-			MainWindow.this.pauseButton.setSelected( false );
-			MainWindow.this.pauseButton.setText( "Pause" );
-			
-			MainWindow.this.restoreTXHistoryList();			
-
-			// PROBLEM: this call could block for a very long time or forever because 
-			// it could take a very long time or forever for the next successful transaction to occur
-			// => need another thread otherwise would block the GUI-thread!
-			this.nextTxThread = new Thread( new Runnable() {
-				@Override
-				public void run() {
-					// need to lock section bevore we can signal and to prevent concurrent modification of data
-					SimulationThread.this.lock.lock();
-					
-					try {
-						// (re-) set to null to wait for successful TX
-						SimulationThread.this.lastSuccTX = null;
-						
-						// signal the blocking simulation-thread because nextTX can only be called from pause-state 
-						// thus in pause-state simulation-thread is blocking already
-						SimulationThread.this.simulationCondition.signal();
-
-						// wait blocking till either a next successful TX has been found OR the state has changed 
-						// if successful TX has been found: simulation-thread will set lastSuccTX to the given TX and switch state back to pause and give signal
-						// if state-switch occured through GUI e.g. back to pause or exit, signal came from GUI-Thread and lastSuccTX will be null
-						while ( null == SimulationThread.this.lastSuccTX || SimulationThread.this.state == SimulationState.NEXT_TX ) {
-							SimulationThread.this.nextTXCondition.await();
-						}
-						
-					} catch (InterruptedException e) {
-						if ( SimulationThread.this.state == SimulationState.NEXT_TX ) {
-							e.printStackTrace();
-						}
-						
-					} finally {
-						SimulationThread.this.lock.unlock();
-						SimulationThread.this.nextTxThread = null;
-
-						// running in thread => need to update SWING through SwingUtilities.invokeLater
-						SwingUtilities.invokeLater( new Runnable() {
-							@Override
-							public void run() {
-								MainWindow.this.nextTxButton.setEnabled( true );
-								MainWindow.this.pauseButton.setSelected( true );
-								MainWindow.this.pauseButton.setText( "Paused" );
-
-							}
-						});
-					}
-				}
-			});
-			
-			// give nice name for debugging purposes
-			this.nextTxThread.setName( "Next-TX Thread" );
-			this.nextTxThread.start();
-		}
-		
-		@Override
-		public void run() {
-			// run this thread until simulation-state tells to exit
-			while ( SimulationState.EXIT != this.state ) {
-				// need to lock section bevore we can signal and to prevent concurrent modification of data
-				this.lock.lock();
-				
-				try {
-					// wait blocking while in pause mode. GUI-Thread or NextTX-thread will change state and give signal
-					while ( SimulationState.PAUSED == this.state ) {
-						this.simulationCondition.await();
-					}
-
-					// switched to exit after signaled, don't calculate a transaction anymore, exit immediately
-					if ( SimulationState.EXIT == this.state ) {
-						return;
-					}
-					
-					// count total number of TX so far
-					this.totalTX++;
-					
-					// execute the next transaction
-					Transaction tx = this.simulation.executeSingleTransaction();
-					// tx was successful
-					if ( tx.wasSuccessful() ) {
-						// count number of successful TX so far
-						this.succTX++;
-						// reset counter of how many unsuccessful TX in a row occured
-						this.noSuccTXCounter = 0;
-
-						// we are in nextTX-state and found one successful TX => switch back to paused-state
-						if ( SimulationState.NEXT_TX == this.state ) {
-							// found successfull transaction: store in consumer-data to 
-							this.lastSuccTX = tx;
-							// next-tx can only happen in paused-state, switch back to paused when finished
-							this.state = SimulationState.PAUSED;
-							// signal the waiting GUI/next-TX-thread (if any)
-							this.nextTXCondition.signalAll();
-						}
-
-					// not successful
-					} else {
-						// count how many unsuccessful TX in a row occured
-						this.noSuccTXCounter++;
-					}
-					
-					// running in thread => need to update SWING through SwingUtilities.invokeLater
-					SwingUtilities.invokeLater( new Runnable() {
-						@Override
-						public void run() {
-							// update gui if TX was successful
-							if ( tx.wasSuccessful() ) {
-								MainWindow.this.agentWealthPanel.repaint();
-								
-								MainWindow.this.successfulTx.add( tx );
-								MainWindow.this.addTxToTable( tx );
-		
-								MainWindow.this.highlightTx( tx );
-							}
-	
-							SimulationThread.this.updateTXCounter();
-						}
-					} );
-					
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				} finally {
-					// need to unlock
-					this.lock.unlock();
-				}
-			}
-		}
-		
-		private void updateTXCounter() {
-			MainWindow.this.succTxCounterLabel.setText( "" + this.succTX );
-			MainWindow.this.noSuccTxCounterLabel.setText( "" + this.noSuccTXCounter );
-			MainWindow.this.totalTxCounterLabel.setText( "" + this.totalTX );
-		}
-		
-		private void interruptNextTXThread() {
-			// if next-tx thread exists, interrupt it because it is blocked waiting
-			if ( null != this.nextTxThread ) {
-				this.nextTxThread.interrupt();
 			}
 		}
 	}
