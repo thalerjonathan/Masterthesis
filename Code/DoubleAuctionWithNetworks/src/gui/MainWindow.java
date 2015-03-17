@@ -67,6 +67,7 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 	private JButton recreateButton;
 	private JButton nextTxButton;
 	private JToggleButton pauseButton;
+	private JToggleButton toggleNetworkPanelButton;
 	
 	private NetworkRenderPanel networkPanel;
 	private JPanel agentWealthPanel;
@@ -94,12 +95,17 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 	
 	private SimulationThread simulationThread;
 	
-	private static final DecimalFormat agentHFormat = new DecimalFormat("0.000");
-	private static final DecimalFormat tradingValuesFormat = new DecimalFormat("0.000000");
-	
 	private Agent selectedAgent;
 	
 	private List<Transaction> successfulTx;
+	
+	private long lastRepaintTime;
+	
+	private static final DecimalFormat AGENT_H_FORMAT = new DecimalFormat("0.000");
+	private static final DecimalFormat TRADING_VALUES_FORMAT = new DecimalFormat("0.000000");
+	
+	private static final int AGENTS_COUNT_HIDE_NETWORK_PANEL = 50;
+	private static final int REPAINT_WEALTH_WHENRUNNING_INTERVAL = 1000;
 	
 	public MainWindow() {
 		super("Continuous Double-Auctions");
@@ -161,7 +167,7 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 		this.layoutSelection = new JComboBox<String>( new String[] { "Circle", "KK" } );
 		this.optimismSelection = new JComboBox<String>( new String[] { "Linear", "Triangle"  } );
 		
-		this.agentCountSpinner = new JSpinner( new SpinnerNumberModel( 30, 10, 100, 1 ) );
+		this.agentCountSpinner = new JSpinner( new SpinnerNumberModel( 1000, 10, 1000, 10 ) );
 
 		JLabel succTxCounterInfoLabel = new JLabel( "Successful TX: " );
 		JLabel noSuccTxCounterInfoLabel = new JLabel( "No Succ. TX: " );
@@ -183,6 +189,7 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 		this.simulateButton = new JButton( "Start Simulation" );
 		this.nextTxButton = new JButton( "Next TX" );
 		this.pauseButton = new JToggleButton ( "Run" );
+		this.toggleNetworkPanelButton = new JToggleButton ( "Hide Network" );
 		
 		this.keepSuccTXHighCheck = new JCheckBox( "Keep TXs Highlighted" );
 		this.keepSuccTXHighCheck.addActionListener( new ActionListener() {
@@ -192,8 +199,10 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 					return;
 				}
 				
-				MainWindow.this.networkPanel.setKeepTXHighlighted( MainWindow.this.keepSuccTXHighCheck.isSelected() );
-				MainWindow.this.networkPanel.repaint();
+				if ( null != MainWindow.this.networkPanel ) {
+					MainWindow.this.networkPanel.setKeepTXHighlighted( MainWindow.this.keepSuccTXHighCheck.isSelected() );
+					MainWindow.this.networkPanel.repaint();
+				}
 			}
 		});
 		
@@ -270,7 +279,9 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				MainWindow.this.resetNetworkHighlights();
-				MainWindow.this.networkPanel.repaint();
+				
+				if ( null != MainWindow.this.networkPanel )
+					MainWindow.this.networkPanel.repaint();
 
 				MainWindow.this.nextTxButton.setEnabled( false );
 				
@@ -298,6 +309,19 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 			}
 		});
 		
+		this.toggleNetworkPanelButton.addActionListener( new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if ( MainWindow.this.toggleNetworkPanelButton.isSelected() ) {
+					MainWindow.this.toggleNetworkPanelButton.setText( "Show Network" );
+				} else {
+					MainWindow.this.toggleNetworkPanelButton.setText( "Hide Network" );
+				}
+				
+				MainWindow.this.createLayout();
+			}
+		});
+		
 		this.layoutSelection.addActionListener( new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
@@ -317,6 +341,7 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 		this.agentCountSpinner.addChangeListener( this );
 
 		// adding components ////////////////////////////////////
+		controlsPanel.add( this.toggleNetworkPanelButton );
 		controlsPanel.add( this.recreateButton );
 		controlsPanel.add( this.agentCountSpinner );
 		controlsPanel.add( this.topologySelection );
@@ -433,9 +458,13 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 		}
 	}
 	
-	void addSuccessfulTX( Transaction tx ) {
-		this.agentWealthPanel.repaint();
-		
+	void addSuccessfulTX( Transaction tx, boolean forceRedraw ) {
+		long currMillis = System.currentTimeMillis();
+		if ( MainWindow.REPAINT_WEALTH_WHENRUNNING_INTERVAL < currMillis - this.lastRepaintTime || forceRedraw ) {
+			this.agentWealthPanel.repaint();
+			this.lastRepaintTime = currMillis;
+		}
+
 		this.successfulTx.add( tx );
 		this.addTxToTable( tx );
 
@@ -452,93 +481,6 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 		this.nextTxButton.setEnabled( true );
 		this.pauseButton.setSelected( true );
 		this.pauseButton.setText( "Paused" );
-	}
-	
-	@SuppressWarnings("unchecked")
-	private void createLayout() {
-		Class<? extends Layout<Agent, AgentConnection>> layout = (Class<? extends Layout<Agent, AgentConnection>>) CircleLayout.class;
-		
-		if ( 1 == this.layoutSelection.getSelectedIndex() ) {
-			layout = (Class<? extends Layout<Agent, AgentConnection>>) KKLayout.class;
-		}
-		
-		// remove network-visualization panel when already there
-		if ( null != this.networkPanel ) {
-			this.visualizationPanel.remove( MainWindow.this.networkPanel );
-		}
-		
-		this.networkPanel = MainWindow.this.agents.getNetworkRenderingPanel( layout, new INetworkSelectionObserver() {
-			@Override
-			public void agentSeleted( AgentSelectedEvent agentSelectedEvent ) {
-				if ( null == MainWindow.this.simulationThread || false == MainWindow.this.simulationThread.isPause() ) {
-					return;
-				}
-				
-				MainWindow.this.resetNetworkHighlights();
-				MainWindow.this.txTableModel.setRowCount( 0 );
-				MainWindow.this.txHistoryTable.revalidate();
-
-				if ( agentSelectedEvent.isCtrlDownFlag() && null != MainWindow.this.selectedAgent ) {
-					MainWindow.this.selectedAgent.setHighlighted( true );
-					agentSelectedEvent.getSelectedAgent().setHighlighted( true );
-					
-					List<AgentConnection> path = MainWindow.this.agents.getPath( MainWindow.this.selectedAgent, agentSelectedEvent.getSelectedAgent() );
-					// returns null when there is no path of successful transactions
-					if ( null != path ) {
-						for ( AgentConnection c : path ) {
-							c.setHighlighted( true );
-							MainWindow.this.addTXOfConnection( c );
-						}
-					}
-					
-				} else {
-					Agent a1 = agentSelectedEvent.getSelectedAgent();
-
-					for ( int i = 0; i < MainWindow.this.successfulTx.size(); ++i ) {
-						Agent a2 = null;
-						Transaction tx = MainWindow.this.successfulTx.get( i );
-
-						if ( a1 == tx.getMatchingAskOffer().getAgent() ) {
-							a2 = tx.getMatchingBidOffer().getAgent();
-						} else if ( a1 == tx.getMatchingBidOffer().getAgent() ) {
-							a2 = tx.getMatchingAskOffer().getAgent();
-						}
-						
-						if ( null != a2 ) {
-							MainWindow.this.addTxToTable( tx );
-							MainWindow.this.agents.getConnection( a1, a2 ).setHighlighted( true );
-						}
-					}
-					
-					MainWindow.this.selectedAgent = a1;
-					MainWindow.this.selectedAgent.setHighlighted( true );
-				}
-				
-				MainWindow.this.networkPanel.repaint();
-			}
-
-			@Override
-			public void connectionSeleted( ConnectionSelectedEvent connSelectedEvent ) {
-				MainWindow.this.resetNetworkHighlights();
-				MainWindow.this.txTableModel.setRowCount( 0 );
-				MainWindow.this.txHistoryTable.revalidate();
-
-				connSelectedEvent.getSelectedConnection().setHighlighted( true );
-				MainWindow.this.addTXOfConnection( connSelectedEvent.getSelectedConnection() );
-				
-				MainWindow.this.networkPanel.repaint();
-			}
-		} );
-		
-		GridBagConstraints c = new GridBagConstraints();
-		c.fill = GridBagConstraints.BOTH;
-		c.weightx = 0.5;
-		c.gridwidth = 1;
-		c.gridx = 0;
-		c.gridy = 0;
-		
-		this.visualizationPanel.add( MainWindow.this.networkPanel, c );
-		this.revalidate();
 	}
 
 	private void createAgents() {
@@ -615,16 +557,25 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 		// if agent-wealth-visualisation panel is already there, remove it bevore adding a new instance
 		if ( null != this.agentWealthPanel ) {
 			this.visualizationPanel.remove( this.agentWealthPanel );
+			this.agentWealthPanel = null;
 		}
-		
+
 		this.agentWealthPanel = this.agents.getWealthVisualizer();
 		
 		GridBagConstraints c = new GridBagConstraints();
 		c.fill = GridBagConstraints.BOTH;
 		c.weightx = 0.5;
 		c.gridwidth = 1;
+		c.gridheight = 1;
+		c.weighty = 1.0;
 		c.gridx = 1;
 		c.gridy = 0;
+		
+		if ( this.agents.size() > MainWindow.AGENTS_COUNT_HIDE_NETWORK_PANEL ) {
+			c.weightx = 1.0;
+			c.gridx = 0;
+		}
+		
 		this.visualizationPanel.add( this.agentWealthPanel, c );
 
 		// if there are still items in table-model, delete them
@@ -635,6 +586,114 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 		
 		// need to create the layout too, will do the final pack-call on this frame
 		this.createLayout();
+	}
+	
+	@SuppressWarnings("unchecked")
+	private void createLayout() {
+		Class<? extends Layout<Agent, AgentConnection>> layout = (Class<? extends Layout<Agent, AgentConnection>>) CircleLayout.class;
+		
+		if ( 1 == this.layoutSelection.getSelectedIndex() ) {
+			layout = (Class<? extends Layout<Agent, AgentConnection>>) KKLayout.class;
+		}
+		
+		// remove network-visualization panel when already there
+		if ( null != this.networkPanel ) {
+			this.visualizationPanel.remove( MainWindow.this.networkPanel );
+			this.networkPanel = null;
+		}
+		
+		this.toggleNetworkPanelButton.setVisible( this.agents.size() <= MainWindow.AGENTS_COUNT_HIDE_NETWORK_PANEL );
+
+		// don't show network-panel when too many agents
+		if ( this.agents.size() > MainWindow.AGENTS_COUNT_HIDE_NETWORK_PANEL || 
+				this.toggleNetworkPanelButton.isSelected() ) {
+			
+			this.keepSuccTXHighCheck.setVisible( false );
+			this.recreateButton.setVisible( false );
+			this.layoutSelection.setVisible( false );
+			
+			this.revalidate();
+			return;
+		}
+
+		this.recreateButton.setVisible( this.agents.isRandomNetwork() );
+		this.layoutSelection.setVisible( true );
+		this.keepSuccTXHighCheck.setVisible( true );
+		
+		this.networkPanel = MainWindow.this.agents.getNetworkRenderingPanel( layout, new INetworkSelectionObserver() {
+			@Override
+			public void agentSeleted( AgentSelectedEvent agentSelectedEvent ) {
+				if ( null == MainWindow.this.simulationThread || false == MainWindow.this.simulationThread.isPause() ) {
+					return;
+				}
+				
+				MainWindow.this.resetNetworkHighlights();
+				MainWindow.this.txTableModel.setRowCount( 0 );
+				MainWindow.this.txHistoryTable.revalidate();
+
+				if ( agentSelectedEvent.isCtrlDownFlag() && null != MainWindow.this.selectedAgent ) {
+					MainWindow.this.selectedAgent.setHighlighted( true );
+					agentSelectedEvent.getSelectedAgent().setHighlighted( true );
+					
+					List<AgentConnection> path = MainWindow.this.agents.getPath( MainWindow.this.selectedAgent, agentSelectedEvent.getSelectedAgent() );
+					// returns null when there is no path of successful transactions
+					if ( null != path ) {
+						for ( AgentConnection c : path ) {
+							c.setHighlighted( true );
+							MainWindow.this.addTXOfConnection( c );
+						}
+					}
+					
+				} else {
+					Agent a1 = agentSelectedEvent.getSelectedAgent();
+
+					for ( int i = 0; i < MainWindow.this.successfulTx.size(); ++i ) {
+						Agent a2 = null;
+						Transaction tx = MainWindow.this.successfulTx.get( i );
+
+						if ( a1 == tx.getMatchingAskOffer().getAgent() ) {
+							a2 = tx.getMatchingBidOffer().getAgent();
+						} else if ( a1 == tx.getMatchingBidOffer().getAgent() ) {
+							a2 = tx.getMatchingAskOffer().getAgent();
+						}
+						
+						if ( null != a2 ) {
+							MainWindow.this.addTxToTable( tx );
+							MainWindow.this.agents.getConnection( a1, a2 ).setHighlighted( true );
+						}
+					}
+					
+					MainWindow.this.selectedAgent = a1;
+					MainWindow.this.selectedAgent.setHighlighted( true );
+				}
+				
+				if ( null != MainWindow.this.networkPanel )
+					MainWindow.this.networkPanel.repaint();
+			}
+
+			@Override
+			public void connectionSeleted( ConnectionSelectedEvent connSelectedEvent ) {
+				MainWindow.this.resetNetworkHighlights();
+				MainWindow.this.txTableModel.setRowCount( 0 );
+				MainWindow.this.txHistoryTable.revalidate();
+
+				connSelectedEvent.getSelectedConnection().setHighlighted( true );
+				MainWindow.this.addTXOfConnection( connSelectedEvent.getSelectedConnection() );
+				
+				if ( null != MainWindow.this.networkPanel )
+					MainWindow.this.networkPanel.repaint();
+			}
+		} );
+		
+		GridBagConstraints c = new GridBagConstraints();
+		c.fill = GridBagConstraints.BOTH;
+		c.weightx = 0.5;
+		c.gridwidth = 1;
+		c.gridx = 0;
+		c.gridy = 0;
+		
+		this.visualizationPanel.add( MainWindow.this.networkPanel, c );
+		this.revalidate();
 	}
 	
 	private void toggleSimulation() {
@@ -678,7 +737,9 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 			this.simulationThread = new SimulationThread( auction, this );
 			this.simulationThread.startSimulation();
 			
-			this.networkPanel.repaint();
+			if ( null != MainWindow.this.networkPanel )
+				this.networkPanel.repaint();
+			
 			this.agentWealthPanel.repaint();
 			
 		// simulation is running
@@ -699,6 +760,11 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 	}
 	
 	private void highlightTx( Transaction tx ) {
+		// no need for anything highlighting-related when no network-panel available
+		if ( null == MainWindow.this.networkPanel ) {
+			return;
+		}
+	
 		this.resetNetworkHighlights();
 		
 		AskOffering askOffering = tx.getMatchingAskOffer();
@@ -717,22 +783,22 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 		conn.setHighlighted( true );
 		a1.setHighlighted( true );
 		a2.setHighlighted( true );
-		
+
 		this.networkPanel.repaint();
 		
-		this.finalAssetAskLabel.setText( tradingValuesFormat.format( tx.getFinalAskAssetPrice() ) );
-		this.finalAssetBidLabel.setText( tradingValuesFormat.format( tx.getFinalBidAssetPrice() ) );
+		this.finalAssetAskLabel.setText( TRADING_VALUES_FORMAT.format( tx.getFinalAskAssetPrice() ) );
+		this.finalAssetBidLabel.setText( TRADING_VALUES_FORMAT.format( tx.getFinalBidAssetPrice() ) );
 		
 		String finalLoanAskLabelText = "-";
 		String finalLoanBidLabelText = "-";
 		
 		if ( tx instanceof TransactionWithLoans ) {
 			if ( askOffering instanceof AskOfferingWithLoans ) {
-				finalLoanAskLabelText = tradingValuesFormat.format( ( (TransactionWithLoans) tx ).getFinalAskLoanPrice() );
+				finalLoanAskLabelText = TRADING_VALUES_FORMAT.format( ( (TransactionWithLoans) tx ).getFinalAskLoanPrice() );
 			}
 			
 			if ( bidOffering instanceof BidOfferingWithLoans ) {
-				finalLoanBidLabelText = tradingValuesFormat.format( ( (TransactionWithLoans) tx ).getFinalBidLoanPrice() );
+				finalLoanBidLabelText = TRADING_VALUES_FORMAT.format( ( (TransactionWithLoans) tx ).getFinalBidLoanPrice() );
 			}
 		}
 		
@@ -758,21 +824,21 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 		if ( tx.getMatchingAskOffer() instanceof AskOfferingWithLoans ) {
 			this.txTableModel.addRow( new Object[] {
 					tx.getTransNum(),
-					agentHFormat.format( tx.getFinalAskH() ),
-					agentHFormat.format( tx.getFinalBidH() ),
-					tradingValuesFormat.format( tx.getAssetAmount() ),
-					tradingValuesFormat.format( tx.getAssetPrice() ),
-					tradingValuesFormat.format( ( ( TransactionWithLoans ) tx ).getLoanAmount() ),
-					tradingValuesFormat.format( ( ( TransactionWithLoans ) tx ).getLoanPrice() ),
+					AGENT_H_FORMAT.format( tx.getFinalAskH() ),
+					AGENT_H_FORMAT.format( tx.getFinalBidH() ),
+					TRADING_VALUES_FORMAT.format( tx.getAssetAmount() ),
+					TRADING_VALUES_FORMAT.format( tx.getAssetPrice() ),
+					TRADING_VALUES_FORMAT.format( ( ( TransactionWithLoans ) tx ).getLoanAmount() ),
+					TRADING_VALUES_FORMAT.format( ( ( TransactionWithLoans ) tx ).getLoanPrice() ),
 					Integer.toString( ( ( TransactionWithLoans ) tx ).getLoanType() ) } );
 			
 		} else {
 			this.txTableModel.addRow( new Object[] {
 					tx.getTransNum(),
-					agentHFormat.format( tx.getFinalAskH() ),
-					agentHFormat.format( tx.getFinalBidH() ),
-					tradingValuesFormat.format( tx.getAssetAmount() ),
-					tradingValuesFormat.format( tx.getAssetPrice() ),
+					AGENT_H_FORMAT.format( tx.getFinalAskH() ),
+					AGENT_H_FORMAT.format( tx.getFinalBidH() ),
+					TRADING_VALUES_FORMAT.format( tx.getAssetAmount() ),
+					TRADING_VALUES_FORMAT.format( tx.getAssetPrice() ),
 					"-", "-", "-"} );
 		}
 	}

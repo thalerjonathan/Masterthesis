@@ -24,8 +24,9 @@ public class WealthVisualizer extends JPanel {
 	
 	public WealthVisualizer(List<Agent> orderedAgents) {
 		this.orderedAgents = orderedAgents;
-		
-		this.setPreferredSize( new Dimension( 640, 300 ) );
+
+		this.setPreferredSize( new Dimension( (int) (this.getToolkit().getScreenSize().getWidth() / 2), 
+				(int) (0.75 * this.getToolkit().getScreenSize().getHeight() ) ) );
 		this.setBackground( Color.WHITE );
 	}
 	
@@ -78,8 +79,8 @@ public class WealthVisualizer extends JPanel {
 			// TODO: replace by dynamic-binding: use visitor pattern
 			if ( a instanceof AgentWithLoans ) {
 				AgentWithLoans aLoans = ( AgentWithLoans ) a;
-				//double bonds = aLoans.getLoanGiven()[0] - aLoans.getLoanTaken()[0];
-				double bonds = aLoans.getLoanGiven()[0];
+				double bonds = aLoans.getLoanGiven()[0] - aLoans.getLoanTaken()[0];
+				//double bonds = aLoans.getLoanGiven()[0];
 				double unpledgedAssets = assets - aLoans.getLoanTaken()[0];
 				
 				int yBonds = ( int ) ( yHalf - ( yHalf  * ( bonds / Y_ACHSIS_RANGE ) ) );

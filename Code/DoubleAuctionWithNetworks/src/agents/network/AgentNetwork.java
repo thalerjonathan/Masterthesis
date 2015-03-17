@@ -41,9 +41,11 @@ public class AgentNetwork {
 	
 	private DijkstraShortestPath<Agent, AgentConnection> pathCalculator;
 	
+	private boolean randomNetworkFlag;
+	
 	// NOTE: SATISFIES HYPOTHESIS
 	public static AgentNetwork createFullyConnected( IAgentFactory agentFactory ) {
-		AgentNetwork network = new AgentNetwork("FullyConnected");
+		AgentNetwork network = new AgentNetwork( "FullyConnected", false );
 		network.populate( agentFactory );
 		network.connectCompleted( 0, network.orderedAgents.size() );
 		
@@ -57,7 +59,7 @@ public class AgentNetwork {
 	
 	// NOTE: SATISFIES HYPOTHESIS
 	public static AgentNetwork createAscendingShortcutsConnected( double p, IAgentFactory agentFactory ) {
-		AgentNetwork network = new AgentNetwork("AscendingConnected");
+		AgentNetwork network = new AgentNetwork( "AscendingConnected", p != 0.0 );
 		network.populate( agentFactory );
 		
 		for ( int i = 0; i < network.orderedAgents.size() - 1; ++i ) {
@@ -90,7 +92,7 @@ public class AgentNetwork {
 	}
 	
 	public static AgentNetwork createWithHubs( int hubs, IAgentFactory agentFactory ) {
-		AgentNetwork network = new AgentNetwork("ThreeHubs");
+		AgentNetwork network = new AgentNetwork( "ThreeHubs", false );
 		network.populate( agentFactory );
 		
 		int lastHubIndex = 0;
@@ -124,7 +126,7 @@ public class AgentNetwork {
 	
 	// NOTE: DOES NOT SATISFIES HYPOTHESIS 
 	public static AgentNetwork createErdosRenyiConnected( double p, IAgentFactory agentFactory ) {
-		AgentNetwork network = new AgentNetwork("ErdosRenyi");
+		AgentNetwork network = new AgentNetwork( "ErdosRenyi", true );
 		network.populate( agentFactory );
 		
 		// NOTE: graph must be one single component - see theory for selecting p the according way
@@ -146,7 +148,7 @@ public class AgentNetwork {
 	
 	// NOTE: DOES NOT SATISFIES HYPOTHESIS
 	public static AgentNetwork createBarbasiAlbertConnected( int m0, int m, IAgentFactory agentFactory ) {
-		AgentNetwork network = new AgentNetwork("BarbasiAlbert");
+		AgentNetwork network = new AgentNetwork( "BarbasiAlbert", true );
 		
 		Agent previousAgent = null;
 		// performance: arraylist is by far better than linked list: problem is bound by random-access instead of insertion
@@ -213,7 +215,7 @@ public class AgentNetwork {
 	
 	// NOTE: SATISFIES HYPOTHESIS IF k == 2
 	public static AgentNetwork createWattsStrogatzConnected( int k, double b, IAgentFactory agentFactory ) {
-		AgentNetwork network = new AgentNetwork("WattsStrongatz");
+		AgentNetwork network = new AgentNetwork( "WattsStrongatz", true );
 		network.populate( agentFactory );
 		
 		// NOTE: should create ascending order AND shortcuts!
@@ -285,8 +287,9 @@ public class AgentNetwork {
 		return network;
 	}
 	
-	private AgentNetwork(String name) {
+	private AgentNetwork(String name, boolean randomNetwork) {
 		this.networkName = name;
+		this.randomNetworkFlag = randomNetwork;
 		
 		this.orderedAgents = new ArrayList<Agent>();
 		this.graph = new SparseGraph<Agent, AgentConnection>();
@@ -362,7 +365,11 @@ public class AgentNetwork {
 			c.reset();
 		}
 	}
-	
+
+	public boolean isRandomNetwork() {
+		return this.randomNetworkFlag;
+	}
+
 	public void createHistogramm() {
 		int i = 0;
 		

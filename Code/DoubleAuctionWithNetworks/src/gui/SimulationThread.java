@@ -58,6 +58,10 @@ public class SimulationThread implements Runnable {
 		return this.state == SimulationState.PAUSED;
 	}
 	
+	public boolean awaitsNextTX() {
+		return this.state == SimulationState.NEXT_TX;
+	}
+	
 	// NOTE: must be called from other thread than SimulationThread
 	public void stopSimulation() {
 		this.switchState( SimulationState.EXIT );
@@ -154,6 +158,8 @@ public class SimulationThread implements Runnable {
 				// count total number of TX so far
 				this.totalTXCounter++;
 				
+				SimulationState stateBevoreTX = this.state;
+				
 				// execute the next transaction
 				Transaction tx = this.auction.executeSingleTransaction();
 				// tx was successful
@@ -183,9 +189,10 @@ public class SimulationThread implements Runnable {
 				SwingUtilities.invokeLater( new Runnable() {
 					@Override
 					public void run() {
-						// update gui if TX was successful
+						// add tx to gui when successful
 						if ( tx.wasSuccessful() ) {
-							SimulationThread.this.mainWindow.addSuccessfulTX( tx );
+							// force redraw when NEXT_TX-state to reflect change immediately
+							SimulationThread.this.mainWindow.addSuccessfulTX( tx, SimulationState.RUNNING != stateBevoreTX );
 						}
 
 						SimulationThread.this.updateTXCounter();

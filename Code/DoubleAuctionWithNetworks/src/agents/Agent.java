@@ -31,6 +31,7 @@ public class Agent {
 	protected double consumEndow;
 	// amount of asset endowment still available
 	protected double assetEndow;
+	// Expected Value (E, Erwartungswert) of the Asset
 	protected double limitPriceAsset;
 	protected boolean assetBuyer=false, indifferent=false;
 	protected AskOffering actAskOffer;
@@ -254,8 +255,7 @@ public class Agent {
 	}
 	
 	protected void detLimitPriceAsset() {
-		// calculate the upper limit this agent values an asset: linear interpolation between the up/down values
-		// of the asset weighted by optimsm-factor (between 0..1) but at least DOWN value.
+		// calculate expected value (E, Erwartungswert) of the Asset
 		limitPriceAsset = (asset.getPU() - asset.getPD())*h + asset.getPD();
 	}
 	
