@@ -1,14 +1,12 @@
 package gui;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Timer;
@@ -28,16 +26,12 @@ import javax.swing.JSpinner;
 import javax.swing.JTable;
 import javax.swing.JToggleButton;
 import javax.swing.ListSelectionModel;
-import javax.swing.RowSorter;
-import javax.swing.SortOrder;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-import javax.swing.event.RowSorterEvent;
-import javax.swing.event.RowSorterListener;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableRowSorter;
 
@@ -116,11 +110,8 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 		
 		this.successfulTx = new ArrayList<Transaction>();
 		
-		BorderLayout layout = new BorderLayout();
-		layout.setVgap( 5 );
-		
 		this.setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
-        this.getContentPane().setLayout( layout );
+        this.getContentPane().setLayout( new GridBagLayout() );
         
         this.createControlsPanel();
         this.createAgents();
@@ -162,19 +153,12 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 	
 	private void createControlsPanel() {
 		// instancing of components ////////////////////////////////////
-		BorderLayout layout = new BorderLayout();
-		layout.setHgap( 10 );
-		layout.setVgap( 10 );
-		
-		this.visualizationPanel = new JPanel( layout );
-		this.visualizationPanel.setBackground( Color.GREEN );
-		
+		GridBagConstraints c = new GridBagConstraints();
+
+		this.visualizationPanel = new JPanel( new BorderLayout() );
 		JPanel controlsPanel = new JPanel();
-		controlsPanel.setBackground(Color.RED);
-		
-		JPanel txInfoPanel = new JPanel( layout );
-		txInfoPanel.setBackground(Color.BLUE);
-		
+		JPanel txInfoPanel = new JPanel( new GridBagLayout() );
+
 		this.topologySelection = new JComboBox<String>( new String[] { "Ascending-Connected", "Ascending Shortcuts", "Hub-Connected", "Fully-Connected", "Erdos-Renyi", "Barbasi-Albert", "Watts-Strogatz" } );
 		this.layoutSelection = new JComboBox<String>( new String[] { "Circle", "KK" } );
 		this.optimismSelection = new JComboBox<String>( new String[] { "Linear", "Triangle"  } );
@@ -233,71 +217,10 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 			}
 		};
 
-		Comparator<String> ascComp = new Comparator<String>() {
-			@Override
-			public int compare(String o1, String o2) {
-				if ( o1.equals( "-" ) ) {
-					return 1;
-				}
-				
-				if ( o2.equals( "-" ) ) {
-					return -1;
-				}
-				
-				if ( o1.equals( o2 ) ) {
-					return 0;
-				}
-				
-				return o1.compareTo( o2 );
-			}
-		};
-		
-		Comparator<String> descComp = new Comparator<String>() {
-			@Override
-			public int compare(String o1, String o2) {
-				if ( o1.equals( "-" ) ) {
-					return -1;
-				}
-				
-				if ( o2.equals( "-" ) ) {
-					return 1;
-				}
-				
-				if ( o1.equals( o2 ) ) {
-					return 0;
-				}
-				
-				return o1.compareTo( o2 );
-			}
-		};
-		
-		
 		TableRowSorter<DefaultTableModel> rowSorter = new TableRowSorter<>( this.txTableModel );
-		
-		rowSorter.addRowSorterListener( new RowSorterListener() {
-			@Override
-			public void sorterChanged(RowSorterEvent e) {
-				if ( RowSorterEvent.Type.SORT_ORDER_CHANGED == e.getType() ) {
-					List<RowSorter.SortKey> sortKeys = e.getSource().getSortKeys();
-					
-					for ( RowSorter.SortKey sorting : sortKeys ) {
-						if ( sorting.getColumn() < 5 ) {
-							continue;
-						}
-						
-						if ( SortOrder.ASCENDING == sorting.getSortOrder() ) {
-							rowSorter.setComparator( sorting.getColumn(), ascComp );
-						} else {
-							rowSorter.setComparator( sorting.getColumn(), descComp );
-						}
-					}
-				}
-			}
-		});
-		
-		rowSorter.setComparator( 5, ascComp );
-		rowSorter.setComparator( 6, ascComp );
-		rowSorter.setComparator( 7, ascComp );
+		new TXColumnComparator( 5, rowSorter );
+		new TXColumnComparator( 6, rowSorter );
+		new TXColumnComparator( 7, rowSorter );
 
 		this.txHistoryTable = new JTable( this.txTableModel );
 		this.txHistoryTable.setSelectionMode( ListSelectionModel.SINGLE_SELECTION );
@@ -395,13 +318,13 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 		controlsPanel.add( this.keepSuccTXHighCheck );
 		
 		JPanel txLabelsPanel = new JPanel( new GridBagLayout() );
-		GridBagConstraints c = new GridBagConstraints();
 		
-		c.fill = GridBagConstraints.VERTICAL;
+		c.fill = GridBagConstraints.BOTH;
 		c.weightx = 0.5;
+		c.ipadx = 10;
+		
 		c.gridx = 0;
 	    c.gridy = 0;
-	    c.ipadx = 10;
 	    txLabelsPanel.add( succTxCounterInfoLabel, c );
 		c.gridx = 1;
 	    c.gridy = 0;
@@ -447,12 +370,44 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 	    c.gridy = 6;
 		txLabelsPanel.add( this.finalLoanBidLabel, c );
 
-		//txInfoPanel.add( txHistoryScrollPane, BorderLayout.WEST );
-		txInfoPanel.add( txLabelsPanel, BorderLayout.EAST );
 		
-		this.getContentPane().add( controlsPanel, BorderLayout.NORTH );
-		this.getContentPane().add( this.visualizationPanel, BorderLayout.CENTER );
-		this.getContentPane().add( txInfoPanel, BorderLayout.SOUTH );
+		c.weightx = 0.8;
+		c.weighty = 0.5;
+		c.gridx = 0;
+		c.gridy = 0;
+		c.ipady = 0;
+		c.gridwidth = 8;
+		c.fill = GridBagConstraints.BOTH;
+		txInfoPanel.add( txHistoryScrollPane, c );
+		
+		c.weightx = 0.1;
+		c.gridx = 8;
+		c.gridwidth = 1;
+		c.fill = GridBagConstraints.VERTICAL;
+		txInfoPanel.add( txLabelsPanel, c );
+		
+
+		c.weightx = 1.0;
+		c.weighty = 0.5;
+		c.gridx = 0;
+		c.gridy = 0;
+		c.ipady = 0;
+		c.fill = GridBagConstraints.BOTH;
+		
+		c.weighty = 0.0;
+		c.gridheight = 1;
+	    c.gridy = 0;
+		this.getContentPane().add( controlsPanel, c );
+
+		c.weighty = 1.0;
+		c.gridheight = 10;
+	    c.gridy = 1;
+		this.getContentPane().add( this.visualizationPanel, c );
+		
+		c.weighty = 0.2;
+		c.gridheight = 2;
+	    c.gridy = 11;
+		this.getContentPane().add( txInfoPanel, c );
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -488,6 +443,7 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 					if ( null != path ) {
 						for ( AgentConnection c : path ) {
 							c.setHighlighted( true );
+							MainWindow.this.addTXOfConnection( c );
 						}
 					}
 					
@@ -524,20 +480,7 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 				MainWindow.this.txHistoryTable.revalidate();
 
 				connSelectedEvent.getSelectedConnection().setHighlighted( true );
-				
-				for ( int i = 0; i < MainWindow.this.successfulTx.size(); ++i ) {
-					Transaction tx = MainWindow.this.successfulTx.get( i );
-					
-					Agent a1 = tx.getMatchingAskOffer().getAgent();
-					Agent a2 = tx.getMatchingBidOffer().getAgent();
-
-					if ( connSelectedEvent.getSelectedConnection() == MainWindow.this.agents.getConnection( a1, a2 ) ) {
-						a1.setHighlighted( true );
-						a2.setHighlighted( true );
-						
-						MainWindow.this.addTxToTable( tx );
-					}
-				}
+				MainWindow.this.addTXOfConnection( connSelectedEvent.getSelectedConnection() );
 				
 				MainWindow.this.networkPanel.repaint();
 			}
@@ -796,7 +739,22 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 					tradingValuesFormat.format( tx.getAssetPrice() ),
 					"-", "-", "-"} );
 		}
-		
+	}
+	
+	private void addTXOfConnection( AgentConnection c ) {
+		for ( int i = 0; i < MainWindow.this.successfulTx.size(); ++i ) {
+			Transaction tx = MainWindow.this.successfulTx.get( i );
+			
+			Agent a1 = tx.getMatchingAskOffer().getAgent();
+			Agent a2 = tx.getMatchingBidOffer().getAgent();
+
+			if ( c == MainWindow.this.agents.getConnection( a1, a2 ) ) {
+				a1.setHighlighted( true );
+				a2.setHighlighted( true );
+				
+				MainWindow.this.addTxToTable( tx );
+			}
+		}
 	}
 	
 	private enum SimulationState {
