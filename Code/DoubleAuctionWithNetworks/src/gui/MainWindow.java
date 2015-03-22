@@ -39,6 +39,7 @@ import agents.markets.Loans;
 import agents.network.AgentConnection;
 import agents.network.AgentNetwork;
 import doubleAuction.Auction;
+import doubleAuction.Auction.MatchingType;
 import doubleAuction.AuctionWithLoans;
 import doubleAuction.offer.AskOffering;
 import doubleAuction.offer.AskOfferingWithLoans;
@@ -62,6 +63,7 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 	private Loans loans;
 	
 	private JCheckBox keepSuccTXHighCheck;
+	private JCheckBox cashAssetOnlyCheck;
 	
 	private JButton simulateButton;
 	private JButton recreateButton;
@@ -76,8 +78,11 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 	private JComboBox<String> topologySelection;
 	private JComboBox<String> layoutSelection;
 	private JComboBox<String> optimismSelection;
+	private JComboBox<MatchingType> matchingTypeSelection;
 	
 	private JSpinner agentCountSpinner;
+	
+	private JLabel computationTimeLabel;
 	
 	private JLabel succTxCounterLabel;
 	private JLabel totalTxCounterLabel;
@@ -101,6 +106,7 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 	
 	private long lastRepaintTime;
 	
+	private static final DecimalFormat COMP_TIME_FORMAT = new DecimalFormat("0.00");
 	private static final DecimalFormat AGENT_H_FORMAT = new DecimalFormat("0.000");
 	private static final DecimalFormat TRADING_VALUES_FORMAT = new DecimalFormat("0.000000");
 	
@@ -121,6 +127,10 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
        
         this.pack();
         this.setVisible( true );
+	}
+	
+	public MatchingType getSelectedMatchingType() {
+		return (MatchingType) this.matchingTypeSelection.getSelectedItem();
 	}
 	
 	@Override
@@ -166,8 +176,9 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 		this.topologySelection = new JComboBox<String>( new String[] { "Ascending-Connected", "Ascending Shortcuts", "Hub-Connected", "Fully-Connected", "Erdos-Renyi", "Barbasi-Albert", "Watts-Strogatz" } );
 		this.layoutSelection = new JComboBox<String>( new String[] { "Circle", "KK" } );
 		this.optimismSelection = new JComboBox<String>( new String[] { "Linear", "Triangle"  } );
+		this.matchingTypeSelection = new JComboBox<MatchingType>( MatchingType.values() );
 		
-		this.agentCountSpinner = new JSpinner( new SpinnerNumberModel( 1000, 10, 1000, 10 ) );
+		this.agentCountSpinner = new JSpinner( new SpinnerNumberModel( 50, 10, 1000, 10 ) );
 
 		JLabel succTxCounterInfoLabel = new JLabel( "Successful TX: " );
 		JLabel noSuccTxCounterInfoLabel = new JLabel( "No Succ. TX: " );
@@ -177,6 +188,7 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 		JLabel finalLoanAskInfoLabel = new JLabel( "Loan Ask Price:" );
 		JLabel finalLoanBidInfoLabel = new JLabel( "Loan Bid Price:"  );
 		
+		this.computationTimeLabel = new JLabel( "Computation Time: -" );
 		this.succTxCounterLabel = new JLabel( "-" );
 		this.noSuccTxCounterLabel = new JLabel( "-" );
 		this.totalTxCounterLabel = new JLabel( "-" );		
@@ -206,6 +218,10 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 			}
 		});
 		
+		this.cashAssetOnlyCheck = new JCheckBox( "Cash-Asset Market Only" );
+		this.cashAssetOnlyCheck.setSelected( false );
+		this.cashAssetOnlyCheck.addActionListener( this );
+		
 		Class[] columnClasses = new Class[]{ Integer.class, String.class, String.class, String.class,
 				String.class, String.class, String.class, String.class };
 		
@@ -228,7 +244,7 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 		new TXColumnComparator( 5, rowSorter );
 		new TXColumnComparator( 6, rowSorter );
 		new TXColumnComparator( 7, rowSorter );
-
+		
 		this.txHistoryTable = new JTable( this.txTableModel );
 		this.txHistoryTable.setSelectionMode( ListSelectionModel.SINGLE_SELECTION );
 		this.txHistoryTable.setAutoCreateRowSorter( true );
@@ -344,14 +360,17 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 		controlsPanel.add( this.toggleNetworkPanelButton );
 		controlsPanel.add( this.recreateButton );
 		controlsPanel.add( this.agentCountSpinner );
-		controlsPanel.add( this.topologySelection );
 		controlsPanel.add( this.optimismSelection );
+		controlsPanel.add( this.topologySelection );
 		controlsPanel.add( this.layoutSelection );
+		controlsPanel.add( this.matchingTypeSelection );
 		controlsPanel.add( this.simulateButton );
 		controlsPanel.add( this.pauseButton );
 		controlsPanel.add( this.nextTxButton );
 		controlsPanel.add( this.keepSuccTXHighCheck );
-		
+		controlsPanel.add( this.cashAssetOnlyCheck );
+		controlsPanel.add( this.computationTimeLabel );
+
 		JPanel txLabelsPanel = new JPanel( new GridBagLayout() );
 		
 		c.fill = GridBagConstraints.BOTH;
@@ -471,10 +490,11 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 		this.highlightTx( tx );
 	}
 	
-	void updateTXCounter( int succTx, int noSuccTX, int totalTX ) {
+	void updateTXCounter( int succTx, int noSuccTX, int totalTX, long calculationTime ) {
 		this.succTxCounterLabel.setText( "" + succTx );
 		this.noSuccTxCounterLabel.setText( "" + noSuccTX );
 		this.totalTxCounterLabel.setText( "" + totalTX );
+		this.computationTimeLabel.setText( "Computation Time: " + COMP_TIME_FORMAT.format( calculationTime / 1000.0 ) + " sec." );
 	}
 	
 	void nextTXFinished() {
@@ -527,8 +547,11 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 						optimism = agentArea / totalArea;
 					}
 					
-					//a = new Agent( i, optimism, consumEndow, assetEndow, asset );
-					a = new AgentWithLoans( this.i, optimism, consumEndow, assetEndow, loans, asset );
+					if ( MainWindow.this.cashAssetOnlyCheck.isSelected() ) {
+						a = new Agent( i, optimism, consumEndow, assetEndow, asset );
+					} else {
+						a = new AgentWithLoans( this.i, optimism, consumEndow, assetEndow, loans, asset );
+					}
 					
 					this.i++;
 				}
@@ -701,7 +724,11 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 		if ( null == this.simulationThread ) {
 			// if there was a simulation-run before: reset the agents
 			this.agents.reset( 1.0, 1.0 );
-
+			
+			// sort TX-ID descending initially to show new TXs first. one call seems not to be enough => do 2 times :D
+			this.txHistoryTable.getRowSorter().toggleSortOrder( 0 );
+			this.txHistoryTable.getRowSorter().toggleSortOrder( 0 );
+				
 			this.successfulTx.clear();
 			
 			this.txTableModel.setRowCount( 0 );
@@ -712,7 +739,8 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 			this.topologySelection.setEnabled( false );
 			this.optimismSelection.setEnabled( false );
 			this.recreateButton.setEnabled( false );
-
+			this.cashAssetOnlyCheck.setEnabled( false );
+			
 			// reset controls
 			this.finalAssetAskLabel.setText( "-" );
 			this.finalAssetBidLabel.setText( "-" );
@@ -730,7 +758,14 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 			this.pauseButton.setEnabled( true );
 			this.pauseButton.setVisible( true );
 			
-			Auction auction = new AuctionWithLoans( this.agents, this.asset );
+			Auction auction = null;
+			
+			if ( this.cashAssetOnlyCheck.isSelected() ) {
+				auction = new Auction( this.agents, this.asset );
+			} else {
+				auction = new AuctionWithLoans( this.agents, this.asset );
+			}
+
 			auction.init();
 			
 			// let simulation run in a separate thread to prevent blocking of gui
@@ -756,6 +791,8 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 			this.topologySelection.setEnabled( true );
 			this.optimismSelection.setEnabled( true );
 			this.recreateButton.setEnabled( true );
+			this.cashAssetOnlyCheck.setEnabled( true );
+			
 		}
 	}
 	

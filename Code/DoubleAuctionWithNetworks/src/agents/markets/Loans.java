@@ -3,8 +3,8 @@ package agents.markets;
 // the loan-market
 public class Loans {
 	public static int NUMLOANS;
-	public static boolean NOLOANMARKET = true;
-	public static boolean NOASSETFORLOANMARKET = false;
+	public static boolean LOANMARKET = false;
+	public static boolean ASSETFORLOANMARKET = true;
 	protected double[] loanPrices;
 	// there are just a limited number of loans/bonds
 	protected double[] j;

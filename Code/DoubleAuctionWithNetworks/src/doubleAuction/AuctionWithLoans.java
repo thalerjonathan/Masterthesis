@@ -74,7 +74,8 @@ public class AuctionWithLoans extends Auction {
 		//consumEndow=1;
 		//Agent.NUM_AGENTS = NUM_AGENTS;
 		Agent.TRADE_ONLY_FULL_UNITS = true;
-
+		Agent.NUMMARKETS = NUMMARKETS;
+		
 //		agents = new AgentWithLoans[] {new AgentWithLoans(0.5, consumEndow, assetEndow, loanMarket, asset), 
 //		    						  new AgentWithLoans(0.7, consumEndow, assetEndow, loanMarket, asset), 
 //									  new AgentWithLoans(0.8, consumEndow, assetEndow, loanMarket, asset)};

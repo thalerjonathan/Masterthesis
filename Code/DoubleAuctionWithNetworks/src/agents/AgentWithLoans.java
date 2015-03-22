@@ -76,12 +76,7 @@ public class AgentWithLoans extends Agent {
 	}
 
 	@Override
-	public void calcOfferings(AskOffering[] askOfferings, BidOffering[] bidOfferings) {
-		calcAskOfferings(askOfferings);
-		calcBidOfferings(bidOfferings);
-	}
-
-	public void calcAskOfferings(AskOffering[] askOfferings) {
+	public AskOffering[] calcAskOfferings() {
 		int numTrials;
 		int MAXTRIALS = 500;
 		double assetAmount;
@@ -92,6 +87,8 @@ public class AgentWithLoans extends Agent {
 		double maxQ;
 		double pa, qa; // assetPrice, loanPrice
 
+		AskOffering[] askOfferings = new AskOffering[ NUMMARKETS ];
+		
 		// market type 0: generate an ask offer for market m=0: sell an asset
 		// against cash
 		if (freeAssetEndow > 0 && maxP > limitPriceAsset) {
@@ -125,7 +122,7 @@ public class AgentWithLoans extends Agent {
 		// changed at 08/17/2011: error in distribution - bias towards uniform q
 		// which is not true
 
-		if (!Loans.NOASSETFORLOANMARKET)
+		if ( Loans.ASSETFORLOANMARKET) {
 			for (int j = 0; j < NUMLOANS; j++) {
 				// loop an markets/loan types
 				// V2
@@ -185,13 +182,14 @@ public class AgentWithLoans extends Agent {
 					}
 				}
 			}
-
+		}
+		
 		// market type 2: find an ask offer for market m=NUMLOANS+1 to
 		// 2*NUMLOANS: give (buy) a loan of type j=m-NUMLOANS-1
 		// draw random loan price qa from Uniform(0,expectJ[j]),
 		// i.e. prices that guarantee a non-negative utility for agent h
 
-		if (!Loans.NOLOANMARKET)
+		if ( Loans.LOANMARKET) {
 			for (int j = 0; j < NUMLOANS; j++) {
 				// loop on loan types
 				minQ = getQMin(j);
@@ -209,10 +207,13 @@ public class AgentWithLoans extends Agent {
 					askOfferings[1 + NUMLOANS + j] = null;
 				}
 			}
-
+		}
+		
+		return askOfferings;
 	}
 
-	public void calcBidOfferings(BidOffering[] bidOfferings) {
+	@Override
+	public BidOffering[] calcBidOfferings() {
 		int numTrials;
 		int MAXTRIALS = 200;
 		double assetAmount;
@@ -222,6 +223,8 @@ public class AgentWithLoans extends Agent {
 		double maxQ;
 		double pb, qb;
 
+		BidOffering[] bidOfferings = new BidOffering[ NUMMARKETS ];
+		
 		// market type 0: generate an bid offer for market m=0: buy an asset
 		// against cash
 
@@ -335,6 +338,8 @@ public class AgentWithLoans extends Agent {
 									+ MAXTRIALS + " trials");
 			}
 		}
+		
+		return bidOfferings;
 	}
 
 	@Override

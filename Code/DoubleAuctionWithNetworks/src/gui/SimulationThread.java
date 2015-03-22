@@ -22,6 +22,8 @@ public class SimulationThread implements Runnable {
 	private int totalTXCounter;
 	private int noSuccTXCounter;
 	
+	private long computationTimeMs;
+	
 	private Transaction lastSuccTX;
 	
 	private Thread awaitNextTxThread;
@@ -49,7 +51,7 @@ public class SimulationThread implements Runnable {
 		
 		this.updateTXCounter();
 	}
-
+	
 	public void startSimulation() {
 		this.simulationThread.start();
 	}
@@ -160,8 +162,15 @@ public class SimulationThread implements Runnable {
 				
 				SimulationState stateBevoreTX = this.state;
 				
+				// take current millis to calculate delta time
+				long ts = System.currentTimeMillis();
+				
 				// execute the next transaction
-				Transaction tx = this.auction.executeSingleTransaction();
+				Transaction tx = this.auction.executeSingleTransactionByType( SimulationThread.this.mainWindow.getSelectedMatchingType() );
+				
+				// increment time
+				this.computationTimeMs += System.currentTimeMillis() - ts;
+				
 				// tx was successful
 				if ( tx.wasSuccessful() ) {
 					// count number of successful TX so far
@@ -233,7 +242,7 @@ public class SimulationThread implements Runnable {
 	}
 	
 	private void updateTXCounter() {
-		this.mainWindow.updateTXCounter( this.succTXCounter, this.noSuccTXCounter, this.totalTXCounter  );
+		this.mainWindow.updateTXCounter( this.succTXCounter, this.noSuccTXCounter, this.totalTXCounter, this.computationTimeMs );
 	}
 	
 	private void interruptNextTXThread() {

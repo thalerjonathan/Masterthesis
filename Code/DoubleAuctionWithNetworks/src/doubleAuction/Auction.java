@@ -409,6 +409,7 @@ public class Auction {
 		//consumEndow=1;
 		//Agent.NUM_AGENTS = NUM_AGENTS;
 		Agent.TRADE_ONLY_FULL_UNITS = true;
+		Agent.NUMMARKETS = NUMMARKETS;
 
 //		agents = new Agent[] {new Agent(1, 0.5, consumEndow, assetEndow, asset), new Agent(2, 0.7, consumEndow, assetEndow, asset), new Agent(3, 0.8, consumEndow, assetEndow, asset)};
 
@@ -489,21 +490,23 @@ public class Auction {
 		//toDo in future versions
 	}
 
+	public enum MatchingType {
+		BEST_GLOBAL_OFFERS,
+		BEST_NEIGHBOUR,
+		RANDOM_NEIGHOUR;
+	}
+	
 	public Transaction executeSingleTransaction()  {
 		//each agent, in random order, gets asked for its bid or ask offers for all markets in this transaction round. 
 		//a single transaction repeats this in a loop until an ask and a bid offer of the same market match each other (success), 
 		//or until each agent has placed its offers (failure)
-				
-		//		Iterator<BidOffering> itBestBids;
-		//		Iterator<AskOffering> itBestAsks;
+		
 		int MAXSWEEPS = 500;
 		int numSweeps = 0;  //number of sweeps through all agents in a random order
 		Transaction transaction = getNewTransaction();
 		
 		while (numSweeps < MAXSWEEPS)  {
 			numSweeps++;
-			//1. arrange agents offering order randomly and
-			//2. perform auction: get agents offerings
 			Iterator<Agent> agIt = agents.randomIterator();
 			
 			boolean successfulTrans = false;
@@ -514,22 +517,25 @@ public class Auction {
 				BidOffering[] bidOfferings = new BidOffering[NUMMARKETS];
 				Offering[] match = new Offering[NUMMARKETTYPES*2]; //in general: for each market type a bid and an ask offer
 	
-	//			if (numSweeps > 1)
-	//				transaction.removeAllOfferings(ag);
-				
-				ag.calcOfferings(askOfferings, bidOfferings);
+				// agent calculates offering for each market
+				ag.calcOfferings( askOfferings, bidOfferings );
 
+				// find match: must be neighbours, must be same market, bid (buy) must be larger than ask (sell)
 				int matchResult = transaction.findMatches(askOfferings, bidOfferings, match, agents); //0: no match; 1: askOffering matched; 2: bidOffering matched
-					
+				
+				// add offerings of the agent ag to the offer-book (which is the transaction) which keeps track of the best offerings
 				transaction.addOfferings(askOfferings, bidOfferings);
 				
-				if  (matchResult > 0)  
+				// there was a match
+				if  (matchResult > 0) {
+					// executes Transaction: sell and buy in the two agents will update new wealth
 					successfulTrans = ag.execTransaction( match, true );
+				}
 				
+				// transaction was successul 
 				if (successfulTrans)  {
 					//successful transaction execution
 					transaction.matched( match );
-					transaction.calcStatistics();
 					transaction.setTransNum(num_trans++);
 					
 					return transaction;
@@ -540,6 +546,61 @@ public class Auction {
 		return transaction;
 	}
 
+	public Transaction executeSingleTransactionByType( MatchingType type )  {
+		int MAXSWEEPS = 500;
+		int numSweeps = 0;  //number of sweeps through all agents in a random order
+		Transaction transaction = getNewTransaction();
+		
+		while (numSweeps < MAXSWEEPS)  {
+			numSweeps++;
+			Iterator<Agent> agIt = agents.randomIterator();
+			
+			boolean successfulTrans = false;
+			
+			while (agIt.hasNext())  {
+				Agent ag = agIt.next();
+				Offering[] match = null;
+				
+				// find match: must be neighbours, must be same market, bid (buy) must be larger than ask (sell)
+				if ( MatchingType.RANDOM_NEIGHOUR == type ) {
+					match = transaction.findMatchesByRandomNeighborhood( ag, agents ); //null: no match, else matching
+				
+				} else if ( MatchingType.BEST_NEIGHBOUR == type ) {
+					match = transaction.findMatchesByBestNeighborhood( ag, agents ); //null: no match, else matching
+					
+				} else if ( MatchingType.BEST_GLOBAL_OFFERS == type ) {
+					AskOffering[] askOfferings = new AskOffering[NUMMARKETS]; 
+					BidOffering[] bidOfferings = new BidOffering[NUMMARKETS];
+					match = new Offering[NUMMARKETTYPES*2]; //in general: for each market type a bid and an ask offer
+					
+					// agent calculates offering for each market
+					ag.calcOfferings( askOfferings, bidOfferings );
+
+					if ( 0 == transaction.findMatches(askOfferings, bidOfferings, match, agents) ) {
+						match = null;
+					}
+					
+					transaction.addOfferings( askOfferings, bidOfferings );
+				}
+
+				if ( match != null ) {
+					// executes Transaction: sell and buy in the two agents will update new wealth
+					successfulTrans = ag.execTransaction( match, true );
+				}
+				
+				if (successfulTrans)  {
+					//successful transaction execution
+					transaction.matched( match );
+					transaction.setTransNum(num_trans++);
+					
+					return transaction;
+				}
+			}
+		}
+		
+		return transaction;
+	}
+	
 	protected Transaction getNewTransaction() {
 		return new Transaction(this);
 	}

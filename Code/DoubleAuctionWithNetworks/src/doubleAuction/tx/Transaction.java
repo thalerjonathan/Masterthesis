@@ -64,7 +64,97 @@ public class Transaction  {
 		}
 	}
 	
-	public int findMatches(AskOffering[] askOfferings, BidOffering[] bidOfferings, Offering[] match, AgentNetwork agents)   { 
+	public Offering[] findMatchesByRandomNeighborhood( Agent a, AgentNetwork agents ) {
+		// 1. process ask-offerings: need to find a bidder among the neighborhood of the agent
+		Agent neighbor = agents.getRandomNeighbor( a );
+		
+		// agent has no neighbour => can't trade anything => no matches
+		if ( null == neighbor ) {
+			return null;
+		}
+		
+		// note: it doesn't make a difference whether ask or bid is done first
+		// or first ask is checked and if no match then bid is checked due to the nature of the problem
+		boolean testFirstAsk = ( Math.random() < 0.5 );
+		
+		if ( testFirstAsk ) {
+			AskOffering ask = a.calcAskOfferings()[ 0 ];
+			BidOffering bid = neighbor.calcBidOfferings()[ 0 ];
+			
+			Offering[] match = this.matchOffers( ask, bid );
+			if ( null != match) {
+				return match;
+			}
+		} else {
+			// 2. process bid-offerings: need to find an asker among the neighborhood of the agent
+			BidOffering bid = a.calcBidOfferings()[ 0 ];
+			AskOffering ask = neighbor.calcAskOfferings()[ 0 ];
+			
+			Offering[]  match = this.matchOffers( ask, bid );
+			if ( null != match) {
+				return match;
+			}
+		}
+		
+		return null;
+	}
+	
+	public Offering[] findMatchesByBestNeighborhood( Agent a, AgentNetwork agents ) {
+		// 1. process ask-offerings: need to find a bidder among the neighborhood of the agent
+		Iterator<Agent> neighborhood = agents.getNeighbors( a );
+		
+		AskOffering agentAsk = a.calcAskOfferings()[ 0 ];
+		BidOffering agentBid = a.calcBidOfferings()[ 0 ];
+		
+		AskOffering bestAsk = null;
+		BidOffering bestBid = null;
+		
+		// find best ask and bid offers in neighborhood
+		while ( neighborhood.hasNext() ) {
+			Agent neighbor = neighborhood.next();
+			
+			if ( null == bestAsk ) {
+				bestAsk = neighbor.calcAskOfferings()[ 0 ];
+			
+			} else {
+				AskOffering neighbourAsk = neighbor.calcAskOfferings()[ 0 ];
+				
+				if ( null != neighbourAsk && neighbourAsk.dominates( bestAsk )) {
+					bestAsk = neighbourAsk;
+				}
+			}
+			
+			if ( null == bestBid ) {
+				bestBid = neighbor.calcBidOfferings()[ 0 ];
+				
+			} else {
+				BidOffering neighbourBid = neighbor.calcBidOfferings()[ 0 ];
+				
+				
+				if ( null != neighbourBid && neighbourBid.dominates( bestBid )) {
+					bestBid = neighbourBid;
+				}
+			}
+		}
+		
+		boolean testFirstAsk = ( Math.random() < 0.5 );
+		
+		if ( testFirstAsk ) {
+			Offering[] match = this.matchOffers( agentAsk, bestBid );
+			if ( null != match) {
+				return match;
+			}
+		} else {
+			Offering[] match = this.matchOffers( bestAsk, agentBid );
+			if ( null != match) {
+				return match;
+			}
+		}
+		
+		return null;
+	}
+	
+	public int findMatches(AskOffering[] askOfferings, BidOffering[] bidOfferings, Offering[] match, AgentNetwork agents )   {
 		//returns 0: no match;  1: ask offering matched; 2: bid offering matched
 		//just for one market (asset against cash) with id "0"
 		Iterator<BidOffering> itBestBids;
@@ -116,6 +206,22 @@ public class Transaction  {
 		}
 		
 		return 0;		
+	}
+	
+	private Offering[] matchOffers( AskOffering ask, BidOffering bid ) {
+		if ( null != ask && null != bid ) {
+			if ( ask.matches( bid ) )  {
+				ask.setFinalAssetPrice(bid.getAssetPrice());
+				bid.setFinalAssetPrice(bid.getAssetPrice());
+				
+				Offering[] match = new Offering[ 2 ];
+				match[0] = ask;
+				match[1] = bid;
+				return match;
+			}
+		}
+	
+		return null;
 	}
 	
 	public AskOffering getMatchingAskOffer() {
@@ -171,6 +277,7 @@ public class Transaction  {
 		int mkt = offer.getMarket();
 		Iterator<AskOffering> askIt = bestAskOfferings.get(mkt).iterator();
 		
+		// removes all offers which are worse than offer
 		while (askIt.hasNext())  {
 			AskOffering bestAsk = askIt.next();
 			if  (bestAsk.dominates(offer)) {
@@ -193,6 +300,7 @@ public class Transaction  {
 		int mkt = offer.getMarket();
 		Iterator<BidOffering> bidIt = bestBidOfferings.get(mkt).iterator();
 		
+		// removes all offers which are worse than offer
 		while (bidIt.hasNext())  {
 			BidOffering bestBid = bidIt.next();
 			if  (bestBid.dominates(offer)) {

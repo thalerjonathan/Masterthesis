@@ -370,6 +370,21 @@ public class AgentNetwork {
 		return this.randomNetworkFlag;
 	}
 
+	public Iterator<Agent> getNeighbors( Agent a ) {
+		return this.graph.getNeighbors( a ).iterator();
+	}
+	
+	public Agent getRandomNeighbor( Agent a ) {
+		Collection<Agent> neighbors = this.graph.getNeighbors( a );
+		if ( 0 == neighbors.size() ) {
+			return null;
+		}
+
+		Agent[] neighborArray = neighbors.toArray( new Agent[ neighbors.size() ] );
+		
+		return neighborArray[ (int) (Math.random() * neighbors.size()) ];
+	}
+	
 	public void createHistogramm() {
 		int i = 0;
 		

@@ -34,15 +34,15 @@ public class Agent {
 	// Expected Value (E, Erwartungswert) of the Asset
 	protected double limitPriceAsset;
 	protected boolean assetBuyer=false, indifferent=false;
-	protected AskOffering actAskOffer;
-	protected BidOffering actBidOffer;
-	protected int NUMMARKETS;
+
+	public static int NUMMARKETS;
 	
 	protected double utility = 0, accUtility = 0, lastUtility = 0, lastLastUtility = 0, utilDiff=0;    
 	protected double[][] decisions, lastDecisions, lastLastDecisions, assignedDecs;
 
 	private boolean highlighted;
 	
+
 	public Agent(int id, double h, double consumEndow, double assetEndow, Asset asset) {
 		this.id = id;
 		this.h = h;
@@ -114,16 +114,24 @@ public class Agent {
 		return indifferent;
 	}
 	
-	public void calcOfferings(AskOffering[] askOfferings, BidOffering[] bidOfferings)   {
-		askOfferings[0] = calcAskOffering();
-		bidOfferings[0] = calcBidOffering();	
+	
+	public void calcOfferings(AskOffering[] askOfferings, BidOffering[] bidOfferings) {
+		AskOffering[] calculatedAskOfferings = calcAskOfferings();
+		BidOffering[] calculatedBidOfferings = calcBidOfferings();
+		
+		for ( int i = 0; i < calculatedAskOfferings.length; ++i ) {
+			askOfferings[ i ] = calculatedAskOfferings[ i ];
+			bidOfferings[ i ] = calculatedBidOfferings[ i ];
+		}	
 	}
 	
-	public AskOffering calcAskOffering()  {
+	public AskOffering[] calcAskOfferings()  {
 	//draw a random price uniformly out of [minP,maxP] intersect [limitPriceAsset,pU]
 		double minP = getPMin();
 		double maxP = getPMax();
 		double assetPrice;
+		AskOffering actAskOffer = null;
+		
 		if (maxP < limitPriceAsset)  //agent cannot offer at current price level 
 			return null;
 	
@@ -148,14 +156,16 @@ public class Agent {
 			
 		}
 		
-		return actAskOffer;
+		return new AskOffering[] { actAskOffer };
 	}
 	
-	public BidOffering calcBidOffering()  {
+	public BidOffering[] calcBidOfferings()  {
 		//first version: draw a random price uniformly out of [minP,maxP] intersect [pD,limitPriceAsset] 
 		double minP = getPMin();
 		double maxP = getPMax();
 		double assetPrice;
+		BidOffering actBidOffer;
+		
 		if (minP > limitPriceAsset)  //agent cannot offer at current price level 
 			return null;
 	
@@ -178,7 +188,7 @@ public class Agent {
 				actBidOffer = null;			
 		}
 		
-		return actBidOffer;
+		return new BidOffering[] { actBidOffer };
 	}
 	
 	public boolean execTransaction(Offering[] match, boolean first)  {
