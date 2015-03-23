@@ -5,7 +5,7 @@ public abstract class Offering {
 	
 	//abstract super class for both ask and bid offerings
 	protected int market;
-	protected int marketType; //0:assets against cash; 1:assets against loans; 2: loans
+	protected MarketType marketType;
 	protected int NUMMARKETS;
 	protected double assetPrice;
 	protected double finalAssetPrice;
@@ -32,11 +32,11 @@ public abstract class Offering {
 		this.market = market;
 	}
 
-	public int getMarketType() {
+	public MarketType getMarketType() {
 		return marketType;
 	}
 
-	public void setMarketType(int marketType) {
+	public void setMarketType(MarketType marketType) {
 		this.marketType = marketType;
 	}
 

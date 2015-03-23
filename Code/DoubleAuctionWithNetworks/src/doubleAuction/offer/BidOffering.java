@@ -4,7 +4,7 @@ import agents.Agent;
 
 public class BidOffering extends Offering {
 
-	public BidOffering(double assetPrice, double assetAmount, Agent agent, int market, int marketType)  {
+	public BidOffering(double assetPrice, double assetAmount, Agent agent, int market, MarketType marketType)  {
 		this.assetAmount = assetAmount;
 		this.assetPrice = assetPrice;
 		this.agent = agent;
@@ -13,7 +13,7 @@ public class BidOffering extends Offering {
 		this.NUMMARKETS = Auction.NUMMARKETS;
 	}
 	
-	public BidOffering(double assetPrice, Agent agent, int market, int marketType)  {
+	public BidOffering(double assetPrice, Agent agent, int market, MarketType marketType)  {
 		this( assetPrice, Agent.UNIT, agent, market, marketType);
 	}
 	

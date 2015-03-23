@@ -6,6 +6,7 @@ import doubleAuction.offer.AskOffering;
 import doubleAuction.offer.AskOfferingWithLoans;
 import doubleAuction.offer.BidOffering;
 import doubleAuction.offer.BidOfferingWithLoans;
+import doubleAuction.offer.MarketType;
 import doubleAuction.offer.Offering;
 
 public class AgentWithLoans extends Agent {
@@ -108,7 +109,7 @@ public class AgentWithLoans extends Agent {
 				pa = minP + r * (maxP - minP);
 			}
 			
-			askOfferings[0] = new AskOffering(pa, Math.min(UNIT, freeAssetEndow), this, 0, 0);
+			askOfferings[0] = new AskOffering(pa, Math.min(UNIT, freeAssetEndow), this, 0, MarketType.ASSET_AGAINST_CASH );
 		} else {
 			// agent has no free assets, or cannot offer at current price level
 			askOfferings[0] = null;
@@ -172,7 +173,7 @@ public class AgentWithLoans extends Agent {
 						assetAmount = Math.min(UNIT, freeAssetEndow);
 						askOfferings[j + 1] = new AskOfferingWithLoans(pa,
 								assetAmount, qa, j, loans.getJ()[j],
-								assetAmount * pa / qa, this, j + 1, 1);
+								assetAmount * pa / qa, this, j + 1, MarketType.ASSET_AGAINST_LOAN );
 					} else {
 						System.out
 								.println("in calcAskOfferings: after "
@@ -201,7 +202,7 @@ public class AgentWithLoans extends Agent {
 							* (Math.min(maxQ, expectJ[j]) - minQ);
 					askOfferings[1 + NUMLOANS + j] = new AskOfferingWithLoans(
 							0, 0, qa, j, loans.getJ()[j], consumEndow / qa,
-							this, 1 + NUMLOANS + j, 2);
+							this, 1 + NUMLOANS + j, MarketType.LOAN_AGAINST_CASH );
 				} else {
 					// agent has nothing to borrow
 					askOfferings[1 + NUMLOANS + j] = null;
@@ -243,7 +244,7 @@ public class AgentWithLoans extends Agent {
 				}
 				
 				assetAmount = Math.min(UNIT, consumEndow / pb);
-				bidOfferings[0] = new BidOffering(pb, assetAmount, this, 0, 0);
+				bidOfferings[0] = new BidOffering(pb, assetAmount, this, 0, MarketType.ASSET_AGAINST_CASH );
 			}
 
 			for (int i = 1; i < bidOfferings.length; i++)
@@ -300,7 +301,7 @@ public class AgentWithLoans extends Agent {
 								// requirement
 								bidOfferings[j + 1] = new BidOfferingWithLoans(
 										pb, UNIT, qb, j, loans.getJ()[j],
-										loanAmount, this, j + 1, 1);
+										loanAmount, this, j + 1, MarketType.ASSET_AGAINST_LOAN );
 								break;
 							} else {
 								// not enough collateral for loan for UNIT
@@ -321,7 +322,7 @@ public class AgentWithLoans extends Agent {
 									bidOfferings[j + 1] = new BidOfferingWithLoans(
 											pb, assetAmount, qb, j,
 											loans.getJ()[j], pb * assetAmount
-													/ qb, this, j + 1, 1);
+													/ qb, this, j + 1, MarketType.ASSET_AGAINST_LOAN );
 									break;
 								}
 							}
@@ -384,6 +385,9 @@ public class AgentWithLoans extends Agent {
 				consumEndow = 0;
 		}
 		
+		// need to reset when match to force a recalculation of offers
+		this.calcOfferings();
+		
 		return true;
 	}
 
@@ -412,7 +416,7 @@ public class AgentWithLoans extends Agent {
 				freeAssetEndow = 0;
 		}
 
-		if (myAsk.getMarketType() == 0) {
+		if ( MarketType.ASSET_AGAINST_CASH == myAsk.getMarketType() ) {
 			// asset against cash
 			consumEndow += myAsk.getFinalAssetPrice() * toSell;
 			accUtility += (myAsk.getFinalAssetPrice() - limitPriceAsset)
@@ -435,6 +439,10 @@ public class AgentWithLoans extends Agent {
 					* (expectJ[((AskOfferingWithLoans) myAsk).getLoanType()] - ((AskOfferingWithLoans) myAsk)
 							.getFinalLoanPrice());
 		}
+		
+		// need to reset when match to force a recalculation of offers
+		this.calcOfferings();
+		
 		return true;
 	}
 
@@ -448,7 +456,7 @@ public class AgentWithLoans extends Agent {
 		// adjust bidders amounts
 		myBid.setAssetAmount(toBuy);
 
-		if (myBid.getMarketType() == 1) {
+		if ( MarketType.ASSET_AGAINST_LOAN == myBid.getMarketType() ) {
 			// adjust loan amount
 			loanAmount = toBuy * myBid.getFinalAssetPrice()
 					/ ((BidOfferingWithLoans) myBid).getFinalLoanPrice();
@@ -459,7 +467,7 @@ public class AgentWithLoans extends Agent {
 		assetEndow += toBuy;
 		freeAssetEndow += toBuy;
 
-		if (myBid.getMarketType() == 0) {
+		if ( MarketType.ASSET_AGAINST_CASH == myBid.getMarketType() ) {
 			// asset against cash
 			consumEndow -= myBid.getFinalAssetPrice() * toBuy;
 			accUtility += (limitPriceAsset - myBid.getFinalAssetPrice()) * toBuy;
@@ -485,6 +493,9 @@ public class AgentWithLoans extends Agent {
 					freeAssetEndow = 0;
 			}
 		}
+		
+		// need to reset when match to force a recalculation of offers
+		this.calcOfferings();
 		
 		return true;
 	}

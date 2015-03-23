@@ -47,7 +47,6 @@ Arbeitsschritte & Meilensteine bis zur Abgabe
 			1. paarweise aufsteigend
 			2. Watts-Strogatz
 			3. Barbasi
-		- Replikationen auch über die Vermögensverteilung der Agenten
 		- Handelsbeziehungen über das Netzwerk auswählen d.h. das matching probiert nur zwischen diesen zwei benachbarten agenten
 		- Code refaktoring und aufräumen
 		
@@ -73,11 +72,21 @@ Zeitpunkte
 		-> OK		Handelsbeziehungen über das Netzwerk auswählen d.h. das matching probiert nur zwischen diesen zwei benachbarten agenten
 		-> OK		gewichte bei erfolgreicher transaktion: inkrementieren/einmal auf 1 setzen
 		-> OK		Auch für Auktionen mit Loan funktioniert: AuctionWithLoan, AgentsWithLoan, TransactionWithLoan
-				-> OK		schönere layouts
-		-> TODO		Java 7 & 8 features
-		-> TODO		Code refaktoring und aufräumen: inner classes herausziehen wo sinnvoll
-		-> TODO		Netzwerkgenerierungsalgorithmen teilweise parametrierbar
-
+		-> OK		schönere layouts
+		-> OK		Code refaktoring und aufräumen: inner classes herausziehen wo sinnvoll
+		-> OK		Netzwerkvisualisierung > 50 Agenten unsichtbar
+		-> TODO		Beschleunigung
+			-> wichtig: continous double-auction mechanismus erhalten: best-offers aus nachbarn ermitteln. Dies erfüllen bereits alle mechanismen bis auf RANDOM_NEIGHBOUR
+			-> Multithreaded
+		-> MERKWÜRDIGES VERHALTEN
+			-> ASCENDING CONNECTED verhält sich unter BEST_NEIGHBORHOOD fast gleich wie der reine asset->cash markt, assets->bonds werden fast garnicht gehandelt und die simulation bleibt hängen
+				-> bei BEST_GLOBAL_OFFERS ist dies nicht so, es läuft zwar extrem langsam aber asset->bonds werden viel mehr gehandelt
+			-> FULL CONNECTED verhält sich unter BEST_NEIGHBORHOOD "richtig" d.h. wie BEST_GLOBAL_OFFERS d.h. es werden viele assets->bonds gehandelt
+			=> globales offer-book verhalten noch genauer untersuchen, wahrscheinlich liegt es daran
+				-> die topologie allein kann nciht das problem sein, denn auch GLOBAL_OFFERS berücksichtigt die nachbarschaftsbeziehungen
+				-> unterschied: GLOBAL_OFFERS behält mehr im offer-book, BEST_NEIGHBORHOOD nur aktuelle nachbarschaften
+			
+	April
 		-> TODO		Einleitung schreiben
 		-> Wie kann man zuverlässig sagen, dass ein lauf NICHT bzw. SCHON das equilibrium erreicht hat
 		

@@ -513,13 +513,14 @@ public class Auction {
 			
 			while (agIt.hasNext())  {
 				Agent ag = agIt.next();
-				AskOffering[] askOfferings = new AskOffering[NUMMARKETS]; 
-				BidOffering[] bidOfferings = new BidOffering[NUMMARKETS];
+				
 				Offering[] match = new Offering[NUMMARKETTYPES*2]; //in general: for each market type a bid and an ask offer
 	
 				// agent calculates offering for each market
-				ag.calcOfferings( askOfferings, bidOfferings );
-
+				ag.calcOfferings();
+				AskOffering[] askOfferings = ag.getCurrentAskOfferings(); 
+				BidOffering[] bidOfferings = ag.getCurrentBidOfferings();
+				
 				// find match: must be neighbours, must be same market, bid (buy) must be larger than ask (sell)
 				int matchResult = transaction.findMatches(askOfferings, bidOfferings, match, agents); //0: no match; 1: askOffering matched; 2: bidOffering matched
 				
@@ -556,10 +557,13 @@ public class Auction {
 			Iterator<Agent> agIt = agents.randomIterator();
 			
 			boolean successfulTrans = false;
-			
+		
 			while (agIt.hasNext())  {
 				Agent ag = agIt.next();
 				Offering[] match = null;
+				
+				// let current agent calculate its offers
+				ag.calcOfferings();
 				
 				// find match: must be neighbours, must be same market, bid (buy) must be larger than ask (sell)
 				if ( MatchingType.RANDOM_NEIGHOUR == type ) {
@@ -569,12 +573,10 @@ public class Auction {
 					match = transaction.findMatchesByBestNeighborhood( ag, agents ); //null: no match, else matching
 					
 				} else if ( MatchingType.BEST_GLOBAL_OFFERS == type ) {
-					AskOffering[] askOfferings = new AskOffering[NUMMARKETS]; 
-					BidOffering[] bidOfferings = new BidOffering[NUMMARKETS];
 					match = new Offering[NUMMARKETTYPES*2]; //in general: for each market type a bid and an ask offer
-					
-					// agent calculates offering for each market
-					ag.calcOfferings( askOfferings, bidOfferings );
+				
+					AskOffering[] askOfferings = ag.getCurrentAskOfferings(); 
+					BidOffering[] bidOfferings = ag.getCurrentBidOfferings();
 
 					if ( 0 == transaction.findMatches(askOfferings, bidOfferings, match, agents) ) {
 						match = null;

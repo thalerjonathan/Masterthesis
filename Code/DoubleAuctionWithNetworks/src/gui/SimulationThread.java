@@ -192,6 +192,15 @@ public class SimulationThread implements Runnable {
 				} else {
 					// count how many unsuccessful TX in a row occured
 					this.noSuccTXCounter++;
+					
+					// repaint MainWindow upon the 10th unsuccessful TX because
+					// previously successful tx notification could have ignored repaint because
+					// when full-speed running a repaint will only happen when the delta
+					// between two successful TX is > 1000ms => there could have been a
+					// last successful TX which ist but not reflected in the visualisation
+					if ( this.noSuccTXCounter == 10 ) {
+						SimulationThread.this.mainWindow.repaint();
+					}
 				}
 				
 				// running in thread => need to update SWING through SwingUtilities.invokeLater

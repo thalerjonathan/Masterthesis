@@ -13,7 +13,7 @@ public class AskOfferingWithLoans extends AskOffering {
 
 	
 	public AskOfferingWithLoans( double assetPrice, double assetAmount, double loanPrice, 
-			                    int loanType, double loanPromise, double loanAmount, Agent agent, int mkt, int marketType ) {
+			                    int loanType, double loanPromise, double loanAmount, Agent agent, int mkt, MarketType marketType ) {
 		super(assetPrice, assetAmount, agent, mkt, marketType );
 		this.loanPrice = loanPrice;
 		this.loanType = loanType;
@@ -23,7 +23,7 @@ public class AskOfferingWithLoans extends AskOffering {
 	}
 
 	public AskOfferingWithLoans( double assetPrice, double loanPrice, 
-								int loanType, double loanPromise, double loanAmount, Agent agent, int mkt, int marketType ) {
+								int loanType, double loanPromise, double loanAmount, Agent agent, int mkt, MarketType marketType ) {
 		super(assetPrice, agent, mkt, marketType);
 		this.loanPrice = loanPrice;
 		this.loanType = loanType;

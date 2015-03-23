@@ -63,7 +63,7 @@ public class Transaction  {
 			bestBidOfferings.add(new ArrayList<BidOffering>());
 		}
 	}
-	
+
 	public Offering[] findMatchesByRandomNeighborhood( Agent a, AgentNetwork agents ) {
 		// 1. process ask-offerings: need to find a bidder among the neighborhood of the agent
 		Agent neighbor = agents.getRandomNeighbor( a );
@@ -72,86 +72,66 @@ public class Transaction  {
 		if ( null == neighbor ) {
 			return null;
 		}
+	
+		// cannot be null, calculated its offers already
+		AskOffering[] askOfferings = a.getCurrentAskOfferings();
+		BidOffering[] bidOfferings = a.getCurrentBidOfferings();
 		
-		// note: it doesn't make a difference whether ask or bid is done first
-		// or first ask is checked and if no match then bid is checked due to the nature of the problem
-		boolean testFirstAsk = ( Math.random() < 0.5 );
-		
-		if ( testFirstAsk ) {
-			AskOffering ask = a.calcAskOfferings()[ 0 ];
-			BidOffering bid = neighbor.calcBidOfferings()[ 0 ];
+		AskOffering[] askOfferingsNeighbour = neighbor.getCurrentAskOfferings();
+		BidOffering[] bidOfferingsNeighbour = neighbor.getCurrentBidOfferings();
 			
-			Offering[] match = this.matchOffers( ask, bid );
-			if ( null != match) {
-				return match;
-			}
-		} else {
-			// 2. process bid-offerings: need to find an asker among the neighborhood of the agent
-			BidOffering bid = a.calcBidOfferings()[ 0 ];
-			AskOffering ask = neighbor.calcAskOfferings()[ 0 ];
-			
-			Offering[]  match = this.matchOffers( ask, bid );
-			if ( null != match) {
-				return match;
-			}
-		}
-		
-		return null;
+		return this.matchOffers(askOfferings, bidOfferings, askOfferingsNeighbour, bidOfferingsNeighbour);
 	}
 	
 	public Offering[] findMatchesByBestNeighborhood( Agent a, AgentNetwork agents ) {
-		// 1. process ask-offerings: need to find a bidder among the neighborhood of the agent
 		Iterator<Agent> neighborhood = agents.getNeighbors( a );
 		
-		AskOffering agentAsk = a.calcAskOfferings()[ 0 ];
-		BidOffering agentBid = a.calcBidOfferings()[ 0 ];
+		AskOffering[] agentAsk = a.getCurrentAskOfferings();
+		BidOffering[] agentBid = a.getCurrentBidOfferings();
 		
-		AskOffering bestAsk = null;
-		BidOffering bestBid = null;
+		AskOffering[] bestAsk = new AskOffering[ agentAsk.length ];
+		BidOffering[] bestBid = new BidOffering[ agentBid.length ];
 		
 		// find best ask and bid offers in neighborhood
 		while ( neighborhood.hasNext() ) {
 			Agent neighbor = neighborhood.next();
 			
-			if ( null == bestAsk ) {
-				bestAsk = neighbor.calcAskOfferings()[ 0 ];
-			
-			} else {
-				AskOffering neighbourAsk = neighbor.calcAskOfferings()[ 0 ];
-				
-				if ( null != neighbourAsk && neighbourAsk.dominates( bestAsk )) {
-					bestAsk = neighbourAsk;
+			AskOffering[] neighbourAsk = neighbor.getCurrentAskOfferings();
+			if ( null != neighbourAsk ) {
+				for ( int i = 0; i < neighbourAsk.length; ++i ) {
+					AskOffering ask = neighbourAsk[ i ];
+					
+					if ( null != ask ) {
+						if ( null == bestAsk[ i ] ) {
+							bestAsk[ i ] = ask;
+						} else {
+							if ( ask.dominates( bestAsk[ i ] ) ) {
+								bestAsk[ i ] = ask;
+							}
+						}
+					}
 				}
 			}
-			
-			if ( null == bestBid ) {
-				bestBid = neighbor.calcBidOfferings()[ 0 ];
-				
-			} else {
-				BidOffering neighbourBid = neighbor.calcBidOfferings()[ 0 ];
-				
-				
-				if ( null != neighbourBid && neighbourBid.dominates( bestBid )) {
-					bestBid = neighbourBid;
+
+			BidOffering[] neighbourBid = neighbor.getCurrentBidOfferings();
+			if ( null != neighbourBid ) {
+				for ( int i = 0; i < neighbourBid.length; ++i ) {
+					BidOffering bid = neighbourBid[ i ];
+					
+					if ( null != bid ) {
+						if ( null == bestBid[ i ] ) {
+							bestBid[ i ] = bid;
+						} else {
+							if ( bid.dominates( bestBid[ i ] ) ) {
+								bestBid[ i ] = bid;
+							}
+						}
+					}
 				}
 			}
 		}
 		
-		boolean testFirstAsk = ( Math.random() < 0.5 );
-		
-		if ( testFirstAsk ) {
-			Offering[] match = this.matchOffers( agentAsk, bestBid );
-			if ( null != match) {
-				return match;
-			}
-		} else {
-			Offering[] match = this.matchOffers( bestAsk, agentBid );
-			if ( null != match) {
-				return match;
-			}
-		}
-		
-		return null;
+		return this.matchOffers( agentAsk, agentBid, bestAsk, bestBid );
 	}
 	
 	public int findMatches(AskOffering[] askOfferings, BidOffering[] bidOfferings, Offering[] match, AgentNetwork agents )   {
@@ -206,6 +186,20 @@ public class Transaction  {
 		}
 		
 		return 0;		
+	}
+	
+	protected Offering[] matchOffers( AskOffering[] askOfferings, BidOffering[] bidOfferings, AskOffering[] bestAsk, BidOffering[] bestBid ) {
+		if ( null == askOfferings || null == bidOfferings || null == bestAsk || null == bestBid ) {
+			return null;
+		}
+		
+		boolean testFirstAsk = ( Math.random() < 0.5 );
+		
+		if ( testFirstAsk ) {
+			return this.matchOffers( askOfferings[ 0 ], bestBid[ 0 ] );
+		}
+		
+		return this.matchOffers( bestAsk[ 0 ], bidOfferings[ 0 ] );
 	}
 	
 	private Offering[] matchOffers( AskOffering ask, BidOffering bid ) {

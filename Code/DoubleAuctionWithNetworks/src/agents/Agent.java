@@ -5,6 +5,7 @@ import java.util.Random;
 import agents.markets.Asset;
 import doubleAuction.offer.AskOffering;
 import doubleAuction.offer.BidOffering;
+import doubleAuction.offer.MarketType;
 import doubleAuction.offer.Offering;
 
 public class Agent {
@@ -36,6 +37,9 @@ public class Agent {
 	protected boolean assetBuyer=false, indifferent=false;
 
 	public static int NUMMARKETS;
+	
+	private AskOffering[] currentAskOfferings;
+	private BidOffering[] currentBidOfferings;
 	
 	protected double utility = 0, accUtility = 0, lastUtility = 0, lastLastUtility = 0, utilDiff=0;    
 	protected double[][] decisions, lastDecisions, lastLastDecisions, assignedDecs;
@@ -114,18 +118,20 @@ public class Agent {
 		return indifferent;
 	}
 	
-	
-	public void calcOfferings(AskOffering[] askOfferings, BidOffering[] bidOfferings) {
-		AskOffering[] calculatedAskOfferings = calcAskOfferings();
-		BidOffering[] calculatedBidOfferings = calcBidOfferings();
-		
-		for ( int i = 0; i < calculatedAskOfferings.length; ++i ) {
-			askOfferings[ i ] = calculatedAskOfferings[ i ];
-			bidOfferings[ i ] = calculatedBidOfferings[ i ];
-		}	
+	public AskOffering[] getCurrentAskOfferings() {
+		return currentAskOfferings;
+	}
+
+	public BidOffering[] getCurrentBidOfferings() {
+		return currentBidOfferings;
 	}
 	
-	public AskOffering[] calcAskOfferings()  {
+	public void calcOfferings() {
+		this.currentAskOfferings = calcAskOfferings();
+		this.currentBidOfferings = calcBidOfferings();
+	}
+	
+	protected AskOffering[] calcAskOfferings()  {
 	//draw a random price uniformly out of [minP,maxP] intersect [limitPriceAsset,pU]
 		double minP = getPMin();
 		double maxP = getPMax();
@@ -145,12 +151,12 @@ public class Agent {
 		
 		if (TRADE_ONLY_FULL_UNITS) {
 			if (assetEndow >= UNIT)
-				actAskOffer = new AskOffering(assetPrice, this, 0, 0);	
+				actAskOffer = new AskOffering(assetPrice, this, 0, MarketType.ASSET_AGAINST_CASH );	
 			else
 				actAskOffer = null;
 		} else  {
 			if (assetEndow > 0)
-				actAskOffer = new AskOffering(assetPrice, Math.min(assetEndow,MAXUNIT), this, 0, 0);	
+				actAskOffer = new AskOffering(assetPrice, Math.min(assetEndow,MAXUNIT), this, 0, MarketType.ASSET_AGAINST_CASH );	
 			else
 				actAskOffer = null;
 			
@@ -159,7 +165,7 @@ public class Agent {
 		return new AskOffering[] { actAskOffer };
 	}
 	
-	public BidOffering[] calcBidOfferings()  {
+	protected BidOffering[] calcBidOfferings()  {
 		//first version: draw a random price uniformly out of [minP,maxP] intersect [pD,limitPriceAsset] 
 		double minP = getPMin();
 		double maxP = getPMax();
@@ -178,12 +184,12 @@ public class Agent {
 			
 		if (TRADE_ONLY_FULL_UNITS) {
 			if (assetPrice*UNIT <= consumEndow)
-				actBidOffer = new BidOffering(assetPrice, this, 0, 0);
+				actBidOffer = new BidOffering(assetPrice, this, 0, MarketType.ASSET_AGAINST_CASH );
 			else
 				actBidOffer = null;
 		} else {
 			if (consumEndow>0)
-				actBidOffer = new BidOffering(assetPrice, Math.min(consumEndow/assetPrice,MAXUNIT), this, 0, 0);
+				actBidOffer = new BidOffering(assetPrice, Math.min(consumEndow/assetPrice,MAXUNIT), this, 0, MarketType.ASSET_AGAINST_CASH );
 			else
 				actBidOffer = null;			
 		}
@@ -223,6 +229,9 @@ public class Agent {
 			accUtility += (myAsk.getFinalAssetPrice() - limitPriceAsset)*UNIT;
 		}
 		
+		// need to reset when match to force a recalculation of offers
+		this.calcOfferings();
+		
 		return true;
 	}
 	
@@ -252,6 +261,9 @@ public class Agent {
 			else 
 				consumEndow = 0;
 		}
+		
+		// need to reset when match to force a recalculation of offers
+		this.calcOfferings();
 		
 		return true;
 	}
