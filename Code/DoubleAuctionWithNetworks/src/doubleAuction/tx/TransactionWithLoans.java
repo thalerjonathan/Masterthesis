@@ -1,12 +1,13 @@
 package doubleAuction.tx;
 
 import java.util.Iterator;
+import java.util.List;
 import java.util.Random;
 
 import org.apache.commons.math.random.RandomDataImpl;
 
 import agents.markets.Loans;
-import agents.network.AgentNetwork;
+import doubleAuction.Auction;
 import doubleAuction.AuctionWithLoans;
 import doubleAuction.offer.AskOffering;
 import doubleAuction.offer.AskOfferingWithLoans;
@@ -35,178 +36,10 @@ public class TransactionWithLoans extends Transaction {
 	}
 
 	@Override
-	protected Offering[] matchOffers( AskOffering[] askOfferings, BidOffering[] bidOfferings, AskOffering[] askOfferingsNeighbour, BidOffering[] bidOfferingsNeighbour ) {
-		if ( null == askOfferingsNeighbour || null == bidOfferingsNeighbour || null == askOfferingsNeighbour || null == bidOfferingsNeighbour ) {
-			return null;
-		}
+	public Offering[] matchOffers( AskOffering[] askOfferings, BidOffering[] bidOfferings, 
+			List<List<AskOffering>> bestAsks, List<List<BidOffering>> bestBids ) {
 		
-		Offering[] match = new Offering[ 3 ]; 
-		
-		//choose a match in ask or bid offer in random order in type and market
-		RandomDataImpl rdi = new RandomDataImpl();
-		
-		int[] perm, altPerm;
-		// generate perumtation of the markets to randomly search for matches
-		perm = rdi.nextPermutation(NUMMARKETS, NUMMARKETS);
-
-		
-		for (int i=0; i<NUMMARKETS; i++) {
-			  int market = perm[i];
-			  boolean testFirstAsk = ( Math.random() < 0.5 );
-			
-			  for (int w=0; w<2;w++) {
-				  // there is an ask (sell) offering for the market
-				if (testFirstAsk && askOfferings[market] != null) {
-					
-				  //search a matching bid transaction in same market, if the ask offer is not a pure loan offer
-				  if ( MarketType.LOAN_AGAINST_CASH != askOfferings[market].getMarketType() ) {
-					  BidOffering bestBid = bidOfferingsNeighbour[ market ];
-					  
-					  if ( null != bestBid ) {
-						if ( (askOfferings[market].getAgent() != bestBid.getAgent()) && askOfferings[market].matches(bestBid))  {
-							askOfferings[market].setFinalAssetPrice(bestBid.getAssetPrice());
-							bestBid.setFinalAssetPrice(bestBid.getAssetPrice());
-							
-							if ( MarketType.ASSET_AGAINST_LOAN == askOfferings[market].getMarketType() )  {
-								((AskOfferingWithLoans)askOfferings[market]).setFinalLoanPrice(((BidOfferingWithLoans)bestBid).getLoanPrice());
-								((BidOfferingWithLoans)bestBid).setFinalLoanPrice(((BidOfferingWithLoans)bestBid).getLoanPrice());
-							}						
-							//case 1 or 2:
-							match[0] = askOfferings[market];
-							match[1] = bestBid;
-							return match;
-						}
-					  }
-					  				  
-					//no match found in market mkt: search in alternative markets a matching bid transaction - depending on the market type
-					if ( MarketType.ASSET_AGAINST_CASH == askOfferings[market].getMarketType() && Loans.LOANMARKET )  {
-						//asset against cash - try a match for a bidding agent in market 1			
-						int altMkt;
-						altPerm = rdi.nextPermutation(NUMLOANS, NUMLOANS);
-						for (int j=0;j<NUMLOANS;j++)   {
-							altMkt = altPerm[j];
-							BidOfferingWithLoans bestBidLoans = (BidOfferingWithLoans) bidOfferingsNeighbour[ altMkt+1 ];
-							if ( null != bestBidLoans ) {
-								if ((askOfferings[market].getAgent() != bestBidLoans.getAgent()) && askOfferings[market].matches(bestBidLoans))  {
-		//partial match: asset prices match - now find a loan for bestBid
-										AskOfferingWithLoans bestAsk = (AskOfferingWithLoans) askOfferingsNeighbour [ 1+NUMLOANS+altMkt ];
-										if ( null != bestAsk ) {
-											if ( (bestAsk.getAgent() != bestBidLoans.getAgent()) && (askOfferings[market].getAgent() != bestAsk.getAgent()) 
-													&& bestBidLoans.matchesLoan(bestAsk))  {
-			//found total match!!
-												askOfferings[market].setFinalAssetPrice(bestBidLoans.getAssetPrice());
-												bestBidLoans.setFinalAssetPrice(bestBidLoans.getAssetPrice());
-												bestBidLoans.setFinalLoanPrice(bestAsk.getLoanPrice());
-												bestAsk.setFinalLoanPrice(bestAsk.getLoanPrice());
-												//case 3						
-												match[0] = askOfferings[market];  //sells an asset against cash to bestBid.agent
-												match[1] = bestBidLoans;            //buys an asset against cash and takes a loan from bestAsk.agent
-												match[2] = bestAsk;            //sells a loan to bestBid.agent
-												return match;
-											}
-										}
-									
-								}
-							}
-							
-						}
-					}
-				  }
-				  // markettype is either ASSET_AGAINST_CASH or ASSET_AGAINST_LOAN
-				  else {
-		//pure loan offer: find a bid offer for an asset against loan
-						BidOfferingWithLoans bestBid = (BidOfferingWithLoans) bidOfferingsNeighbour[ 1+((AskOfferingWithLoans)askOfferings[market]).getLoanType() ];  //bids for an asset against loan			
-						if ( null != bestBid ) {
-							if ( bestBid.matchesLoan((AskOfferingWithLoans)askOfferings[market]))  {
-		//partial match: loan prices match - now find an asset against cash for bestBid					
-
-								AskOffering bestAsk = askOfferingsNeighbour[ 0 ];
-								if ( null != bestAsk ) {
-									if ( (bestAsk.getAgent() != bestBid.getAgent()) && (askOfferings[market].getAgent() != bestAsk.getAgent())
-											&& bestAsk.matches(bestBid) )  {
-			//found total match!!
-										bestAsk.setFinalAssetPrice(bestAsk.getAssetPrice());
-										bestBid.setFinalAssetPrice(bestAsk.getAssetPrice());
-										((AskOfferingWithLoans)askOfferings[market]).setFinalLoanPrice(bestBid.getLoanPrice());
-										bestBid.setFinalLoanPrice(bestBid.getLoanPrice());
-										//case 3
-										match[2] = askOfferings[market];  //sells a loan to bestBid.agent
-										match[1] = bestBid;            //buys an asset against cash from loan from bestAsk.agent
-										match[0] = bestAsk;            //sells an asset against cash to bestBid.agent
-										return match;
-									}
-								}
-							}
-						}
-					
-				  }
-				}
-				
-				// there is a bid (buy) offering for the market
-				else if (!testFirstAsk && bidOfferings[market] != null)  {
-						//search a matching ask transaction in same market; NOTE: the bid offer cannot be a pure loan offer
-						AskOffering bestAsk = askOfferingsNeighbour[ market ];
-						if ( null != bestAsk ) {
-							if (bidOfferings[market].matches(bestAsk))  {
-								bidOfferings[market].setFinalAssetPrice(bestAsk.getAssetPrice());
-								bestAsk.setFinalAssetPrice(bestAsk.getAssetPrice());
-								if ( MarketType.ASSET_AGAINST_LOAN == bidOfferings[market].getMarketType() )  {
-									((BidOfferingWithLoans)bidOfferings[market]).setFinalLoanPrice(((AskOfferingWithLoans)bestAsk).getLoanPrice());
-									((AskOfferingWithLoans)bestAsk).setFinalLoanPrice(((AskOfferingWithLoans)bestAsk).getLoanPrice());
-								}						
-								//case 1 or 2:
-								match[0] = bestAsk;
-								match[1] = bidOfferings[market];
-								return match;
-							}
-						}
-					
-					//no match found in market: search in alternative markets a matching ask transaction - depending on the market type
-					if ( MarketType.ASSET_AGAINST_LOAN == bidOfferings[market].getMarketType() && Loans.LOANMARKET)  {
-		//1. find an askOffer for a loan of type bidOfferings[mkt].loanType			
-							AskOfferingWithLoans bestAskWitLoan = (AskOfferingWithLoans)askOfferingsNeighbour[ 1+NUMLOANS+((BidOfferingWithLoans)bidOfferings[market]).getLoanType() ];			
-							if ( null != bestAskWitLoan ) {
-								if ((bidOfferings[market].getAgent() != bestAskWitLoan.getAgent()) && ((BidOfferingWithLoans)bidOfferings[market]).matchesLoan(bestAskWitLoan) )  {
-		//partial match: loan prices match - now find an asset against cash for bestBid					
-
-									AskOffering bestAsk1 = askOfferingsNeighbour[ 0 ];
-									if ( null != bestAsk1 ) {
-										if ( (bidOfferings[market].getAgent() != bestAsk1.getAgent()) && (bestAskWitLoan.getAgent() != bestAsk1.getAgent()) 
-												&& bestAsk1.matches((BidOfferingWithLoans)bidOfferings[market]) )  {
-				//found total match!!
-											((BidOfferingWithLoans)bidOfferings[market]).setFinalAssetPrice(bestAsk1.getAssetPrice());
-											bestAsk1.setFinalAssetPrice(bestAsk1.getAssetPrice());
-											((BidOfferingWithLoans)bidOfferings[market]).setFinalLoanPrice(bestAskWitLoan.getLoanPrice());
-											bestAskWitLoan.setFinalLoanPrice(bestAskWitLoan.getLoanPrice());
-											// case 3
-											match[1] = bidOfferings[market];   // wants to buy an asset against a loan
-											match[0] = bestAsk1;            //wants to sell an asset against cash
-											match[2] = bestAskWitLoan;             //wants to give a loan
-											return match;
-										}
-									}
-								}
-							}
-						
-					}		
-				}
-				testFirstAsk = !testFirstAsk;
-			  }
-			}
-			
-			return null;
-	}
-
-	@Override
-	public int findMatches(AskOffering[] askOfferings, BidOffering[] bidOfferings, Offering[] match, AgentNetwork network)   {
-		//searches one match: in bestAskOfferings a matching for one of bidOfferings, or in bestBidOfferings a matching for one of askOfferings
-		// returns 0: no match;  1: ask offering matched; 2: bid offering matched
-		//for NUMMARKET markets: NUMLOANS loan markets and 1+NUMLOANS asset markets (asset for cash and asset for loan type j)
-		// there are the following match cases:
-		// case 1: market 0 ask and bid  (asset against cash):   match[0] ask asset offer, match[1] bid asset offer 
-		// case 2: market 1 ask and bid  (asset against loan):   idem
-		// case 3: market 0 and 2 asks and market 1 bid (asset against cash, and cash against loan): 
-		//                                                       match[0] ask asset offer, match[1] bid asset offer, match[2] loan ask offer
+		Offering[] match = new Offering[ Auction.NUMMARKETTYPES * 2 ];
 		
 		Iterator<BidOffering> itBestBids;
 		Iterator<AskOffering> itBestAsks;
@@ -229,16 +62,11 @@ public class TransactionWithLoans extends Transaction {
 			if (testFirstAsk && askOfferings[market] != null) {
 			  if ( MarketType.LOAN_AGAINST_CASH != askOfferings[market].getMarketType() ) {
 				//search a matching bid transaction in same market, if the ask offer is not a pure loan offer
-				itBestBids = getBestBidOfferings(market).iterator();
+				itBestBids = bestBids.get(market).iterator();
 				
 				//iterate on all best bid offerings searching for a match
 				while (itBestBids.hasNext())  {
 					BidOffering bestBid = itBestBids.next();
-					
-					// add network-topology: only accept matches between neighbors
-					if ( false == network.isNeighbor( askOfferings[market].getAgent(), bestBid.getAgent() ) ) {
-						continue;
-					}
 					
 					if ((askOfferings[market].getAgent() != bestBid.getAgent()) && askOfferings[market].matches(bestBid))  {
 						askOfferings[market].setFinalAssetPrice(bestBid.getAssetPrice());
@@ -250,7 +78,7 @@ public class TransactionWithLoans extends Transaction {
 						//case 1 or 2:
 						match[0] = askOfferings[market];
 						match[1] = bestBid;
-						return 1;
+						return match;
 					}
 				}
 				
@@ -261,19 +89,14 @@ public class TransactionWithLoans extends Transaction {
 					altPerm = rdi.nextPermutation(NUMLOANS, NUMLOANS);
 					for (int j=0;j<NUMLOANS;j++)   {
 						altMkt = altPerm[j];
-						itBestBids = getBestBidOfferings(altMkt+1).iterator();
+						itBestBids = bestBids.get(altMkt+1).iterator();
 						//iterate on all best bid offerings searching for a match
 						while (itBestBids.hasNext())  {
 							BidOfferingWithLoans bestBid = (BidOfferingWithLoans)itBestBids.next();	
 							
-							// add network-topology: only accept matches between neighbors
-							if ( false == network.isNeighbor( askOfferings[market].getAgent(), bestBid.getAgent() ) ) {
-								continue;
-							}
-							
 							if ((askOfferings[market].getAgent() != bestBid.getAgent()) && askOfferings[market].matches(bestBid))  {
 	//partial match: asset prices match - now find a loan for bestBid
-								itBestAsks = getBestAskOfferings(1+NUMLOANS+altMkt).iterator();
+								itBestAsks = bestAsks.get(1+NUMLOANS+altMkt).iterator();
 								//iterate on all best ask offerings searching for a match
 								while (itBestAsks.hasNext())  {
 									AskOfferingWithLoans bestAsk = (AskOfferingWithLoans)itBestAsks.next();			
@@ -288,7 +111,7 @@ public class TransactionWithLoans extends Transaction {
 										match[0] = askOfferings[market];  //sells an asset against cash to bestBid.agent
 										match[1] = bestBid;            //buys an asset against cash and takes a loan from bestAsk.agent
 										match[2] = bestAsk;            //sells a loan to bestBid.agent
-										return 1;
+										return match;
 									}
 								}
 							}
@@ -298,19 +121,14 @@ public class TransactionWithLoans extends Transaction {
 			  }
 			  else {
 	//pure loan offer: find a bid offer for an asset against loan
-				itBestBids = getBestBidOfferings(1+((AskOfferingWithLoans)askOfferings[market]).getLoanType()).iterator();
+				itBestBids = bestBids.get(1+((AskOfferingWithLoans)askOfferings[market]).getLoanType()).iterator();
 				//iterate on all best bid offerings searching for a match
 				while (itBestBids.hasNext())  {
 					BidOfferingWithLoans bestBid = (BidOfferingWithLoans)itBestBids.next();  //bids for an asset against loan			
 					
-					// add network-topology: only accept matches between neighbors
-					if ( false == network.isNeighbor( askOfferings[market].getAgent(), bestBid.getAgent() ) ) {
-						continue;
-					}
-					
 					if ((askOfferings[market].getAgent() != bestBid.getAgent()) && bestBid.matchesLoan((AskOfferingWithLoans)askOfferings[market]))  {
 	//partial match: loan prices match - now find an asset against cash for bestBid					
-						itBestAsks = getBestAskOfferings(0).iterator();
+						itBestAsks = bestAsks.get(0).iterator();
 						//iterate on all best ask offerings searching for a match
 						while (itBestAsks.hasNext())  {
 							AskOffering bestAsk = itBestAsks.next();			
@@ -325,7 +143,7 @@ public class TransactionWithLoans extends Transaction {
 								match[2] = askOfferings[market];  //sells a loan to bestBid.agent
 								match[1] = bestBid;            //buys an asset against cash from loan from bestAsk.agent
 								match[0] = bestAsk;            //sells an asset against cash to bestBid.agent
-								return 1;
+								return match;
 							}
 						}
 					}
@@ -334,16 +152,11 @@ public class TransactionWithLoans extends Transaction {
 			}
 			else if (!testFirstAsk && bidOfferings[market] != null)  {
 	//search a matching ask transaction in same market; NOTE: the bid offer cannot be a pure loan offer
-				itBestAsks = getBestAskOfferings(market).iterator();
+				itBestAsks = bestAsks.get(market).iterator();
 				//iterate on all best ask offerings searching for a match
 				while (itBestAsks.hasNext())  {
 					AskOffering bestAsk = itBestAsks.next();
-	
-					// add network-topology: only accept matches between neighbors
-					if ( false == network.isNeighbor( bidOfferings[market].getAgent(), bestAsk.getAgent() ) ) {
-						continue;
-					}
-					
+
 					if ((bidOfferings[market].getAgent() != bestAsk.getAgent()) && bidOfferings[market].matches(bestAsk))  {
 						bidOfferings[market].setFinalAssetPrice(bestAsk.getAssetPrice());
 						bestAsk.setFinalAssetPrice(bestAsk.getAssetPrice());
@@ -354,25 +167,21 @@ public class TransactionWithLoans extends Transaction {
 						//case 1 or 2:
 						match[0] = bestAsk;
 						match[1] = bidOfferings[market];
-						return 2;
+						return match;
 					}
 				}
 	//no match found in market mkt: search in alternative markets a matching ask transaction - depending on the market type
 				if ( MarketType.ASSET_AGAINST_LOAN == bidOfferings[market].getMarketType() && Loans.LOANMARKET)  {
 	//1. find an askOffer for a loan of type bidOfferings[mkt].loanType			
-					itBestAsks = getBestAskOfferings(1+NUMLOANS+((BidOfferingWithLoans)bidOfferings[market]).getLoanType()).iterator();
+					itBestAsks = bestAsks.get(1+NUMLOANS+((BidOfferingWithLoans)bidOfferings[market]).getLoanType()).iterator();
 					//iterate on all best ask offerings searching for a match
 					while (itBestAsks.hasNext())  {
 						AskOfferingWithLoans bestAsk = (AskOfferingWithLoans)itBestAsks.next();			
 	
-						// add network-topology: only accept matches between neighbors
-						if ( false == network.isNeighbor( bidOfferings[market].getAgent(), bestAsk.getAgent() ) ) {
-							continue;
-						}
 						
 						if ((bidOfferings[market].getAgent() != bestAsk.getAgent()) && ((BidOfferingWithLoans)bidOfferings[market]).matchesLoan(bestAsk) )  {
 	//partial match: loan prices match - now find an asset against cash for bestBid					
-							itBestAsks1 = getBestAskOfferings(0).iterator();
+							itBestAsks1 = bestAsks.get(0).iterator();
 							//iterate on all best ask offerings searching for a match
 							while (itBestAsks1.hasNext())  {
 								AskOffering bestAsk1 = itBestAsks1.next();			
@@ -387,7 +196,7 @@ public class TransactionWithLoans extends Transaction {
 									match[1] = bidOfferings[market];   // wants to buy an asset against a loan
 									match[0] = bestAsk1;            //wants to sell an asset against cash
 									match[2] = bestAsk;             //wants to give a loan
-									return 2;
+									return match;
 								}
 							}
 						}
@@ -398,9 +207,9 @@ public class TransactionWithLoans extends Transaction {
 		  }
 		}
 		
-		return 0;
+		return null;
 	}
-
+	
 	@Override
 	public void matched( Offering[] match)  {
 		//askOffer and BidOffer matched for a successful transaction: close transaction with price and amount of the asset
@@ -450,28 +259,6 @@ public class TransactionWithLoans extends Transaction {
 		}
 	}
 
-	@Override
-	public void calcStatistics()  {
-		/*at the end of a transaction: calculate 
-		  -mean askOffering asset price 
-		  -mean bidOffering asset price
-		  -mean asking h
-		  -mean bidding h
-		  -transaction length
-		*/
-		if (askOfferings.size()>0)   {
-			meanAskAssetPrice /= askOfferings.size();
-			meanAskH /= askOfferings.size();
-		}
-		
-		if (bidOfferings.size()>0)  {
-			meanBidAssetPrice /= bidOfferings.size();
-			meanBidH /= bidOfferings.size();
-		}
-				
-		length = offerings.size();
-	}
-	
 	public double getLoanPrice() {
 		return loanPrice;
 	}

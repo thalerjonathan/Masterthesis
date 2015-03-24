@@ -386,7 +386,7 @@ public class AgentWithLoans extends Agent {
 		}
 		
 		// need to reset when match to force a recalculation of offers
-		this.calcOfferings();
+		this.clearBestOfferings();
 		
 		return true;
 	}
@@ -441,7 +441,7 @@ public class AgentWithLoans extends Agent {
 		}
 		
 		// need to reset when match to force a recalculation of offers
-		this.calcOfferings();
+		this.clearBestOfferings();
 		
 		return true;
 	}
@@ -495,7 +495,7 @@ public class AgentWithLoans extends Agent {
 		}
 		
 		// need to reset when match to force a recalculation of offers
-		this.calcOfferings();
+		this.clearBestOfferings();
 		
 		return true;
 	}

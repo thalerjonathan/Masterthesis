@@ -1,0 +1,33 @@
+Market & Matching Mechanisms
+
+Problem: current implementation is not very well suited to take network topologies into account as
+it expects all agents to be fully connected - each agent has a connection to each other agent.
+It keeps track of all offerings in the Transaction object which is therefore the "offer-book" as it
+knows all offers and updates.
+
+Thus Matching needs to be done accordingly with neighborhood
+
+Always: In each Sweep shuffle Agents randomly and walk them => each agent once per sweep but in random order
+
+"When do Offering" Variations
+	All Offers
+		-> let each agent give its ask- and bid-offer and after all have given their offerings in the current sweep then do the matching.
+			-> WARNING: WONT WORK BECAUSE WHEN MATCHING THEN WEALTH CHANGES WHICH CHANGES OFFERINGS!
+			
+	Single Offers
+		-> the current random agent will give its ask- and bid-offer and find matching immediately
+	
+Matchings
+	Best Of Neighbours
+		-> Select best offerings of all neighbours: each neighbor gives an offering and best will be drawn
+	
+	Random Neighbour
+		-> select random neighbor and try match: random neighbor will give offering
+		
+	Global Best
+		-> store best offers for each market and match only with those AND neighborhood => very slow convergence if not fully connected
+
+Performance improvement
+	-> agent calculates offerings once, stores them and only do recalculation when transaction hit: reset in execTransaction
+	-> Multithreaded?
+	 

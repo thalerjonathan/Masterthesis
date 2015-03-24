@@ -173,7 +173,12 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 		JPanel controlsPanel = new JPanel();
 		JPanel txInfoPanel = new JPanel( new GridBagLayout() );
 
-		this.topologySelection = new JComboBox<String>( new String[] { "Ascending-Connected", "Ascending Shortcuts", "Hub-Connected", "Fully-Connected", "Erdos-Renyi", "Barbasi-Albert", "Watts-Strogatz" } );
+		this.topologySelection = new JComboBox<String>( new String[] { 
+				"Ascending-Connected", "Ascending Shortcuts", 
+				"Hub-Connected", "Median-Hub", "Maximum-Hub", "3 Median Hubs",
+				"Fully-Connected", 
+				"Erdos-Renyi", "Barbasi-Albert", "Watts-Strogatz" 
+				} );
 		this.layoutSelection = new JComboBox<String>( new String[] { "Circle", "KK" } );
 		this.optimismSelection = new JComboBox<String>( new String[] { "Linear", "Triangle"  } );
 		this.matchingTypeSelection = new JComboBox<MatchingType>( MatchingType.values() );
@@ -568,12 +573,18 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 		} else if ( 2 == topologyIndex ) {
 			this.agents = AgentNetwork.createWithHubs( 3, agentFactory );
 		} else if ( 3 == topologyIndex ) {
-			this.agents = AgentNetwork.createFullyConnected( agentFactory );
+			this.agents = AgentNetwork.createWithMedianHub( agentFactory );
 		} else if ( 4 == topologyIndex ) {
-			this.agents = AgentNetwork.createErdosRenyiConnected( 0.2, agentFactory );
+			this.agents = AgentNetwork.createWithMaximumHub(agentFactory );
 		} else if ( 5 == topologyIndex ) {
-			this.agents = AgentNetwork.createBarbasiAlbertConnected( 3, 1, agentFactory );
+			this.agents = AgentNetwork.createWith3MedianHubs( agentFactory );
 		} else if ( 6 == topologyIndex ) {
+			this.agents = AgentNetwork.createFullyConnected( agentFactory );
+		} else if ( 7 == topologyIndex ) {
+			this.agents = AgentNetwork.createErdosRenyiConnected( 0.2, agentFactory );
+		} else if ( 8 == topologyIndex ) {
+			this.agents = AgentNetwork.createBarbasiAlbertConnected( 3, 1, agentFactory );
+		} else if ( 9 == topologyIndex ) {
 			this.agents = AgentNetwork.createWattsStrogatzConnected( 2, 0.2, agentFactory );
 		}
 		

@@ -1,0 +1,19 @@
+-> MERKWÜRDIGES VERHALTEN
+			-> ASCENDING CONNECTED verhält sich unter BEST_NEIGHBORHOOD fast gleich wie der reine asset->cash markt, assets->bonds werden fast garnicht gehandelt und die simulation bleibt hängen
+				-> bei BEST_GLOBAL_OFFERS ist dies nicht so, es läuft zwar extrem langsam aber asset->bonds werden viel mehr gehandelt
+			-> FULL CONNECTED verhält sich unter BEST_NEIGHBORHOOD "richtig" d.h. wie BEST_GLOBAL_OFFERS d.h. es werden viele assets->bonds gehandelt
+			=> globales offer-book verhalten noch genauer untersuchen, wahrscheinlich liegt es daran
+				-> die topologie allein kann nciht das problem sein, denn auch GLOBAL_OFFERS berücksichtigt die nachbarschaftsbeziehungen
+				-> unterschied: GLOBAL_OFFERS behält mehr im offer-book, BEST_NEIGHBORHOOD nur aktuelle nachbarschaften
+			
+			-> globales vs. lokales offer-book
+			
+			Untersuchen:
+			wie konvergiert BEST_NEIGHBORHOOD und BEST_GLOBAL_OFFERS in ASCENDING_CONNECTED?
+			eventuell kann es zu keiner vernünftigen konvergenz in diesem neztwerk kommen wenn die märkte so gekoppelt sind wie bei ASSET->LOAN?
+			vielleicht braucht es zusätzliche bedingungen z.b. "genügend" (unscharfer begriff) vernetztheit
+			-> BEST_GLOBAL_OFFERS konvergiert nicht wie das FULLY_CONNECTED. abbruch nach 25.000 TX ohne erfolg, 1600sec. (heimrechner)
+			-> BEST_NEIGHBORHOOD konvergiert ebenfalls nicht wie das FULLY_CONNECTED. abbruch nach 25.000 TX ohne erfolg, 1600sec. (heimrechner)
+				-> beide zeigen aber unterschiedliche endstadien: BEST_NEIGHBORHOOD konvergiert zuerst wie ASSET->CASH markt, erst dann werden bonds gehandelt
+				-> BEST_GLOBAL_OFFERS handelt bonds schon zu beginn
+			

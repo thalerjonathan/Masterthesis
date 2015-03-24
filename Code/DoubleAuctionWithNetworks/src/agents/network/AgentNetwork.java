@@ -124,6 +124,84 @@ public class AgentNetwork {
 		return network;
 	}
 	
+	public static AgentNetwork createWithMedianHub( IAgentFactory agentFactory ) {
+		AgentNetwork network = new AgentNetwork( "MedianHub", false );
+		network.populate( agentFactory );
+		
+		int medianIndex = network.orderedAgents.size() / 2;
+		Agent medianAgent = network.orderedAgents.get( medianIndex );
+		
+		for ( int i = 0; i < network.orderedAgents.size(); ++i ) {
+			Agent from = network.orderedAgents.get( i );
+			
+			// no self-loops
+			if ( medianAgent == from ) {
+				continue;
+			}
+			
+			network.graph.addEdge( new AgentConnection(), from, medianAgent );
+		}
+		
+		return network;
+	}
+	
+	public static AgentNetwork createWith3MedianHubs( IAgentFactory agentFactory ) {
+		AgentNetwork network = new AgentNetwork( "3MedianHubs", false );
+		network.populate( agentFactory );
+		
+		int medianIndex = network.orderedAgents.size() / 2;
+		Agent[] medianAgents = new Agent[ 3 ];
+		medianAgents[ 0 ] = network.orderedAgents.get( medianIndex - 1 );
+		medianAgents[ 1 ] = network.orderedAgents.get( medianIndex );
+		medianAgents[ 2 ] = network.orderedAgents.get( medianIndex + 1 );
+		
+		network.graph.addEdge( new AgentConnection(), medianAgents[ 0 ], medianAgents[ 1 ] );
+		network.graph.addEdge( new AgentConnection(), medianAgents[ 1 ], medianAgents[ 2 ] );
+		network.graph.addEdge( new AgentConnection(), medianAgents[ 2 ], medianAgents[ 0 ]);
+		
+		int counter = 0;
+		
+		Iterator<Agent> randIter = network.randomIterator();
+		while ( randIter.hasNext() ) {
+			Agent from = randIter.next();
+			
+			boolean selfLoop = false;
+			// no self-loops
+			for ( int j = 0; j < medianAgents.length; ++j ) {
+				if ( medianAgents[ j ] == from ) {
+					selfLoop = true;
+					break;
+				}
+			}
+			
+			if ( false == selfLoop ) {
+				network.graph.addEdge( new AgentConnection(), from, medianAgents[ counter % 3 ] );
+				counter++;
+			}
+		}
+		
+		return network;
+	}
+	
+	public static AgentNetwork createWithMaximumHub( IAgentFactory agentFactory ) {
+		AgentNetwork network = new AgentNetwork( "MaximumHub", false );
+		network.populate( agentFactory );
+		
+		Agent maximumAgent = network.orderedAgents.get( network.orderedAgents.size() - 1 );
+		
+		for ( int i = 0; i < network.orderedAgents.size(); ++i ) {
+			Agent from = network.orderedAgents.get( i );
+			
+			// no self-loops
+			if ( maximumAgent == from ) {
+				continue;
+			}
+			
+			network.graph.addEdge( new AgentConnection(), from, maximumAgent );
+		}
+		
+		return network;
+	}
 	// NOTE: DOES NOT SATISFIES HYPOTHESIS 
 	public static AgentNetwork createErdosRenyiConnected( double p, IAgentFactory agentFactory ) {
 		AgentNetwork network = new AgentNetwork( "ErdosRenyi", true );

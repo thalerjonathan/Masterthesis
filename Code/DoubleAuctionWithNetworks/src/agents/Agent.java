@@ -1,8 +1,12 @@
 package agents;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Random;
 
 import agents.markets.Asset;
+import doubleAuction.Auction;
 import doubleAuction.offer.AskOffering;
 import doubleAuction.offer.BidOffering;
 import doubleAuction.offer.MarketType;
@@ -41,6 +45,9 @@ public class Agent {
 	private AskOffering[] currentAskOfferings;
 	private BidOffering[] currentBidOfferings;
 	
+	private List<List<AskOffering>> bestAskOfferings;
+	private List<List<BidOffering>> bestBidOfferings;
+	
 	protected double utility = 0, accUtility = 0, lastUtility = 0, lastLastUtility = 0, utilDiff=0;    
 	protected double[][] decisions, lastDecisions, lastLastDecisions, assignedDecs;
 
@@ -54,7 +61,6 @@ public class Agent {
 		this.assetEndow = assetEndow;
 		this.asset = asset;
 		detLimitPriceAsset();
-		
 		this.highlighted = false;
 	}
 	
@@ -117,16 +123,72 @@ public class Agent {
 	public boolean isIndifferent()  {
 		return indifferent;
 	}
-	
-	public AskOffering[] getCurrentAskOfferings() {
-		return currentAskOfferings;
-	}
 
-	public BidOffering[] getCurrentBidOfferings() {
-		return currentBidOfferings;
+	public void addCurrentOfferingsToBestOfferings() {
+		if ( null == this.bestAskOfferings ) {
+			this.bestAskOfferings = new ArrayList<>();
+			this.bestBidOfferings = new ArrayList<>();
+			
+			for ( int i = 0; i < Auction.NUMMARKETS; ++i ) {
+				this.bestAskOfferings.add( new ArrayList<>() );
+				this.bestBidOfferings.add( new ArrayList<>() );
+			}
+		}
+			
+		for ( int i = 0; i < Auction.NUMMARKETS; ++i ) {
+			AskOffering ask = this.currentAskOfferings[ i ];
+			
+			if ( null != ask ) {
+				Iterator<AskOffering> bestAsksMarket = this.bestAskOfferings.get( i ).iterator();
+				boolean dominates = true;
+				
+				while ( bestAsksMarket.hasNext() ) {
+					AskOffering askMarket = bestAsksMarket.next();
+					
+					if ( askMarket.dominates( ask ) ) {
+						dominates = false;
+						break;
+					} else if ( ask.dominates( askMarket ) ){
+						bestAsksMarket.remove();
+					}
+				}
+				
+				if ( dominates ) {
+					this.bestAskOfferings.get( i ).add( ask );
+					if ( this.bestAskOfferings.get( i ).size() > 1 ) {
+						//System.out.println( "bestAskOfferings.get( "+ i + " ).size() = " + bestAskOfferings.get( i ).size() );
+					}
+				}
+			}
+			
+			BidOffering bid = this.currentBidOfferings [ i ];
+			
+			if ( null != bid ) {
+				Iterator<BidOffering> bestBidMarket = this.bestBidOfferings.get( i ).iterator();
+				boolean dominates = true;
+				
+				while ( bestBidMarket.hasNext() ) {
+					BidOffering bidMarket = bestBidMarket.next();
+					
+					if ( bidMarket.dominates( bid ) ) {
+						dominates = false;
+						break;
+					} else if ( bid.dominates( bidMarket ) ){
+						bestBidMarket.remove();
+					}
+				}
+				
+				if ( dominates ) {
+					this.bestBidOfferings.get( i ).add( bid );
+					if ( this.bestBidOfferings.get( i ).size() > 1 ) {
+						//System.out.println( "bestBidOfferings.get( "+ i + " ).size() = " + bestBidOfferings.get( i ).size() );
+					}
+				}
+			}
+		}
 	}
 	
-	public void calcOfferings() {
+	public void calcNewOfferings() {
 		this.currentAskOfferings = calcAskOfferings();
 		this.currentBidOfferings = calcBidOfferings();
 	}
@@ -230,7 +292,7 @@ public class Agent {
 		}
 		
 		// need to reset when match to force a recalculation of offers
-		this.calcOfferings();
+		this.clearBestOfferings();
 		
 		return true;
 	}
@@ -263,11 +325,38 @@ public class Agent {
 		}
 		
 		// need to reset when match to force a recalculation of offers
-		this.calcOfferings();
+		this.clearBestOfferings();
 		
 		return true;
 	}
 	
+	public void clearBestOfferings() {
+		if ( null == this.bestAskOfferings ) {
+			return;
+		}
+		
+		for ( int i = 0; i < NUMMARKETS; ++i ) {
+			this.bestAskOfferings.get( i ).clear();
+			this.bestBidOfferings.get( i ).clear();
+		}
+	}
+	
+	public AskOffering[] getCurrentAskOfferings() {
+		return currentAskOfferings;
+	}
+
+	public BidOffering[] getCurrentBidOfferings() {
+		return currentBidOfferings;
+	}
+
+	public List<List<AskOffering>> getBestAskOfferings() {
+		return bestAskOfferings;
+	}
+
+	public List<List<BidOffering>> getBestBidOfferings() {
+		return bestBidOfferings;
+	}
+
 	public double getAccUtility() {
 		return accUtility;
 	}
