@@ -161,7 +161,7 @@ public class AgentNetwork {
 		
 		int counter = 0;
 		
-		Iterator<Agent> randIter = network.randomIterator();
+		Iterator<Agent> randIter = network.randomIterator( false );
 		while ( randIter.hasNext() ) {
 			Agent from = randIter.next();
 			
@@ -385,15 +385,20 @@ public class AgentNetwork {
 		return this.orderedAgents.iterator();
 	}
 	
-	public Iterator<Agent> randomIterator() {
+	public Iterator<Agent> randomIterator(boolean reshuffle) {
 		if ( null == this.randomOrderAgents ) {
 			this.randomOrderAgents = new ArrayList<Agent>( this.orderedAgents.size() );
 			for (Agent a : this.orderedAgents ) {
 				this.randomOrderAgents.add( a );
 			}
+			
+			Collections.shuffle( this.randomOrderAgents );
+			
+		} else {
+			if ( reshuffle ) {
+				Collections.shuffle( this.randomOrderAgents );
+			}
 		}
-		
-		Collections.shuffle( this.randomOrderAgents ); 
 		
 		return this.randomOrderAgents.iterator();
 	}

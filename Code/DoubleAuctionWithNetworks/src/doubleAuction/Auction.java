@@ -117,13 +117,11 @@ public class Auction {
 		
 		while (numRound < MAX_ROUNDS)  {
 			numRound++;
-			Iterator<Agent> agIt = agents.randomIterator();
+			Iterator<Agent> agIt = agents.randomIterator( true );
 			
-			boolean successfulTrans = false;
-		
+			// first step: reset offerings of each agent when in first round and then calculate offerings for this round
 			while (agIt.hasNext())  {
 				Agent a = agIt.next();
-				Offering[] match = null;
 				
 				// need to reset the best offerings when in first round 
 				if ( 1 == numRound ) {
@@ -132,32 +130,42 @@ public class Auction {
 				
 				// let current agent calculate its new offers for this round
 				a.calcNewOfferings();
+			}
+			
+			// get same random-iterator (won't do a shuffle again)
+			agIt = agents.randomIterator( false );
+			
+			while (agIt.hasNext())  {
+				Agent a = agIt.next();
+				Offering[] match = null;
 				
 				// find match: must be neighbours, must be same market, bid (buy) must be larger than ask (sell)
+				
 				if ( MatchingType.RANDOM_NEIGHOUR == type ) {
-					match = transaction.findMatchesByRandomNeighborhood( a, agents ); //null: no match, else matching
+					match = transaction.findMatchesByRandomNeighborhood( a, agents );
 				
 				} else if ( MatchingType.BEST_NEIGHBOUR == type ) {
-					match = transaction.findMatchesByBestNeighborhood( a, agents ); //null: no match, else matching
+					match = transaction.findMatchesByBestNeighborhood( a, agents );
 					
 				} else if ( MatchingType.BEST_GLOBAL_OFFERS == type ) {
 					match = transaction.findMatchesByGlobalOffers( a, agents );
 				}
 
+				// will add the previously calculated offerings to the agents best offerings
 				a.addCurrentOfferingsToBestOfferings();
 				
 				// transaction found a match
 				if ( match != null ) {
 					// executes Transaction: sell and buy in the two agents will update new wealth
-					successfulTrans = a.execTransaction( match, true );
-				}
-				
-				if (successfulTrans)  {
-					//successful transaction execution
-					transaction.matched( match );
-					transaction.setTransNum(num_trans++);
-					
-					return transaction;
+					// and will lead to a reset of the best offerings as they are invalidated because
+					// of change in wealth.
+					// won't calculate a new offering, this is only done once in each round
+					if ( a.execTransaction( match, true ) )  {
+						transaction.matched( match );
+						transaction.setTransNum(num_trans++);
+						
+						return transaction;
+					}
 				}
 			}
 		}
