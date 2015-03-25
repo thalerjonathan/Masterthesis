@@ -12,14 +12,19 @@ public class AscendingRandomShortcutsCreator implements INetworkCreator {
 		return AgentNetwork.createAscendingConnectedWithRandomShortcuts( p, agentFactory );
 	}
 
-	public void deferCreation( Runnable okCallback, Runnable cancelCallback ) {
-		String input = JOptionPane.showInputDialog( null, "Probability of shortcut", p );
-		if ( null != input ) {
-			p = Double.parseDouble( input );
-			okCallback.run();
+	public void deferCreation( Runnable okCallback ) {
+		while ( true ) {
+			String input  = JOptionPane.showInputDialog( null, "Probability of shortcut", p );
 			
-		} else {
-			cancelCallback.run();
+			if ( null != input ) {
+				try {
+					p = Double.parseDouble( input );
+					okCallback.run();
+					break;
+				} catch ( NumberFormatException e ) {
+					
+				}
+			}
 		}
 	}
 	

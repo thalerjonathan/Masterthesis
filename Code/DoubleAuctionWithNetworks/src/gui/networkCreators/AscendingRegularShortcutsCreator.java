@@ -12,14 +12,19 @@ public class AscendingRegularShortcutsCreator implements INetworkCreator {
 		return AgentNetwork.createAscendingConnectedWithRegularShortcuts( this.n, agentFactory );
 	}
 	
-	public void deferCreation( Runnable okCallback, Runnable cancelCallback ) {
-		String input = JOptionPane.showInputDialog( null, "Number of Shortcuts", n );
-		if ( null != input ) {
-			n = Integer.parseInt( input );
-			okCallback.run();
+	public void deferCreation( Runnable okCallback ) {
+		while ( true ) {
+			String input  = JOptionPane.showInputDialog( null, "Number of Shortcuts", n );
 			
-		} else {
-			cancelCallback.run();
+			if ( null != input ) {
+				try {
+					n = Integer.parseInt( input );
+					okCallback.run();
+					break;
+				} catch ( NumberFormatException e ) {
+					
+				}
+			}
 		}
 	}
 	

@@ -1,11 +1,26 @@
 package gui;
 
+import gui.networkCreators.AscendingConnectedCreator;
+import gui.networkCreators.AscendingRandomShortcutsCreator;
+import gui.networkCreators.AscendingRegularShortcutsCreator;
+import gui.networkCreators.BarbasiAlbertCreator;
+import gui.networkCreators.ErdosRenyiCreator;
+import gui.networkCreators.FullyConnectedCreator;
+import gui.networkCreators.HubConnectedCreator;
+import gui.networkCreators.INetworkCreator;
+import gui.networkCreators.MaximumHubCreator;
+import gui.networkCreators.MedianHubCreator;
+import gui.networkCreators.ThreeMedianHubsCreator;
+import gui.networkCreators.WattStrogatzCreator;
+import gui.visualisation.AgentSelectedEvent;
+import gui.visualisation.ConnectionSelectedEvent;
+import gui.visualisation.INetworkSelectionObserver;
+import gui.visualisation.NetworkRenderPanel;
+
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -52,22 +67,6 @@ import doubleAuction.tx.TransactionWithLoans;
 import edu.uci.ics.jung.algorithms.layout.CircleLayout;
 import edu.uci.ics.jung.algorithms.layout.KKLayout;
 import edu.uci.ics.jung.algorithms.layout.Layout;
-import gui.networkCreators.AscendingConnectedCreator;
-import gui.networkCreators.AscendingRandomShortcutsCreator;
-import gui.networkCreators.AscendingRegularShortcutsCreator;
-import gui.networkCreators.BarbasiAlbertCreator;
-import gui.networkCreators.ErdosRenyiCreator;
-import gui.networkCreators.FullyConnectedCreator;
-import gui.networkCreators.HubConnectedCreator;
-import gui.networkCreators.INetworkCreator;
-import gui.networkCreators.MaximumHubCreator;
-import gui.networkCreators.MedianHubCreator;
-import gui.networkCreators.ThreeMedianHubsCreator;
-import gui.networkCreators.WattStrogatzCreator;
-import gui.visualisation.AgentSelectedEvent;
-import gui.visualisation.ConnectionSelectedEvent;
-import gui.visualisation.INetworkSelectionObserver;
-import gui.visualisation.NetworkRenderPanel;
 
 @SuppressWarnings("serial")
 public class MainWindow extends JFrame implements ActionListener, ChangeListener {
@@ -119,8 +118,6 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 	private List<Transaction> successfulTx;
 	
 	private long lastRepaintTime;
-	
-	private boolean resetTopologySelection;
 	
 	private static final DecimalFormat COMP_TIME_FORMAT = new DecimalFormat("0.00");
 	private static final DecimalFormat AGENT_H_FORMAT = new DecimalFormat("0.000");
@@ -377,14 +374,9 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 			}
 		} );
 
-		this.topologySelection.addItemListener( new ItemListener() {
+		this.topologySelection.addActionListener( new ActionListener() {
 			@Override
-			public void itemStateChanged(ItemEvent e) {
-				if ( MainWindow.this.resetTopologySelection ) {
-					return;
-				}
-				
-				INetworkCreator previouslySelected = (INetworkCreator) e.getItem();
+			public void actionPerformed(ActionEvent e) {
 				INetworkCreator newSelected = (INetworkCreator) MainWindow.this.topologySelection.getSelectedItem();
 
 				// creator signals to be created immediately
@@ -399,11 +391,6 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 						@Override
 						public void run() {
 							MainWindow.this.createAgents();
-						}
-					}, new Runnable() {
-						@Override
-						public void run() {
-							MainWindow.this.topologySelection.setSelectedItem( previouslySelected );
 						}
 					});
 				}

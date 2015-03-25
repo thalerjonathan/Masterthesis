@@ -16,7 +16,7 @@ public class BarbasiAlbertCreator implements INetworkCreator {
 	}
 	
 	@Override
-	public void deferCreation( Runnable okCallback, Runnable cancelCallback) {
+	public void deferCreation( Runnable okCallback ) {
 		// TODO: implement
 		okCallback.run();
 	}

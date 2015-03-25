@@ -12,15 +12,18 @@ public class HubConnectedCreator implements INetworkCreator {
 		return AgentNetwork.createWithHubs( this.n, agentFactory );
 	}
 
-	public void deferCreation( Runnable okCallback, Runnable cancelCallback ) {
-		String input = JOptionPane.showInputDialog( null, "Nubmer of Hubs", this.n );
-		
-		if ( null != input ) {
-			this.n = Integer.parseInt( input );
-			okCallback.run();
-			
-		} else {
-			cancelCallback.run();
+	public void deferCreation( Runnable okCallback ) {
+		while ( true ) {
+			String input = JOptionPane.showInputDialog( null, "Nubmer of Hubs", this.n );
+			if ( null != input ) {
+				try {
+					this.n = Integer.parseInt( input );
+					okCallback.run();
+					break;
+				} catch ( NumberFormatException e ) {
+					
+				}
+			}
 		}
 	}
 	

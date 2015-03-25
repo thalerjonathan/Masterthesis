@@ -74,7 +74,8 @@ public class AgentNetwork {
 					int randomForwardIndex = (int) ( r * network.orderedAgents.size() );
 					to = network.orderedAgents.get( randomForwardIndex );
 					
-					if ( to == from ) {
+					// ommit self-loops AND double-edges
+					if ( to == from || network.graph.isNeighbor( from, to ) ) {
 						continue;
 					}
 					
@@ -93,7 +94,7 @@ public class AgentNetwork {
 		AgentNetwork network = new AgentNetwork( "AscendingConnectedWithShortcuts", false );
 		network.populate( agentFactory );
 		
-		// would lead to self-loops, avoid them at any cost
+		// would lead to double-edges and self-loops, avoid them at any cost
 		if ( n >= network.orderedAgents.size() / 2 ) {
 			n = network.orderedAgents.size() / 2;
 		}

@@ -8,7 +8,7 @@ public abstract class ParameterlessCreator implements INetworkCreator {
 		return true;
 	}
 	
-	public void deferCreation( Runnable okCallback, Runnable cancelCallback ) {
+	public void deferCreation( Runnable okCallback ) {
 		throw new NotImplementedException();
 	}
 }

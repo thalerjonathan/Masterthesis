@@ -4,9 +4,11 @@ import agents.IAgentFactory;
 import agents.network.AgentNetwork;
 
 public class WattStrogatzCreator implements INetworkCreator {
-
+	private int k = 2;
+	private double b = 0.2;
+	
 	public AgentNetwork createNetwork( IAgentFactory agentFactory ) {
-		return AgentNetwork.createWattsStrogatzConnected( 2, 0.2, agentFactory);
+		return AgentNetwork.createWattsStrogatzConnected( this.k, this.b, agentFactory);
 	}
 	
 	public boolean createInstant() {
@@ -14,7 +16,7 @@ public class WattStrogatzCreator implements INetworkCreator {
 	}
 	
 	@Override
-	public void deferCreation( Runnable okCallback, Runnable cancelCallback ) {
+	public void deferCreation( Runnable okCallback ) {
 		okCallback.run();
 	}
 	
