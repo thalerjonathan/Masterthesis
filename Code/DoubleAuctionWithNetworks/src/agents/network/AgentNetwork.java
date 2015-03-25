@@ -101,16 +101,38 @@ public class AgentNetwork {
 		
 		for ( int i = 0; i < network.orderedAgents.size(); ++i ) {
 			Agent from = network.orderedAgents.get( i );
+			Agent to1 = network.orderedAgents.get( ( i + 1 ) % network.orderedAgents.size() );
+			Agent to2 = network.orderedAgents.get( ( i + n ) % network.orderedAgents.size() );
 			
-			for ( int j = 0; j < n; ++j ) {
-				Agent to = network.orderedAgents.get( ( i + 1 + j ) % network.orderedAgents.size() );
-				
-				network.graph.addEdge( new AgentConnection(), from, to );
-			}
+			network.graph.addEdge( new AgentConnection(), from, to1 );
+			network.graph.addEdge( new AgentConnection(), from, to2 );
 		}
 		
 		return network;
 	}
+	
+	// NOTE: SATISFIES HYPOTHESIS
+		public static AgentNetwork createAscendingConnectedWithFullShortcuts( int n, IAgentFactory agentFactory ) {
+			AgentNetwork network = new AgentNetwork( "AscendingConnectedWithFullShortcuts", false );
+			network.populate( agentFactory );
+			
+			// would lead to double-edges and self-loops, avoid them at any cost
+			if ( n >= network.orderedAgents.size() / 2 ) {
+				n = network.orderedAgents.size() / 2;
+			}
+			
+			for ( int i = 0; i < network.orderedAgents.size(); ++i ) {
+				Agent from = network.orderedAgents.get( i );
+
+				for ( int j = 0; j < n; ++j ) {
+					Agent to = network.orderedAgents.get( ( i + 1 + j ) % network.orderedAgents.size() );
+					network.graph.addEdge( new AgentConnection(), from, to );
+				}
+			}
+			
+			return network;
+		}
+		
 	
 	public static AgentNetwork createWithHubs( int hubs, IAgentFactory agentFactory ) {
 		AgentNetwork network = new AgentNetwork( "ThreeHubs", false );

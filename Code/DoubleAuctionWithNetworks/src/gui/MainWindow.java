@@ -1,6 +1,7 @@
 package gui;
 
 import gui.networkCreators.AscendingConnectedCreator;
+import gui.networkCreators.AscendingFullShortcutsCreator;
 import gui.networkCreators.AscendingRandomShortcutsCreator;
 import gui.networkCreators.AscendingRegularShortcutsCreator;
 import gui.networkCreators.BarbasiAlbertCreator;
@@ -188,8 +189,9 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 
 		this.topologySelection = new JComboBox<INetworkCreator>();
 		this.topologySelection.addItem( new AscendingConnectedCreator() );
-		this.topologySelection.addItem( new AscendingRandomShortcutsCreator() );
+		this.topologySelection.addItem( new AscendingFullShortcutsCreator() );
 		this.topologySelection.addItem( new AscendingRegularShortcutsCreator() );
+		this.topologySelection.addItem( new AscendingRandomShortcutsCreator() );
 		this.topologySelection.addItem( new FullyConnectedCreator() );
 		this.topologySelection.addItem( new HubConnectedCreator() );
 		this.topologySelection.addItem( new MedianHubCreator() );
