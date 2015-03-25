@@ -54,25 +54,25 @@ public class AgentNetwork {
 	
 	// NOTE: SATISFIES HYPOTHESIS
 	public static AgentNetwork createAscendingConnected( IAgentFactory agentFactory ) {
-		return AgentNetwork.createAscendingShortcutsConnected( 0.0, agentFactory );
+		return AgentNetwork.createAscendingConnectedWithRandomShortcuts( 0.0, agentFactory );
 	}
 	
 	// NOTE: SATISFIES HYPOTHESIS
-	public static AgentNetwork createAscendingShortcutsConnected( double p, IAgentFactory agentFactory ) {
+	public static AgentNetwork createAscendingConnectedWithRandomShortcuts( double p, IAgentFactory agentFactory ) {
 		AgentNetwork network = new AgentNetwork( "AscendingConnected", p != 0.0 );
 		network.populate( agentFactory );
 		
-		for ( int i = 0; i < network.orderedAgents.size() - 1; ++i ) {
+		for ( int i = 0; i < network.orderedAgents.size(); ++i ) {
 			Agent from = network.orderedAgents.get( i );
-			Agent to = network.orderedAgents.get( i + 1 );
+			Agent to = network.orderedAgents.get( ( i + 1 ) % network.orderedAgents.size() );
 			
 			network.graph.addEdge( new AgentConnection(), from, to );
 			
 			while ( true ) {
 				double r = Math.random();
 				if ( p > r ) {
-					int randomForwardIndex = (int) ( r * ( network.orderedAgents.size() - i ) );
-					to = network.orderedAgents.get( i + randomForwardIndex );
+					int randomForwardIndex = (int) ( r * network.orderedAgents.size() );
+					to = network.orderedAgents.get( randomForwardIndex );
 					
 					if ( to == from ) {
 						continue;
@@ -85,9 +85,29 @@ public class AgentNetwork {
 			}
 		}
 		
-		// TODO: optional connect first with last: circle
-		//network.graph.addEdge( new AgentConnection(), network.orderedAgents.get( 0 ), network.orderedAgents.get( network.orderedAgents.size() - 1 ) );
-
+		return network;
+	}
+	
+	// NOTE: SATISFIES HYPOTHESIS
+	public static AgentNetwork createAscendingConnectedWithRegularShortcuts( int n, IAgentFactory agentFactory ) {
+		AgentNetwork network = new AgentNetwork( "AscendingConnectedWithShortcuts", false );
+		network.populate( agentFactory );
+		
+		// would lead to self-loops, avoid them at any cost
+		if ( n >= network.orderedAgents.size() / 2 ) {
+			n = network.orderedAgents.size() / 2;
+		}
+		
+		for ( int i = 0; i < network.orderedAgents.size(); ++i ) {
+			Agent from = network.orderedAgents.get( i );
+			
+			for ( int j = 0; j < n; ++j ) {
+				Agent to = network.orderedAgents.get( ( i + 1 + j ) % network.orderedAgents.size() );
+				
+				network.graph.addEdge( new AgentConnection(), from, to );
+			}
+		}
+		
 		return network;
 	}
 	

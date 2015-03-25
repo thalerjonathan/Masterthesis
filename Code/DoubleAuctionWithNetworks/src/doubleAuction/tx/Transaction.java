@@ -123,9 +123,11 @@ public class Transaction  {
 						
 						if ( dominates ) {
 							bestAsks.get( i ).add( ask );
+							/*
 							if ( bestAsks.get( i ).size() > 1 ) {
-								//System.out.println( "bestAsks.get( "+ i + " ).size() = " + bestAsks.get( i ).size() );
+								System.out.println( "bestAsks.get( "+ i + " ).size() = " + bestAsks.get( i ).size() );
 							}
+							*/
 						}
 					}
 				}
@@ -155,9 +157,11 @@ public class Transaction  {
 						
 						if ( dominates ) {
 							bestBids.get( i ).add( bid );
+							/*
 							if ( bestBids.get( i ).size() > 1 ) {
-								//System.out.println( "bestBids.get( "+ i + " ).size() = " + bestBids.get( i ).size() );
+								System.out.println( "bestBids.get( "+ i + " ).size() = " + bestBids.get( i ).size() );
 							}
+							*/
 						}
 					}
 				}

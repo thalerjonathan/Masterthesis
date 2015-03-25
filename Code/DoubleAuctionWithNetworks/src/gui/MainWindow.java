@@ -4,6 +4,8 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -50,6 +52,18 @@ import doubleAuction.tx.TransactionWithLoans;
 import edu.uci.ics.jung.algorithms.layout.CircleLayout;
 import edu.uci.ics.jung.algorithms.layout.KKLayout;
 import edu.uci.ics.jung.algorithms.layout.Layout;
+import gui.networkCreators.AscendingConnectedCreator;
+import gui.networkCreators.AscendingRandomShortcutsCreator;
+import gui.networkCreators.AscendingRegularShortcutsCreator;
+import gui.networkCreators.BarbasiAlbertCreator;
+import gui.networkCreators.ErdosRenyiCreator;
+import gui.networkCreators.FullyConnectedCreator;
+import gui.networkCreators.HubConnectedCreator;
+import gui.networkCreators.INetworkCreator;
+import gui.networkCreators.MaximumHubCreator;
+import gui.networkCreators.MedianHubCreator;
+import gui.networkCreators.ThreeMedianHubsCreator;
+import gui.networkCreators.WattStrogatzCreator;
 import gui.visualisation.AgentSelectedEvent;
 import gui.visualisation.ConnectionSelectedEvent;
 import gui.visualisation.INetworkSelectionObserver;
@@ -75,7 +89,7 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 	private JPanel agentWealthPanel;
 	private JPanel visualizationPanel;
 	
-	private JComboBox<String> topologySelection;
+	private JComboBox<INetworkCreator> topologySelection;
 	private JComboBox<String> layoutSelection;
 	private JComboBox<String> optimismSelection;
 	private JComboBox<MatchingType> matchingTypeSelection;
@@ -105,6 +119,8 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 	private List<Transaction> successfulTx;
 	
 	private long lastRepaintTime;
+	
+	private boolean resetTopologySelection;
 	
 	private static final DecimalFormat COMP_TIME_FORMAT = new DecimalFormat("0.00");
 	private static final DecimalFormat AGENT_H_FORMAT = new DecimalFormat("0.000");
@@ -173,17 +189,24 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 		JPanel controlsPanel = new JPanel();
 		JPanel txInfoPanel = new JPanel( new GridBagLayout() );
 
-		this.topologySelection = new JComboBox<String>( new String[] { 
-				"Ascending-Connected", "Ascending Shortcuts", 
-				"Hub-Connected", "Median-Hub", "Maximum-Hub", "3 Median Hubs",
-				"Fully-Connected", 
-				"Erdos-Renyi", "Barbasi-Albert", "Watts-Strogatz" 
-				} );
+		this.topologySelection = new JComboBox<INetworkCreator>();
+		this.topologySelection.addItem( new AscendingConnectedCreator() );
+		this.topologySelection.addItem( new AscendingRandomShortcutsCreator() );
+		this.topologySelection.addItem( new AscendingRegularShortcutsCreator() );
+		this.topologySelection.addItem( new FullyConnectedCreator() );
+		this.topologySelection.addItem( new HubConnectedCreator() );
+		this.topologySelection.addItem( new MedianHubCreator() );
+		this.topologySelection.addItem( new MaximumHubCreator() );
+		this.topologySelection.addItem( new ThreeMedianHubsCreator() );
+		this.topologySelection.addItem( new ErdosRenyiCreator() );
+		this.topologySelection.addItem( new BarbasiAlbertCreator() );
+		this.topologySelection.addItem( new WattStrogatzCreator() );
+		
 		this.layoutSelection = new JComboBox<String>( new String[] { "Circle", "KK" } );
 		this.optimismSelection = new JComboBox<String>( new String[] { "Linear", "Triangle"  } );
 		this.matchingTypeSelection = new JComboBox<MatchingType>( MatchingType.values() );
 		
-		this.agentCountSpinner = new JSpinner( new SpinnerNumberModel( 50, 10, 1000, 10 ) );
+		this.agentCountSpinner = new JSpinner( new SpinnerNumberModel( 30, 10, 1000, 10 ) );
 
 		JLabel succTxCounterInfoLabel = new JLabel( "Successful TX: " );
 		JLabel noSuccTxCounterInfoLabel = new JLabel( "No Succ. TX: " );
@@ -353,19 +376,49 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 				MainWindow.this.createLayout();
 			}
 		} );
+
+		this.topologySelection.addItemListener( new ItemListener() {
+			@Override
+			public void itemStateChanged(ItemEvent e) {
+				if ( MainWindow.this.resetTopologySelection ) {
+					return;
+				}
+				
+				INetworkCreator previouslySelected = (INetworkCreator) e.getItem();
+				INetworkCreator newSelected = (INetworkCreator) MainWindow.this.topologySelection.getSelectedItem();
+
+				// creator signals to be created immediately
+				if ( newSelected.createInstant() ) {
+					MainWindow.this.createAgents();
+				
+				// creator signals to defer creation for later (e.g. after user-input of parameters
+				// the creator needs)
+				} else {
+					// defer creation and provide creator with a callback to continue creation
+					newSelected.deferCreation( new Runnable() {
+						@Override
+						public void run() {
+							MainWindow.this.createAgents();
+						}
+					}, new Runnable() {
+						@Override
+						public void run() {
+							MainWindow.this.topologySelection.setSelectedItem( previouslySelected );
+						}
+					});
+				}
+			}
+		});
 		
 		this.recreateButton.addActionListener( this );
-		
-		this.topologySelection.addActionListener( this );
 		this.optimismSelection.addActionListener( this );
-		
 		this.agentCountSpinner.addChangeListener( this );
 
 		// adding components ////////////////////////////////////
 		controlsPanel.add( this.toggleNetworkPanelButton );
 		controlsPanel.add( this.recreateButton );
 		controlsPanel.add( this.agentCountSpinner );
-		controlsPanel.add( this.optimismSelection );
+		//controlsPanel.add( this.optimismSelection );
 		controlsPanel.add( this.topologySelection );
 		controlsPanel.add( this.layoutSelection );
 		controlsPanel.add( this.matchingTypeSelection );
@@ -509,11 +562,10 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 	}
 
 	private void createAgents() {
-		int agentCount = (int) this.agentCountSpinner.getValue();
 		double assetPrice = 0.6;
 		double consumEndow = 1.0;
 		double assetEndow = 1.0;
-		int topologyIndex = this.topologySelection.getSelectedIndex();
+		int agentCount = (int) this.agentCountSpinner.getValue();
 		int optimismFunctionIndex = this.optimismSelection.getSelectedIndex();
 		
 		double[] J = new double[] { 0.2 };
@@ -565,28 +617,8 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 			}
 		};
 		
-		// decide which network-topology to create based on user-selection
-		if ( 0 == topologyIndex ) {
-			this.agents = AgentNetwork.createAscendingConnected( agentFactory );
-		} else if ( 1 == topologyIndex ) {
-			this.agents = AgentNetwork.createAscendingShortcutsConnected( 0.5, agentFactory );
-		} else if ( 2 == topologyIndex ) {
-			this.agents = AgentNetwork.createWithHubs( 3, agentFactory );
-		} else if ( 3 == topologyIndex ) {
-			this.agents = AgentNetwork.createWithMedianHub( agentFactory );
-		} else if ( 4 == topologyIndex ) {
-			this.agents = AgentNetwork.createWithMaximumHub(agentFactory );
-		} else if ( 5 == topologyIndex ) {
-			this.agents = AgentNetwork.createWith3MedianHubs( agentFactory );
-		} else if ( 6 == topologyIndex ) {
-			this.agents = AgentNetwork.createFullyConnected( agentFactory );
-		} else if ( 7 == topologyIndex ) {
-			this.agents = AgentNetwork.createErdosRenyiConnected( 0.2, agentFactory );
-		} else if ( 8 == topologyIndex ) {
-			this.agents = AgentNetwork.createBarbasiAlbertConnected( 3, 1, agentFactory );
-		} else if ( 9 == topologyIndex ) {
-			this.agents = AgentNetwork.createWattsStrogatzConnected( 2, 0.2, agentFactory );
-		}
+		INetworkCreator creator = (INetworkCreator) this.topologySelection.getSelectedItem();
+		this.agents = creator.createNetwork( agentFactory );
 		
 		// if agent-wealth-visualisation panel is already there, remove it bevore adding a new instance
 		if ( null != this.agentWealthPanel ) {
@@ -657,7 +689,29 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 		this.networkPanel = MainWindow.this.agents.getNetworkRenderingPanel( layout, new INetworkSelectionObserver() {
 			@Override
 			public void agentSeleted( AgentSelectedEvent agentSelectedEvent ) {
-				if ( null == MainWindow.this.simulationThread || false == MainWindow.this.simulationThread.isPause() ) {
+				// no simulation running yet, just highlight selected agent, its neighbours and their connections
+				if ( null == MainWindow.this.simulationThread ) {
+					MainWindow.this.resetNetworkHighlights();
+					
+					Agent selectedAgent = agentSelectedEvent.getSelectedAgent();
+					selectedAgent.setHighlighted( true );
+					
+					Iterator<Agent> neighbourIter = MainWindow.this.agents.getNeighbors( selectedAgent );
+					while ( neighbourIter.hasNext() ) {
+						Agent neighbour = neighbourIter.next();
+						neighbour.setHighlighted( true );
+						
+						MainWindow.this.agents.getConnection( selectedAgent, neighbour ).setHighlighted( true );
+					}
+					
+					if ( null != MainWindow.this.networkPanel )
+						MainWindow.this.networkPanel.repaint();
+					
+					return;
+				}
+				
+				// when simulation thread is not paused, don't react on selection
+				if ( false == MainWindow.this.simulationThread.isPause() ) {
 					return;
 				}
 				
@@ -665,6 +719,7 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 				MainWindow.this.txTableModel.setRowCount( 0 );
 				MainWindow.this.txHistoryTable.revalidate();
 
+				// find path between two selected agents
 				if ( agentSelectedEvent.isCtrlDownFlag() && null != MainWindow.this.selectedAgent ) {
 					MainWindow.this.selectedAgent.setHighlighted( true );
 					agentSelectedEvent.getSelectedAgent().setHighlighted( true );
@@ -872,8 +927,8 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 		if ( tx.getMatchingAskOffer() instanceof AskOfferingWithLoans ) {
 			this.txTableModel.addRow( new Object[] {
 					tx.getTransNum(),
-					AGENT_H_FORMAT.format( tx.getFinalAskH() ),
 					AGENT_H_FORMAT.format( tx.getFinalBidH() ),
+					AGENT_H_FORMAT.format( tx.getFinalAskH() ),
 					TRADING_VALUES_FORMAT.format( tx.getAssetAmount() ),
 					TRADING_VALUES_FORMAT.format( tx.getAssetPrice() ),
 					TRADING_VALUES_FORMAT.format( ( ( TransactionWithLoans ) tx ).getLoanAmount() ),
@@ -883,8 +938,8 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 		} else {
 			this.txTableModel.addRow( new Object[] {
 					tx.getTransNum(),
-					AGENT_H_FORMAT.format( tx.getFinalAskH() ),
 					AGENT_H_FORMAT.format( tx.getFinalBidH() ),
+					AGENT_H_FORMAT.format( tx.getFinalAskH() ),
 					TRADING_VALUES_FORMAT.format( tx.getAssetAmount() ),
 					TRADING_VALUES_FORMAT.format( tx.getAssetPrice() ),
 					"-", "-", "-"} );

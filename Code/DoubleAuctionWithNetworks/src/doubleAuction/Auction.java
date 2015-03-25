@@ -105,8 +105,8 @@ public class Auction {
 	}
 
 	public enum MatchingType {
-		BEST_GLOBAL_OFFERS,
 		BEST_NEIGHBOUR,
+		BEST_GLOBAL_OFFERS,
 		RANDOM_NEIGHOUR;
 	}
 

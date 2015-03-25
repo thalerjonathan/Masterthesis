@@ -155,9 +155,12 @@ public class Agent {
 				
 				if ( dominates ) {
 					this.bestAskOfferings.get( i ).add( ask );
+					
+					/*
 					if ( this.bestAskOfferings.get( i ).size() > 1 ) {
-						//System.out.println( "bestAskOfferings.get( "+ i + " ).size() = " + bestAskOfferings.get( i ).size() );
+						ystem.out.println( "bestAskOfferings.get( "+ i + " ).size() = " + bestAskOfferings.get( i ).size() );
 					}
+					*/
 				}
 			}
 			
@@ -180,9 +183,11 @@ public class Agent {
 				
 				if ( dominates ) {
 					this.bestBidOfferings.get( i ).add( bid );
+					/*
 					if ( this.bestBidOfferings.get( i ).size() > 1 ) {
-						//System.out.println( "bestBidOfferings.get( "+ i + " ).size() = " + bestBidOfferings.get( i ).size() );
+						System.out.println( "bestBidOfferings.get( "+ i + " ).size() = " + bestBidOfferings.get( i ).size() );
 					}
+					*/
 				}
 			}
 		}
