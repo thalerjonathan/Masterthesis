@@ -258,7 +258,7 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 				String.class, String.class, String.class, String.class };
 		
 		this.txTableModel = new DefaultTableModel(
-				new Object[] { "TX", "Buyer", "Seller", "Asset Amount",
+				new Object[] { "TX", "Seller", "Buyer", "Asset Amount",
 						"Asset Price", "Loan Amount", "Loan Price", "Loan Type" }, 0 ) {
 
 		    @Override
@@ -931,13 +931,13 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 	}
 	
 	private void addTxToTable( Transaction tx ) {
-		//"TX", "Buyer", "Seller", "Asset Amount", "Asset Price", "Loan Amount", "Loan Price", "Loan Type"
+		//"TX", "Seller", "Buyer", "Asset Amount", "Asset Price", "Loan Amount", "Loan Price", "Loan Type"
 		
 		if ( tx.getMatchingAskOffer() instanceof AskOfferingWithLoans ) {
 			this.txTableModel.addRow( new Object[] {
 					tx.getTransNum(),
-					AGENT_H_FORMAT.format( tx.getFinalBidH() ),
 					AGENT_H_FORMAT.format( tx.getFinalAskH() ),
+					AGENT_H_FORMAT.format( tx.getFinalBidH() ),
 					TRADING_VALUES_FORMAT.format( tx.getAssetAmount() ),
 					TRADING_VALUES_FORMAT.format( tx.getAssetPrice() ),
 					TRADING_VALUES_FORMAT.format( ( ( TransactionWithLoans ) tx ).getLoanAmount() ),
@@ -947,8 +947,8 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 		} else {
 			this.txTableModel.addRow( new Object[] {
 					tx.getTransNum(),
-					AGENT_H_FORMAT.format( tx.getFinalBidH() ),
 					AGENT_H_FORMAT.format( tx.getFinalAskH() ),
+					AGENT_H_FORMAT.format( tx.getFinalBidH() ),
 					TRADING_VALUES_FORMAT.format( tx.getAssetAmount() ),
 					TRADING_VALUES_FORMAT.format( tx.getAssetPrice() ),
 					"-", "-", "-"} );

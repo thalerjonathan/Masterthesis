@@ -109,7 +109,7 @@ public class AgentWithLoans extends Agent {
 			double r = agRand.nextDouble();
 			
 			// if improment possible
-			if (minP < limitPriceAsset) {
+			if ( limitPriceAsset > minP ) {
 				// sell asset at least for limitPriceAsset and maximum in a range up to how much the optimism-factor h allows it
 				pa = limitPriceAsset + r * (maxP - limitPriceAsset);
 			} else {

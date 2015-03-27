@@ -24,3 +24,9 @@
 			-> ascending random shortcuts, wo jeder agent +1 kante zu einem zufälligen hat führt auch nicht zu gleichgewicht
 		-> wenn N = Anzahl Agenten - 1, dann erreicht man Vollvernetztheit
 		=> mit steigender N erfolgt annäherung an das gleichgewicht, nun ist die frage ob N eine funktion der Anzahl der Agenten ist
+		
+		-> die gleichungen untersuchen: wieso kommt es hier zu keinem match mehr?
+			-> wie werden die offers berechnet?
+			-> matching-bedingungen: AND-Verknünpft, müssen beide true sein
+				-> käufer muss mindestens oder mehr für das asset bieten als der verkäufer haben will
+				-> käufer muss weniger für den loan haben wollen als der verkäufer geben will

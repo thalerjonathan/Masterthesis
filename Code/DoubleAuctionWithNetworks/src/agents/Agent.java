@@ -198,13 +198,11 @@ public class Agent {
 			return null;
 	
 		// "...agents who always make bids which improve their utility but otherwise bid randomly."
-		if ( minP < limitPriceAsset )
+		if ( limitPriceAsset > minP )
 			assetPrice = limitPriceAsset + agRand.nextDouble()*(maxP-limitPriceAsset);
 		else
 			assetPrice = minP + agRand.nextDouble()*(maxP-minP);
 			
-		//assetPrice = limitPriceAsset + agRand.nextDouble()*(asset.getPU()-limitPriceAsset);
-		
 		if (TRADE_ONLY_FULL_UNITS) {
 			if (assetEndow >= UNIT)
 				actAskOffer = new AskOffering(assetPrice, this, 0, MarketType.ASSET_AGAINST_CASH );	
@@ -231,13 +229,11 @@ public class Agent {
 		if (minP > limitPriceAsset)  //agent cannot offer at current price level 
 			return null;
 	
-		if ( maxP > limitPriceAsset )
+		if ( limitPriceAsset < maxP )
 			assetPrice = minP + agRand.nextDouble()*(limitPriceAsset-minP);
 		else
 			assetPrice = minP + agRand.nextDouble()*(maxP-minP);
-			
-	//		assetPrice = asset.getPD() + agRand.nextDouble()*(limitPriceAsset-asset.getPD());
-			
+
 		if (TRADE_ONLY_FULL_UNITS) {
 			if (assetPrice*UNIT <= consumEndow)
 				actBidOffer = new BidOffering(assetPrice, this, 0, MarketType.ASSET_AGAINST_CASH );
@@ -370,7 +366,6 @@ public class Agent {
 	
 	protected double getPMax() {
 		double refP = asset.getP();
-		
 		return Math.min(asset.getPU(), refP + PMARGIN);
 	}
 	
