@@ -24,13 +24,15 @@ public class SimulationThread implements Runnable {
 	
 	private long computationTimeMs;
 	
-	private Transaction lastSuccTX;
+	private Transaction lastTX;
 	
 	private Thread awaitNextTxThread;
 	private Thread simulationThread;
 	
 	private SimulationState state;
 
+	private boolean successfulTXOnly;
+	
 	private enum SimulationState {
 		EXIT,
 		RUNNING,
@@ -86,12 +88,13 @@ public class SimulationThread implements Runnable {
 	}
 	
 	// NOTE: must be called from other thread than SimulationThread
-	public void nextTX() {
+	public void nextTX( boolean successfulOnly ) {
 		// switch state to next-tx (will always be already in paused-mode at this point, next-tx can only be reached from paused-mode)
 		this.state = SimulationState.NEXT_TX;
+		this.successfulTXOnly = successfulOnly;
 		
 		// PROBLEM: this call could block for a very long time or forever because 
-		// it could take a very long time or forever for the next successful transaction to occur
+		// it could take a very long time or forever for the next (successful) transaction to occur
 		// => need another thread otherwise would block the GUI-thread!
 		this.awaitNextTxThread = new Thread( new Runnable() {
 			@Override
@@ -100,17 +103,17 @@ public class SimulationThread implements Runnable {
 				SimulationThread.this.lock.lock();
 				
 				try {
-					// (re-) set to null to wait for successful TX
-					SimulationThread.this.lastSuccTX = null;
+					// (re-) set to null to wait for TX
+					SimulationThread.this.lastTX = null;
 					
 					// signal the blocking simulation-thread because nextTX can only be called from pause-state 
 					// thus in pause-state simulation-thread is blocking already
 					SimulationThread.this.simulationCondition.signal();
 
-					// wait blocking till either a next successful TX has been found OR the state has changed 
-					// if successful TX has been found: simulation-thread will set lastSuccTX to the given TX and switch state back to pause and give signal
+					// wait blocking till either a next TX has been found OR the state has changed 
+					// if TX has been found: simulation-thread will set lastTX to the given TX and switch state back to pause and give signal
 					// if state-switch occured through GUI e.g. back to pause or exit, signal came from GUI-Thread and lastSuccTX will be null
-					while ( null == SimulationThread.this.lastSuccTX || SimulationThread.this.state == SimulationState.NEXT_TX ) {
+					while ( null == SimulationThread.this.lastTX || SimulationThread.this.state == SimulationState.NEXT_TX ) {
 						SimulationThread.this.nextTXCondition.await();
 					}
 					
@@ -170,6 +173,7 @@ public class SimulationThread implements Runnable {
 				
 				// increment time
 				this.computationTimeMs += System.currentTimeMillis() - ts;
+				boolean notifyTX = true;
 				
 				// tx was successful
 				if ( tx.wasSuccessful() ) {
@@ -177,16 +181,6 @@ public class SimulationThread implements Runnable {
 					this.succTXCounter++;
 					// reset counter of how many unsuccessful TX in a row occured
 					this.noSuccTXCounter = 0;
-
-					// we are in nextTX-state and found one successful TX => switch back to paused-state
-					if ( SimulationState.NEXT_TX == this.state ) {
-						// found successfull transaction: store in consumer-data to 
-						this.lastSuccTX = tx;
-						// next-tx can only happen in paused-state, switch back to paused when finished
-						this.state = SimulationState.PAUSED;
-						// signal the waiting GUI/next-TX-thread (if any)
-						this.nextTXCondition.signalAll();
-					}
 
 				// not successful
 				} else {
@@ -199,9 +193,22 @@ public class SimulationThread implements Runnable {
 					// between two successful TX is > 1000ms => there could have been a
 					// last successful TX which ist but not reflected in the visualisation
 					if ( this.noSuccTXCounter == 10 ) {
-						SimulationThread.this.mainWindow.repaint();
+						this.mainWindow.repaint();
 					}
+					
+					notifyTX = ! this.successfulTXOnly;
 				}
+				
+				// we are in nextTX-state and found one (successful) TX => switch back to paused-state
+				if ( SimulationState.NEXT_TX == this.state && notifyTX ) {
+					// found (successfull) transaction: store in consumer-data to 
+					this.lastTX = tx;
+					// next-tx can only happen in paused-state, switch back to paused when finished
+					this.state = SimulationState.PAUSED;
+					// signal the waiting GUI/next-TX-thread (if any)
+					this.nextTXCondition.signalAll();
+				}
+
 				
 				// running in thread => need to update SWING through SwingUtilities.invokeLater
 				SwingUtilities.invokeLater( new Runnable() {

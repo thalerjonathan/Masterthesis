@@ -20,3 +20,7 @@
 				dies liegt am globalen offer book, da durch den dominate-aufruf auf den offers nur die in den beiden extremen übrig bleiben
 	
 	=> VERMUTUNG: für diese gekopelten märkte reicht die hypothese nicht aus um auf das gleichgewicht wie in fully_connected zu kommen
+		-> "genügend" vernetzt: experimente gemacht ausgehend von ASCENDING_CONNECTED und dann jeden Agenten mit N darauffolgende Nachbaren verbinden
+			-> ascending random shortcuts, wo jeder agent +1 kante zu einem zufälligen hat führt auch nicht zu gleichgewicht
+		-> wenn N = Anzahl Agenten - 1, dann erreicht man Vollvernetztheit
+		=> mit steigender N erfolgt annäherung an das gleichgewicht, nun ist die frage ob N eine funktion der Anzahl der Agenten ist

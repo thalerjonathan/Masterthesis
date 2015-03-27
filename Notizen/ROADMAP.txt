@@ -50,12 +50,7 @@ Arbeitsschritte & Meilensteine bis zur Abgabe
 		- Handelsbeziehungen über das Netzwerk auswählen d.h. das matching probiert nur zwischen diesen zwei benachbarten agenten
 		- Code refaktoring und aufräumen
 		
-	Simulationen laufen
-	
-	Ergebnisse analysieren und interpretieren
-	
-	Beweis wieso Hypothese richtig/falsch?
-	
+
 Zeitpunkte
 	Bis Februar
 		-> Thema fixieren
@@ -65,7 +60,7 @@ Zeitpunkte
 		-> Grundlegend mit Softwareframeworks und Code vom Paper vertraut gemacht
 		-> LaTex Software und Template eingerichtet 
 		
-	März
+	März: IMPLEMENTIERUNG
 		-> OK		Realtime-Visualisierung der Vermögensverteilungen der Agenten
 		-> OK		Realtime-Visualisierung der Netzwerke
 		-> OK		Netzwerke generieren: fixe Anzahl Agenten, verbindungen unter ihnen nach einer gewissen Topologie
@@ -75,21 +70,24 @@ Zeitpunkte
 		-> OK		schönere layouts
 		-> OK		Code refaktoring und aufräumen: inner classes herausziehen wo sinnvoll
 		-> OK		Netzwerkvisualisierung > 50 Agenten unsichtbar
-		-> TODO		Beschleunigung
-			-> wichtig: continous double-auction mechanismus erhalten: best-offers aus nachbarn ermitteln. Dies erfüllen bereits alle mechanismen bis auf RANDOM_NEIGHBOUR
-			-> Multithreaded
+		-> OK		Beschleunigung: matching auf nachbaren und nicht globales offering book
+		-> NEIN		Multithreaded: kurz probiert, viel zu komplex, müsste die ganze backend-architektur komplett umbauen und selbst dann ists noch fraglich ob es wirklich was bringt
+					großer nutzen nur bei vielen agenten (ab 500) und für das gleichgewicht auch schon unter 100 agenten ausreichen 
 		
-			
-	April
-		-> TODO		Einleitung schreiben
-		-> Wie kann man zuverlässig sagen, dass ein lauf NICHT bzw. SCHON das equilibrium erreicht hat
+	April: THEORIE VERTIEFUNG UND AUSARBEITUNG
+		-> TODO		Brauchbaren Gleichgewichtsbegriff definieren und auch im Programm einführen d.h. das Programm erkennt wann sich ein Gleichgewicht eingestellt hat und benachrichtigt den Benutzer
+		-> TODO		Hypothese beweis/widerlegen
+		-> TOOD		verhalten der simulation genau studieren
+		-> TODO		wieso kommt es bei ascending zu keinem gleichgewicht sondern nur mit shortcuts ab einer gewissen N und wie muss N in abhängigkeiten der agentenanzahl gewählt werden?
 		
-	Juni
+	Mai: SCHREIBEN
+		
+	Juni: SCHREIBEN
 		-> Kapitel 1 "Theorie" schreiben. Dieser erst ganz zum schluss, damit der theorieteil einen sinnvollen kontext bekommt und nicht bloß als trockener nackter theorieteil daherkommt, 
 				den man vor jede andere x-beliebige masterthesis setzen kann die sich auch mit komplexeren netzwerken auseinandersetzt.
 		-> Kapitel 5 "Conclusions and Perspectives" schreiben.
 		
-	Juli
+	Juli: KORREKTUREN
 		-> Feintuning und Überarbeitung
 		-> Finale Abgabe am 27.
 			-> wenn auf das Kinderlager mit am 17. Juli abgabe

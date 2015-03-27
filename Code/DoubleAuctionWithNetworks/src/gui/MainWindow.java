@@ -76,6 +76,7 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 	private Asset asset;
 	private Loans loans;
 	
+	private JCheckBox successfulTXOnlyCheck;
 	private JCheckBox keepSuccTXHighCheck;
 	private JCheckBox cashAssetOnlyCheck;
 	
@@ -111,9 +112,6 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 	private JTable txHistoryTable;
 	private DefaultTableModel txTableModel;
 	
-	private OfferBookFrame offerBookFrame;
-	private List<OfferBookFrame> clonedOfferBookFrame;
-	
 	private Timer spinnerChangedTimer;
 	
 	private SimulationThread simulationThread;
@@ -135,7 +133,6 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 		super("Continuous Double-Auctions");
 		
 		this.successfulTx = new ArrayList<Transaction>();
-		this.clonedOfferBookFrame = new ArrayList<>();
 		
 		this.setExtendedState( JFrame.MAXIMIZED_BOTH ); 
 		this.setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
@@ -236,6 +233,7 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 		this.pauseButton = new JToggleButton ( "Run" );
 		this.toggleNetworkPanelButton = new JToggleButton ( "Hide Network" );
 		
+		this.successfulTXOnlyCheck = new JCheckBox( "Successful TXs Only" );
 		this.keepSuccTXHighCheck = new JCheckBox( "Keep TXs Highlighted" );
 		this.keepSuccTXHighCheck.addActionListener( new ActionListener() {
 			@Override
@@ -339,7 +337,7 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 				
 				MainWindow.this.restoreTXHistoryList();			
 
-				MainWindow.this.simulationThread.nextTX();
+				MainWindow.this.simulationThread.nextTX( MainWindow.this.successfulTXOnlyCheck.isSelected() );
 			}
 		});
 		
@@ -408,12 +406,7 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 		this.openOfferBookButton.addActionListener( new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if ( null == MainWindow.this.offerBookFrame ) {
-					MainWindow.this.offerBookFrame = new OfferBookFrame( MainWindow.this.agents );
-				}
-				
-				MainWindow.this.offerBookFrame.setVisible( true );
-				MainWindow.this.offerBookFrame.offerBookChanged();
+				OfferBookFrame.showOfferBook();
 			}
 		});
 		
@@ -433,6 +426,7 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 		controlsPanel.add( this.simulateButton );
 		controlsPanel.add( this.pauseButton );
 		controlsPanel.add( this.nextTxButton );
+		controlsPanel.add( this.successfulTXOnlyCheck );
 		controlsPanel.add( this.keepSuccTXHighCheck );
 		controlsPanel.add( this.cashAssetOnlyCheck );
 		controlsPanel.add( this.computationTimeLabel );
@@ -567,6 +561,8 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 		this.nextTxButton.setEnabled( true );
 		this.pauseButton.setSelected( true );
 		this.pauseButton.setText( "Paused" );
+
+		OfferBookFrame.offerBookChanged();
 	}
 
 	private void createAgents() {
@@ -582,18 +578,6 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 		// create asset-market
 		this.asset = new Asset( assetPrice, agentCount * assetEndow );
 		this.loans = new Loans( initialLoanPrices ,J);
-		
-		if ( null != this.offerBookFrame ) {
-			this.offerBookFrame.setVisible( false );
-			this.offerBookFrame = null;
-		}
-		
-		for ( OfferBookFrame obf : this.clonedOfferBookFrame ) {
-			obf.setVisible( false );
-			obf.dispose();
-		}
-		
-		this.clonedOfferBookFrame.clear();
 		
 		// create agent-factory
 		IAgentFactory agentFactory = new IAgentFactory() {
@@ -669,6 +653,9 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 			this.txTableModel.setRowCount( 0 );
 			this.txHistoryTable.revalidate();
 		}
+		
+		// close opened offer-books because agents changed (number of agents,...)
+		OfferBookFrame.agentsChanged( this.agents );
 		
 		// need to create the layout too, will do the final pack-call on this frame
 		this.createLayout();

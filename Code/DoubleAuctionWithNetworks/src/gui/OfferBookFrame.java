@@ -5,6 +5,9 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JButton;
@@ -30,8 +33,6 @@ import doubleAuction.offer.BidOfferingWithLoans;
 
 @SuppressWarnings("serial")
 public class OfferBookFrame extends JFrame {
-	private AgentNetwork agents;
-
 	private JButton refreshButton;
 	private JButton cloneButton;
 	
@@ -44,24 +45,124 @@ public class OfferBookFrame extends JFrame {
 	private DefaultTableModel[] askOffersBookModel;
 	private DefaultTableModel[] bidOffersBookModel;
 	
-	public OfferBookFrame( AgentNetwork agents ) {
-		this( agents, 0, 0 );
+	private static AgentNetwork agents;
+	private static List<OfferBookFrame> offerBookInstances = new ArrayList<>();
+	
+	public static void agentsChanged( AgentNetwork agents  ) {
+		OfferBookFrame.agents = agents;
+		
+		for ( OfferBookFrame obf : OfferBookFrame.offerBookInstances ) {
+			obf.setVisible( false );
+			obf.dispose();
+		}
+		
+		OfferBookFrame.offerBookInstances.clear();
+	}
+	
+	public static void showOfferBook() {
+		OfferBookFrame.createAndShowInstance( 0, 0 );
+	}
+
+	public static void offerBookChanged() {
+		for ( OfferBookFrame obf : OfferBookFrame.offerBookInstances ) {
+			obf.refillTables();
+		}
+	}
+	
+	private void refillTables() {
+		int agentIndex = (int) this.agentIndexSpinner.getValue() - 1;
+		Agent a = OfferBookFrame.agents.get( agentIndex );
+		
+		List<List<AskOffering>> askOfferings = a.getBestAskOfferings();
+		List<List<BidOffering>> bidOfferings = a.getBestBidOfferings();
+		
+		int numMarkets = 3;
+		
+		// clear previously set data
+		for ( int i = 0; i < numMarkets; ++i ) {
+			this.askOffersBookTable[ i ].clearSelection();
+			this.askOffersBookModel[ i ].setRowCount( 0 );
+			this.askOffersBookTable[ i ].revalidate();
+			
+			this.bidOffersBookTable[ i ].clearSelection();
+			this.bidOffersBookModel[ i ].setRowCount( 0 );
+			this.bidOffersBookTable[ i ].revalidate();
+		}
+		
+		if ( null == askOfferings || null == bidOfferings ) {
+			return;
+		}
+		
+		for ( int i = 0; i < askOfferings.size(); ++i ) {
+			List<AskOffering> askOfferingsMarket = askOfferings.get( i );
+			List<BidOffering> bidOfferingsMarket = bidOfferings.get( i );
+			
+			for ( int j = 0; j < askOfferingsMarket.size(); ++j ) {
+				AskOffering ask = askOfferingsMarket.get( j );
+				
+				if ( ask instanceof AskOfferingWithLoans ) {
+					this.askOffersBookModel[ i ].addRow( new Object[] {
+							MainWindow.AGENT_H_FORMAT.format( a.getH() ),
+							MainWindow.TRADING_VALUES_FORMAT.format( ask.getAssetAmount() ),
+							MainWindow.TRADING_VALUES_FORMAT.format( ask.getAssetPrice() ),
+							MainWindow.TRADING_VALUES_FORMAT.format( ((AskOfferingWithLoans) ask).getLoanAmount() ),
+							MainWindow.TRADING_VALUES_FORMAT.format( ((AskOfferingWithLoans) ask).getLoanPrice() ),
+					});
+					
+				} else {
+					this.askOffersBookModel[ i ].addRow( new Object[] {
+							MainWindow.AGENT_H_FORMAT.format( a.getH() ),
+							MainWindow.TRADING_VALUES_FORMAT.format( ask.getAssetAmount() ),
+							MainWindow.TRADING_VALUES_FORMAT.format( ask.getAssetPrice() ),
+							"-", "-", "-", "-"
+					});
+				}
+			}
+			
+			for ( int j = 0; j < bidOfferingsMarket.size(); ++j ) {
+				BidOffering bid = bidOfferingsMarket.get( j );
+				
+				if ( bid instanceof BidOfferingWithLoans ) {
+					this.bidOffersBookModel[ i ].addRow( new Object[] {
+							MainWindow.AGENT_H_FORMAT.format( a.getH() ),
+							MainWindow.TRADING_VALUES_FORMAT.format( bid.getAssetAmount() ),
+							MainWindow.TRADING_VALUES_FORMAT.format( bid.getAssetPrice() ),
+							MainWindow.TRADING_VALUES_FORMAT.format( ((BidOfferingWithLoans) bid).getLoanAmount() ),
+							MainWindow.TRADING_VALUES_FORMAT.format( ((BidOfferingWithLoans) bid).getLoanPrice() )
+					});
+					
+				} else {
+					this.askOffersBookModel[ i ].addRow( new Object[] {
+							MainWindow.AGENT_H_FORMAT.format( a.getH() ),
+							MainWindow.TRADING_VALUES_FORMAT.format( bid.getAssetAmount() ),
+							MainWindow.TRADING_VALUES_FORMAT.format( bid.getAssetPrice() ),
+							"-", "-", "-", "-"
+					});
+				}
+			}
+		}
 	}
 	
 	// NOTE: used for cloning
-	private OfferBookFrame( AgentNetwork agents, int agentIndex, int tabIndex ) {
+	private OfferBookFrame( int agentIndex, int tabIndex ) {
 		super( "Offer-Book" );
-		
-		this.agents = agents;
 
 		this.getContentPane().setLayout( new BorderLayout() );
 		
 		this.createControls( agentIndex, tabIndex );
 
-		this.setDefaultCloseOperation( JFrame.HIDE_ON_CLOSE );
+		this.setDefaultCloseOperation( JFrame.DISPOSE_ON_CLOSE );
+
+		this.addWindowListener( new WindowAdapter() {
+			@Override
+			public void windowClosed( WindowEvent e ) {
+				OfferBookFrame.offerBookInstances.remove( e.getComponent() );
+			}
+		});
+		
 		this.pack();
 	}
-	
+
 	private void createControls( int agentIndex, int tabIndex ) {
 		int numMarkets = 3;
 		
@@ -133,29 +234,26 @@ public class OfferBookFrame extends JFrame {
 		this.refreshButton = new JButton( "Refresh" );
 		this.cloneButton = new JButton( "Clone" );
 		
-		this.agentIndexSpinner = new JSpinner( new SpinnerNumberModel( agentIndex + 1, 1, this.agents.size(), 1 ) );
+		this.agentIndexSpinner = new JSpinner( new SpinnerNumberModel( agentIndex + 1, 1, OfferBookFrame.agents.size(), 1 ) );
 		this.agentIndexSpinner.addChangeListener( new ChangeListener() {
 			@Override
 			public void stateChanged(ChangeEvent e) {
-				OfferBookFrame.this.offerBookChanged();
+				OfferBookFrame.this.refillTables();
 			}
 		});
 		
 		this.refreshButton.addActionListener( new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				OfferBookFrame.this.offerBookChanged();
+				OfferBookFrame.this.refillTables();
 			}
 		});
 		
 		this.cloneButton.addActionListener( new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				OfferBookFrame clone = new OfferBookFrame( OfferBookFrame.this.agents, 
-						(int) OfferBookFrame.this.agentIndexSpinner.getValue() - 1, 
+				OfferBookFrame.createAndShowInstance( (int) OfferBookFrame.this.agentIndexSpinner.getValue() - 1,
 						OfferBookFrame.this.marketTabPane.getSelectedIndex() );
-				clone.offerBookChanged();
-				clone.setVisible( true );
 			}
 		});
 		
@@ -174,77 +272,10 @@ public class OfferBookFrame extends JFrame {
 		this.getContentPane().add( this.marketTabPane, BorderLayout.CENTER );
 	}
 	
-	public void offerBookChanged() {
-		int agentIndex = (int) this.agentIndexSpinner.getValue() - 1;
-		Agent a = this.agents.get( agentIndex );
-		
-		List<List<AskOffering>> askOfferings = a.getBestAskOfferings();
-		List<List<BidOffering>> bidOfferings = a.getBestBidOfferings();
-		
-		int numMarkets = 3;
-		
-		// clear previously set data
-		for ( int i = 0; i < numMarkets; ++i ) {
-			this.askOffersBookTable[ i ].clearSelection();
-			this.askOffersBookModel[ i ].setRowCount( 0 );
-			this.askOffersBookTable[ i ].revalidate();
-			
-			this.bidOffersBookTable[ i ].clearSelection();
-			this.bidOffersBookModel[ i ].setRowCount( 0 );
-			this.bidOffersBookTable[ i ].revalidate();
-		}
-		
-		if ( null == askOfferings || null == bidOfferings ) {
-			return;
-		}
-		
-		for ( int i = 0; i < askOfferings.size(); ++i ) {
-			List<AskOffering> askOfferingsMarket = askOfferings.get( i );
-			List<BidOffering> bidOfferingsMarket = bidOfferings.get( i );
-			
-			for ( int j = 0; j < askOfferingsMarket.size(); ++j ) {
-				AskOffering ask = askOfferingsMarket.get( j );
-				
-				if ( ask instanceof AskOfferingWithLoans ) {
-					this.askOffersBookModel[ i ].addRow( new Object[] {
-							MainWindow.AGENT_H_FORMAT.format( a.getH() ),
-							MainWindow.TRADING_VALUES_FORMAT.format( ask.getAssetAmount() ),
-							MainWindow.TRADING_VALUES_FORMAT.format( ask.getAssetPrice() ),
-							MainWindow.TRADING_VALUES_FORMAT.format( ((AskOfferingWithLoans) ask).getLoanAmount() ),
-							MainWindow.TRADING_VALUES_FORMAT.format( ((AskOfferingWithLoans) ask).getLoanPrice() ),
-					});
-					
-				} else {
-					this.askOffersBookModel[ i ].addRow( new Object[] {
-							MainWindow.AGENT_H_FORMAT.format( a.getH() ),
-							MainWindow.TRADING_VALUES_FORMAT.format( ask.getAssetAmount() ),
-							MainWindow.TRADING_VALUES_FORMAT.format( ask.getAssetPrice() ),
-							"-", "-", "-", "-"
-					});
-				}
-			}
-			
-			for ( int j = 0; j < bidOfferingsMarket.size(); ++j ) {
-				BidOffering bid = bidOfferingsMarket.get( j );
-				
-				if ( bid instanceof BidOfferingWithLoans ) {
-					this.bidOffersBookModel[ i ].addRow( new Object[] {
-							MainWindow.AGENT_H_FORMAT.format( a.getH() ),
-							MainWindow.TRADING_VALUES_FORMAT.format( bid.getAssetAmount() ),
-							MainWindow.TRADING_VALUES_FORMAT.format( bid.getAssetPrice() ),
-							MainWindow.TRADING_VALUES_FORMAT.format( ((BidOfferingWithLoans) bid).getLoanAmount() ),
-							MainWindow.TRADING_VALUES_FORMAT.format( ((BidOfferingWithLoans) bid).getLoanPrice() )
-					});
-					
-				} else {
-					this.askOffersBookModel[ i ].addRow( new Object[] {
-							MainWindow.AGENT_H_FORMAT.format( a.getH() ),
-							MainWindow.TRADING_VALUES_FORMAT.format( bid.getAssetAmount() ),
-							MainWindow.TRADING_VALUES_FORMAT.format( bid.getAssetPrice() ),
-							"-", "-", "-", "-"
-					});
-				}
-			}
-		}
+	private static void createAndShowInstance( int agentIndex, int tabIndex ) {
+		OfferBookFrame instance = new OfferBookFrame( agentIndex, tabIndex );
+		instance.refillTables();
+		instance.setVisible( true );
+		OfferBookFrame.offerBookInstances.add( instance );
 	}
 }
