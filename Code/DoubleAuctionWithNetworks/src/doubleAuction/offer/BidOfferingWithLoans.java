@@ -47,32 +47,37 @@ public class BidOfferingWithLoans extends BidOffering {
 		return loanAmount;
 	}
 	
-//	public double getAssetAmount(double loanAmount, double assetPrice, double loanPrice)
-
 	@Override
 	public boolean matches(AskOffering offer)  {
+		// avoid trading with one self
 		if  (agent == offer.getAgent())
 			return false;
 		
 		if (Agent.TRADE_ONLY_FULL_UNITS)  {
+			//asset against cash
 			if (market==0)  {  
-				//asset against cash
 				return (offer.getAssetPrice() <= assetPrice) ;
+				
+			//asset against loan		
 			} else if (market>0 && market <= NUMMARKETS) {
-			//asset against loan				
+						
 				if ( ((AskOfferingWithLoans)offer).getLoanType() != loanType )
 					System.err.println("error in BidOfferingWithLoan.matches: different asset markets");
+				
 				return ((offer.getAssetPrice() <= assetPrice) && (((AskOfferingWithLoans)offer).getLoanPrice() >= loanPrice));
-//					return ((AgentWithLoans)agent).matchesBid(offer.getAssetPrice(),((AskOfferingWithLoans)offer).getLoanPrice(),this);
+				// return ((AgentWithLoans)agent).matchesBid(offer.getAssetPrice(),((AskOfferingWithLoans)offer).getLoanPrice(),this);
+				
+			//just loan
 			} else if (market>NUMMARKETS) {
-				//just loan				
-					if ( ((AskOfferingWithLoans)offer).getLoanType() != loanType )
-						System.err.println("error in BidOfferingWithLoan.matches: different loan markets");
-					return ( (((AskOfferingWithLoans)offer).getLoanPrice() >= loanPrice) 
-							&& (((AskOfferingWithLoans)offer).getLoanAmount() >= loanAmount));
+				if ( ((AskOfferingWithLoans)offer).getLoanType() != loanType )
+					System.err.println("error in BidOfferingWithLoan.matches: different loan markets");
+				
+				return ( (((AskOfferingWithLoans)offer).getLoanPrice() >= loanPrice) 
+						&& (((AskOfferingWithLoans)offer).getLoanAmount() >= loanAmount));
 			}
 		
 			return false;  //never happens
+			
 		} else  {
 			System.err.println("Auction with loan only for TRADE_ONLY_FULL_UNITS==true ");
 			return false;
@@ -92,20 +97,24 @@ public class BidOfferingWithLoans extends BidOffering {
 	public boolean dominates(BidOffering offer)  {
 		//this offer is for askers better than offer
 		if (Agent.TRADE_ONLY_FULL_UNITS) {
-			if (market==0)  {  
 			//asset against cash
+			if (market==0)  {  
 				return (offer.getAssetPrice() <= assetPrice) ;
-			} else if (market>0 && market <= NUMMARKETS) {
-			//asset against loan				
+				
+			// asset against loan
+			} else if (market>0 && market <= NUMMARKETS) {		
 				if ( ((BidOfferingWithLoans)offer).getLoanType() != loanType )
 					System.err.println("error in BidOfferingWithLoan.dominates: different asset markets");
+				
 				return ((offer.getAssetPrice() <= assetPrice) && (((BidOfferingWithLoans)offer).getLoanPrice() >= loanPrice));
+				
+			// just loan
 			} else if (market>NUMMARKETS) {
-				//just loan				
-					if ( ((BidOfferingWithLoans)offer).getLoanType() != loanType )
-						System.err.println("error in BidOfferingWithLoan.dominates: different loan markets");
-					return ( (((BidOfferingWithLoans)offer).getLoanPrice() >= loanPrice) 
-							&& (((BidOfferingWithLoans)offer).getLoanAmount() >= loanAmount));
+				if ( ((BidOfferingWithLoans)offer).getLoanType() != loanType )
+					System.err.println("error in BidOfferingWithLoan.dominates: different loan markets");
+				
+				return ( (((BidOfferingWithLoans)offer).getLoanPrice() >= loanPrice) 
+						&& (((BidOfferingWithLoans)offer).getLoanAmount() >= loanAmount));
 			}
 			
 			return false;  //never happens

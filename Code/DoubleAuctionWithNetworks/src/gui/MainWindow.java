@@ -82,6 +82,7 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 	private JButton simulateButton;
 	private JButton recreateButton;
 	private JButton nextTxButton;
+	private JButton openOfferBookButton;
 	private JToggleButton pauseButton;
 	private JToggleButton toggleNetworkPanelButton;
 	
@@ -110,6 +111,9 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 	private JTable txHistoryTable;
 	private DefaultTableModel txTableModel;
 	
+	private OfferBookFrame offerBookFrame;
+	private List<OfferBookFrame> clonedOfferBookFrame;
+	
 	private Timer spinnerChangedTimer;
 	
 	private SimulationThread simulationThread;
@@ -121,8 +125,8 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 	private long lastRepaintTime;
 	
 	private static final DecimalFormat COMP_TIME_FORMAT = new DecimalFormat("0.00");
-	private static final DecimalFormat AGENT_H_FORMAT = new DecimalFormat("0.000");
-	private static final DecimalFormat TRADING_VALUES_FORMAT = new DecimalFormat("0.000000");
+	public static final DecimalFormat AGENT_H_FORMAT = new DecimalFormat("0.000");
+	public static final DecimalFormat TRADING_VALUES_FORMAT = new DecimalFormat("0.000000");
 	
 	private static final int AGENTS_COUNT_HIDE_NETWORK_PANEL = 50;
 	private static final int REPAINT_WEALTH_WHENRUNNING_INTERVAL = 1000;
@@ -131,6 +135,7 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 		super("Continuous Double-Auctions");
 		
 		this.successfulTx = new ArrayList<Transaction>();
+		this.clonedOfferBookFrame = new ArrayList<>();
 		
 		this.setExtendedState( JFrame.MAXIMIZED_BOTH ); 
 		this.setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
@@ -227,6 +232,7 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 		this.recreateButton = new JButton( "Recreate" );
 		this.simulateButton = new JButton( "Start Simulation" );
 		this.nextTxButton = new JButton( "Next TX" );
+		this.openOfferBookButton = new JButton( "Open Offer-Book" );
 		this.pauseButton = new JToggleButton ( "Run" );
 		this.toggleNetworkPanelButton = new JToggleButton ( "Hide Network" );
 		
@@ -399,11 +405,24 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 			}
 		});
 		
+		this.openOfferBookButton.addActionListener( new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if ( null == MainWindow.this.offerBookFrame ) {
+					MainWindow.this.offerBookFrame = new OfferBookFrame( MainWindow.this.agents );
+				}
+				
+				MainWindow.this.offerBookFrame.setVisible( true );
+				MainWindow.this.offerBookFrame.offerBookChanged();
+			}
+		});
+		
 		this.recreateButton.addActionListener( this );
 		this.optimismSelection.addActionListener( this );
 		this.agentCountSpinner.addChangeListener( this );
 
 		// adding components ////////////////////////////////////
+		controlsPanel.add( this.openOfferBookButton );
 		controlsPanel.add( this.toggleNetworkPanelButton );
 		controlsPanel.add( this.recreateButton );
 		controlsPanel.add( this.agentCountSpinner );
@@ -563,6 +582,18 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 		// create asset-market
 		this.asset = new Asset( assetPrice, agentCount * assetEndow );
 		this.loans = new Loans( initialLoanPrices ,J);
+		
+		if ( null != this.offerBookFrame ) {
+			this.offerBookFrame.setVisible( false );
+			this.offerBookFrame = null;
+		}
+		
+		for ( OfferBookFrame obf : this.clonedOfferBookFrame ) {
+			obf.setVisible( false );
+			obf.dispose();
+		}
+		
+		this.clonedOfferBookFrame.clear();
 		
 		// create agent-factory
 		IAgentFactory agentFactory = new IAgentFactory() {
