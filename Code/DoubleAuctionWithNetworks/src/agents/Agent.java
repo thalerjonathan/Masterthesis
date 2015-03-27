@@ -84,11 +84,11 @@ public class Agent {
 		return id;
 	}
 
-	public double getCE()  {
+	public double getConumEndow()  {
 		return consumEndow;
 	}
 	
-	public double getAE()  {
+	public double getAssetEndow()  {
 		return assetEndow;
 	}
 	
@@ -155,12 +155,6 @@ public class Agent {
 				
 				if ( dominates ) {
 					this.bestAskOfferings.get( i ).add( ask );
-					
-					/*
-					if ( this.bestAskOfferings.get( i ).size() > 1 ) {
-						ystem.out.println( "bestAskOfferings.get( "+ i + " ).size() = " + bestAskOfferings.get( i ).size() );
-					}
-					*/
 				}
 			}
 			
@@ -183,11 +177,6 @@ public class Agent {
 				
 				if ( dominates ) {
 					this.bestBidOfferings.get( i ).add( bid );
-					/*
-					if ( this.bestBidOfferings.get( i ).size() > 1 ) {
-						System.out.println( "bestBidOfferings.get( "+ i + " ).size() = " + bestBidOfferings.get( i ).size() );
-					}
-					*/
 				}
 			}
 		}
@@ -198,8 +187,8 @@ public class Agent {
 		this.currentBidOfferings = calcBidOfferings();
 	}
 	
-	protected AskOffering[] calcAskOfferings()  {
-	//draw a random price uniformly out of [minP,maxP] intersect [limitPriceAsset,pU]
+	public AskOffering[] calcAskOfferings()  {
+		//draw a random price uniformly out of [minP,maxP] intersect [limitPriceAsset,pU]
 		double minP = getPMin();
 		double maxP = getPMax();
 		double assetPrice;
@@ -232,7 +221,7 @@ public class Agent {
 		return new AskOffering[] { actAskOffer };
 	}
 	
-	protected BidOffering[] calcBidOfferings()  {
+	public BidOffering[] calcBidOfferings()  {
 		//first version: draw a random price uniformly out of [minP,maxP] intersect [pD,limitPriceAsset] 
 		double minP = getPMin();
 		double maxP = getPMax();
@@ -297,7 +286,9 @@ public class Agent {
 		}
 		
 		// need to reset when match to force a recalculation of offers
-		this.clearBestOfferings();
+		// INFO: don't really need to reset because this will result in a successful TX which
+		// will be returned immediately. Best Offerings will be cleared bevore next TX
+		//this.clearBestOfferings();
 		
 		return true;
 	}
@@ -330,7 +321,9 @@ public class Agent {
 		}
 		
 		// need to reset when match to force a recalculation of offers
-		this.clearBestOfferings();
+		// INFO: don't really need to reset because this will result in a successful TX which
+		// will be returned immediately. Best Offerings will be cleared bevore next TX
+		//this.clearBestOfferings();
 		
 		return true;
 	}

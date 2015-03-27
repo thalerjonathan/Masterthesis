@@ -58,8 +58,8 @@ public class WealthVisualizer extends JPanel {
 		// draw points and lines of agents
 		for ( int i = 0; i < orderedAgents.size(); ++i ) {
 			Agent a = orderedAgents.get( i );
-			double cash = a.getCE();
-			double assets = a.getAE();
+			double cash = a.getConumEndow();
+			double assets = a.getAssetEndow();
 			double optimism = a.getH();
 			
 			int x = ( int ) ( d.width * optimism );

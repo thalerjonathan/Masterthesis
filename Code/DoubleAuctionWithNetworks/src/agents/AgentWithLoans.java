@@ -55,6 +55,14 @@ public class AgentWithLoans extends Agent {
 		freeAssetEndow = assetEndow;
 	}
 	
+	public double[] getLimitPricesLoansBuy() {
+		return limitPricesLoansBuy;
+	}
+
+	public double[] getLimitPricesLoansSell() {
+		return limitPricesLoansSell;
+	}
+
 	public double[] getLoanGiven() {
 		return loanGiven;
 	}
@@ -384,9 +392,11 @@ public class AgentWithLoans extends Agent {
 			else
 				consumEndow = 0;
 		}
-		
+
 		// need to reset when match to force a recalculation of offers
-		this.clearBestOfferings();
+		// INFO: don't really need to reset because this will result in a successful TX which
+		// will be returned immediately. Best Offerings will be cleared bevore next TX
+		//this.clearBestOfferings();
 		
 		return true;
 	}
@@ -441,7 +451,9 @@ public class AgentWithLoans extends Agent {
 		}
 		
 		// need to reset when match to force a recalculation of offers
-		this.clearBestOfferings();
+		// INFO: don't really need to reset because this will result in a successful TX which
+		// will be returned immediately. Best Offerings will be cleared bevore next TX
+		//this.clearBestOfferings();
 		
 		return true;
 	}
@@ -493,9 +505,11 @@ public class AgentWithLoans extends Agent {
 					freeAssetEndow = 0;
 			}
 		}
-		
+
 		// need to reset when match to force a recalculation of offers
-		this.clearBestOfferings();
+		// INFO: don't really need to reset because this will result in a successful TX which
+		// will be returned immediately. Best Offerings will be cleared bevore next TX
+		//this.clearBestOfferings();
 		
 		return true;
 	}

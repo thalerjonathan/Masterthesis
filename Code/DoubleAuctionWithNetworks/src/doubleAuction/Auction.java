@@ -130,6 +130,8 @@ public class Auction {
 				
 				// let current agent calculate its new offers for this round
 				a.calcNewOfferings();
+				// will add the previously calculated offerings to the agents best offerings
+				a.addCurrentOfferingsToBestOfferings();
 			}
 			
 			// get same random-iterator (won't do a shuffle again)
@@ -151,9 +153,6 @@ public class Auction {
 					match = transaction.findMatchesByGlobalOffers( a, agents );
 				}
 
-				// will add the previously calculated offerings to the agents best offerings
-				a.addCurrentOfferingsToBestOfferings();
-				
 				// transaction found a match
 				if ( match != null ) {
 					// executes Transaction: sell and buy in the two agents will update new wealth

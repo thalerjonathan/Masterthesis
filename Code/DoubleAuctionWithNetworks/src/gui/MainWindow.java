@@ -13,6 +13,7 @@ import gui.networkCreators.MaximumHubCreator;
 import gui.networkCreators.MedianHubCreator;
 import gui.networkCreators.ThreeMedianHubsCreator;
 import gui.networkCreators.WattStrogatzCreator;
+import gui.offerBook.OfferBookFrame;
 import gui.visualisation.AgentSelectedEvent;
 import gui.visualisation.ConnectionSelectedEvent;
 import gui.visualisation.INetworkSelectionObserver;
@@ -521,6 +522,7 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 		c.weighty = 0.1;
 		c.gridheight = 2;
 	    c.gridy = 11;
+	    
 		this.getContentPane().add( txInfoPanel, c );
 	}
 	
