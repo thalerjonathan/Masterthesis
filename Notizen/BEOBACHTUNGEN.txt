@@ -30,3 +30,35 @@
 			-> matching-bedingungen: AND-Verknünpft, müssen beide true sein
 				-> käufer muss mindestens oder mehr für das asset bieten als der verkäufer haben will
 				-> käufer muss weniger für den loan haben wollen als der verkäufer geben will
+				
+		-> wahrscheinlich ist die wahrscheinlichkeit gegen 0 dass bids bzw. asks getätigt werden die sich in der direkten nachbarschaft treffen
+		-> es muss eine verbindung zu nachbarn sein wobei es nicht reicht z.b. immer nur zum 5. nachbar zu verbinden, es müssen auch die dazwischenliegenden verbunden werden
+			-> der extremfall ist dann fully_connected
+			
+			
+	=> Weg über Gleichgewichtsfeststellung
+		-> Wenn kein Agent mehr mit einem anderen handeln kann d.h. wenn kein Agent mehr in der Lage ist ein Offer zu machen, das ein andere NACHBAR matchen kann, 
+			dann ist das Gleichgewicht erreicht.
+		-> Folgende Zustände 
+			1. Cash & Assets vorhanden: handelt beide Märkte (Asset->Cash und Asset->Loan)
+				-> Asset-Cash Markt: nur jeweils ein Bestes Angebot für Bid und Ask gibt, da auf diesem Markt eine lineare Ordnung auf die
+					Angebote gibt, da nur auf den ASset Preis vergleicht wird.
+					-> Verkaufs-Preis des Asset: 	zufällig aus [ limitPreis, pU ]
+					-> Kauf-Preis des Asset:		zufällig aus [ pD, limitPreis ]
+				-> Asset->Loan Markt: kann eine vielzahl an Besten Angeboten für Bid und Ask haben, da es eben keine lineare Ordnung sondern eine Pareto-Front gibt
+					-> Verkaufs-Preis:
+					-> Kauf-Preis:
+					-> Pareto-Front
+					
+			2. Keine Assets vorhanden
+				-> Kein Ask (verkauf) mehr für assets
+				-> Kein Ask (verkauf) mehr auf Asset against Loan, da kein Asset mehr vorhanden ist, das kollateralisiert werden kan
+				-> Wenn noch Cash vorhanden, dann Bid (kauf) auf Asset against Loan d.h. "Loans Taken" erhöht sich 
+			3. Kein Cash vorhanden
+				-> Kein Bid (kauf) mehr für assets
+				-> Bids (kauf) auf asset against loan
+				-> Wenn noch Assets vorhanden, dann Ask (sell) auf Asset against Loan d.h. "Loans Given" erhöht sich
+				
+	=> FALSCHE BEOBACHTUNG!!!!! Wenn ASCENDING_CONNECTED wird zuerst durch die lineare ordnung und durch die bedingungen, ab wann asset->loan gehandelt wird zuerst das
+		asset->cash gleichgewicht erreicht, erst dann findet der erste asset->loan handel statt!
+		-> könnte ein grund sein wieso das gleichgewicht dann bei ascending connected nicht erreicht wird, denn bei FULLY_CONNECTED wird schon wesentlich früher begonnen mit asset->loan zu handeln

@@ -1,4 +1,4 @@
-package gui;
+package gui.txHistory;
 
 import java.util.Comparator;
 import java.util.List;

@@ -48,8 +48,6 @@ public class Agent {
 	private List<List<AskOffering>> bestAskOfferings;
 	private List<List<BidOffering>> bestBidOfferings;
 	
-	protected double utility = 0, accUtility = 0, lastUtility = 0, lastLastUtility = 0, utilDiff=0;    
-	protected double[][] decisions, lastDecisions, lastLastDecisions, assignedDecs;
 
 	private boolean highlighted;
 	
@@ -191,29 +189,32 @@ public class Agent {
 		//draw a random price uniformly out of [minP,maxP] intersect [limitPriceAsset,pU]
 		double minP = getPMin();
 		double maxP = getPMax();
-		double assetPrice;
+		double assetPrice = 0.0;
 		AskOffering actAskOffer = null;
 		
 		if (maxP < limitPriceAsset)  //agent cannot offer at current price level 
 			return null;
 	
+		// check if there is enough endowment left...
+		if (TRADE_ONLY_FULL_UNITS ) {
+			if (assetEndow < UNIT)
+				return null;
+		} else  {
+			if (assetEndow < 0)
+				return null;
+		}
+		
 		// "...agents who always make bids which improve their utility but otherwise bid randomly."
 		if ( limitPriceAsset > minP )
-			assetPrice = limitPriceAsset + agRand.nextDouble()*(maxP-limitPriceAsset);
+			assetPrice = limitPriceAsset + agRand.nextDouble() * ( maxP - limitPriceAsset );
 		else
-			assetPrice = minP + agRand.nextDouble()*(maxP-minP);
+			assetPrice = minP + agRand.nextDouble() * ( maxP - minP );
 			
-		if (TRADE_ONLY_FULL_UNITS) {
-			if (assetEndow >= UNIT)
-				actAskOffer = new AskOffering(assetPrice, this, 0, MarketType.ASSET_AGAINST_CASH );	
-			else
-				actAskOffer = null;
+		// at this point we know there is enough endowment left!
+		if (false == TRADE_ONLY_FULL_UNITS) {
+			actAskOffer = new AskOffering(assetPrice, this, 0, MarketType.ASSET_AGAINST_CASH );	
 		} else  {
-			if (assetEndow > 0)
-				actAskOffer = new AskOffering(assetPrice, Math.min(assetEndow,MAXUNIT), this, 0, MarketType.ASSET_AGAINST_CASH );	
-			else
-				actAskOffer = null;
-			
+			actAskOffer = new AskOffering(assetPrice, Math.min(assetEndow,MAXUNIT), this, 0, MarketType.ASSET_AGAINST_CASH );	
 		}
 		
 		return new AskOffering[] { actAskOffer };
@@ -229,19 +230,22 @@ public class Agent {
 		if (minP > limitPriceAsset)  //agent cannot offer at current price level 
 			return null;
 	
-		if ( limitPriceAsset < maxP )
-			assetPrice = minP + agRand.nextDouble()*(limitPriceAsset-minP);
-		else
-			assetPrice = minP + agRand.nextDouble()*(maxP-minP);
-
+		// "...agents who always make bids which improve their utility but otherwise bid randomly."
+		if ( limitPriceAsset < maxP ) {
+			// draw a random price in the range betwen minP (the value of the asset tomorrow in Down) and limitPriceAsset (the value of the asset this agent expects it to be tomorrow)
+			assetPrice = minP + agRand.nextDouble() * ( limitPriceAsset - minP );
+		} else {
+			assetPrice = minP + agRand.nextDouble() * ( maxP - minP );
+		}
+		
 		if (TRADE_ONLY_FULL_UNITS) {
-			if (assetPrice*UNIT <= consumEndow)
+			if (assetPrice * UNIT <= consumEndow )
 				actBidOffer = new BidOffering(assetPrice, this, 0, MarketType.ASSET_AGAINST_CASH );
 			else
 				actBidOffer = null;
 		} else {
-			if (consumEndow>0)
-				actBidOffer = new BidOffering(assetPrice, Math.min(consumEndow/assetPrice,MAXUNIT), this, 0, MarketType.ASSET_AGAINST_CASH );
+			if (consumEndow > 0)
+				actBidOffer = new BidOffering(assetPrice, Math.min( consumEndow / assetPrice, MAXUNIT ), this, 0, MarketType.ASSET_AGAINST_CASH );
 			else
 				actBidOffer = null;			
 		}
@@ -275,10 +279,8 @@ public class Agent {
 		if (first)  {
 			consumEndow += bid.getFinalAssetPrice()*toSell;
 			bid.getAgent().execBuyTransaction(match, !first);
-			accUtility += (bid.getFinalAssetPrice() - limitPriceAsset)*UNIT;
 		} else {
 			consumEndow += myAsk.getFinalAssetPrice()*toSell;
-			accUtility += (myAsk.getFinalAssetPrice() - limitPriceAsset)*UNIT;
 		}
 		
 		// need to reset when match to force a recalculation of offers
@@ -301,11 +303,9 @@ public class Agent {
 		if (first)  {
 			consumEndow -= ask.getFinalAssetPrice()*toBuy;
 			ask.getAgent().execSellTransaction(match, !first);
-			accUtility += (limitPriceAsset - ask.getFinalAssetPrice())*UNIT;
 		}
 		else {
 			consumEndow -= myBid.getFinalAssetPrice()*toBuy;	
-			accUtility += (limitPriceAsset - myBid.getFinalAssetPrice())*UNIT;
 		}
 		
 		if (consumEndow < CONSUME_INSENSIBILITY)  {
@@ -351,16 +351,10 @@ public class Agent {
 		return bestBidOfferings;
 	}
 
-	public double getAccUtility() {
-		return accUtility;
-	}
-	
-	public void setAccUtility(double accUtility) {
-		this.accUtility = accUtility;
-	}
-	
 	protected void detLimitPriceAsset() {
 		// calculate expected value (E, Erwartungswert) of the Asset
+		
+		// derived from the formula: h*pU+(1-h)*pD
 		limitPriceAsset = (asset.getPU() - asset.getPD())*h + asset.getPD();
 	}
 	

@@ -76,10 +76,14 @@ Zeitpunkte
 					großer nutzen nur bei vielen agenten (ab 500) und für das gleichgewicht auch schon unter 100 agenten ausreichen 
 		
 	April: THEORIE VERTIEFUNG UND AUSARBEITUNG
-		-> TODO		Brauchbaren Gleichgewichtsbegriff definieren und auch im Programm einführen d.h. das Programm erkennt wann sich ein Gleichgewicht eingestellt hat und benachrichtigt den Benutzer
-		-> TODO		Hypothese beweis/widerlegen
 		-> TOOD		verhalten der simulation genau studieren
-		-> TODO		wieso kommt es bei ascending zu keinem gleichgewicht sondern nur mit shortcuts ab einer gewissen N und wie muss N in abhängigkeiten der agentenanzahl gewählt werden?
+			-> wieso kommt es bei ascending zu keinem gleichgewicht sondern nur mit shortcuts ab einer gewissen N und wie muss N in abhängigkeiten der agentenanzahl gewählt werden?
+			-> Hypothese beweis/widerlegen
+		-> TODO		im programm feststellen, dass kein handeln mehr möglich ist
+			-> dies führt dann auch zu einem "beweis" oder auf eine erkenntnis wieso es nicht zum gleichgewicht kommt
+		-> TODO		Paretofront visualisieren?
+		
+		-> TODO		Parallelilsierungs model um noch etwas informatikanteil theorie hineinzubekommen
 		
 	Mai: SCHREIBEN
 		
@@ -93,4 +97,18 @@ Zeitpunkte
 		-> Finale Abgabe am 27.
 			-> wenn auf das Kinderlager mit am 17. Juli abgabe
 
+
+Große Alternative:
+Ich tendiere im Moment weg von einer Doktorarbeit (noch begründen wieso), somit wäre es eine Alternative die Masterarbeit etwas auszubauen d.h. bis zum 2. Termin laufen zu lassen
+und noch das Thema parallelität aufzunehmen um so etwas entspannter arbeiten zu können. Ich bin sowieso noch an der FH, da ich eine 4stündige Übung im WS 2015 übernehme, die eben
+auch bis Februar 2016 geht, dies würde sich genau treffen. Aber: was meint Hans dazu?
+
+Wieso Doktorarbeit nichtmehr:
+- im moment nicht sehr dazu motiviert
+- garantiert mir keine Lehrstelle in der FH
+- ich bezweifle ob ich überhaupt der typ dazu bin
+- da nottingham weggefallen ist, stellt sich die frage nach der uni und thema
+- mind. 3 weitere jahre in Ausbildung investieren
+- finde sicher einen sehr guten job stattedessen
+- viel parallel machen: doktorstudium, forschungsprojekte (smartsleep, jmarkets), unterrichten. ist mühsam
 

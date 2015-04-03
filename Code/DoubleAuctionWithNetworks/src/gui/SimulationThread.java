@@ -7,6 +7,7 @@ import java.util.concurrent.locks.ReentrantLock;
 import javax.swing.SwingUtilities;
 
 import doubleAuction.Auction;
+import doubleAuction.offer.AskOfferingWithLoans;
 import doubleAuction.tx.Transaction;
 
 public class SimulationThread implements Runnable {
@@ -24,20 +25,27 @@ public class SimulationThread implements Runnable {
 	
 	private long computationTimeMs;
 	
-	private Transaction lastTX;
+	private int advanceTxCountCurrent;
+	private int advanceTxCountTarget;
 	
 	private Thread awaitNextTxThread;
 	private Thread simulationThread;
 	
 	private SimulationState state;
 
-	private boolean successfulTXOnly;
+	private AdvanceMode advanceMode;
 	
 	private enum SimulationState {
 		EXIT,
 		RUNNING,
 		PAUSED,
-		NEXT_TX;
+		ADVANCE_TX;
+	}
+	
+	public enum AdvanceMode {
+		ALL_TX,
+		SUCCESSFUL_TX,
+		SUCCESSFUL_LOAN_TX
 	}
 	
 	public SimulationThread( Auction auction, MainWindow mainWindow ) {
@@ -63,7 +71,7 @@ public class SimulationThread implements Runnable {
 	}
 	
 	public boolean awaitsNextTX() {
-		return this.state == SimulationState.NEXT_TX;
+		return this.state == SimulationState.ADVANCE_TX;
 	}
 	
 	// NOTE: must be called from other thread than SimulationThread
@@ -88,10 +96,11 @@ public class SimulationThread implements Runnable {
 	}
 	
 	// NOTE: must be called from other thread than SimulationThread
-	public void nextTX( boolean successfulOnly ) {
-		// switch state to next-tx (will always be already in paused-mode at this point, next-tx can only be reached from paused-mode)
-		this.state = SimulationState.NEXT_TX;
-		this.successfulTXOnly = successfulOnly;
+	public void advanceTX( AdvanceMode advanceMode, int count ) {
+		// switch state to advance-tx (will always be already in paused-mode at this point, advance-tx can only be reached from paused-mode)
+		this.state = SimulationState.ADVANCE_TX;
+		this.advanceMode = advanceMode;
+		this.advanceTxCountTarget = count;
 		
 		// PROBLEM: this call could block for a very long time or forever because 
 		// it could take a very long time or forever for the next (successful) transaction to occur
@@ -104,21 +113,22 @@ public class SimulationThread implements Runnable {
 				
 				try {
 					// (re-) set to null to wait for TX
-					SimulationThread.this.lastTX = null;
+					SimulationThread.this.advanceTxCountCurrent = 0;
 					
 					// signal the blocking simulation-thread because nextTX can only be called from pause-state 
 					// thus in pause-state simulation-thread is blocking already
 					SimulationThread.this.simulationCondition.signal();
 
-					// wait blocking till either a next TX has been found OR the state has changed 
-					// if TX has been found: simulation-thread will set lastTX to the given TX and switch state back to pause and give signal
-					// if state-switch occured through GUI e.g. back to pause or exit, signal came from GUI-Thread and lastSuccTX will be null
-					while ( null == SimulationThread.this.lastTX || SimulationThread.this.state == SimulationState.NEXT_TX ) {
+					// wait blocking till either the number of TX been advanced OR the state has changed 
+					// if number of TX has been advanced: simulation-thread has already incremented counter and switch state back to pause and give signal
+					// if state-switch occured through GUI e.g. back to pause or exit, signal came from GUI-Thread and counter-condition will most probably be not satisfied
+					while ( SimulationThread.this.advanceTxCountCurrent < SimulationThread.this.advanceTxCountTarget  || 
+							SimulationThread.this.state == SimulationState.ADVANCE_TX ) {
 						SimulationThread.this.nextTXCondition.await();
 					}
 					
 				} catch (InterruptedException e) {
-					if ( SimulationThread.this.state == SimulationState.NEXT_TX ) {
+					if ( SimulationThread.this.state == SimulationState.ADVANCE_TX ) {
 						e.printStackTrace();
 					}
 					
@@ -130,7 +140,7 @@ public class SimulationThread implements Runnable {
 					SwingUtilities.invokeLater( new Runnable() {
 						@Override
 						public void run() {
-							SimulationThread.this.mainWindow.nextTXFinished();
+							SimulationThread.this.mainWindow.advanceTxFinished();
 						}
 					});
 				}
@@ -173,7 +183,6 @@ public class SimulationThread implements Runnable {
 				
 				// increment time
 				this.computationTimeMs += System.currentTimeMillis() - ts;
-				boolean notifyTX = true;
 				
 				// tx was successful
 				if ( tx.wasSuccessful() ) {
@@ -195,21 +204,33 @@ public class SimulationThread implements Runnable {
 					if ( this.noSuccTXCounter == 10 ) {
 						this.mainWindow.repaint();
 					}
-					
-					notifyTX = ! this.successfulTXOnly;
 				}
 				
-				// we are in nextTX-state and found one (successful) TX => switch back to paused-state
-				if ( SimulationState.NEXT_TX == this.state && notifyTX ) {
-					// found (successfull) transaction: store in consumer-data to 
-					this.lastTX = tx;
-					// next-tx can only happen in paused-state, switch back to paused when finished
-					this.state = SimulationState.PAUSED;
-					// signal the waiting GUI/next-TX-thread (if any)
-					this.nextTXCondition.signalAll();
+				// we are in advance-tx state and found one (successful) TX => switch back to paused-state
+				if ( SimulationState.ADVANCE_TX == this.state ) {
+					
+					if ( AdvanceMode.ALL_TX == this.advanceMode ) {
+						this.advanceTxCountCurrent++;
+						
+					} else if ( AdvanceMode.SUCCESSFUL_TX == this.advanceMode && 
+							tx.wasSuccessful() ) {
+						this.advanceTxCountCurrent++;
+						
+					} else if ( AdvanceMode.SUCCESSFUL_LOAN_TX == this.advanceMode && 
+							tx.wasSuccessful()  ) {
+						if ( tx.getMatchingAskOffer() instanceof AskOfferingWithLoans ) {
+							this.advanceTxCountCurrent++;
+						}
+					}
+
+					if ( this.advanceTxCountCurrent >= this.advanceTxCountTarget ) {
+						// advancetx can only happen in paused-state, switch back to paused when finished
+						this.state = SimulationState.PAUSED;
+						// signal the waiting GUI/next-TX-thread (if any)
+						this.nextTXCondition.signalAll();
+					}
 				}
 
-				
 				// running in thread => need to update SWING through SwingUtilities.invokeLater
 				SwingUtilities.invokeLater( new Runnable() {
 					@Override
@@ -239,7 +260,7 @@ public class SimulationThread implements Runnable {
 			this.state = state;
 			
 		// simulation-thread is running but need to stop nextTX-thread
-		} else if ( SimulationState.NEXT_TX == this.state ) {
+		} else if ( SimulationState.ADVANCE_TX == this.state ) {
 			// this will lead the simulation-thread to exit
 			this.state = state;
 			// if next-tx thread is active, it will be blocking on its signal, interrupt it
@@ -247,7 +268,7 @@ public class SimulationThread implements Runnable {
 			
 		// simulation-thread is blocked, switch state and signal to continue
 		} else if ( SimulationState.PAUSED == this.state ) {
-			this.mainWindow.restoreTXHistoryList();
+			this.mainWindow.restoreTXHistoryTable();
 			
 			// signal the thread to exit
 			this.lock.lock();

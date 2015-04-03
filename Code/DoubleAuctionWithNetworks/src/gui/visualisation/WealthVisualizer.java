@@ -49,7 +49,7 @@ public class WealthVisualizer extends JPanel {
 		for ( int i = 0; i < 10; i++ ) {
 			double h = i / 10.0;
 			int x = ( int ) ( d.width * h );
-			String str = "" + h;
+			String str = " " + h;
 			
 			g.drawLine( x, 0, x, d.height );
 			g.drawChars( str.toCharArray(), 0, str.length(), x, d.height );

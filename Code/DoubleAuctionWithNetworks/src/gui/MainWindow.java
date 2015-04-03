@@ -1,5 +1,6 @@
 package gui;
 
+import gui.SimulationThread.AdvanceMode;
 import gui.networkCreators.AscendingConnectedCreator;
 import gui.networkCreators.AscendingFullShortcutsCreator;
 import gui.networkCreators.AscendingRandomShortcutsCreator;
@@ -14,11 +15,14 @@ import gui.networkCreators.MedianHubCreator;
 import gui.networkCreators.ThreeMedianHubsCreator;
 import gui.networkCreators.WattStrogatzCreator;
 import gui.offerBook.OfferBookFrame;
+import gui.txHistory.TxHistoryTable;
 import gui.visualisation.AgentSelectedEvent;
 import gui.visualisation.ConnectionSelectedEvent;
 import gui.visualisation.INetworkSelectionObserver;
 import gui.visualisation.NetworkRenderPanel;
 
+import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
@@ -30,6 +34,7 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
@@ -38,17 +43,13 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSpinner;
-import javax.swing.JTable;
 import javax.swing.JToggleButton;
-import javax.swing.ListSelectionModel;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableRowSorter;
 
 import agents.Agent;
 import agents.AgentWithLoans;
@@ -61,11 +62,8 @@ import doubleAuction.Auction;
 import doubleAuction.Auction.MatchingType;
 import doubleAuction.AuctionWithLoans;
 import doubleAuction.offer.AskOffering;
-import doubleAuction.offer.AskOfferingWithLoans;
 import doubleAuction.offer.BidOffering;
-import doubleAuction.offer.BidOfferingWithLoans;
 import doubleAuction.tx.Transaction;
-import doubleAuction.tx.TransactionWithLoans;
 import edu.uci.ics.jung.algorithms.layout.CircleLayout;
 import edu.uci.ics.jung.algorithms.layout.KKLayout;
 import edu.uci.ics.jung.algorithms.layout.Layout;
@@ -77,25 +75,29 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 	private Asset asset;
 	private Loans loans;
 	
-	private JCheckBox successfulTXOnlyCheck;
 	private JCheckBox keepSuccTXHighCheck;
 	private JCheckBox cashAssetOnlyCheck;
+	private JCheckBox forceRedrawCheck;
 	
 	private JButton simulateButton;
 	private JButton recreateButton;
 	private JButton nextTxButton;
+	private JButton advance10TxButton;
+	private JButton advance100TxButton;
 	private JButton openOfferBookButton;
 	private JToggleButton pauseButton;
 	private JToggleButton toggleNetworkPanelButton;
-	
-	private NetworkRenderPanel networkPanel;
-	private JPanel agentWealthPanel;
+
 	private JPanel visualizationPanel;
+	private JPanel agentWealthPanel;
+	private JPanel networkPanel;
+	private NetworkRenderPanel networkVisPanel;
 	
 	private JComboBox<INetworkCreator> topologySelection;
 	private JComboBox<String> layoutSelection;
 	private JComboBox<String> optimismSelection;
 	private JComboBox<MatchingType> matchingTypeSelection;
+	private JComboBox<SimulationThread.AdvanceMode> advcanceModeSelection;
 	
 	private JSpinner agentCountSpinner;
 	
@@ -104,14 +106,8 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 	private JLabel succTxCounterLabel;
 	private JLabel totalTxCounterLabel;
 	private JLabel noSuccTxCounterLabel;
-	
-	private JLabel finalAssetAskLabel;
-	private JLabel finalAssetBidLabel;
-	private JLabel finalLoanAskLabel;
-	private JLabel finalLoanBidLabel;
 
-	private JTable txHistoryTable;
-	private DefaultTableModel txTableModel;
+	private TxHistoryTable txHistoryTable;
 	
 	private Timer spinnerChangedTimer;
 	
@@ -125,7 +121,7 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 	
 	private static final DecimalFormat COMP_TIME_FORMAT = new DecimalFormat("0.00");
 	public static final DecimalFormat AGENT_H_FORMAT = new DecimalFormat("0.000");
-	public static final DecimalFormat TRADING_VALUES_FORMAT = new DecimalFormat("0.000000");
+	public static final DecimalFormat TRADING_VALUES_FORMAT = new DecimalFormat("0.0000");
 	
 	private static final int AGENTS_COUNT_HIDE_NETWORK_PANEL = 50;
 	private static final int REPAINT_WEALTH_WHENRUNNING_INTERVAL = 1000;
@@ -144,6 +140,10 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
        
         this.pack();
         this.setVisible( true );
+	}
+	
+	public void restoreTXHistoryTable() {
+		this.txHistoryTable.restore( this.successfulTx );
 	}
 	
 	public MatchingType getSelectedMatchingType() {
@@ -180,22 +180,24 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 		this.spinnerChangedTimer = new Timer();
 		this.spinnerChangedTimer.schedule( task, 500 );
 	}
-	
-	@SuppressWarnings("rawtypes")
+
 	private void createControlsPanel() {
 		// instancing of components ////////////////////////////////////
 		GridBagConstraints c = new GridBagConstraints();
 
 		this.visualizationPanel = new JPanel( new GridBagLayout() );
+		this.networkPanel = new JPanel( new BorderLayout() );
+		
 		JPanel controlsPanel = new JPanel();
 		JPanel txInfoPanel = new JPanel( new GridBagLayout() );
-
+		JPanel networkVisControlsPanel = new JPanel();
+		
 		this.topologySelection = new JComboBox<INetworkCreator>();
+		this.topologySelection.addItem( new FullyConnectedCreator() );
 		this.topologySelection.addItem( new AscendingConnectedCreator() );
 		this.topologySelection.addItem( new AscendingFullShortcutsCreator() );
 		this.topologySelection.addItem( new AscendingRegularShortcutsCreator() );
 		this.topologySelection.addItem( new AscendingRandomShortcutsCreator() );
-		this.topologySelection.addItem( new FullyConnectedCreator() );
 		this.topologySelection.addItem( new HubConnectedCreator() );
 		this.topologySelection.addItem( new MedianHubCreator() );
 		this.topologySelection.addItem( new MaximumHubCreator() );
@@ -207,34 +209,30 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 		this.layoutSelection = new JComboBox<String>( new String[] { "Circle", "KK" } );
 		this.optimismSelection = new JComboBox<String>( new String[] { "Linear", "Triangle"  } );
 		this.matchingTypeSelection = new JComboBox<MatchingType>( MatchingType.values() );
+		this.advcanceModeSelection = new JComboBox<SimulationThread.AdvanceMode>( SimulationThread.AdvanceMode.values() );
 		
 		this.agentCountSpinner = new JSpinner( new SpinnerNumberModel( 30, 10, 1000, 10 ) );
 
 		JLabel succTxCounterInfoLabel = new JLabel( "Successful TX: " );
 		JLabel noSuccTxCounterInfoLabel = new JLabel( "No Succ. TX: " );
 		JLabel totalTxCounterInfoLabel = new JLabel( "Total TX: " );
-		JLabel finalAssetAskInfoLabel = new JLabel( "Asset Ask Price:" );
-		JLabel finalAssetBidInfoLabel = new JLabel( "Asset Bid Price:" );
-		JLabel finalLoanAskInfoLabel = new JLabel( "Loan Ask Price:" );
-		JLabel finalLoanBidInfoLabel = new JLabel( "Loan Bid Price:"  );
+		JLabel computationTimeInfoLabel = new JLabel( "Computation Time: " );
 		
-		this.computationTimeLabel = new JLabel( "Computation Time: -" );
+		this.computationTimeLabel = new JLabel( "-" );
 		this.succTxCounterLabel = new JLabel( "-" );
 		this.noSuccTxCounterLabel = new JLabel( "-" );
 		this.totalTxCounterLabel = new JLabel( "-" );		
-		this.finalAssetAskLabel = new JLabel( "-" );
-		this.finalAssetBidLabel = new JLabel( "-" );
-		this.finalLoanAskLabel = new JLabel( "-" );
-		this.finalLoanBidLabel = new JLabel( "-" );
-	
+		
 		this.recreateButton = new JButton( "Recreate" );
 		this.simulateButton = new JButton( "Start Simulation" );
 		this.nextTxButton = new JButton( "Next TX" );
+		this.advance10TxButton = new JButton( "Advance 10 TXs" );
+		this.advance100TxButton = new JButton( "Advance 100 TXs" );
+		
 		this.openOfferBookButton = new JButton( "Open Offer-Book" );
 		this.pauseButton = new JToggleButton ( "Run" );
 		this.toggleNetworkPanelButton = new JToggleButton ( "Hide Network" );
 		
-		this.successfulTXOnlyCheck = new JCheckBox( "Successful TXs Only" );
 		this.keepSuccTXHighCheck = new JCheckBox( "Keep TXs Highlighted" );
 		this.keepSuccTXHighCheck.addActionListener( new ActionListener() {
 			@Override
@@ -243,9 +241,9 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 					return;
 				}
 				
-				if ( null != MainWindow.this.networkPanel ) {
-					MainWindow.this.networkPanel.setKeepTXHighlighted( MainWindow.this.keepSuccTXHighCheck.isSelected() );
-					MainWindow.this.networkPanel.repaint();
+				if ( MainWindow.this.networkVisPanel.isVisible() ) {
+					MainWindow.this.networkVisPanel.setKeepTXHighlighted( MainWindow.this.keepSuccTXHighCheck.isSelected() );
+					MainWindow.this.networkVisPanel.repaint();
 				}
 			}
 		});
@@ -254,40 +252,19 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 		this.cashAssetOnlyCheck.setSelected( false );
 		this.cashAssetOnlyCheck.addActionListener( this );
 		
-		Class[] columnClasses = new Class[]{ Integer.class, String.class, String.class, String.class,
-				String.class, String.class, String.class, String.class };
+		this.forceRedrawCheck = new JCheckBox( "Force Redraw" );
 		
-		this.txTableModel = new DefaultTableModel(
-				new Object[] { "TX", "Seller", "Buyer", "Asset Amount",
-						"Asset Price", "Loan Amount", "Loan Price", "Loan Type" }, 0 ) {
-
-		    @Override
-		    public boolean isCellEditable(int row, int column) {
-		       return false;
-		    }
-
-			@Override
-			public Class<?> getColumnClass(int columnIndex) {
-				return columnClasses[ columnIndex ];
-			}
-		};
-
-		TableRowSorter<DefaultTableModel> rowSorter = new TableRowSorter<>( this.txTableModel );
-		new TXColumnComparator( 5, rowSorter );
-		new TXColumnComparator( 6, rowSorter );
-		new TXColumnComparator( 7, rowSorter );
-		
-		this.txHistoryTable = new JTable( this.txTableModel );
-		this.txHistoryTable.setSelectionMode( ListSelectionModel.SINGLE_SELECTION );
-		this.txHistoryTable.setAutoCreateRowSorter( true );
-		this.txHistoryTable.setRowSorter( rowSorter );
-		
+		this.txHistoryTable = new TxHistoryTable();
 		JScrollPane txHistoryScrollPane = new JScrollPane( this.txHistoryTable );
 		txHistoryScrollPane.setVerticalScrollBarPolicy( JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED );
 		txHistoryScrollPane.setHorizontalScrollBarPolicy( JScrollPane.HORIZONTAL_SCROLLBAR_NEVER );
 		
 		// setting properties of components ////////////////////////////////////
 		this.nextTxButton.setVisible( false );
+		this.advance10TxButton.setVisible( false );
+		this.advance100TxButton.setVisible( false );
+		this.advcanceModeSelection.setVisible( false );
+		
 		this.pauseButton.setVisible( false );
 
 		// setting up event-listeners of components ////////////////////////////////////
@@ -297,11 +274,6 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 				if (e.getValueIsAdjusting() == false) {
 					int rowIndex = MainWindow.this.txHistoryTable.getSelectedRow();
 					if ( -1 == rowIndex ) {
-						MainWindow.this.finalAssetAskLabel.setText( "-" );
-						MainWindow.this.finalAssetBidLabel.setText( "-" );
-						MainWindow.this.finalLoanAskLabel.setText( "-" );
-						MainWindow.this.finalLoanBidLabel.setText( "-" );
-
 						return;
 					}
 					
@@ -323,24 +295,9 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 			}
 		});
 		
-		this.nextTxButton.addActionListener( new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				MainWindow.this.resetNetworkHighlights();
-				
-				if ( null != MainWindow.this.networkPanel )
-					MainWindow.this.networkPanel.repaint();
-
-				MainWindow.this.nextTxButton.setEnabled( false );
-				
-				MainWindow.this.pauseButton.setSelected( false );
-				MainWindow.this.pauseButton.setText( "Pause" );
-				
-				MainWindow.this.restoreTXHistoryList();			
-
-				MainWindow.this.simulationThread.nextTX( MainWindow.this.successfulTXOnlyCheck.isSelected() );
-			}
-		});
+		this.nextTxButton.addActionListener( new AdvanceTxButtonsActionListener( 1 ) );
+		this.advance10TxButton.addActionListener( new AdvanceTxButtonsActionListener( 10 ) );
+		this.advance100TxButton.addActionListener( new AdvanceTxButtonsActionListener( 100 ) );
 		
 		this.pauseButton.addActionListener( new ActionListener() {
 			@Override
@@ -362,11 +319,12 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 			public void actionPerformed(ActionEvent e) {
 				if ( MainWindow.this.toggleNetworkPanelButton.isSelected() ) {
 					MainWindow.this.toggleNetworkPanelButton.setText( "Show Network" );
+					MainWindow.this.networkPanel.setVisible( false );
+					
 				} else {
 					MainWindow.this.toggleNetworkPanelButton.setText( "Hide Network" );
+					MainWindow.this.networkPanel.setVisible( true );
 				}
-				
-				MainWindow.this.createLayout();
 			}
 		});
 		
@@ -416,76 +374,76 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 		this.agentCountSpinner.addChangeListener( this );
 
 		// adding components ////////////////////////////////////
-		controlsPanel.add( this.openOfferBookButton );
+		
 		controlsPanel.add( this.toggleNetworkPanelButton );
-		controlsPanel.add( this.recreateButton );
 		controlsPanel.add( this.agentCountSpinner );
 		//controlsPanel.add( this.optimismSelection );
 		controlsPanel.add( this.topologySelection );
-		controlsPanel.add( this.layoutSelection );
 		controlsPanel.add( this.matchingTypeSelection );
 		controlsPanel.add( this.simulateButton );
-		controlsPanel.add( this.pauseButton );
-		controlsPanel.add( this.nextTxButton );
-		controlsPanel.add( this.successfulTXOnlyCheck );
-		controlsPanel.add( this.keepSuccTXHighCheck );
 		controlsPanel.add( this.cashAssetOnlyCheck );
-		controlsPanel.add( this.computationTimeLabel );
-
+		controlsPanel.add( this.forceRedrawCheck );
+		
+		networkVisControlsPanel.add( this.recreateButton );
+		networkVisControlsPanel.add( this.layoutSelection );
+		networkVisControlsPanel.add( this.keepSuccTXHighCheck );
+		
+		this.networkPanel.add( networkVisControlsPanel, BorderLayout.NORTH ); 
+		    
 		JPanel txLabelsPanel = new JPanel( new GridBagLayout() );
 		
 		c.fill = GridBagConstraints.BOTH;
 		c.weightx = 0.5;
 		c.ipadx = 10;
+		c.ipady = 10;
 		
 		c.gridx = 0;
 	    c.gridy = 0;
+	    c.gridheight = 2;
+	    txLabelsPanel.add( computationTimeInfoLabel , c );
+	    c.gridx = 1;
+	    c.gridy = 0;
+	    txLabelsPanel.add( computationTimeLabel, c );
+	    c.gridheight = 1;
+		c.gridx = 0;
+	    c.gridy = 2;
 	    txLabelsPanel.add( succTxCounterInfoLabel, c );
 		c.gridx = 1;
-	    c.gridy = 0;
+	    c.gridy = 2;
 	    txLabelsPanel.add( this.succTxCounterLabel, c );
-	    c.gridx = 0;
-	    c.gridy = 1;
+	    c.gridx = 3;
+	    c.gridy = 2;
 	    txLabelsPanel.add( noSuccTxCounterInfoLabel, c );
-		c.gridx = 1;
-	    c.gridy = 1;
+		c.gridx = 4;
+	    c.gridy = 2;
 	    txLabelsPanel.add( this.noSuccTxCounterLabel, c );
-		c.gridx = 0;
+		c.gridx = 5;
 	    c.gridy = 2;
 	    txLabelsPanel.add( totalTxCounterInfoLabel, c );
-		c.gridx = 1;
+		c.gridx = 6;
 	    c.gridy = 2;
 	    txLabelsPanel.add( this.totalTxCounterLabel, c );
-	    
-		c.gridx = 0;
-	    c.gridy = 3;
-		txLabelsPanel.add( finalAssetAskInfoLabel, c );
-		c.gridx = 1;
-	    c.gridy = 3;
-		txLabelsPanel.add( this.finalAssetAskLabel, c );
-		
-		c.gridx = 0;
-	    c.gridy = 4;
-		txLabelsPanel.add( finalAssetBidInfoLabel, c );
-		c.gridx = 1;
-	    c.gridy = 4;
-		txLabelsPanel.add( this.finalAssetBidLabel, c );
-		
-		c.gridx = 0;
-	    c.gridy = 5;
-		txLabelsPanel.add( finalLoanAskInfoLabel, c );
-		c.gridx = 1;
-	    c.gridy = 5;
-		txLabelsPanel.add( this.finalLoanAskLabel, c );
-		
-		c.gridx = 0;
-	    c.gridy = 6;
-		txLabelsPanel.add( finalLoanBidInfoLabel, c );
-		c.gridx = 1;
-	    c.gridy = 6;
-		txLabelsPanel.add( this.finalLoanBidLabel, c );
 
-		
+	    c.gridx = 0;
+		c.gridy = 3;
+	    txLabelsPanel.add( this.openOfferBookButton, c );
+	    c.gridx = 0;
+		c.gridy = 4;
+	    txLabelsPanel.add( this.pauseButton, c );
+	    c.gridx = 1;
+		c.gridy = 4;
+	    txLabelsPanel.add( this.nextTxButton, c );
+	    c.gridx = 0;
+		c.gridy = 5;
+	    txLabelsPanel.add( this.advance10TxButton, c );
+	    c.gridx = 1;
+		c.gridy = 5;
+	    txLabelsPanel.add( this.advance100TxButton, c );
+	    c.gridx = 2;
+		c.gridy = 5;
+	    txLabelsPanel.add( this.advcanceModeSelection, c );
+	    
+	    
 		c.weightx = 0.8;
 		c.weighty = 0.5;
 		c.gridx = 0;
@@ -514,6 +472,13 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 	    c.gridy = 0;
 		this.getContentPane().add( controlsPanel, c );
 
+		c.fill = GridBagConstraints.BOTH;
+		c.weightx = 0.5;
+		c.gridwidth = 1;
+		c.gridx = 0;
+		c.gridy = 0;
+		this.visualizationPanel.add( this.networkPanel, c );
+		
 		c.weighty = 1.0;
 		c.gridheight = 10;
 	    c.gridy = 1;
@@ -522,33 +487,19 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 		c.weighty = 0.1;
 		c.gridheight = 2;
 	    c.gridy = 11;
-	    
 		this.getContentPane().add( txInfoPanel, c );
-	}
-	
-	void restoreTXHistoryList() {
-		if ( this.txTableModel.getRowCount() != this.successfulTx.size() ) {
-			this.txHistoryTable.clearSelection();
-			
-			this.txTableModel.setRowCount( 0 );
-			this.txHistoryTable.revalidate();
-			
-			for ( Transaction tx : this.successfulTx ) {
-				this.addTxToTable( tx );
-			}
-		}
 	}
 	
 	void addSuccessfulTX( Transaction tx, boolean forceRedraw ) {
 		long currMillis = System.currentTimeMillis();
-		if ( MainWindow.REPAINT_WEALTH_WHENRUNNING_INTERVAL < currMillis - this.lastRepaintTime || forceRedraw ) {
+		if ( MainWindow.REPAINT_WEALTH_WHENRUNNING_INTERVAL < currMillis - this.lastRepaintTime || forceRedraw || this.forceRedrawCheck.isSelected() ) {
 			this.agentWealthPanel.repaint();
 			this.lastRepaintTime = currMillis;
 		}
 
 		this.successfulTx.add( tx );
-		this.addTxToTable( tx );
-
+		this.txHistoryTable.addTx( tx );
+		
 		this.highlightTx( tx );
 	}
 	
@@ -556,11 +507,14 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 		this.succTxCounterLabel.setText( "" + succTx );
 		this.noSuccTxCounterLabel.setText( "" + noSuccTX );
 		this.totalTxCounterLabel.setText( "" + totalTX );
-		this.computationTimeLabel.setText( "Computation Time: " + COMP_TIME_FORMAT.format( calculationTime / 1000.0 ) + " sec." );
+		this.computationTimeLabel.setText( COMP_TIME_FORMAT.format( calculationTime / 1000.0 ) + " sec." );
 	}
 	
-	void nextTXFinished() {
+	void advanceTxFinished() {
 		this.nextTxButton.setEnabled( true );
+		this.advance10TxButton.setEnabled( true );
+		this.advance100TxButton.setEnabled( true );
+
 		this.pauseButton.setSelected( true );
 		this.pauseButton.setText( "Paused" );
 
@@ -579,7 +533,7 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 		
 		// create asset-market
 		this.asset = new Asset( assetPrice, agentCount * assetEndow );
-		this.loans = new Loans( initialLoanPrices ,J);
+		this.loans = new Loans( initialLoanPrices, J);
 		
 		// create agent-factory
 		IAgentFactory agentFactory = new IAgentFactory() {
@@ -650,11 +604,7 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 		
 		this.visualizationPanel.add( this.agentWealthPanel, c );
 
-		// if there are still items in table-model, delete them
-		if ( 0 < this.txTableModel.getRowCount() ) {
-			this.txTableModel.setRowCount( 0 );
-			this.txHistoryTable.revalidate();
-		}
+		this.txHistoryTable.clearAll();
 		
 		// close opened offer-books because agents changed (number of agents,...)
 		OfferBookFrame.agentsChanged( this.agents );
@@ -671,31 +621,25 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 			layout = (Class<? extends Layout<Agent, AgentConnection>>) KKLayout.class;
 		}
 		
-		// remove network-visualization panel when already there
-		if ( null != this.networkPanel ) {
-			this.visualizationPanel.remove( MainWindow.this.networkPanel );
-			this.networkPanel = null;
-		}
-		
 		this.toggleNetworkPanelButton.setVisible( this.agents.size() <= MainWindow.AGENTS_COUNT_HIDE_NETWORK_PANEL );
 
 		// don't show network-panel when too many agents
 		if ( this.agents.size() > MainWindow.AGENTS_COUNT_HIDE_NETWORK_PANEL || 
 				this.toggleNetworkPanelButton.isSelected() ) {
-			
-			this.keepSuccTXHighCheck.setVisible( false );
-			this.recreateButton.setVisible( false );
-			this.layoutSelection.setVisible( false );
-			
-			this.revalidate();
-			return;
-		}
+			this.networkPanel.setVisible( false );
 
-		this.recreateButton.setVisible( this.agents.isRandomNetwork() );
-		this.layoutSelection.setVisible( true );
-		this.keepSuccTXHighCheck.setVisible( true );
+		} else {
+			this.networkPanel.setVisible( true );
+		}
 		
-		this.networkPanel = MainWindow.this.agents.getNetworkRenderingPanel( layout, new INetworkSelectionObserver() {
+		this.recreateButton.setVisible( this.agents.isRandomNetwork() );
+		
+		// remove network-visualization panel when already there
+		if ( null != this.networkVisPanel ) {
+			this.networkPanel.remove( this.networkVisPanel );
+		}
+		
+		this.networkVisPanel = MainWindow.this.agents.getNetworkRenderingPanel( layout, new INetworkSelectionObserver() {
 			@Override
 			public void agentSeleted( AgentSelectedEvent agentSelectedEvent ) {
 				// no simulation running yet, just highlight selected agent, its neighbours and their connections
@@ -713,8 +657,9 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 						MainWindow.this.agents.getConnection( selectedAgent, neighbour ).setHighlighted( true );
 					}
 					
-					if ( null != MainWindow.this.networkPanel )
-						MainWindow.this.networkPanel.repaint();
+					if ( MainWindow.this.networkVisPanel.isVisible() ) {
+						MainWindow.this.networkVisPanel.repaint();
+					}
 					
 					return;
 				}
@@ -725,8 +670,7 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 				}
 				
 				MainWindow.this.resetNetworkHighlights();
-				MainWindow.this.txTableModel.setRowCount( 0 );
-				MainWindow.this.txHistoryTable.revalidate();
+				MainWindow.this.txHistoryTable.clearAll();
 
 				// find path between two selected agents
 				if ( agentSelectedEvent.isCtrlDownFlag() && null != MainWindow.this.selectedAgent ) {
@@ -756,7 +700,7 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 						}
 						
 						if ( null != a2 ) {
-							MainWindow.this.addTxToTable( tx );
+							MainWindow.this.txHistoryTable.addTx( tx );
 							MainWindow.this.agents.getConnection( a1, a2 ).setHighlighted( true );
 						}
 					}
@@ -765,32 +709,29 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 					MainWindow.this.selectedAgent.setHighlighted( true );
 				}
 				
-				if ( null != MainWindow.this.networkPanel )
-					MainWindow.this.networkPanel.repaint();
+				if ( MainWindow.this.networkVisPanel.isVisible() ) {
+					MainWindow.this.networkVisPanel.repaint();
+				}
 			}
 
 			@Override
 			public void connectionSeleted( ConnectionSelectedEvent connSelectedEvent ) {
 				MainWindow.this.resetNetworkHighlights();
-				MainWindow.this.txTableModel.setRowCount( 0 );
-				MainWindow.this.txHistoryTable.revalidate();
+				MainWindow.this.txHistoryTable.clearAll();
 
 				connSelectedEvent.getSelectedConnection().setHighlighted( true );
 				MainWindow.this.addTXOfConnection( connSelectedEvent.getSelectedConnection() );
 				
-				if ( null != MainWindow.this.networkPanel )
-					MainWindow.this.networkPanel.repaint();
+				if ( MainWindow.this.networkVisPanel.isVisible() ) {
+					MainWindow.this.networkVisPanel.repaint();
+				}
 			}
 		} );
+
+		this.networkPanel.setBorder( BorderFactory.createTitledBorder( BorderFactory.createLineBorder( Color.black ), "") );
 		
-		GridBagConstraints c = new GridBagConstraints();
-		c.fill = GridBagConstraints.BOTH;
-		c.weightx = 0.5;
-		c.gridwidth = 1;
-		c.gridx = 0;
-		c.gridy = 0;
-		
-		this.visualizationPanel.add( MainWindow.this.networkPanel, c );
+		this.networkPanel.add( this.networkVisPanel, BorderLayout.CENTER );
+		this.networkPanel.revalidate();
 		this.revalidate();
 	}
 	
@@ -805,10 +746,8 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 			this.txHistoryTable.getRowSorter().toggleSortOrder( 0 );
 				
 			this.successfulTx.clear();
-			
-			this.txTableModel.setRowCount( 0 );
-			this.txHistoryTable.revalidate();
-
+			this.txHistoryTable.clearAll();
+	
 			// disable controls, to prevent changes by user
 			this.agentCountSpinner.setEnabled( false );
 			this.topologySelection.setEnabled( false );
@@ -817,16 +756,17 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 			this.cashAssetOnlyCheck.setEnabled( false );
 			
 			// reset controls
-			this.finalAssetAskLabel.setText( "-" );
-			this.finalAssetBidLabel.setText( "-" );
-			this.finalLoanAskLabel.setText( "-" );
-			this.finalLoanBidLabel.setText( "-" );
-			
 			this.simulateButton.setText( "Stop Simulation" );
 			this.simulateButton.setEnabled( true );
 			
 			this.nextTxButton.setVisible( true );
+			this.advance10TxButton.setVisible( true );
+			this.advance100TxButton.setVisible( true );
+			this.advcanceModeSelection.setVisible( true );
+			
 			this.nextTxButton.setEnabled( true );
+			this.advance10TxButton.setEnabled( true );
+			this.advance100TxButton.setEnabled( true );
 			
 			this.pauseButton.setText( "Paused" );
 			this.pauseButton.setSelected( true );
@@ -847,8 +787,7 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 			this.simulationThread = new SimulationThread( auction, this );
 			this.simulationThread.startSimulation();
 			
-			if ( null != MainWindow.this.networkPanel )
-				this.networkPanel.repaint();
+			this.networkVisPanel.repaint();
 			
 			this.agentWealthPanel.repaint();
 			
@@ -860,6 +799,10 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 			// simulation has finished => enable controls
 			this.simulateButton.setText( "Start Simulation" );
 			this.nextTxButton.setVisible( false );
+			this.advance10TxButton.setVisible( false );
+			this.advance100TxButton.setVisible( false );
+			this.advcanceModeSelection.setVisible( false );
+			
 			this.pauseButton.setVisible( false );
 			
 			this.agentCountSpinner.setEnabled( true );
@@ -873,7 +816,7 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 	
 	private void highlightTx( Transaction tx ) {
 		// no need for anything highlighting-related when no network-panel available
-		if ( null == MainWindow.this.networkPanel ) {
+		if ( false == this.networkPanel.isVisible() ) {
 			return;
 		}
 	
@@ -896,26 +839,7 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 		a1.setHighlighted( true );
 		a2.setHighlighted( true );
 
-		this.networkPanel.repaint();
-		
-		this.finalAssetAskLabel.setText( TRADING_VALUES_FORMAT.format( tx.getFinalAskAssetPrice() ) );
-		this.finalAssetBidLabel.setText( TRADING_VALUES_FORMAT.format( tx.getFinalBidAssetPrice() ) );
-		
-		String finalLoanAskLabelText = "-";
-		String finalLoanBidLabelText = "-";
-		
-		if ( tx instanceof TransactionWithLoans ) {
-			if ( askOffering instanceof AskOfferingWithLoans ) {
-				finalLoanAskLabelText = TRADING_VALUES_FORMAT.format( ( (TransactionWithLoans) tx ).getFinalAskLoanPrice() );
-			}
-			
-			if ( bidOffering instanceof BidOfferingWithLoans ) {
-				finalLoanBidLabelText = TRADING_VALUES_FORMAT.format( ( (TransactionWithLoans) tx ).getFinalBidLoanPrice() );
-			}
-		}
-		
-		this.finalLoanAskLabel.setText( finalLoanAskLabelText );
-		this.finalLoanBidLabel.setText( finalLoanBidLabelText );
+		this.networkVisPanel.repaint();
 	}
 	
 	private void resetNetworkHighlights() {
@@ -930,31 +854,6 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 		}
 	}
 	
-	private void addTxToTable( Transaction tx ) {
-		//"TX", "Seller", "Buyer", "Asset Amount", "Asset Price", "Loan Amount", "Loan Price", "Loan Type"
-		
-		if ( tx.getMatchingAskOffer() instanceof AskOfferingWithLoans ) {
-			this.txTableModel.addRow( new Object[] {
-					tx.getTransNum(),
-					AGENT_H_FORMAT.format( tx.getFinalAskH() ),
-					AGENT_H_FORMAT.format( tx.getFinalBidH() ),
-					TRADING_VALUES_FORMAT.format( tx.getAssetAmount() ),
-					TRADING_VALUES_FORMAT.format( tx.getAssetPrice() ),
-					TRADING_VALUES_FORMAT.format( ( ( TransactionWithLoans ) tx ).getLoanAmount() ),
-					TRADING_VALUES_FORMAT.format( ( ( TransactionWithLoans ) tx ).getLoanPrice() ),
-					Integer.toString( ( ( TransactionWithLoans ) tx ).getLoanType() ) } );
-			
-		} else {
-			this.txTableModel.addRow( new Object[] {
-					tx.getTransNum(),
-					AGENT_H_FORMAT.format( tx.getFinalAskH() ),
-					AGENT_H_FORMAT.format( tx.getFinalBidH() ),
-					TRADING_VALUES_FORMAT.format( tx.getAssetAmount() ),
-					TRADING_VALUES_FORMAT.format( tx.getAssetPrice() ),
-					"-", "-", "-"} );
-		}
-	}
-	
 	private void addTXOfConnection( AgentConnection c ) {
 		for ( int i = 0; i < MainWindow.this.successfulTx.size(); ++i ) {
 			Transaction tx = MainWindow.this.successfulTx.get( i );
@@ -966,8 +865,36 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 				a1.setHighlighted( true );
 				a2.setHighlighted( true );
 				
-				MainWindow.this.addTxToTable( tx );
+				MainWindow.this.txHistoryTable.addTx( tx );
 			}
+		}
+	}
+	
+	private class AdvanceTxButtonsActionListener implements ActionListener {
+		private int txCount;
+		
+		public AdvanceTxButtonsActionListener(int txCount) {
+			this.txCount = txCount;
+		}
+		
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			MainWindow.this.resetNetworkHighlights();
+			
+			if ( MainWindow.this.networkVisPanel.isVisible() ) {
+				MainWindow.this.networkVisPanel.repaint();
+			}
+			
+			MainWindow.this.nextTxButton.setEnabled( false );
+			MainWindow.this.advance10TxButton.setEnabled( false );
+			MainWindow.this.advance100TxButton.setEnabled( false );
+			
+			MainWindow.this.pauseButton.setSelected( false );
+			MainWindow.this.pauseButton.setText( "Pause" );
+			
+			MainWindow.this.txHistoryTable.restore( MainWindow.this.successfulTx );
+
+			MainWindow.this.simulationThread.advanceTX( ( AdvanceMode ) MainWindow.this.advcanceModeSelection.getSelectedItem(), this.txCount );
 		}
 	}
 }

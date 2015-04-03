@@ -108,7 +108,7 @@ public class AgentWithLoans extends Agent {
 			
 			double r = agRand.nextDouble();
 			
-			// if improment possible
+			// if improvement possible
 			if ( limitPriceAsset > minP ) {
 				// sell asset at least for limitPriceAsset and maximum in a range up to how much the optimism-factor h allows it
 				pa = limitPriceAsset + r * (maxP - limitPriceAsset);
@@ -118,6 +118,7 @@ public class AgentWithLoans extends Agent {
 			}
 			
 			askOfferings[0] = new AskOffering(pa, Math.min(UNIT, freeAssetEndow), this, 0, MarketType.ASSET_AGAINST_CASH );
+			
 		} else {
 			// agent has no free assets, or cannot offer at current price level
 			askOfferings[0] = null;
@@ -131,7 +132,7 @@ public class AgentWithLoans extends Agent {
 		// changed at 08/17/2011: error in distribution - bias towards uniform q
 		// which is not true
 
-		if ( Loans.ASSETFORLOANMARKET) {
+		if ( Loans.ASSETFORLOANMARKET ) {
 			for (int j = 0; j < NUMLOANS; j++) {
 				// loop an markets/loan types
 				// V2
@@ -234,15 +235,11 @@ public class AgentWithLoans extends Agent {
 
 		BidOffering[] bidOfferings = new BidOffering[ NUMMARKETS ];
 		
-		// market type 0: generate an bid offer for market m=0: buy an asset
-		// against cash
-
+		// market type 0: generate an bid offer for market m=0: buy an asset against cash
 		if (consumEndow > 0) {
-			// pb = asset.getPD() +
-			// agRand.nextDouble()*(limitPriceAsset-asset.getPD());
-			if (minP > limitPriceAsset) { // agent cannot buy at current price
-											// level
+			if (minP > limitPriceAsset) { // agent cannot buy at current price level
 				bidOfferings[0] = null;
+				
 			} else {
 				double r = agRand.nextDouble();
 				if (maxP > limitPriceAsset) {
@@ -258,8 +255,10 @@ public class AgentWithLoans extends Agent {
 			for (int i = 1; i < bidOfferings.length; i++)
 				bidOfferings[i] = null;
 
+		// no cash or: try to buy with loans => no bidding in asset->loan market when agent still has cash!
+		// => when having asset->loan market then initially the simulation will converge towards the equilibrium
+		// of the asset->cash market only
 		} else {
-			// no cash or : try to buy with loans
 			bidOfferings[0] = null;
 			// market type 1 (nota bene: only when agent has no more cash): find
 			// a bid offer for market m=1 to NUMLOANS: buy an asset against loan
@@ -277,12 +276,16 @@ public class AgentWithLoans extends Agent {
 				//maxQ = getQMax(j);
 				// end V2
 				// V1
-				 minP = 0.2;
-				 maxP = limitPriceAsset;
-				 minQ = 0.0;
-				 maxQ = jJ[j];
+				minP = 0.2;
+				maxP = limitPriceAsset;
+				minQ = 0.0;
+				maxQ = jJ[j];
 				// end V1
-				if (limitPriceAsset - (minP / maxQ) * expectJ[j] > 0) {
+
+				double ratio = minP / maxQ;
+				double utility = limitPriceAsset - ( ratio * expectJ[j] );
+
+				if ( utility > 0) {
 					for (int i = numTrials; i > 0; i--) {
 						// pb = asset.pD + agRand.nextDouble()*(asset.pU -
 						// asset.pD);
@@ -296,12 +299,15 @@ public class AgentWithLoans extends Agent {
 						// double pb = asset.pD +
 						// agRand.nextDouble()*(Math.min(asset.pU,
 						// qb*posUtilFactor));
-						if (limitPriceAsset - (pb / qb) * expectJ[j] >= 0) {
+						
+						ratio = pb / qb;
+						utility = limitPriceAsset - ( ratio * expectJ[j] );
+
+						if ( utility >= 0 ) {
 							// nonnegative utility
 							// try to buy UNIT assets
 							double loanAmount = pb * UNIT / qb;
-							double lowerEndLoanPrice = Math.max(0, pb * UNIT
-									/ (freeAssetEndow + UNIT));
+							double lowerEndLoanPrice = Math.max( 0, pb * UNIT / ( freeAssetEndow + UNIT ) );
 							// minimum loan price for fulfilling collateral
 							// constraint
 							if (qb >= lowerEndLoanPrice) {
@@ -384,8 +390,7 @@ public class AgentWithLoans extends Agent {
 		double loanAmount = bid.getLoanAmount();
 		consumEndow -= loanAmount * bid.getFinalLoanPrice();
 		loanGiven[bid.getLoanType()] += loanAmount;
-		accUtility += loanAmount * (expectJ[bid.getLoanType()] - bid.getFinalLoanPrice());
-		
+
 		if (consumEndow < CONSUME_INSENSIBILITY) {
 			if (consumEndow < -CONSUME_INSENSIBILITY)
 				System.err.println("error in agent.execLoanTransaction: wants to loan too much");
@@ -429,10 +434,8 @@ public class AgentWithLoans extends Agent {
 		if ( MarketType.ASSET_AGAINST_CASH == myAsk.getMarketType() ) {
 			// asset against cash
 			consumEndow += myAsk.getFinalAssetPrice() * toSell;
-			accUtility += (myAsk.getFinalAssetPrice() - limitPriceAsset)
-					* toSell;
-			if (consumEndow < CONSUME_INSENSIBILITY) {
 
+			if (consumEndow < CONSUME_INSENSIBILITY) {
 				if (consumEndow < -CONSUME_INSENSIBILITY)
 					System.err.println("error in agent.execAskTransaction: wants to loan too much");
 				else
@@ -443,11 +446,6 @@ public class AgentWithLoans extends Agent {
 			double loanAmount = toSell * myAsk.getFinalAssetPrice() / ((AskOfferingWithLoans) myAsk).getFinalLoanPrice();
 
 			loanGiven[((AskOfferingWithLoans) myAsk).getLoanType()] += loanAmount;
-			accUtility += (myAsk.getFinalAssetPrice() - limitPriceAsset)
-					* toSell
-					+ loanAmount
-					* (expectJ[((AskOfferingWithLoans) myAsk).getLoanType()] - ((AskOfferingWithLoans) myAsk)
-							.getFinalLoanPrice());
 		}
 		
 		// need to reset when match to force a recalculation of offers
@@ -482,7 +480,6 @@ public class AgentWithLoans extends Agent {
 		if ( MarketType.ASSET_AGAINST_CASH == myBid.getMarketType() ) {
 			// asset against cash
 			consumEndow -= myBid.getFinalAssetPrice() * toBuy;
-			accUtility += (limitPriceAsset - myBid.getFinalAssetPrice()) * toBuy;
 			if (consumEndow < CONSUME_INSENSIBILITY) {
 				if (consumEndow < -CONSUME_INSENSIBILITY)
 					System.err.println("error in agent.execBidTransaction: wants to buy too much");
@@ -493,11 +490,7 @@ public class AgentWithLoans extends Agent {
 			// asset against loan
 			freeAssetEndow -= loanAmount;
 			loanTaken[((BidOfferingWithLoans) myBid).getLoanType()] += loanAmount;
-			accUtility += (limitPriceAsset - myBid.getFinalAssetPrice())
-					* toBuy
-					+ loanAmount
-					* (((BidOfferingWithLoans) myBid).getFinalLoanPrice() - expectJ[((BidOfferingWithLoans) myBid)
-							.getLoanType()]);
+
 			if (freeAssetEndow < ASSET_INSENSIBILITY) {
 				if (freeAssetEndow < -ASSET_INSENSIBILITY)
 					System.err.println("error in agent.execBidTransaction: wants to collaterate too much");
