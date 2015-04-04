@@ -35,7 +35,6 @@
 		-> es muss eine verbindung zu nachbarn sein wobei es nicht reicht z.b. immer nur zum 5. nachbar zu verbinden, es müssen auch die dazwischenliegenden verbunden werden
 			-> der extremfall ist dann fully_connected
 			
-			
 	=> Weg über Gleichgewichtsfeststellung
 		-> Wenn kein Agent mehr mit einem anderen handeln kann d.h. wenn kein Agent mehr in der Lage ist ein Offer zu machen, das ein andere NACHBAR matchen kann, 
 			dann ist das Gleichgewicht erreicht.
@@ -46,9 +45,12 @@
 					-> Verkaufs-Preis des Asset: 	zufällig aus [ limitPreis, pU ]
 					-> Kauf-Preis des Asset:		zufällig aus [ pD, limitPreis ]
 				-> Asset->Loan Markt: kann eine vielzahl an Besten Angeboten für Bid und Ask haben, da es eben keine lineare Ordnung sondern eine Pareto-Front gibt
-					-> Verkaufs-Preis:
-					-> Kauf-Preis:
-					-> Pareto-Front
+					-> Verkaufs-Preis: ?
+					-> Kauf-Preis: ?
+					-> Pareto-Front: hier dominieren die angebote nicht linear sondern über eine pareto-front, da ein gebot besser ist, wenn der asset-preis niedriger/höher UND der loan-preis höher/niedriger ist
+					-> "Loans Taken": "kaufe" ein asset gegen loan d.h. der bider bekommt ein asset, der asker einen loan.
+					-> "Loans Given": "verkaufe" ein asset gegen loan d.h. der asker bekommt einen loan, der bider ein asset.
+						-> jeder der beiden erwartet sich einen UP bzw. DOWN zustand und wählt entsprechend seine preise
 					
 			2. Keine Assets vorhanden
 				-> Kein Ask (verkauf) mehr für assets
@@ -62,3 +64,13 @@
 	=> FALSCHE BEOBACHTUNG!!!!! Wenn ASCENDING_CONNECTED wird zuerst durch die lineare ordnung und durch die bedingungen, ab wann asset->loan gehandelt wird zuerst das
 		asset->cash gleichgewicht erreicht, erst dann findet der erste asset->loan handel statt!
 		-> könnte ein grund sein wieso das gleichgewicht dann bei ascending connected nicht erreicht wird, denn bei FULLY_CONNECTED wird schon wesentlich früher begonnen mit asset->loan zu handeln
+		
+	=> die erste Asset->Loan transaktion findet dann statt, wenn der erste agent erstmals ein bid (kauf) eines assets gegen loan anbietet: Loans Taken
+		-> verkäufer gibt es genug, da ask gebote ständig gemacht werden von allen agents, die asset haben: Loan Given
+		-> käufer gibt es erst ab dem moment wo der erste agent kein cash mehr hat, da agents wenn ihnen das cash ausgeht angebote für den kauf eines assets gegen loan machen
+		
+	=> berechnen wie groß das h zwischen zwei agenten sein muss um mit einer bestimmten wahrscheinlichkeit einen match zu erreichen
+		-> klar ist: um so größer die distanz umso höher die wahrscheinlichkeit und umgekehrt um so kleiner die distanz um so niedriger die wahrscheinlichkeit
+			-> so was ähnliches wie ein konfidenzinterval?
+			
+	=> unterschied zwischen ASCENDING_CONNECTED und FULLY_CONNECTED

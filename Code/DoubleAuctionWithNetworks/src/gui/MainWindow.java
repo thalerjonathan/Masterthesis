@@ -123,7 +123,7 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 	public static final DecimalFormat AGENT_H_FORMAT = new DecimalFormat("0.000");
 	public static final DecimalFormat TRADING_VALUES_FORMAT = new DecimalFormat("0.0000");
 	
-	private static final int AGENTS_COUNT_HIDE_NETWORK_PANEL = 50;
+	private static final int AGENTS_COUNT_HIDE_NETWORK_PANEL = 51;
 	private static final int REPAINT_WEALTH_WHENRUNNING_INTERVAL = 1000;
 	
 	public MainWindow() {
@@ -379,7 +379,6 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 		controlsPanel.add( this.agentCountSpinner );
 		//controlsPanel.add( this.optimismSelection );
 		controlsPanel.add( this.topologySelection );
-		controlsPanel.add( this.matchingTypeSelection );
 		controlsPanel.add( this.simulateButton );
 		controlsPanel.add( this.cashAssetOnlyCheck );
 		controlsPanel.add( this.forceRedrawCheck );
@@ -433,6 +432,10 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 	    c.gridx = 1;
 		c.gridy = 4;
 	    txLabelsPanel.add( this.nextTxButton, c );
+	    c.gridx = 2;
+		c.gridy = 4;
+	    txLabelsPanel.add( this.matchingTypeSelection, c );
+
 	    c.gridx = 0;
 		c.gridy = 5;
 	    txLabelsPanel.add( this.advance10TxButton, c );
@@ -537,7 +540,7 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 		
 		// create agent-factory
 		IAgentFactory agentFactory = new IAgentFactory() {
-			private int i = 1;
+			private int i = 0;
 			
 			@Override
 			public Agent createAgent() {

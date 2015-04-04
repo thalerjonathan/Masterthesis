@@ -87,8 +87,8 @@ public class TxHistoryTable extends JTable {
 		String biderH = MainWindow.AGENT_H_FORMAT.format( tx.getFinalBidH() );
 		String assetAmount = MainWindow.TRADING_VALUES_FORMAT.format( tx.getAssetAmount() );
 		String assetPrice = MainWindow.TRADING_VALUES_FORMAT.format( tx.getAssetPrice() );
-		String assetAskPrice = MainWindow.TRADING_VALUES_FORMAT.format( tx.getMatchingAskOffer().getAssetPrice() );
-		String assetBidPrice = MainWindow.TRADING_VALUES_FORMAT.format( tx.getMatchingBidOffer().getAssetPrice() );
+		String assetAskPrice = MainWindow.TRADING_VALUES_FORMAT.format( tx.getFinalAskAssetPrice() );
+		String assetBidPrice = MainWindow.TRADING_VALUES_FORMAT.format( tx.getFinalBidAssetPrice() );
 		String loanAmount = "-";
 		String loanPrice = "-";
 		String loanAskPrice = "-";
@@ -97,11 +97,11 @@ public class TxHistoryTable extends JTable {
 		if ( tx.getMatchingAskOffer() instanceof AskOfferingWithLoans ) {
 			loanAmount = MainWindow.TRADING_VALUES_FORMAT.format( ( ( TransactionWithLoans ) tx ).getLoanAmount() );
 			loanPrice = MainWindow.TRADING_VALUES_FORMAT.format( ( ( TransactionWithLoans ) tx ).getLoanPrice() );
-			loanAskPrice = MainWindow.TRADING_VALUES_FORMAT.format( ( ( AskOfferingWithLoans ) tx.getMatchingAskOffer() ).getLoanPrice() );
+			loanAskPrice = MainWindow.TRADING_VALUES_FORMAT.format( ( ( TransactionWithLoans ) tx ).getFinalAskLoanPrice() );
 		}
 		
 		if ( tx.getMatchingBidOffer() instanceof BidOfferingWithLoans ) {
-			loanBidPrice = MainWindow.TRADING_VALUES_FORMAT.format( ( ( BidOfferingWithLoans ) tx.getMatchingBidOffer() ).getLoanPrice() );
+			loanBidPrice = MainWindow.TRADING_VALUES_FORMAT.format( ( ( TransactionWithLoans ) tx ).getFinalBidLoanPrice() );
 		}
 
 		this.tableModel.addRow( new Object[] {

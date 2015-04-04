@@ -68,7 +68,7 @@ public class OfferBookFrame extends JFrame {
 	}
 	
 	private void refillTables() {
-		int agentIndex = (int) this.agentIndexSpinner.getValue() - 1;
+		int agentIndex = (int) this.agentIndexSpinner.getValue();
 		Agent a = OfferBookFrame.agents.get( agentIndex );
 		
 		this.agentInfoPanel.setAgent( a );
@@ -178,7 +178,7 @@ public class OfferBookFrame extends JFrame {
 		this.refreshButton = new JButton( "Refresh" );
 		this.cloneButton = new JButton( "Clone" );
 		
-		this.agentIndexSpinner = new JSpinner( new SpinnerNumberModel( agentIndex + 1, 1, OfferBookFrame.agents.size(), 1 ) );
+		this.agentIndexSpinner = new JSpinner( new SpinnerNumberModel( agentIndex, 0, OfferBookFrame.agents.size() - 1, 1 ) );
 		this.agentIndexSpinner.addChangeListener( new ChangeListener() {
 			@Override
 			public void stateChanged(ChangeEvent e) {
@@ -196,7 +196,7 @@ public class OfferBookFrame extends JFrame {
 		this.cloneButton.addActionListener( new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				OfferBookFrame.createAndShowInstance( (int) OfferBookFrame.this.agentIndexSpinner.getValue() - 1,
+				OfferBookFrame.createAndShowInstance( (int) OfferBookFrame.this.agentIndexSpinner.getValue(),
 						OfferBookFrame.this.marketTabPane.getSelectedIndex() );
 			}
 		});
@@ -211,6 +211,8 @@ public class OfferBookFrame extends JFrame {
 		this.marketTabPane.addTab( "Asset -> Loan", marketPanels[ 1 ] );
 		this.marketTabPane.addTab( "Loan -> Cash", marketPanels[ 2 ] );
 		this.marketTabPane.setSelectedIndex( tabIndex );
+		
+		marketPanels[ 2 ].setVisible( false );
 		
 		this.agentInfoPanel = new AgentInfoPanel();
 		this.agentInfoPanel.setBorder( BorderFactory.createTitledBorder( BorderFactory.createLineBorder( Color.black ), "Agent-Info") );

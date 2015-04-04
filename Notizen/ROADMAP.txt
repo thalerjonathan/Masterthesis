@@ -71,11 +71,14 @@ Zeitpunkte
 		-> OK		Code refaktoring und aufräumen: inner classes herausziehen wo sinnvoll
 		-> OK		Netzwerkvisualisierung > 50 Agenten unsichtbar
 		-> OK		Beschleunigung: matching auf nachbaren und nicht globales offering book
-		-> OK		Offer-Book: Anzeigen der Besten-Offers eines Agenten nach jeder TX
+		
 		-> NEIN		Multithreaded: kurz probiert, viel zu komplex, müsste die ganze backend-architektur komplett umbauen und selbst dann ists noch fraglich ob es wirklich was bringt
 					großer nutzen nur bei vielen agenten (ab 500) und für das gleichgewicht auch schon unter 100 agenten ausreichen 
 		
 	April: THEORIE VERTIEFUNG UND AUSARBEITUNG
+		-> OK		Offer-Book: Anzeigen der Besten-Offers eines Agenten nach jeder TX
+		-> TODO		History der offer-books & wealth-visualisierung: speichere für jede erfolgreiche TX die zustände der agents und deren offers
+		
 		-> TOOD		verhalten der simulation genau studieren
 			-> wieso kommt es bei ascending zu keinem gleichgewicht sondern nur mit shortcuts ab einer gewissen N und wie muss N in abhängigkeiten der agentenanzahl gewählt werden?
 			-> Hypothese beweis/widerlegen
