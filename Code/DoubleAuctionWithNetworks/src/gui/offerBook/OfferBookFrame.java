@@ -26,7 +26,9 @@ import javax.swing.event.ChangeListener;
 import agents.Agent;
 import agents.network.AgentNetwork;
 import doubleAuction.offer.AskOffering;
+import doubleAuction.offer.AskOfferingWithLoans;
 import doubleAuction.offer.BidOffering;
+import doubleAuction.offer.BidOfferingWithLoans;
 import doubleAuction.offer.MarketType;
 
 @SuppressWarnings("serial")
@@ -46,7 +48,7 @@ public class OfferBookFrame extends JFrame {
 	private static AgentNetwork agents;
 	private static List<OfferBookFrame> offerBookInstances = new ArrayList<>();
 	
-	public static void agentsChanged( AgentNetwork agents  ) {
+	public static void agentsChanged( AgentNetwork agents ) {
 		OfferBookFrame.agents = agents;
 		
 		for ( OfferBookFrame obf : OfferBookFrame.offerBookInstances ) {
@@ -71,6 +73,8 @@ public class OfferBookFrame extends JFrame {
 		int agentIndex = (int) this.agentIndexSpinner.getValue();
 		Agent a = OfferBookFrame.agents.get( agentIndex );
 		
+		//this.outputOffersData();
+	
 		this.agentInfoPanel.setAgent( a );
 		
 		List<List<AskOffering>> askOfferings = a.getBestAskOfferings();
@@ -209,10 +213,8 @@ public class OfferBookFrame extends JFrame {
 		this.marketTabPane = new JTabbedPane();
 		this.marketTabPane.addTab( "Asset -> Cash", marketPanels[ 0 ] );
 		this.marketTabPane.addTab( "Asset -> Loan", marketPanels[ 1 ] );
-		this.marketTabPane.addTab( "Loan -> Cash", marketPanels[ 2 ] );
+		//this.marketTabPane.addTab( "Loan -> Cash", marketPanels[ 2 ] );
 		this.marketTabPane.setSelectedIndex( tabIndex );
-		
-		marketPanels[ 2 ].setVisible( false );
 		
 		this.agentInfoPanel = new AgentInfoPanel();
 		this.agentInfoPanel.setBorder( BorderFactory.createTitledBorder( BorderFactory.createLineBorder( Color.black ), "Agent-Info") );
@@ -238,6 +240,45 @@ public class OfferBookFrame extends JFrame {
 		c.weighty = 1.0;
 		c.weightx = 1.0;
 		this.getContentPane().add( this.marketTabPane, c );
+	}
+	
+	// NOTE: used for visualization of the parto-frontier in matlab
+	private void outputOffersData() {
+		int agentIndex = (int) this.agentIndexSpinner.getValue();
+		Agent a = OfferBookFrame.agents.get( agentIndex );
+		
+		List<List<AskOffering>> askOfferings = a.getBestAskOfferings();
+		List<List<BidOffering>> bidOfferings = a.getBestBidOfferings();
+		
+		if ( null == askOfferings || askOfferings.size() < 1 ) {
+			return;
+		}
+		
+		List<AskOffering> askOfferingsMarket = askOfferings.get( 1 );
+		List<BidOffering> bidOfferingsMarket = bidOfferings.get( 1 );
+		
+		if ( askOfferingsMarket.size() == 0 ) {
+			return;
+		}
+		
+		System.out.println( "askData = [" );
+		
+		for ( int i = 0; i < askOfferingsMarket.size(); ++i ) {
+			AskOfferingWithLoans ask = ( AskOfferingWithLoans ) askOfferingsMarket.get( i );
+			
+			System.out.println( "" + ask.getAssetPrice() + " " + ask.getLoanPrice() );
+		}
+		
+		System.out.print( "]\n\n" );
+		
+		System.out.println( "bidData = [" );
+		for ( int i = 0; i < bidOfferingsMarket.size(); ++i ) {
+			BidOfferingWithLoans bid = ( BidOfferingWithLoans ) bidOfferingsMarket.get( i );
+
+			System.out.println( "" + bid.getAssetPrice() + " " + bid.getLoanPrice() );
+		}
+		
+		System.out.print( "]\n" );
 	}
 	
 	private static void createAndShowInstance( int agentIndex, int tabIndex ) {

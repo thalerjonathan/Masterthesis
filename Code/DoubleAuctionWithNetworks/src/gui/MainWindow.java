@@ -40,6 +40,7 @@ import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSpinner;
@@ -899,5 +900,9 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 
 			MainWindow.this.simulationThread.advanceTX( ( AdvanceMode ) MainWindow.this.advcanceModeSelection.getSelectedItem(), this.txCount );
 		}
+	}
+
+	public void showEquilibriumReachedInfo() {
+		JOptionPane.showMessageDialog( this, "Equilibrium reached: No Agent is able to trade with any of its neighbours - Simulation paused.");
 	}
 }

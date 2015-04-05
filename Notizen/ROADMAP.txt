@@ -77,18 +77,20 @@ Zeitpunkte
 		
 	April: THEORIE VERTIEFUNG UND AUSARBEITUNG
 		-> OK		Offer-Book: Anzeigen der Besten-Offers eines Agenten nach jeder TX
-		-> TODO		History der offer-books & wealth-visualisierung: speichere f¸r jede erfolgreiche TX die zust‰nde der agents und deren offers
+		-> OK		Paretofront visualisieren in matlab
+		-> NEIN		History der offer-books & wealth-visualisierung: speichere f¸r jede erfolgreiche TX die zust‰nde der agents und deren offers
+		-> OK		im programm feststellen, dass kein handeln mehr mˆglich ist
+			-> dies f¸hrt dann auch zu einem "beweis" oder auf eine erkenntnis wieso es nicht zum gleichgewicht kommt
 		
 		-> TOOD		verhalten der simulation genau studieren
 			-> wieso kommt es bei ascending zu keinem gleichgewicht sondern nur mit shortcuts ab einer gewissen N und wie muss N in abh‰ngigkeiten der agentenanzahl gew‰hlt werden?
 			-> Hypothese beweis/widerlegen
-		-> TODO		im programm feststellen, dass kein handeln mehr mˆglich ist
-			-> dies f¸hrt dann auch zu einem "beweis" oder auf eine erkenntnis wieso es nicht zum gleichgewicht kommt
-		-> TODO		Paretofront visualisieren?
-		
+
 		-> TODO		Parallelilsierungs model um noch etwas informatikanteil theorie hineinzubekommen
 		
 	Mai: SCHREIBEN
+		-> TODO		Paper berschreiben
+		-> TODO		implementierung beschreiben und unterschiede zum paper
 		
 	Juni: SCHREIBEN
 		-> Kapitel 1 "Theorie" schreiben. Dieser erst ganz zum schluss, damit der theorieteil einen sinnvollen kontext bekommt und nicht bloﬂ als trockener nackter theorieteil daherkommt, 

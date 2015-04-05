@@ -208,7 +208,6 @@ public class SimulationThread implements Runnable {
 				
 				// we are in advance-tx state and found one (successful) TX => switch back to paused-state
 				if ( SimulationState.ADVANCE_TX == this.state ) {
-					
 					if ( AdvanceMode.ALL_TX == this.advanceMode ) {
 						this.advanceTxCountCurrent++;
 						
@@ -223,14 +222,19 @@ public class SimulationThread implements Runnable {
 						}
 					}
 
-					if ( this.advanceTxCountCurrent >= this.advanceTxCountTarget ) {
+					if ( this.advanceTxCountCurrent >= this.advanceTxCountTarget ||
+							tx.isReachedEquilibrium() ) {
 						// advancetx can only happen in paused-state, switch back to paused when finished
 						this.state = SimulationState.PAUSED;
 						// signal the waiting GUI/next-TX-thread (if any)
 						this.nextTXCondition.signalAll();
 					}
+				} else {
+					if ( tx.isReachedEquilibrium() ) {
+						this.state = SimulationState.PAUSED;
+					}
 				}
-
+				
 				// running in thread => need to update SWING through SwingUtilities.invokeLater
 				SwingUtilities.invokeLater( new Runnable() {
 					@Override
@@ -239,6 +243,8 @@ public class SimulationThread implements Runnable {
 						if ( tx.wasSuccessful() ) {
 							// force redraw when NEXT_TX-state to reflect change immediately
 							SimulationThread.this.mainWindow.addSuccessfulTX( tx, SimulationState.RUNNING != stateBevoreTX );
+						} else if ( tx.isReachedEquilibrium() ) {
+							SimulationThread.this.mainWindow.showEquilibriumReachedInfo();
 						}
 
 						SimulationThread.this.updateTXCounter();

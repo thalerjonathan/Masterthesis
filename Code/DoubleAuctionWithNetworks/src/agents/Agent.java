@@ -193,15 +193,15 @@ public class Agent {
 		AskOffering actAskOffer = null;
 		
 		if (maxP < limitPriceAsset)  //agent cannot offer at current price level 
-			return null;
+			return new AskOffering[] { actAskOffer };
 	
 		// check if there is enough endowment left...
 		if (TRADE_ONLY_FULL_UNITS ) {
 			if (assetEndow < UNIT)
-				return null;
+				return new AskOffering[] { actAskOffer };
 		} else  {
 			if (assetEndow < 0)
-				return null;
+				return new AskOffering[] { actAskOffer };
 		}
 		
 		// "...agents who always make bids which improve their utility but otherwise bid randomly."
@@ -225,10 +225,10 @@ public class Agent {
 		double minP = getPMin();
 		double maxP = getPMax();
 		double assetPrice;
-		BidOffering actBidOffer;
+		BidOffering actBidOffer = null;
 		
 		if (minP > limitPriceAsset)  //agent cannot offer at current price level 
-			return null;
+			return new BidOffering[] { actBidOffer };
 	
 		// "...agents who always make bids which improve their utility but otherwise bid randomly."
 		if ( limitPriceAsset < maxP ) {

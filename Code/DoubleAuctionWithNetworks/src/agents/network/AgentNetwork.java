@@ -445,6 +445,11 @@ public class AgentNetwork {
 		return this.randomOrderAgents.iterator();
 	}
 	
+	// kills all the "connections are static", but is for experiments purpose only
+	public void addConnection( Agent a1, Agent a2 ) {
+		this.graph.addEdge( new AgentConnection(), a1, a2 );
+	}
+	
 	public Iterator<AgentConnection> connectionIterator() {
 		return this.graph.getEdges().iterator();
 	}

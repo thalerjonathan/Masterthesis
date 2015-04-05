@@ -14,6 +14,7 @@ import agents.Agent;
 import agents.network.AgentNetwork;
 
 public class Transaction  {
+	private boolean reachedEquilibrium;
 	protected double assetPrice;
 	protected double assetAmount = -1;
 	protected double meanAskAssetPrice=0;
@@ -123,11 +124,6 @@ public class Transaction  {
 						
 						if ( dominates ) {
 							bestAsks.get( i ).add( ask );
-							/*
-							if ( bestAsks.get( i ).size() > 1 ) {
-								System.out.println( "bestAsks.get( "+ i + " ).size() = " + bestAsks.get( i ).size() );
-							}
-							*/
 						}
 					}
 				}
@@ -157,11 +153,6 @@ public class Transaction  {
 						
 						if ( dominates ) {
 							bestBids.get( i ).add( bid );
-							/*
-							if ( bestBids.get( i ).size() > 1 ) {
-								System.out.println( "bestBids.get( "+ i + " ).size() = " + bestBids.get( i ).size() );
-							}
-							*/
 						}
 					}
 				}
@@ -209,62 +200,6 @@ public class Transaction  {
 		
 		return this.matchOffers( askOfferings, bidOfferings, bestAsks, bestBids );
 	}
-	
-	/*
-	public int findMatches(AskOffering[] askOfferings, BidOffering[] bidOfferings, Offering[] match, AgentNetwork agents )   {
-		//returns 0: no match;  1: ask offering matched; 2: bid offering matched
-		//just for one market (asset against cash) with id "0"
-		Iterator<BidOffering> itBestBids;
-		Iterator<AskOffering> itBestAsks;
-		
-		//choose a match in ask or bid offer in random order
-		Random myRand = new Random();
-
-		boolean testFirstAsk = (myRand.nextFloat()<0.5);
-		
-		if (testFirstAsk && askOfferings[0] != null)  {
-			itBestBids = getBestBidOfferings(0).iterator();
-			//iterate on all best bid offerings searching for a match
-			while (itBestBids.hasNext())  {
-				BidOffering bestBid = itBestBids.next();
-				
-				// add network-topology: only accept matches between neighbors
-				if ( false == agents.isNeighbor( askOfferings[0].getAgent(), bestBid.getAgent() ) ) {
-					continue;
-				}
-				
-				if (askOfferings[0].matches(bestBid))  {
-					askOfferings[0].setFinalAssetPrice(bestBid.getAssetPrice());
-					bestBid.setFinalAssetPrice(bestBid.getAssetPrice());
-					match[0] = askOfferings[0];
-					match[1] = bestBid;
-					return 1;
-				}
-			}
-		} else if (!testFirstAsk && bidOfferings[0] != null)  {
-			itBestAsks = getBestAskOfferings(0).iterator();
-			//iterate on all best ask offerings searching for a match
-			while (itBestAsks.hasNext())  {
-				AskOffering bestAsk = itBestAsks.next();	
-				
-				// add network-topology: only accept matches between neighbors
-				if ( false == agents.isNeighbor( bidOfferings[0].getAgent(), bestAsk.getAgent() ) ) {
-					continue;
-				}
-				
-				if (bidOfferings[0].matches(bestAsk))  {
-					bidOfferings[0].setFinalAssetPrice(bestAsk.getAssetPrice());
-					bestAsk.setFinalAssetPrice(bestAsk.getAssetPrice());
-					match[0] = bestAsk;
-					match[1] = bidOfferings[0];
-					return 2;
-				}
-			}
-		}
-		
-		return 0;
-	}
-	*/
 	
 	// NOTE: neighborhood must be already checked
 	protected Offering[] matchOffers( AskOffering[] askOfferings, BidOffering[] bidOfferings, 
@@ -616,4 +551,14 @@ public class Transaction  {
 	public void setFinalBidH(double finalBidH) {
 		this.finalBidH = finalBidH;
 	}
+
+	public boolean isReachedEquilibrium() {
+		return reachedEquilibrium;
+	}
+
+	public void setReachedEquilibrium(boolean reachedEquilibrium) {
+		this.reachedEquilibrium = reachedEquilibrium;
+	}
+	
+	
 }

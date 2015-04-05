@@ -103,9 +103,6 @@ public class AgentWithLoans extends Agent {
 		if (freeAssetEndow > 0 && maxP > limitPriceAsset) {
 			// draw a uniform random asset price from [limitPriceAsset,PU]
 			// intersect [minP,maxP]
-			// double pa = limitPriceAsset +
-			// agRand.nextDouble()*(asset.getPU()-limitPriceAsset);
-			
 			double r = agRand.nextDouble();
 			
 			// if improvement possible
@@ -134,51 +131,31 @@ public class AgentWithLoans extends Agent {
 
 		if ( Loans.ASSETFORLOANMARKET ) {
 			for (int j = 0; j < NUMLOANS; j++) {
-				// loop an markets/loan types
-				// V2
-				// minQ = getQMin(j);
-				// maxQ = getQMax(j);
-				// end V2
-
-				// V1
 				minQ = 0.0;
 				maxQ = jJ[j];
 				minP = limitPriceAsset;
 				maxP = 1.0;
-				// endV1
-
+				
 				if (freeAssetEndow <= 0) {
 					askOfferings[j + 1] = null;
 				} else if (minQ > 0 && (limitPriceAsset + (maxP / minQ) * expectJ[j]) <= 0) {
 					askOfferings[j + 1] = null;
 				} else {
 					numTrials = MAXTRIALS;
-					// double posUtilFactor = limitPriceAsset/expectJ[j];
-					// double qa=loans.getJ()[j]*agRand.nextDouble();; //initial
-					// asset price and loan price such that we enter always the
-					// "while"
+					//initial asset price and loan price such that we enter always the "while"
 					qa = minQ + agRand.nextDouble() * (maxQ - minQ);
 					pa = minP + agRand.nextDouble() * (maxP - minP);
-					// pa= asset.pD + agRand.nextDouble()*(asset.pU - asset.pD);
-					// while ((numTrials > 0) && posUtilFactor*qa>=1) {
 					while ((numTrials > 0)
 							&& (-limitPriceAsset + (pa / qa) * expectJ[j] < 0)) {
 						// negative utility and we may try another draw from
 						// random prices
-						// pa = asset.pD + agRand.nextDouble()*(asset.pU -
-						// asset.pD);
 						pa = minP + agRand.nextDouble() * (maxP - minP);
 						qa = minQ + agRand.nextDouble() * (maxQ - minQ);
-						// qa = loans.getJ()[j]*agRand.nextDouble();
 						numTrials--;
 					}
 					
 					if (numTrials > 0) {
 						// found asset and loan price with non-negative utility
-						// pa = posUtilFactor*qa +
-						// agRand.nextDouble()*(1-posUtilFactor*qa);
-						// if ((pa-limitPriceAsset+(pa/qa)*(expectJ[j]-qa) < 0))
-						// System.err.println("in calcAskOfferings: negative utility gain");
 						assetAmount = Math.min(UNIT, freeAssetEndow);
 						askOfferings[j + 1] = new AskOfferingWithLoans(pa,
 								assetAmount, qa, j, loans.getJ()[j],
@@ -271,35 +248,19 @@ public class AgentWithLoans extends Agent {
 				// loop an markets/loan types
 				numTrials = MAXTRIALS;
 				bidOfferings[j + 1] = null;
-				// V2
-				//minQ = getQMin(j);
-				//maxQ = getQMax(j);
-				// end V2
-				// V1
 				minP = 0.2;
 				maxP = limitPriceAsset;
 				minQ = 0.0;
 				maxQ = jJ[j];
-				// end V1
 
 				double ratio = minP / maxQ;
 				double utility = limitPriceAsset - ( ratio * expectJ[j] );
 
 				if ( utility > 0) {
 					for (int i = numTrials; i > 0; i--) {
-						// pb = asset.pD + agRand.nextDouble()*(asset.pU -
-						// asset.pD);
 						pb = minP + agRand.nextDouble() * (maxP - minP);
-						// double qb = agRand.nextDouble();
-						// if ((numTrials > 0) && (limitPriceAsset-pb +
-						// (pb/qb)*(qb - expectJ[j]) >= 0)) {
-						// double posUtilFactor = limitPriceAsset/expectJ[j];
 						qb = minQ + agRand.nextDouble() * (maxQ - minQ);
-						// qb=loans.getJ()[j]*agRand.nextDouble();
-						// double pb = asset.pD +
-						// agRand.nextDouble()*(Math.min(asset.pU,
-						// qb*posUtilFactor));
-						
+
 						ratio = pb / qb;
 						utility = limitPriceAsset - ( ratio * expectJ[j] );
 

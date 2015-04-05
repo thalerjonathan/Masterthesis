@@ -25,6 +25,8 @@ public class WealthVisualizer extends JPanel {
 	
 	private final static int SCALA_WIDTH = 30;
 	
+	private final static Color DARK_GREEN = new Color( 0, 150, 0 );
+	
 	private List<Agent> orderedAgents;
 	
 	public WealthVisualizer(List<Agent> orderedAgents) {
@@ -52,6 +54,7 @@ public class WealthVisualizer extends JPanel {
 		double yHalf = d.height / 2.0;
 
 		// draw grid
+		g.drawLine( SCALA_WIDTH, ( int ) yHalf, d.width, ( int ) yHalf );
 		for ( int i = 0; i < X_ACHSIS_GRID; i++ ) {
 			double h = i / ( double ) X_ACHSIS_GRID;
 			int x = ( int ) ( width * h ) + SCALA_WIDTH;
@@ -96,7 +99,7 @@ public class WealthVisualizer extends JPanel {
 				g.drawLine( lastX, lastYCash, x, yCash );
 			g.fillOval( x - POINT_RADIUS, yCash - POINT_RADIUS, POINT_DIAMETER, POINT_DIAMETER );
 			
-			g.setColor( Color.GREEN );
+			g.setColor( DARK_GREEN );
 			if ( i > 0 )
 				g.drawLine( lastX, lastYAsset, x, yAssets );
 			g.fillOval( x - POINT_RADIUS, yAssets - POINT_RADIUS, POINT_DIAMETER, POINT_DIAMETER );
@@ -139,7 +142,7 @@ public class WealthVisualizer extends JPanel {
 		g.setColor( Color.BLACK );
 		g.drawChars( "Cash".toCharArray(), 0, "Cash".length(), LEGEND_BOX_X + 60, d.height - LEGEND_BOX_Y + 18 );
 		
-		g.setColor( Color.GREEN );
+		g.setColor( DARK_GREEN );
 		g.drawLine( LEGEND_BOX_X + 5, d.height - LEGEND_BOX_Y + 33, LEGEND_BOX_X + 50, d.height - LEGEND_BOX_Y + 33 );
 		g.setColor( Color.BLACK );
 		g.drawChars( "Assets".toCharArray(), 0, "Assets".length(), LEGEND_BOX_X + 60, d.height - LEGEND_BOX_Y + 38 );

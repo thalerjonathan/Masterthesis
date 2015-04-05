@@ -38,29 +38,31 @@
 	=> Weg über Gleichgewichtsfeststellung
 		-> Wenn kein Agent mehr mit einem anderen handeln kann d.h. wenn kein Agent mehr in der Lage ist ein Offer zu machen, das ein andere NACHBAR matchen kann, 
 			dann ist das Gleichgewicht erreicht.
-		-> Folgende Zustände 
-			1. Cash & Assets vorhanden: handelt beide Märkte (Asset->Cash und Asset->Loan)
-				-> Asset-Cash Markt: nur jeweils ein Bestes Angebot für Bid und Ask gibt, da auf diesem Markt eine lineare Ordnung auf die
-					Angebote gibt, da nur auf den ASset Preis vergleicht wird.
-					-> Verkaufs-Preis des Asset: 	zufällig aus [ limitPreis, pU ]
-					-> Kauf-Preis des Asset:		zufällig aus [ pD, limitPreis ]
-				-> Asset->Loan Markt: kann eine vielzahl an Besten Angeboten für Bid und Ask haben, da es eben keine lineare Ordnung sondern eine Pareto-Front gibt
-					-> Verkaufs-Preis: ?
-					-> Kauf-Preis: ?
-					-> Pareto-Front: hier dominieren die angebote nicht linear sondern über eine pareto-front, da ein gebot besser ist, wenn der asset-preis niedriger/höher UND der loan-preis höher/niedriger ist
-					-> "Loans Taken": "kaufe" ein asset gegen loan d.h. der bider bekommt ein asset, der asker einen loan.
-					-> "Loans Given": "verkaufe" ein asset gegen loan d.h. der asker bekommt einen loan, der bider ein asset.
-						-> jeder der beiden erwartet sich einen UP bzw. DOWN zustand und wählt entsprechend seine preise
-					
-			2. Keine Assets vorhanden
-				-> Kein Ask (verkauf) mehr für assets
-				-> Kein Ask (verkauf) mehr auf Asset against Loan, da kein Asset mehr vorhanden ist, das kollateralisiert werden kan
-				-> Wenn noch Cash vorhanden, dann Bid (kauf) auf Asset against Loan d.h. "Loans Taken" erhöht sich 
-			3. Kein Cash vorhanden
-				-> Kein Bid (kauf) mehr für assets
-				-> Bids (kauf) auf asset against loan
-				-> Wenn noch Assets vorhanden, dann Ask (sell) auf Asset against Loan d.h. "Loans Given" erhöht sich
+		
+	=> Folgende Zustände 
+		1. Cash & Assets vorhanden: handelt beide Märkte (Asset->Cash und Asset->Loan)
+			-> Asset-Cash Markt: nur jeweils ein Bestes Angebot für Bid und Ask gibt, da auf diesem Markt eine lineare Ordnung auf die
+				Angebote gibt, da nur auf den ASset Preis vergleicht wird.
+				-> Verkaufs-Preis des Asset: 	zufällig aus [ limitPreis, pU ]
+				-> Kauf-Preis des Asset:		zufällig aus [ pD, limitPreis ]
+			-> Asset->Loan Markt: kann eine vielzahl an Besten Angeboten für Bid und Ask haben, da es eben keine lineare Ordnung sondern eine Pareto-Front gibt
+				-> Verkaufs-Preis: ?
+				-> Kauf-Preis: ?
+				-> Pareto-Front: hier dominieren die angebote nicht linear sondern über eine pareto-front, da ein gebot besser ist, wenn der asset-preis niedriger/höher UND der loan-preis höher/niedriger ist
+					=> ACHTUNG: nur bei ASKs, bei Bids scheint es linear zu verlaufen?
+				-> "Loans Taken": "kaufe" ein asset gegen loan d.h. der bider bekommt ein asset, der asker einen loan.
+				-> "Loans Given": "verkaufe" ein asset gegen loan d.h. der asker bekommt einen loan, der bider ein asset.
+					-> jeder der beiden erwartet sich einen UP bzw. DOWN zustand und wählt entsprechend seine preise
 				
+		2. Keine Assets vorhanden
+			-> Kein Ask (verkauf) mehr für assets
+			-> Kein Ask (verkauf) mehr auf Asset against Loan, da kein Asset mehr vorhanden ist, das kollateralisiert werden kan
+			-> Wenn noch Cash vorhanden, dann Bid (kauf) auf Asset against Loan d.h. "Loans Taken" erhöht sich 
+		3. Kein Cash vorhanden
+			-> Kein Bid (kauf) mehr für assets
+			-> Bids (kauf) auf asset against loan
+			-> Wenn noch Assets vorhanden, dann Ask (sell) auf Asset against Loan d.h. "Loans Given" erhöht sich
+			
 	=> FALSCHE BEOBACHTUNG!!!!! Wenn ASCENDING_CONNECTED wird zuerst durch die lineare ordnung und durch die bedingungen, ab wann asset->loan gehandelt wird zuerst das
 		asset->cash gleichgewicht erreicht, erst dann findet der erste asset->loan handel statt!
 		-> könnte ein grund sein wieso das gleichgewicht dann bei ascending connected nicht erreicht wird, denn bei FULLY_CONNECTED wird schon wesentlich früher begonnen mit asset->loan zu handeln
@@ -72,5 +74,59 @@
 	=> berechnen wie groß das h zwischen zwei agenten sein muss um mit einer bestimmten wahrscheinlichkeit einen match zu erreichen
 		-> klar ist: um so größer die distanz umso höher die wahrscheinlichkeit und umgekehrt um so kleiner die distanz um so niedriger die wahrscheinlichkeit
 			-> so was ähnliches wie ein konfidenzinterval?
+			-> existiert schon von HV, noch ausweiten!
 			
-	=> unterschied zwischen ASCENDING_CONNECTED und FULLY_CONNECTED
+	=> Asset-Cash Markt
+		-> jeder Agent hat einen optimismus-faktor h, der die wahrscheinlichkeit für einen up-state angibt. Assets sind "morgen" pU=1.0 im UP-State und pD=0.2 im DOWN-State wert.
+			d.h. der erwartete wert eines assets berechnet sich für einen agenten mit limitPriceAsset = h*pU + (1-h)*pD
+		-> Agenten versuchen natürlich beim handeln gewinn zu machen, wobei dies natürlich über die wahl eines entsprechenden preises geschieht
+		-> Kauft ein Agent ein Asset, bietet er natürlich WENIGER als den Wert den er annimmt, den das Asset "morgen" wert sein wird - limitPriceAsset - da wenn er mehr bietet einen verlust machen würde:
+			bietet er mehr würde der zustand eintreten auf den er gewettet hat (h), so hätte er für das asset mehr bezahlt als es morgen wert ist und somit hat er einen verlust gemacht
+			somit bietet er für den kauf eines assets immer im Bereich [ pD, limitPriceAsset ], denn so macht er immer einen Gewinn - BASIEREND AUF SEINER UTILITY (die sich nie ändert)!
+		-> Verkauft ein Agent ein Asset, bietet er natürlich MEHR als limitPriceAsset, da wenn er weniger bietet einen verlust machen würde - siehe analog zum käufer 
+			somit bietet er für den kauf eines assets immer im bereich [ limitPriceAsset, pU ]
+		-> Zwei Angebote (Kauf und Verkauf) treffen sich, wenn der käufer mehr für ein Asset bietet als der Verkäufer dafür haben will. Daraus folgt, dass der Käufer ein höheres h haben muss als der Verkäufer.
+			Deshalb "bewegt" sich die Vermögensverteilung der Assets auch am Beginn der Simulation von links (niedrige h) nach rechts (hohes h), da sich Preisbereiche nur eines Käufers mit einem größeren h
+			mit dem eines Verkäufers mit niedrigerem h überschneiden. Somit kann es nie einen Verkäufer mit einem größeren h als des eines Käufers geben.
+			Dies macht auch sinn, da die Agenten mit niedrigem h den wert ihres assets als niedriger einschätzen und es somit loswerden möchten, Agenten mit großem h aber das asset als viel wertvoller einschätzen
+			und somit versuchen assets von - ihrer ansicht nach - billigen verkäufern zu kaufen, da es basierend auf ihrer utility eben "morgen" mehr wert sein wird als dies der pessimist annimmt - daraus ergibt sich der gewinn.
+			Loswerden: sie bieten in einer wesentlich größeren preisspanne als die optimisten, weshalb ihnen die optimisten mit viel höherer wahrscheinlichkeit das asset abkaufen
+		-> Der Käufer empfindet den handel als gewinn, da er für "morgen" einen höheren wert für das asset annimmt als er dafür gezahlt hat.
+		-> Der Verkäufer empfindet den handel ebenfalls als gewinn, da er für "morgen" einen niedrigeren wert für das asset annimt als er dafür bekommen hat.
+			
+	=> Asset-Loan Markt
+		-> Kauf und Verkauf eines Assets analog zu Asset-Cash Markt
+		-> Kaufen: bedeutet dass man kein Cash mehr hat und nun ein Asset für einen Loan kauft. Das Asset besitzt man, es ist aber kollateralisiert d.h. der anteil den man gekauft hat
+			dient als sicherheit für den Loan, den man aufgenommen hat (Loan Taken). Diesen Assetanteil kann man nicht weiter verkaufen.
+		-> Verkaufen: bedeutet dass wenn man noch FREIE (d.h. unkollateralisierte) assets besitzt, man diese für einen loan verkaufen kann d.h. man gibt einen loan (Loan Given). 
+			Man besitzt also nicht mehr Cash sondern einen loan.
+		-> Was ist ein Loan: ist ein "schuldschein", der ein Face-Value V hat welcher der Wert ist, der "morgen" zurückgezahlt werden muss. 
+			Ein Loan muss abgesichert werden, was durch ein Asset passiert.
+			Auch Loans werden gehandelt d.h. man kauft einen Bond für einen bestimmten Preis q und muss dann "morgen" V zurückzahlen.
+			Kann der Loan "morgen" nicht zurückgezahlt werden, so verliert der Assetbesitzer, der den Loan Taken hat das Asset
+			Ist V <= pD, so handelt es sich um einen risikofreien bond, da die Assets im schlechtesten fall "morgen" immer pD wert sein werden
+			Daraus folgt, dass risikofreie Bonds bis maximal V gehandelt werden, risikobehaftete bonds aber darüber
+		-> Damit ein Handel zustandekommt muss der Käufer einen höheren asset-preis UND einen niedrigeren loan-preis als der verkäufer bieten
+			Wieso niedrigerer loan-preis: TODO
+		-> Der Käufer empfindet den handel als gewinn, da er den loan-preis so gewählt hat, dass dieser "morgen" einen 
+		-> Der Verkäufer empfindet den handel ebenfalls als gewinn, da er 
+		
+	=> Kein Gleichgewicht bei ASCENDING_CONNECTED
+		-> scheint nicht an den matching-wahrscheinlichkeiten zu liegen sondern daran, dass agenten nichtmehr in der lage sind zu handeln, 
+			da sie kein cash und kein asset mehr haben. ist ein agent, der noch handeln könnte (freies asset & cash vorhanden) von zwei
+			dieser unhandelbaren umgeben, so hat dieser keine chance mehr zu handeln.
+			Agenten brauchen zusätzliche beziehungen zu weiter entfernen und mehreren nachbarn um bei ausfall eines nachbarn weiter handeln zu können.
+	
+	=> Beim ASCENDING_CONNECTED scheint der marginal buyer bei 0.6 zu liegen, bei FULLY_CONNECTED bei 0.7 ??
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	

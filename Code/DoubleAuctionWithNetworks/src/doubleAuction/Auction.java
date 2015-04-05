@@ -169,6 +169,53 @@ public class Auction {
 			}
 		}
 		
+		// check if trading is possible within neighborhood
+		Iterator<Agent> agentIter = this.agents.iterator();
+		while ( agentIter.hasNext() ) {
+			Agent a = agentIter.next();
+			
+			Iterator<Agent> neighbourIter = this.agents.getNeighbors( a );
+			while ( neighbourIter.hasNext() ) {
+				Agent n = neighbourIter.next();
+				
+				if ( this.canTrade( a, n ) ) {
+					return transaction;
+				}
+			}
+		}
+			
+		// NOTE: at this point there is no more trading possible within neighborhood
+		
+		// create connection: find two agents which can still trade
+		boolean foundConnection = false;
+		Iterator<Agent> agent1Iter = this.agents.iterator();
+	outerloop:
+		while ( agent1Iter.hasNext() ) {
+			Agent a1 = agent1Iter.next();
+			
+			Iterator<Agent> agent2Iter = this.agents.iterator();
+			while ( agent2Iter.hasNext() ) {
+				Agent a2 = agent2Iter.next();
+				
+				// agents must not be already connected and don't allow self-loop (self-trading)
+				if ( false == this.agents.isNeighbor( a1, a2 ) && a1 != a2 ) {
+					if ( this.canTrade( a1, a2 ) ) {
+						this.agents.addConnection( a1, a2 );
+						foundConnection = true;
+						
+						System.out.println( "Added Connection: " + a1.getH() + " <-> " + a2.getH() );
+						
+						break outerloop;
+					}
+				}
+			}
+		}
+		
+		if ( false == foundConnection ) {
+			// NOTE: at this point we couln't add any utility-improving connection: this is the final termination of the simulation!
+			transaction.setReachedEquilibrium( true );
+		}
+		
 		return transaction;
 	}
 	
@@ -178,5 +225,26 @@ public class Auction {
 
 	public Asset getAsset() {
 		return asset;
+	}
+	
+	private boolean canTrade( Agent a1, Agent a2 ) {
+		for ( int i = 0; i < NUMMARKETS; ++i ) {
+			// asume neighbour has higher H => must be the buyer
+			int sellerOfferingsCount = a1.getBestAskOfferings().get( i ).size();
+			int buyerOfferingsCount = a2.getBestBidOfferings().get( i ).size();
+			
+			// adjust: neighbour has higher H => must be the buyer
+			if ( a1.getH() > a2.getH() ) {
+				buyerOfferingsCount = a1.getBestBidOfferings().get( i ).size();
+				sellerOfferingsCount = a2.getBestAskOfferings().get( i ).size();
+			}
+			
+			// if the buyer has still some bid offers AND the seller has still some ask offers, then they might still match
+			if ( sellerOfferingsCount > 0 && buyerOfferingsCount > 0  ) {
+				return true;
+			}
+		}
+		
+		return false;
 	}
 }
