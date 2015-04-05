@@ -8,6 +8,7 @@ import gui.networkCreators.AscendingRegularShortcutsCreator;
 import gui.networkCreators.BarbasiAlbertCreator;
 import gui.networkCreators.ErdosRenyiCreator;
 import gui.networkCreators.FullyConnectedCreator;
+import gui.networkCreators.HalfFullyConnectedCreator;
 import gui.networkCreators.HubConnectedCreator;
 import gui.networkCreators.INetworkCreator;
 import gui.networkCreators.MaximumHubCreator;
@@ -20,6 +21,7 @@ import gui.visualisation.AgentSelectedEvent;
 import gui.visualisation.ConnectionSelectedEvent;
 import gui.visualisation.INetworkSelectionObserver;
 import gui.visualisation.NetworkRenderPanel;
+import gui.visualisation.WealthVisualizer;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -79,6 +81,7 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 	private JCheckBox keepSuccTXHighCheck;
 	private JCheckBox cashAssetOnlyCheck;
 	private JCheckBox forceRedrawCheck;
+	private JCheckBox keepAgentHistoryCheck;
 	
 	private JButton simulateButton;
 	private JButton recreateButton;
@@ -90,8 +93,8 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 	private JToggleButton toggleNetworkPanelButton;
 
 	private JPanel visualizationPanel;
-	private JPanel agentWealthPanel;
 	private JPanel networkPanel;
+	private WealthVisualizer agentWealthPanel;
 	private NetworkRenderPanel networkVisPanel;
 	
 	private JComboBox<INetworkCreator> topologySelection;
@@ -107,6 +110,7 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 	private JLabel succTxCounterLabel;
 	private JLabel totalTxCounterLabel;
 	private JLabel noSuccTxCounterLabel;
+	private JLabel totalNoSuccTxCounterLabel;
 
 	private TxHistoryTable txHistoryTable;
 	
@@ -149,6 +153,17 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 	
 	public MatchingType getSelectedMatchingType() {
 		return (MatchingType) this.matchingTypeSelection.getSelectedItem();
+	}
+	
+	public boolean isKeepAgentHistory() {
+		return this.keepAgentHistoryCheck.isSelected();
+	}
+	
+	public void simulationTerminated() {
+		// simulation was running, toggle will switch all gui-stuff to "stoped"
+		this.toggleSimulation();
+		JOptionPane.showMessageDialog( this, "No Agent is able to trade with any of its neighbours - Simulation stoped.", 
+				"Equilibrium Reached", JOptionPane.INFORMATION_MESSAGE );
 	}
 	
 	@Override
@@ -195,6 +210,7 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 		
 		this.topologySelection = new JComboBox<INetworkCreator>();
 		this.topologySelection.addItem( new FullyConnectedCreator() );
+		this.topologySelection.addItem( new HalfFullyConnectedCreator() );
 		this.topologySelection.addItem( new AscendingConnectedCreator() );
 		this.topologySelection.addItem( new AscendingFullShortcutsCreator() );
 		this.topologySelection.addItem( new AscendingRegularShortcutsCreator() );
@@ -214,14 +230,10 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 		
 		this.agentCountSpinner = new JSpinner( new SpinnerNumberModel( 30, 10, 1000, 10 ) );
 
-		JLabel succTxCounterInfoLabel = new JLabel( "Successful TX: " );
-		JLabel noSuccTxCounterInfoLabel = new JLabel( "No Succ. TX: " );
-		JLabel totalTxCounterInfoLabel = new JLabel( "Total TX: " );
-		JLabel computationTimeInfoLabel = new JLabel( "Computation Time: " );
-		
 		this.computationTimeLabel = new JLabel( "-" );
 		this.succTxCounterLabel = new JLabel( "-" );
 		this.noSuccTxCounterLabel = new JLabel( "-" );
+		this.totalNoSuccTxCounterLabel = new JLabel( "-" );
 		this.totalTxCounterLabel = new JLabel( "-" );		
 		
 		this.recreateButton = new JButton( "Recreate" );
@@ -254,6 +266,7 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 		this.cashAssetOnlyCheck.addActionListener( this );
 		
 		this.forceRedrawCheck = new JCheckBox( "Force Redraw" );
+		this.keepAgentHistoryCheck = new JCheckBox( "Keep Agent History" );
 		
 		this.txHistoryTable = new TxHistoryTable();
 		JScrollPane txHistoryScrollPane = new JScrollPane( this.txHistoryTable );
@@ -375,14 +388,20 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 		this.agentCountSpinner.addChangeListener( this );
 
 		// adding components ////////////////////////////////////
+
+		JLabel succTxCounterInfoLabel = new JLabel( "Successful TX: " );
+		JLabel noSuccTxCounterInfoLabel = new JLabel( "No Succ. TX: " );
+		JLabel totalTxCounterInfoLabel = new JLabel( "Total TX: " );
+		JLabel totalNoSuccTxCounterInfoLabel = new JLabel( "Total No Succ. TX: " );
+		JLabel computationTimeInfoLabel = new JLabel( "Computation Time: " );
 		
 		controlsPanel.add( this.toggleNetworkPanelButton );
 		controlsPanel.add( this.agentCountSpinner );
-		//controlsPanel.add( this.optimismSelection );
 		controlsPanel.add( this.topologySelection );
 		controlsPanel.add( this.simulateButton );
 		controlsPanel.add( this.cashAssetOnlyCheck );
 		controlsPanel.add( this.forceRedrawCheck );
+		controlsPanel.add( this.keepAgentHistoryCheck );
 		
 		networkVisControlsPanel.add( this.recreateButton );
 		networkVisControlsPanel.add( this.layoutSelection );
@@ -417,13 +436,21 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 		c.gridx = 4;
 	    c.gridy = 2;
 	    txLabelsPanel.add( this.noSuccTxCounterLabel, c );
-		c.gridx = 5;
+	    c.gridx = 5;
+	    c.gridy = 2;
+	    txLabelsPanel.add( totalNoSuccTxCounterInfoLabel, c );
+		c.gridx = 6;
+	    c.gridy = 2;
+	    txLabelsPanel.add( this.totalNoSuccTxCounterLabel, c );
+		c.gridx = 7;
 	    c.gridy = 2;
 	    txLabelsPanel.add( totalTxCounterInfoLabel, c );
-		c.gridx = 6;
+		c.gridx = 8;
 	    c.gridy = 2;
 	    txLabelsPanel.add( this.totalTxCounterLabel, c );
 
+	    
+	    
 	    c.gridx = 0;
 		c.gridy = 3;
 	    txLabelsPanel.add( this.openOfferBookButton, c );
@@ -507,10 +534,11 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 		this.highlightTx( tx );
 	}
 	
-	void updateTXCounter( int succTx, int noSuccTX, int totalTX, long calculationTime ) {
+	void updateTXCounter( int succTx, int noSuccTX, int totalTX, int totalNotSuccTx, long calculationTime ) {
 		this.succTxCounterLabel.setText( "" + succTx );
 		this.noSuccTxCounterLabel.setText( "" + noSuccTX );
 		this.totalTxCounterLabel.setText( "" + totalTX );
+		this.totalNoSuccTxCounterLabel.setText( "" + totalNotSuccTx );
 		this.computationTimeLabel.setText( COMP_TIME_FORMAT.format( calculationTime / 1000.0 ) + " sec." );
 	}
 	
@@ -611,7 +639,7 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 		this.txHistoryTable.clearAll();
 		
 		// close opened offer-books because agents changed (number of agents,...)
-		OfferBookFrame.agentsChanged( this.agents );
+		OfferBookFrame.agentsChanged( this.agents.getOrderedList() );
 		
 		// need to create the layout too, will do the final pack-call on this frame
 		this.createLayout();
@@ -758,6 +786,7 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 			this.optimismSelection.setEnabled( false );
 			this.recreateButton.setEnabled( false );
 			this.cashAssetOnlyCheck.setEnabled( false );
+			this.keepAgentHistoryCheck.setEnabled( false );
 			
 			// reset controls
 			this.simulateButton.setText( "Stop Simulation" );
@@ -814,6 +843,7 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 			this.optimismSelection.setEnabled( true );
 			this.recreateButton.setEnabled( true );
 			this.cashAssetOnlyCheck.setEnabled( true );
+			this.keepAgentHistoryCheck.setEnabled( true );
 			
 		}
 	}
@@ -843,6 +873,9 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 		a1.setHighlighted( true );
 		a2.setHighlighted( true );
 
+		OfferBookFrame.agentsUpdated( tx.getFinalAgents() );
+		this.agentWealthPanel.setAgents( tx.getFinalAgents() );
+		
 		this.networkVisPanel.repaint();
 	}
 	
@@ -900,9 +933,5 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 
 			MainWindow.this.simulationThread.advanceTX( ( AdvanceMode ) MainWindow.this.advcanceModeSelection.getSelectedItem(), this.txCount );
 		}
-	}
-
-	public void showEquilibriumReachedInfo() {
-		JOptionPane.showMessageDialog( this, "Equilibrium reached: No Agent is able to trade with any of its neighbours - Simulation paused.");
 	}
 }

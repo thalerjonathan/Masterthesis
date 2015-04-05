@@ -20,8 +20,10 @@ public class SimulationThread implements Runnable {
 	private MainWindow mainWindow;
 	
 	private int succTXCounter;
-	private int totalTXCounter;
 	private int noSuccTXCounter;
+	
+	private int totalTXCounter;
+	private int totalNotSuccTXCounter;
 	
 	private long computationTimeMs;
 	
@@ -179,7 +181,9 @@ public class SimulationThread implements Runnable {
 				long ts = System.currentTimeMillis();
 				
 				// execute the next transaction
-				Transaction tx = this.auction.executeSingleTransactionByType( SimulationThread.this.mainWindow.getSelectedMatchingType() );
+				Transaction tx = this.auction.executeSingleTransactionByType( 
+						SimulationThread.this.mainWindow.getSelectedMatchingType(),
+						SimulationThread.this.mainWindow.isKeepAgentHistory() );
 				
 				// increment time
 				this.computationTimeMs += System.currentTimeMillis() - ts;
@@ -195,6 +199,7 @@ public class SimulationThread implements Runnable {
 				} else {
 					// count how many unsuccessful TX in a row occured
 					this.noSuccTXCounter++;
+					this.totalNotSuccTXCounter++;
 					
 					// repaint MainWindow upon the 10th unsuccessful TX because
 					// previously successful tx notification could have ignored repaint because
@@ -230,8 +235,9 @@ public class SimulationThread implements Runnable {
 						this.nextTXCondition.signalAll();
 					}
 				} else {
+					// terminate simulation-thread when reached the equilibrium
 					if ( tx.isReachedEquilibrium() ) {
-						this.state = SimulationState.PAUSED;
+						this.state = SimulationState.EXIT;
 					}
 				}
 				
@@ -243,8 +249,10 @@ public class SimulationThread implements Runnable {
 						if ( tx.wasSuccessful() ) {
 							// force redraw when NEXT_TX-state to reflect change immediately
 							SimulationThread.this.mainWindow.addSuccessfulTX( tx, SimulationState.RUNNING != stateBevoreTX );
+						
+						// 
 						} else if ( tx.isReachedEquilibrium() ) {
-							SimulationThread.this.mainWindow.showEquilibriumReachedInfo();
+							SimulationThread.this.mainWindow.simulationTerminated();
 						}
 
 						SimulationThread.this.updateTXCounter();
@@ -285,7 +293,7 @@ public class SimulationThread implements Runnable {
 	}
 	
 	private void updateTXCounter() {
-		this.mainWindow.updateTXCounter( this.succTXCounter, this.noSuccTXCounter, this.totalTXCounter, this.computationTimeMs );
+		this.mainWindow.updateTXCounter( this.succTXCounter, this.noSuccTXCounter, this.totalTXCounter, this.totalNotSuccTXCounter, this.computationTimeMs );
 	}
 	
 	private void interruptNextTXThread() {

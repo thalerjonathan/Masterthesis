@@ -24,7 +24,6 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import agents.Agent;
-import agents.network.AgentNetwork;
 import doubleAuction.offer.AskOffering;
 import doubleAuction.offer.AskOfferingWithLoans;
 import doubleAuction.offer.BidOffering;
@@ -45,10 +44,10 @@ public class OfferBookFrame extends JFrame {
 	
 	private AgentInfoPanel agentInfoPanel;
 	
-	private static AgentNetwork agents;
+	private static List<Agent> agents;
 	private static List<OfferBookFrame> offerBookInstances = new ArrayList<>();
 	
-	public static void agentsChanged( AgentNetwork agents ) {
+	public static void agentsChanged( List<Agent> agents ) {
 		OfferBookFrame.agents = agents;
 		
 		for ( OfferBookFrame obf : OfferBookFrame.offerBookInstances ) {
@@ -57,6 +56,12 @@ public class OfferBookFrame extends JFrame {
 		}
 		
 		OfferBookFrame.offerBookInstances.clear();
+	}
+	
+	// NOTE: won't kill all offer-book instances but just updates them
+	public static void agentsUpdated( List<Agent> agents ) {
+		OfferBookFrame.agents = agents;
+		OfferBookFrame.offerBookChanged();
 	}
 	
 	public static void showOfferBook() {
@@ -243,6 +248,7 @@ public class OfferBookFrame extends JFrame {
 	}
 	
 	// NOTE: used for visualization of the parto-frontier in matlab
+	@SuppressWarnings("unused")
 	private void outputOffersData() {
 		int agentIndex = (int) this.agentIndexSpinner.getValue();
 		Agent a = OfferBookFrame.agents.get( agentIndex );

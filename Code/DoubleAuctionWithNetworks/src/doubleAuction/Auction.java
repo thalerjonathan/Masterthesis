@@ -1,5 +1,6 @@
 package doubleAuction;
 import java.util.Iterator;
+import java.util.List;
 
 import agents.Agent;
 import agents.markets.Asset;
@@ -110,7 +111,7 @@ public class Auction {
 		RANDOM_NEIGHOUR;
 	}
 
-	public Transaction executeSingleTransactionByType( MatchingType type )  {
+	public Transaction executeSingleTransactionByType( MatchingType type, boolean keepAgentHistory )  {
 		int MAX_ROUNDS = 500;
 		int numRound = 0;  //number of sweeps through all agents in a random order
 		Transaction transaction = getNewTransaction();
@@ -163,6 +164,17 @@ public class Auction {
 						transaction.matched( match );
 						transaction.setTransNum(num_trans++);
 						
+						List<Agent> finalAgents = null;
+						
+						// WARNING: sucks up huge amount of memory if many TXs
+						if ( keepAgentHistory ) {
+							finalAgents = agents.cloneAgents();
+						} else {
+							finalAgents = agents.getOrderedList();
+						}
+
+						transaction.setFinalAgents( finalAgents );
+						
 						return transaction;
 					}
 				}
@@ -183,13 +195,11 @@ public class Auction {
 				}
 			}
 		}
-			
-		// NOTE: at this point there is no more trading possible within neighborhood
 		
-		// create connection: find two agents which can still trade
+		/*
+		// create connections between two agents which can still trade
 		boolean foundConnection = false;
 		Iterator<Agent> agent1Iter = this.agents.iterator();
-	outerloop:
 		while ( agent1Iter.hasNext() ) {
 			Agent a1 = agent1Iter.next();
 			
@@ -202,10 +212,7 @@ public class Auction {
 					if ( this.canTrade( a1, a2 ) ) {
 						this.agents.addConnection( a1, a2 );
 						foundConnection = true;
-						
 						System.out.println( "Added Connection: " + a1.getH() + " <-> " + a2.getH() );
-						
-						break outerloop;
 					}
 				}
 			}
@@ -215,6 +222,10 @@ public class Auction {
 			// NOTE: at this point we couln't add any utility-improving connection: this is the final termination of the simulation!
 			transaction.setReachedEquilibrium( true );
 		}
+		*/
+		
+		// NOTE: at this point there is no more trading possible within neighborhood
+		transaction.setReachedEquilibrium( true );
 		
 		return transaction;
 	}
@@ -244,6 +255,8 @@ public class Auction {
 				return true;
 			}
 		}
+		
+		// TODO: if bider has still cash but not enough to match neighbour asker, then its also not possible
 		
 		return false;
 	}

@@ -45,12 +45,10 @@ public class Agent {
 	private AskOffering[] currentAskOfferings;
 	private BidOffering[] currentBidOfferings;
 	
-	private List<List<AskOffering>> bestAskOfferings;
-	private List<List<BidOffering>> bestBidOfferings;
+	protected List<List<AskOffering>> bestAskOfferings;
+	protected List<List<BidOffering>> bestBidOfferings;
 	
-
 	private boolean highlighted;
-	
 
 	public Agent(int id, double h, double consumEndow, double assetEndow, Asset asset) {
 		this.id = id;
@@ -351,6 +349,34 @@ public class Agent {
 		return bestBidOfferings;
 	}
 
+	@Override
+	public Object clone() {
+		Agent clone = new Agent( this.id, this.h, this.consumEndow, this.assetEndow, this.asset );
+		this.copyBestOfferingsTo( clone );
+		
+		return clone;
+	}
+	
+	protected void copyBestOfferingsTo( Agent copy ) {
+		if ( null != this.bestAskOfferings ) {
+			copy.bestAskOfferings = new ArrayList<List<AskOffering>>();
+			
+			for ( List<AskOffering> marketOfferings : this.bestAskOfferings ) {
+				// note: shallow-copy is ok, offerings won't change
+				copy.bestAskOfferings.add( new ArrayList<AskOffering>( marketOfferings ) );
+			}
+		}
+		
+		if ( null != this.bestBidOfferings ) {
+			copy.bestBidOfferings = new ArrayList<List<BidOffering>>();
+			
+			for ( List<BidOffering> marketOfferings : this.bestBidOfferings ) {
+				// note: shallow-copy is ok, offerings won't change
+				copy.bestBidOfferings.add( new ArrayList<BidOffering>( marketOfferings ) );
+			}
+		}
+	}
+	
 	protected void detLimitPriceAsset() {
 		// calculate expected value (E, Erwartungswert) of the Asset
 		

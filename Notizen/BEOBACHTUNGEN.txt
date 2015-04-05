@@ -116,11 +116,28 @@
 			da sie kein cash und kein asset mehr haben. ist ein agent, der noch handeln könnte (freies asset & cash vorhanden) von zwei
 			dieser unhandelbaren umgeben, so hat dieser keine chance mehr zu handeln.
 			Agenten brauchen zusätzliche beziehungen zu weiter entfernen und mehreren nachbarn um bei ausfall eines nachbarn weiter handeln zu können.
-	
+		-> das nachträgliche hinzufügen von verbindungen zwischen agenten die noch handeln können führt (wie erwartet) nichtmehr zum gleichgewicht
+			-> die handelsbeziehungen müssen schon von beginn an entsprechend existieren, da es sonst nicht zu einem gleichgewicht kommt
+			-> vermutung: die matching-wahrscheinlichkeiten sind hier nicht relevant?
+		-> bidofferings machen auch wenn cash vorhanden führt zu keiner merkbaren veränderung
+		-> TODO wie kommt es zu diesen "löchern" bzw. "verschiebungen" bzw. "inselbildung"?
+			-> vermutung liegt wahrscheinlich in der natur der topologie: h1<h2<h3<h4<h5 wobei h1&h2 handeln und h4&h5: dadurch passiert eine art von inselbidlung und die handelscontinuität bricht
+		-> TODO wie hoch ist die wahrscheinlichkeit dafür bzw. wie kann man das mathematisch ausdrücken?
+		
 	=> Beim ASCENDING_CONNECTED scheint der marginal buyer bei 0.6 zu liegen, bei FULLY_CONNECTED bei 0.7 ??
 	
 	
-	
+	=> Bei Asset-Cash Market only kommt es zu keiner terminierung, da ein paar benachbarte agenten > 0.6 noch minimal cash halten und somit bid-offers machen
+		diese bid-offers sind aber zu niedrig um ask-offers von benachbarten agenten mit niedrigerem h zu erfüllen
+		-> ursache: die käufer haben einfach zuwenig geld um entsprechend mitbieten zu können, somit kommt es niemehr zu einem match
+			-> dies in die abbruch bedingung einbauen!
+		-> TODO: es wird 0.5 als asset-amount geboten: wieso?
+		-> TODO: wieso tritt hier keine inselbildung auf?
+		
+	=> Genauer vergleich der dynamiken von FULLY_CONNECTED und ASCENDING_CONNECTED studieren
+		-> WESENTLICHER UNTERSCHIED: FULLY_CONNECTED erfüllt immer die global besten offerings, ASCENDING_CONNECTED nur die lokal besten
+			-> TODO: ist dies einer der gründe, wieso es bei ASCENDING_CONNECTED nicht zu einem gleichgewicht kommt?
+			-> 
 	
 	
 	

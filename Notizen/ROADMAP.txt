@@ -78,7 +78,7 @@ Zeitpunkte
 	April: THEORIE VERTIEFUNG UND AUSARBEITUNG
 		-> OK		Offer-Book: Anzeigen der Besten-Offers eines Agenten nach jeder TX
 		-> OK		Paretofront visualisieren in matlab
-		-> NEIN		History der offer-books & wealth-visualisierung: speichere für jede erfolgreiche TX die zustände der agents und deren offers
+		-> OK		History der offer-books & wealth-visualisierung: speichere für jede erfolgreiche TX die zustände der agents und deren offers
 		-> OK		im programm feststellen, dass kein handeln mehr möglich ist
 			-> dies führt dann auch zu einem "beweis" oder auf eine erkenntnis wieso es nicht zum gleichgewicht kommt
 		
@@ -86,6 +86,7 @@ Zeitpunkte
 			-> wieso kommt es bei ascending zu keinem gleichgewicht sondern nur mit shortcuts ab einer gewissen N und wie muss N in abhängigkeiten der agentenanzahl gewählt werden?
 			-> Hypothese beweis/widerlegen
 
+		-> TODO		refaktorisierungen: gui überarbeiten, memory-leaks bzw. null setzen um frei zu geben, code aufräumen, main-window weiter aufsplitten 
 		-> TODO		Parallelilsierungs model um noch etwas informatikanteil theorie hineinzubekommen
 		
 	Mai: SCHREIBEN

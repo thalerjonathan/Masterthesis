@@ -1,5 +1,7 @@
 package agents;
 
+import java.util.Arrays;
+
 import agents.markets.Asset;
 import agents.markets.Loans;
 import doubleAuction.offer.AskOffering;
@@ -531,6 +533,18 @@ public class AgentWithLoans extends Agent {
 		return false;
 	}
 
+	@Override
+	public Object clone() {
+		AgentWithLoans clone = new AgentWithLoans(this.id, this.h, this.consumEndow, this.assetEndow, this.loans, this.asset );
+		clone.freeAssetEndow = this.freeAssetEndow;
+		clone.loanGiven = Arrays.copyOf( this.loanGiven, this.loanGiven.length );
+		clone.loanTaken = Arrays.copyOf( this.loanTaken, this.loanTaken.length );
+		
+		this.copyBestOfferingsTo( clone );
+		
+		return clone;
+	}
+	
 	protected double getQMax(int loanType) {
 		double refQ = loans.getLoanPrices()[loanType];
 		

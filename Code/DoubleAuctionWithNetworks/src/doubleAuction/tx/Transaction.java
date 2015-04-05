@@ -45,6 +45,10 @@ public class Transaction  {
 	protected static final DecimalFormat agentHFormat = new DecimalFormat("0.00");
 	protected static final DecimalFormat tradingValuesFormat = new DecimalFormat("0.0000");
 	
+	// NOTE: if a transaction was successful the agents are cloned (see agent.clone) and 
+	// stored in this list
+	protected List<Agent> finalAgents;
+	
 	public Transaction(Auction auct) {
 		NUMMARKETS = Auction.NUMMARKETS;
 		auction = auct;
@@ -559,6 +563,12 @@ public class Transaction  {
 	public void setReachedEquilibrium(boolean reachedEquilibrium) {
 		this.reachedEquilibrium = reachedEquilibrium;
 	}
-	
-	
+
+	public List<Agent> getFinalAgents() {
+		return finalAgents;
+	}
+
+	public void setFinalAgents(List<Agent> finalAgents) {
+		this.finalAgents = finalAgents;
+	}
 }

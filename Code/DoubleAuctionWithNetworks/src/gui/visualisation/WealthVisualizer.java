@@ -37,6 +37,11 @@ public class WealthVisualizer extends JPanel {
 		this.setBackground( Color.WHITE );
 	}
 	
+	public void setAgents( List<Agent> orderedAgents ) {
+		this.orderedAgents = orderedAgents;
+		this.repaint();
+	}
+	
 	@Override
 	protected void paintComponent(Graphics g) {
 		super.paintComponent(g);

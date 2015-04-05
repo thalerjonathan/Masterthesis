@@ -8,8 +8,6 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
-import javax.swing.JPanel;
-
 import org.apache.commons.collections15.Transformer;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
@@ -166,13 +164,30 @@ public class AgentNetwork {
 		return network;
 	}
 	
+	public static AgentNetwork createHalfFullyConnected( IAgentFactory agentFactory ) {
+		AgentNetwork network = new AgentNetwork( "HalfFullyConnected", false );
+		network.populate( agentFactory );
+		
+		for ( int i = 0; i < network.orderedAgents.size(); ++i ) {
+			Agent from = network.orderedAgents.get( i );
+			Agent to1 = network.orderedAgents.get( ( i + 1 ) % network.orderedAgents.size() );
+			
+			network.graph.addEdge( new AgentConnection(), from, to1 );
+		}
+		
+		int medianIndex = network.orderedAgents.size() / 2;
+		network.connectCompleted( medianIndex, network.orderedAgents.size() );
+		
+		return network;
+	}
+	
 	public static AgentNetwork createWithMedianHub( IAgentFactory agentFactory ) {
 		AgentNetwork network = new AgentNetwork( "MedianHub", false );
 		network.populate( agentFactory );
 		
 		int medianIndex = network.orderedAgents.size() / 2;
 		Agent medianAgent = network.orderedAgents.get( medianIndex );
-		
+
 		for ( int i = 0; i < network.orderedAgents.size(); ++i ) {
 			Agent from = network.orderedAgents.get( i );
 			
@@ -445,9 +460,19 @@ public class AgentNetwork {
 		return this.randomOrderAgents.iterator();
 	}
 	
-	// kills all the "connections are static", but is for experiments purpose only
-	public void addConnection( Agent a1, Agent a2 ) {
-		this.graph.addEdge( new AgentConnection(), a1, a2 );
+	public List<Agent> getOrderedList() {
+		// NOTE: returns an unmodifiable list to prohibit the change of the list itself
+		return Collections.unmodifiableList( this.orderedAgents );
+	}
+	
+	public List<Agent> cloneAgents() {
+		List<Agent> clonedAgents = new ArrayList<>( this.orderedAgents.size() );
+		for ( Agent a : this.orderedAgents ) {
+			Agent clone = ( Agent ) a.clone();
+			clonedAgents.add( clone );
+		}
+		
+		return clonedAgents;
 	}
 	
 	public Iterator<AgentConnection> connectionIterator() {
@@ -646,7 +671,7 @@ public class AgentNetwork {
 		return new NetworkRenderPanel( this.graph, layoutClazz, selectionObserver );
 	}
 	
-	public JPanel getWealthVisualizer() {
+	public WealthVisualizer getWealthVisualizer() {
 		return new WealthVisualizer( this.orderedAgents );
 	}
 	
