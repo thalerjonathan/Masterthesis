@@ -303,12 +303,6 @@ public class Transaction  {
 		}
 		
 		bestAskOfferings.get(mkt).add(offer);
-	
-		/*
-		if ( bestAskOfferings.get(mkt).size() > 1 ) {
-			System.out.println( "bestAskOfferings.get( "+ mkt + " ).size() = " + bestAskOfferings.get( mkt ).size() );
-		}
-		*/
 	}
 	
 	public void updateBestBidOfferings( BidOffering offer)   {
@@ -332,12 +326,6 @@ public class Transaction  {
 		}
 		
 		bestBidOfferings.get(mkt).add(offer);
-		
-		/*
-		if ( bestBidOfferings.get(mkt).size() > 1 ) {
-			System.out.println( "bestBidOfferings.get( "+ mkt + " ).size() = " + bestBidOfferings.get( mkt ).size() );
-		}
-		*/
 	}
 	
 	public void addOfferings(AskOffering[] askoff, BidOffering[] bidoff)   {

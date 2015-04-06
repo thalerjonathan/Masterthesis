@@ -210,7 +210,7 @@ public class Auction {
 				// agents must not be already connected and don't allow self-loop (self-trading)
 				if ( false == this.agents.isNeighbor( a1, a2 ) && a1 != a2 ) {
 					if ( this.canTrade( a1, a2 ) ) {
-						this.agents.addConnection( a1, a2 );
+						//this.agents.addConnection( a1, a2 );
 						foundConnection = true;
 						System.out.println( "Added Connection: " + a1.getH() + " <-> " + a2.getH() );
 					}
@@ -221,6 +221,8 @@ public class Auction {
 		if ( false == foundConnection ) {
 			// NOTE: at this point we couln't add any utility-improving connection: this is the final termination of the simulation!
 			transaction.setReachedEquilibrium( true );
+		} else {
+			this.agents.fullyConnect();
 		}
 		*/
 		

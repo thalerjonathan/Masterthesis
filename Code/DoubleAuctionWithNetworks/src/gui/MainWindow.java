@@ -162,6 +162,8 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 	public void simulationTerminated() {
 		// simulation was running, toggle will switch all gui-stuff to "stoped"
 		this.toggleSimulation();
+		this.agentWealthPanel.repaint();
+		this.networkPanel.repaint();
 		JOptionPane.showMessageDialog( this, "No Agent is able to trade with any of its neighbours - Simulation stoped.", 
 				"Equilibrium Reached", JOptionPane.INFORMATION_MESSAGE );
 	}
@@ -297,6 +299,9 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 					txIndex--;
 					
 					Transaction tx = MainWindow.this.successfulTx.get( txIndex );
+					OfferBookFrame.agentsUpdated( tx.getFinalAgents() );
+					MainWindow.this.agentWealthPanel.setAgents( tx.getFinalAgents() );
+					
 					MainWindow.this.highlightTx( tx );
 		        }
 			}
@@ -849,6 +854,7 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 	}
 	
 	private void highlightTx( Transaction tx ) {
+		
 		// no need for anything highlighting-related when no network-panel available
 		if ( false == this.networkPanel.isVisible() ) {
 			return;
@@ -873,9 +879,6 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 		a1.setHighlighted( true );
 		a2.setHighlighted( true );
 
-		OfferBookFrame.agentsUpdated( tx.getFinalAgents() );
-		this.agentWealthPanel.setAgents( tx.getFinalAgents() );
-		
 		this.networkVisPanel.repaint();
 	}
 	

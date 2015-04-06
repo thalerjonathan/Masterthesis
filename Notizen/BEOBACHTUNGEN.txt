@@ -63,9 +63,10 @@
 			-> Bids (kauf) auf asset against loan
 			-> Wenn noch Assets vorhanden, dann Ask (sell) auf Asset against Loan d.h. "Loans Given" erhöht sich
 			
-	=> FALSCHE BEOBACHTUNG!!!!! Wenn ASCENDING_CONNECTED wird zuerst durch die lineare ordnung und durch die bedingungen, ab wann asset->loan gehandelt wird zuerst das
+	=> Wenn ASCENDING_CONNECTED wird zuerst durch die lineare ordnung und durch die bedingungen, ab wann asset->loan gehandelt wird zuerst das
 		asset->cash gleichgewicht erreicht, erst dann findet der erste asset->loan handel statt!
 		-> könnte ein grund sein wieso das gleichgewicht dann bei ascending connected nicht erreicht wird, denn bei FULLY_CONNECTED wird schon wesentlich früher begonnen mit asset->loan zu handeln
+		-> ACHTUNG: dies stimmt nur ungefähr, d.h. es ist relativ wahrscheinlich, dass das asset-cash gleichgewicht zuerst erreicht wird, d.h. 
 		
 	=> die erste Asset->Loan transaktion findet dann statt, wenn der erste agent erstmals ein bid (kauf) eines assets gegen loan anbietet: Loans Taken
 		-> verkäufer gibt es genug, da ask gebote ständig gemacht werden von allen agents, die asset haben: Loan Given
@@ -120,30 +121,72 @@
 			-> die handelsbeziehungen müssen schon von beginn an entsprechend existieren, da es sonst nicht zu einem gleichgewicht kommt
 			-> vermutung: die matching-wahrscheinlichkeiten sind hier nicht relevant?
 		-> bidofferings machen auch wenn cash vorhanden führt zu keiner merkbaren veränderung
-		-> TODO wie kommt es zu diesen "löchern" bzw. "verschiebungen" bzw. "inselbildung"?
+		-> wie kommt es zu diesen "löchern" bzw. "verschiebungen" bzw. "inselbildung"?
 			-> vermutung liegt wahrscheinlich in der natur der topologie: h1<h2<h3<h4<h5 wobei h1&h2 handeln und h4&h5: dadurch passiert eine art von inselbidlung und die handelscontinuität bricht
-		-> TODO wie hoch ist die wahrscheinlichkeit dafür bzw. wie kann man das mathematisch ausdrücken?
+		-> wie hoch ist die wahrscheinlichkeit dafür bzw. wie kann man das mathematisch ausdrücken?
 		
 	=> Beim ASCENDING_CONNECTED scheint der marginal buyer bei 0.6 zu liegen, bei FULLY_CONNECTED bei 0.7 ??
-	
-	
+		-> die topologie führt dazu, dass die agents bei ASCENDING_CONNECTED um 0.6 mehr cash bzw. mehr assets als im FULLY_CONNECTED halten
+		
 	=> Bei Asset-Cash Market only kommt es zu keiner terminierung, da ein paar benachbarte agenten > 0.6 noch minimal cash halten und somit bid-offers machen
 		diese bid-offers sind aber zu niedrig um ask-offers von benachbarten agenten mit niedrigerem h zu erfüllen
 		-> ursache: die käufer haben einfach zuwenig geld um entsprechend mitbieten zu können, somit kommt es niemehr zu einem match
-			-> dies in die abbruch bedingung einbauen!
-		-> TODO: es wird 0.5 als asset-amount geboten: wieso?
-		-> TODO: wieso tritt hier keine inselbildung auf?
-		
+			-> möglichkeit: dies in die abbruch bedingung einbauen!
+		-> es wird 0.5 als asset-amount geboten: wieso?
+			-> leicht andere mengenauswahl als bei agentswithloan, ist so programmiert. nun geändert auf agentswithloan-implementierung
+			wichtig ist aber dass bei agentswithloan genau auf 0 cash herunterkkommen muss, da sonst keine loans gehandelt werden
+		-> wieso tritt hier keine inselbildung auf?
+			da die assets immer von links nach rechts und das cash von rechts nach links verläuft. TODO: wieso?
+		ACHTUNG: habe dies wie bei agentswithloans angepasst, kommt nun  zu einer terminierung
+			
 	=> Genauer vergleich der dynamiken von FULLY_CONNECTED und ASCENDING_CONNECTED studieren
 		-> WESENTLICHER UNTERSCHIED: FULLY_CONNECTED erfüllt immer die global besten offerings, ASCENDING_CONNECTED nur die lokal besten
-			-> TODO: ist dies einer der gründe, wieso es bei ASCENDING_CONNECTED nicht zu einem gleichgewicht kommt?
-			-> 
+			-> ist dies einer der gründe, wieso es bei ASCENDING_CONNECTED nicht zu einem gleichgewicht kommt?
+
+	=> Die Matchingwahrscheinlichkeit sagt etwas über die zu erwartende Vermögensverteilung aus
+		-> bei FULLY_CONNECTED läuft das natürlich über alle agents global, bei ASCENDING_CONNECTED immer nur paarweise lokal
+			-> dies ist der grund wieso es hier zu unterschiedlichen verteilungen kommt
+		-> wie kann man das mathematisch beweisen bzw. begründen
+		
+	=> Asset-Cash markt arbeitet bei ASCENDING_CONNECTED von aussen nach innen weil die matching-wahrscheinlichkeiten von aussen nach innen abnehmen
+		d.h. es kommt unter gleichen voraussetzungen der agents mit höherer wahrscheinlichkeit zwischen zwei agenten aussen zu einem match als in der mitte
+		-> ACHTUNG: dies scheint laut experimenten unabhängig vom matching-mechanismus (global/lokal) zu sein
 	
+	=> Asset-Cash markt arbeitet bei FULLY_CONNECTED von aussen nach innen wegen der pareto-front der global-besten offers, die von aussen-nach innen gehen!
+		
+	=> wie kommt es zu diesen "löchern" bzw. "verschiebungen" bzw. "inselbildung" BEI ASCENDING_CONNECTED!
+		-> problem: es wird gehandelt, bis keine free assets mehr vorhanden sind, ist dies erreicht, so scheidet dieser agent aus dem handeln aus
+		-> vermutung: die matchingwahrscheinlichkeiten sind dafür verantwortlich, dass nicht gleichmäßig gehandelt wird, sondern dass eben so gehandelt wird, dass es zu löchern kommt
+		-> wie zeige ich diese beiden vorherigen aussagen mathematisch?
+		
+	=> bei FULLY_CONNECTED kommt es nicht zu diesen löchern, da die optimisten von den pessimisten bis 0.6 loans kaufen, was im falle von ASCENDING_CONNECTED ja NICHT möglich ist
 	
+	=> kein gleichgewicht bedeutet: es gibt "ineffizienzen" d.h. agenten haben noch freie assets, die sie handeln könnten aber andere agenten 
+		bieten kein entsprechendes angebot bzw. sind mit ihnen nicht in der nachbarschaft
 	
-	
-	
-	
-	
-	
-	
+	=> unterschiedliche dynamik zwischen FULLY_CONNECTED und ASCENDING_CONNETED (mit und ohne einschränkung auf asset-loan handel erst wenn kein cash mehr)
+		-> FULLY_CONNECTED beginnt schon relativ früh der loan-asset handel, nämlich sobald der erste optimist (meist knapp um 1.0 herum) kein cash mehr hat
+			in diesem fall beginnt er bid-offers auf dem asset-loan market zu machen, die ein pessimist < 0.6 erfüllt, da dieser noch freie assets hat und diese loswerden will, auch wenn es für einen bond ist
+			d.h. es ist viel mehr asset-vermögen bei den optimisten. dieser transfer ist bei ASCENDING_CONNECTED garnicht möglich.
+			ausserdem scheint hier auch die asset-loan vermögensverteilung von links nach rechts bzw. rechts nach links zu verlaufen: 
+				die agenten um 0.6 geben loans aus und die optimisten kaufen diese. dies geschieht so lang bis sich die kurve bei 0.7 trifft d.h. alle agenten über 0.7 haben keine free assets mehr und die darunter
+				kein cash mehr
+				-> dies hat wahrscheinlich mit der globalen pareto-front und der matching-wahrscheinlichkeit (ist beides im grunde dasselbe) zu tun
+		-> ASCENDING_CONNETED Hier gibt es verschiedenes verhalten bei unterschiedlichem matching-mechanismus
+			GLOBALES_OFFERBOOK
+			Hier werden schon sehr früh asset gegen loan gehandelt, da die agenten von aussen nach innen die assets kaufen, ihr cash an pessimisten abgeben und dann, wenn sie kein cash mehr haben, 
+			beginnen assets gegen loan von den pessimisten zu kaufen. Somit besitzen auch schon pessimisten einiges an kolateralisierten assets d.h. das gleichgewicht wie im FULL_CONNECTED fall kann auch hier nicht erreicht werden.
+			
+			LOKALES_OFFERBOOK
+			beginnt mit dem loan-asset handel vergleichsweise spät, ca. meist um den zeitpunkt des asset-cash gleichgewichts
+			zwar auch erst sobald der erste optimist kein cash mehr hat, aber die bonds werden dann nur unter den optimisten selber vergeben d.h. es ist unmöglich, dass es hier zu einem gleichgewicht kommt
+				-> wieso werden die bonds nur unter den optimisten vergeben?
+					da die assets von den pessimisten immer aufsteigend zu den optimisten verkauft werden.
+					das bedeutet, dass die pessimisten immer cash haben, weshalb auch kein bid-offer auf assets-loan passiert
+					aber natürlich gibt es immer eine fixe anzahl an assets im system, sie können also nicht verschwinden, jedoch scheint im falle von ASCNEDING_CONNECTED 
+					mehr assets um 0.6 zentriert zu sein als im falle FULLY_CONNECTED
+			ausserdem bewegt sich die vermögensverteilung hier auch nicht von links nach rechts bzw. rechts nach links sondern entsprechend eines matches, der aber nur lokal ist
+
+
+
+		

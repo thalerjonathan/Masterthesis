@@ -188,8 +188,9 @@ public class Agent {
 		double minP = getPMin();
 		double maxP = getPMax();
 		double assetPrice = 0.0;
-		AskOffering actAskOffer = null;
-		
+		AskOffering[] askOffering = new AskOffering[ NUMMARKETS ];
+
+		/*
 		if (maxP < limitPriceAsset)  //agent cannot offer at current price level 
 			return new AskOffering[] { actAskOffer };
 	
@@ -214,17 +215,39 @@ public class Agent {
 		} else  {
 			actAskOffer = new AskOffering(assetPrice, Math.min(assetEndow,MAXUNIT), this, 0, MarketType.ASSET_AGAINST_CASH );	
 		}
+		*/
 		
-		return new AskOffering[] { actAskOffer };
+		if (assetEndow > 0 && maxP > limitPriceAsset) {
+			// draw a uniform random asset price from [limitPriceAsset,PU]
+			// intersect [minP,maxP]
+			double r = agRand.nextDouble();
+			
+			// if improvement possible
+			if ( limitPriceAsset > minP ) {
+				// sell asset at least for limitPriceAsset and maximum in a range up to how much the optimism-factor h allows it
+				assetPrice = limitPriceAsset + r * (maxP - limitPriceAsset);
+			} else {
+				// otherwise bid randomly in random range between min and max
+				assetPrice = minP + r * (maxP - minP);
+			}
+			
+			askOffering[0] = new AskOffering(assetPrice, Math.min(UNIT, assetEndow), this, 0, MarketType.ASSET_AGAINST_CASH );
+			
+		} else {
+			// agent has no free assets, or cannot offer at current price level
+			askOffering[0] = null;
+		}
+		
+		return askOffering;
 	}
 	
 	public BidOffering[] calcBidOfferings()  {
-		//first version: draw a random price uniformly out of [minP,maxP] intersect [pD,limitPriceAsset] 
 		double minP = getPMin();
 		double maxP = getPMax();
 		double assetPrice;
-		BidOffering actBidOffer = null;
+		BidOffering[] bidOffering = new BidOffering[ NUMMARKETS ];
 		
+		/*
 		if (minP > limitPriceAsset)  //agent cannot offer at current price level 
 			return new BidOffering[] { actBidOffer };
 	
@@ -249,6 +272,22 @@ public class Agent {
 		}
 		
 		return new BidOffering[] { actBidOffer };
+		*/
+		
+		if (consumEndow > 0 && minP <= limitPriceAsset) {
+			double r = agRand.nextDouble();
+			if (maxP > limitPriceAsset) {
+				assetPrice = minP + r * (limitPriceAsset - minP);
+			} else {
+				assetPrice = minP + r * (maxP - minP);
+			}
+			
+			double assetAmount = Math.min(UNIT, consumEndow / assetPrice);
+			bidOffering[0] = new BidOffering(assetPrice, assetAmount, this, 0, MarketType.ASSET_AGAINST_CASH );
+		}
+		
+		return bidOffering;
+
 	}
 	
 	public boolean execTransaction(Offering[] match, boolean first)  {

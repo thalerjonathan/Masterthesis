@@ -60,7 +60,7 @@ public class AgentNetwork {
 		AgentNetwork network = new AgentNetwork( "AscendingConnected", p != 0.0 );
 		network.populate( agentFactory );
 		
-		for ( int i = 0; i < network.orderedAgents.size(); ++i ) {
+		for ( int i = 0; i < network.orderedAgents.size() - 1; ++i ) {
 			Agent from = network.orderedAgents.get( i );
 			Agent to = network.orderedAgents.get( ( i + 1 ) % network.orderedAgents.size() );
 			
@@ -97,7 +97,7 @@ public class AgentNetwork {
 			n = network.orderedAgents.size() / 2;
 		}
 		
-		for ( int i = 0; i < network.orderedAgents.size(); ++i ) {
+		for ( int i = 0; i < network.orderedAgents.size() - 1; ++i ) {
 			Agent from = network.orderedAgents.get( i );
 			Agent to1 = network.orderedAgents.get( ( i + 1 ) % network.orderedAgents.size() );
 			Agent to2 = network.orderedAgents.get( ( i + n ) % network.orderedAgents.size() );
@@ -119,7 +119,7 @@ public class AgentNetwork {
 			n = network.orderedAgents.size() / 2;
 		}
 		
-		for ( int i = 0; i < network.orderedAgents.size(); ++i ) {
+		for ( int i = 0; i < network.orderedAgents.size() - 1; ++i ) {
 			Agent from = network.orderedAgents.get( i );
 
 			for ( int j = 0; j < n; ++j ) {
@@ -691,7 +691,9 @@ public class AgentNetwork {
 			for ( int j = i + 1; j < toIndex; ++j ) {
 				Agent to = this.orderedAgents.get( j );
 
-				this.graph.addEdge( new AgentConnection(), from, to );
+				if ( false == this.graph.isNeighbor( from, to ) ) {
+					this.graph.addEdge( new AgentConnection(), from, to );
+				}
 			}
 		}
 	}

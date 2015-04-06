@@ -1,5 +1,8 @@
 package gui.offerBook;
 
+import gui.MainWindow;
+
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
@@ -23,6 +26,12 @@ import javax.swing.SpinnerNumberModel;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import org.jfree.chart.ChartFactory;
+import org.jfree.chart.ChartPanel;
+import org.jfree.chart.JFreeChart;
+import org.jfree.data.xy.XYSeries;
+import org.jfree.data.xy.XYSeriesCollection;
+
 import agents.Agent;
 import doubleAuction.offer.AskOffering;
 import doubleAuction.offer.AskOfferingWithLoans;
@@ -34,6 +43,7 @@ import doubleAuction.offer.MarketType;
 public class OfferBookFrame extends JFrame {
 	private JButton refreshButton;
 	private JButton cloneButton;
+	private JButton visParetoFrontiersButton;
 	
 	private JSpinner agentIndexSpinner;
 
@@ -78,8 +88,6 @@ public class OfferBookFrame extends JFrame {
 		int agentIndex = (int) this.agentIndexSpinner.getValue();
 		Agent a = OfferBookFrame.agents.get( agentIndex );
 		
-		//this.outputOffersData();
-	
 		this.agentInfoPanel.setAgent( a );
 		
 		List<List<AskOffering>> askOfferings = a.getBestAskOfferings();
@@ -186,7 +194,8 @@ public class OfferBookFrame extends JFrame {
 		
 		this.refreshButton = new JButton( "Refresh" );
 		this.cloneButton = new JButton( "Clone" );
-		
+		this.visParetoFrontiersButton = new JButton( "Visualize Pareto-Frontiers" );
+
 		this.agentIndexSpinner = new JSpinner( new SpinnerNumberModel( agentIndex, 0, OfferBookFrame.agents.size() - 1, 1 ) );
 		this.agentIndexSpinner.addChangeListener( new ChangeListener() {
 			@Override
@@ -210,9 +219,17 @@ public class OfferBookFrame extends JFrame {
 			}
 		});
 		
+		this.visParetoFrontiersButton.addActionListener( new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				visualizeParetoFrontiers();
+			}
+		});
+		
 		JPanel controlsPanel = new JPanel();
 		controlsPanel.add( this.refreshButton );
 		controlsPanel.add( this.cloneButton );
+		controlsPanel.add( this.visParetoFrontiersButton );
 		controlsPanel.add( this.agentIndexSpinner );
 
 		this.marketTabPane = new JTabbedPane();
@@ -247,9 +264,7 @@ public class OfferBookFrame extends JFrame {
 		this.getContentPane().add( this.marketTabPane, c );
 	}
 	
-	// NOTE: used for visualization of the parto-frontier in matlab
-	@SuppressWarnings("unused")
-	private void outputOffersData() {
+	private void visualizeParetoFrontiers() {
 		int agentIndex = (int) this.agentIndexSpinner.getValue();
 		Agent a = OfferBookFrame.agents.get( agentIndex );
 		
@@ -267,24 +282,39 @@ public class OfferBookFrame extends JFrame {
 			return;
 		}
 		
-		System.out.println( "askData = [" );
+		XYSeries askOffersSeries = new XYSeries("Ask-Offers");
+		XYSeries bidOffersSeries = new XYSeries("Bid-Offers");
+		
+		XYSeriesCollection askParetoFrontier = new XYSeriesCollection();
+		XYSeriesCollection bidParetoFrontier = new XYSeriesCollection();
 		
 		for ( int i = 0; i < askOfferingsMarket.size(); ++i ) {
 			AskOfferingWithLoans ask = ( AskOfferingWithLoans ) askOfferingsMarket.get( i );
 			
-			System.out.println( "" + ask.getAssetPrice() + " " + ask.getLoanPrice() );
+			askOffersSeries.add( ask.getAssetPrice(), ask.getLoanPrice() );
 		}
-		
-		System.out.print( "]\n\n" );
-		
-		System.out.println( "bidData = [" );
+
 		for ( int i = 0; i < bidOfferingsMarket.size(); ++i ) {
 			BidOfferingWithLoans bid = ( BidOfferingWithLoans ) bidOfferingsMarket.get( i );
 
-			System.out.println( "" + bid.getAssetPrice() + " " + bid.getLoanPrice() );
+			bidOffersSeries.add( bid.getAssetPrice(), bid.getLoanPrice() );
 		}
+
+		askParetoFrontier.addSeries(askOffersSeries);
+		bidParetoFrontier.addSeries(bidOffersSeries);
 		
-		System.out.print( "]\n" );
+		JFrame paretoFrontierFrame = new JFrame( "Agent " + MainWindow.AGENT_H_FORMAT.format( a.getH() ) + " Offer Pareto-Frontiers" );
+		paretoFrontierFrame.getContentPane().setLayout( new BorderLayout() );
+		
+		String xaxis = "Asset-Price";
+		String yaxis = "Loan-Price";
+		JFreeChart askOffersParetoChart = ChartFactory.createXYLineChart( "Ask-Offers", xaxis, yaxis, askParetoFrontier );
+		JFreeChart bidOffersParetoChart = ChartFactory.createXYLineChart( "Bid-Offers", xaxis, yaxis, bidParetoFrontier );
+
+		paretoFrontierFrame.getContentPane().add( new ChartPanel( askOffersParetoChart ), BorderLayout.NORTH );
+		paretoFrontierFrame.getContentPane().add( new ChartPanel( bidOffersParetoChart ), BorderLayout.SOUTH );
+		paretoFrontierFrame.pack();
+		paretoFrontierFrame.setVisible( true );
 	}
 	
 	private static void createAndShowInstance( int agentIndex, int tabIndex ) {
