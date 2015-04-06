@@ -80,7 +80,6 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 	
 	private JCheckBox keepSuccTXHighCheck;
 	private JCheckBox cashAssetOnlyCheck;
-	private JCheckBox forceRedrawCheck;
 	private JCheckBox keepAgentHistoryCheck;
 	
 	private JButton simulateButton;
@@ -232,11 +231,11 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 		
 		this.agentCountSpinner = new JSpinner( new SpinnerNumberModel( 30, 10, 1000, 10 ) );
 
-		this.computationTimeLabel = new JLabel( "-" );
-		this.succTxCounterLabel = new JLabel( "-" );
-		this.noSuccTxCounterLabel = new JLabel( "-" );
-		this.totalNoSuccTxCounterLabel = new JLabel( "-" );
-		this.totalTxCounterLabel = new JLabel( "-" );		
+		this.computationTimeLabel = new JLabel( "0,00 sec" );
+		this.succTxCounterLabel = new JLabel( "0" );
+		this.noSuccTxCounterLabel = new JLabel( "0" );
+		this.totalNoSuccTxCounterLabel = new JLabel( "0" );
+		this.totalTxCounterLabel = new JLabel( "0" );		
 		
 		this.recreateButton = new JButton( "Recreate" );
 		this.simulateButton = new JButton( "Start Simulation" );
@@ -245,7 +244,7 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 		this.advance100TxButton = new JButton( "Advance 100 TXs" );
 		
 		this.openOfferBookButton = new JButton( "Open Offer-Book" );
-		this.pauseButton = new JToggleButton ( "Run" );
+		this.pauseButton = new JToggleButton ( "Pause" );
 		this.toggleNetworkPanelButton = new JToggleButton ( "Hide Network" );
 		
 		this.keepSuccTXHighCheck = new JCheckBox( "Keep TXs Highlighted" );
@@ -267,7 +266,6 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 		this.cashAssetOnlyCheck.setSelected( false );
 		this.cashAssetOnlyCheck.addActionListener( this );
 		
-		this.forceRedrawCheck = new JCheckBox( "Force Redraw" );
 		this.keepAgentHistoryCheck = new JCheckBox( "Keep Agent History" );
 		
 		this.txHistoryTable = new TxHistoryTable();
@@ -276,12 +274,12 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 		txHistoryScrollPane.setHorizontalScrollBarPolicy( JScrollPane.HORIZONTAL_SCROLLBAR_NEVER );
 		
 		// setting properties of components ////////////////////////////////////
-		this.nextTxButton.setVisible( false );
-		this.advance10TxButton.setVisible( false );
-		this.advance100TxButton.setVisible( false );
-		this.advcanceModeSelection.setVisible( false );
-		
-		this.pauseButton.setVisible( false );
+		this.nextTxButton.setEnabled( false );
+		this.advance10TxButton.setEnabled( false );
+		this.advance100TxButton.setEnabled( false );
+		this.advcanceModeSelection.setEnabled( false );
+		this.matchingTypeSelection.setEnabled( false );
+		this.pauseButton.setEnabled( false );
 
 		// setting up event-listeners of components ////////////////////////////////////
 		this.txHistoryTable.getSelectionModel().addListSelectionListener( new ListSelectionListener() {
@@ -405,7 +403,6 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 		controlsPanel.add( this.topologySelection );
 		controlsPanel.add( this.simulateButton );
 		controlsPanel.add( this.cashAssetOnlyCheck );
-		controlsPanel.add( this.forceRedrawCheck );
 		controlsPanel.add( this.keepAgentHistoryCheck );
 		
 		networkVisControlsPanel.add( this.recreateButton );
@@ -415,69 +412,68 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 		this.networkPanel.add( networkVisControlsPanel, BorderLayout.NORTH ); 
 		    
 		JPanel txLabelsPanel = new JPanel( new GridBagLayout() );
+		JPanel txControlPanel = new JPanel( new GridBagLayout() );
 		
-		c.fill = GridBagConstraints.BOTH;
-		c.weightx = 0.5;
-		c.ipadx = 10;
-		c.ipady = 10;
+		c.fill = GridBagConstraints.HORIZONTAL;
+		c.ipadx = 5;
+		c.ipady = 5;
 		
 		c.gridx = 0;
 	    c.gridy = 0;
-	    c.gridheight = 2;
 	    txLabelsPanel.add( computationTimeInfoLabel , c );
 	    c.gridx = 1;
 	    c.gridy = 0;
 	    txLabelsPanel.add( computationTimeLabel, c );
-	    c.gridheight = 1;
 		c.gridx = 0;
-	    c.gridy = 2;
+	    c.gridy = 1;
 	    txLabelsPanel.add( succTxCounterInfoLabel, c );
 		c.gridx = 1;
-	    c.gridy = 2;
+	    c.gridy = 1;
 	    txLabelsPanel.add( this.succTxCounterLabel, c );
-	    c.gridx = 3;
+	    c.gridx = 0;
 	    c.gridy = 2;
 	    txLabelsPanel.add( noSuccTxCounterInfoLabel, c );
-		c.gridx = 4;
+		c.gridx = 1;
 	    c.gridy = 2;
 	    txLabelsPanel.add( this.noSuccTxCounterLabel, c );
-	    c.gridx = 5;
-	    c.gridy = 2;
+	    c.gridx = 0;
+	    c.gridy = 3;
 	    txLabelsPanel.add( totalNoSuccTxCounterInfoLabel, c );
-		c.gridx = 6;
-	    c.gridy = 2;
+		c.gridx = 1;
+	    c.gridy = 3;
 	    txLabelsPanel.add( this.totalNoSuccTxCounterLabel, c );
-		c.gridx = 7;
-	    c.gridy = 2;
+		c.gridx = 0;
+	    c.gridy = 4;
 	    txLabelsPanel.add( totalTxCounterInfoLabel, c );
-		c.gridx = 8;
-	    c.gridy = 2;
+		c.gridx = 1;
+	    c.gridy = 4;
 	    txLabelsPanel.add( this.totalTxCounterLabel, c );
 
 	    
-	    
+	    c.gridx = 0;
+		c.gridy = 0;
+		c.gridwidth = 2;
+		txControlPanel.add( this.openOfferBookButton, c );
+	    c.gridx = 0;
+		c.gridy = 2;
+		txControlPanel.add( this.pauseButton, c );
 	    c.gridx = 0;
 		c.gridy = 3;
-	    txLabelsPanel.add( this.openOfferBookButton, c );
-	    c.gridx = 0;
+		txControlPanel.add( this.nextTxButton, c );
+		c.gridwidth = 1;
+		c.gridx = 0;
 		c.gridy = 4;
-	    txLabelsPanel.add( this.pauseButton, c );
-	    c.gridx = 1;
+		txControlPanel.add( this.advance10TxButton, c );
+		c.gridx = 1;
 		c.gridy = 4;
-	    txLabelsPanel.add( this.nextTxButton, c );
-	    c.gridx = 2;
-		c.gridy = 4;
-	    txLabelsPanel.add( this.matchingTypeSelection, c );
-
-	    c.gridx = 0;
+		txControlPanel.add( this.advance100TxButton, c );
+		c.gridx = 0;
 		c.gridy = 5;
-	    txLabelsPanel.add( this.advance10TxButton, c );
+		txControlPanel.add( this.advcanceModeSelection, c );
 	    c.gridx = 1;
 		c.gridy = 5;
-	    txLabelsPanel.add( this.advance100TxButton, c );
-	    c.gridx = 2;
-		c.gridy = 5;
-	    txLabelsPanel.add( this.advcanceModeSelection, c );
+		txControlPanel.add( this.matchingTypeSelection, c );
+		
 	    
 	    
 		c.weightx = 0.8;
@@ -490,7 +486,16 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 		txInfoPanel.add( txHistoryScrollPane, c );
 		
 		c.weightx = 0.1;
+		c.weighty = 0.5;
 		c.gridx = 8;
+		c.gridy = 0;
+		c.ipady = 0;
+		c.gridwidth = 1;
+		c.fill = GridBagConstraints.BOTH;
+		txInfoPanel.add( txControlPanel, c );
+		
+		c.weightx = 0.1;
+		c.gridx = 9;
 		c.gridwidth = 1;
 		c.fill = GridBagConstraints.VERTICAL;
 		txInfoPanel.add( txLabelsPanel, c );
@@ -528,7 +533,7 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 	
 	void addSuccessfulTX( Transaction tx, boolean forceRedraw ) {
 		long currMillis = System.currentTimeMillis();
-		if ( MainWindow.REPAINT_WEALTH_WHENRUNNING_INTERVAL < currMillis - this.lastRepaintTime || forceRedraw || this.forceRedrawCheck.isSelected() ) {
+		if ( MainWindow.REPAINT_WEALTH_WHENRUNNING_INTERVAL < currMillis - this.lastRepaintTime || forceRedraw ) {
 			this.agentWealthPanel.repaint();
 			this.lastRepaintTime = currMillis;
 		}
@@ -536,6 +541,8 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 		this.successfulTx.add( tx );
 		this.txHistoryTable.addTx( tx );
 		
+		this.agentWealthPanel.setAgents( this.agents.getOrderedList() );
+
 		this.highlightTx( tx );
 	}
 	
@@ -797,10 +804,11 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 			this.simulateButton.setText( "Stop Simulation" );
 			this.simulateButton.setEnabled( true );
 			
-			this.nextTxButton.setVisible( true );
-			this.advance10TxButton.setVisible( true );
-			this.advance100TxButton.setVisible( true );
-			this.advcanceModeSelection.setVisible( true );
+			this.nextTxButton.setEnabled( true );
+			this.advance10TxButton.setEnabled( true );
+			this.advance100TxButton.setEnabled( true );
+			this.advcanceModeSelection.setEnabled( true );
+			this.matchingTypeSelection.setEnabled( true );
 			
 			this.nextTxButton.setEnabled( true );
 			this.advance10TxButton.setEnabled( true );
@@ -809,7 +817,6 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 			this.pauseButton.setText( "Paused" );
 			this.pauseButton.setSelected( true );
 			this.pauseButton.setEnabled( true );
-			this.pauseButton.setVisible( true );
 			
 			Auction auction = null;
 			
@@ -836,12 +843,12 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 
 			// simulation has finished => enable controls
 			this.simulateButton.setText( "Start Simulation" );
-			this.nextTxButton.setVisible( false );
-			this.advance10TxButton.setVisible( false );
-			this.advance100TxButton.setVisible( false );
-			this.advcanceModeSelection.setVisible( false );
-			
-			this.pauseButton.setVisible( false );
+			this.nextTxButton.setEnabled( false );
+			this.advance10TxButton.setEnabled( false );
+			this.advance100TxButton.setEnabled( false );
+			this.advcanceModeSelection.setEnabled( false );
+			this.matchingTypeSelection.setEnabled( false );
+			this.pauseButton.setEnabled( false );
 			
 			this.agentCountSpinner.setEnabled( true );
 			this.topologySelection.setEnabled( true );
@@ -871,8 +878,6 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 		AgentConnection conn = this.agents.getConnection( a1, a2 );
 		if ( conn.getWeight() == Double.MAX_VALUE ) {
 			conn.setWeight( 1.0 );
-		//} else {
-		//	conn.incrementWeight( 1.0 );
 		}
 		
 		conn.setHighlighted( true );
