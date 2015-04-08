@@ -49,6 +49,8 @@ public class Transaction  {
 	// stored in this list
 	protected List<Agent> finalAgents;
 	
+	private int sweepCount;
+	
 	public Transaction(Auction auct) {
 		NUMMARKETS = Auction.NUMMARKETS;
 		auction = auct;
@@ -559,4 +561,14 @@ public class Transaction  {
 	public void setFinalAgents(List<Agent> finalAgents) {
 		this.finalAgents = finalAgents;
 	}
+
+	public int getSweepCount() {
+		return sweepCount;
+	}
+
+	public void setSweepCount(int sweepCount) {
+		this.sweepCount = sweepCount;
+	}
+	
+	
 }

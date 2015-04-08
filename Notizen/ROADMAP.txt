@@ -80,14 +80,22 @@ Zeitpunkte
 		-> OK		Paretofront visualisieren
 		-> OK		History der offer-books & wealth-visualisierung: speichere für jede erfolgreiche TX die zustände der agents und deren offers
 		-> OK		im programm feststellen, dass kein handeln mehr möglich ist
+		-> OK		Klarheit wieso konvergenz bei Asset-Cash in beiden Topologien aber Asset-Loan nur bei FULLY_CONNECTED gegeben ist
+		-> OK		TX-Controls Buttons besser layouten, diverse refaktorisierungen
 		
-		-> TOOD		verhalten der simulation genau studieren
-			-> wieso kommt es bei ascending zu keinem gleichgewicht sondern nur mit shortcuts ab einer gewissen N und wie muss N in abhängigkeiten der agentenanzahl gewählt werden?
-				-> wegen inselbildung ?
-			-> Hypothese beweis/widerlegen
-		-> TODO		refaktorisierungen: gui überarbeiten, memory-leaks (bei > 50 agenten wird network trotzdem erzeugt) bzw. null setzen um frei zu geben, code aufräumen, main-window weiter aufsplitten 
-		
-	Mai: SCHREIBEN
+		-> TODO		Einschränkung aufheben, dass Asset-Loans erst gehandelt werden dürfen, wenn kein Cash mehr vorhanden
+		-> TODO		Loan-Cash Markt aktivieren und funktionierbar bekommen
+		-> TODO		BP (=CC von martin) einbauen
+		-> TODO		Formeln zu ABM und loan-Cash von martin übernehmen um pareto-front wegzubekommen
+		-> TODO		Optimieren von Matchingwahrscheinlichkeiten
+				anpassung an die nachbar limitprices, aber nicht deterministisch sondern auch zufällig ( mit 1/10 diese optimierung machen und dann untersuchen). 
+				somit kommt es mit höherer wahrscheinlichkeit zu matches zwischen ascending-nachbaren. ABER: dann keine reinen zero-intelligence agents.
+		-> TODO 	experimente definieren und beobachten
+					-> FULLY_CONNECTED und ASCENDING_CONNECTED OHNE BP miteinander vergleichen
+					-> FULLY_CONNECTED und ASCENDING_CONNECTED MIT BP miteinander vergleichen
+					-> ?
+	
+	Mai: SCHREIBEN beginnen
 		-> TODO		Paper berschreiben
 		-> TODO		implementierung beschreiben und unterschiede zum paper
 		
@@ -101,11 +109,6 @@ Zeitpunkte
 		-> Finale Abgabe am 27.
 			-> wenn auf das Kinderlager mit am 17. Juli abgabe
 
-
-Große Alternative:
-Ich tendiere im Moment weg von einer Doktorarbeit (noch begründen wieso), somit wäre es eine Alternative die Masterarbeit etwas auszubauen d.h. bis zum 2. Termin laufen zu lassen
-und noch das Thema parallelität aufzunehmen um so etwas entspannter arbeiten zu können. Ich bin sowieso noch an der FH, da ich eine 4stündige Übung im WS 2015 übernehme, die eben
-auch bis Februar 2016 geht, dies würde sich genau treffen. Aber: was meint Hans dazu?
 
 Wieso Doktorarbeit nichtmehr:
 - im moment nicht sehr dazu motiviert

@@ -21,14 +21,14 @@ public class TxHistoryTable extends JTable {
 	
 	@SuppressWarnings("rawtypes")
 	public TxHistoryTable() {
-		Class[] columnClasses = new Class[]{ Integer.class, String.class, String.class, String.class,
+		Class[] columnClasses = new Class[]{ Integer.class, Integer.class, String.class, String.class, String.class,
 				String.class, String.class, String.class, String.class, String.class, String.class, String.class };
 		
 		this.tableModel = new DefaultTableModel(
-				new Object[] { "TX", 
+				new Object[] { "TX", "Sweeps",
 						"Asker", "Bider", 
-						"Asset Price", "Asset Ask Price", "Asset Bid Price", "Asset Amount",
-						"Loan Price", "Loan Ask Price", "Loan Bid Price", "Loan Amount" }, 0 ) {
+						"Asset Price", "Asset Ask", "Asset Bid", "Asset",
+						"Loan Price", "Loan Ask", "Loan Bid", "Loan" }, 0 ) {
 
 		    @Override
 		    public boolean isCellEditable(int row, int column) {
@@ -42,10 +42,10 @@ public class TxHistoryTable extends JTable {
 		};
 		
 		TableRowSorter<DefaultTableModel> rowSorter = new TableRowSorter<>( this.tableModel );
-		new TXColumnComparator( 7, rowSorter );
 		new TXColumnComparator( 8, rowSorter );
 		new TXColumnComparator( 9, rowSorter );
 		new TXColumnComparator( 10, rowSorter );
+		new TXColumnComparator( 11, rowSorter );
 		
 		this.setModel( this.tableModel );
 		this.setSelectionMode( ListSelectionModel.SINGLE_SELECTION );
@@ -76,13 +76,14 @@ public class TxHistoryTable extends JTable {
 	
 	public void addTx( Transaction tx ) {
 		/*
-		"TX", 
+		"TX", "Sweeps",
 		"Asker", "Bider", 
-		"Asset Price", "Asset Ask Price", "Asset Bid Price", "Asset Amount",
-		"Loan Price", "Loan Ask Price", "Loan Bid Price", "Loan Amount"
+		"Asset Price", "Asset Ask", "Asset Bid", "Asset",
+		"Loan Price", "Loan Ask", "Loan Bid", "Loan" 
 		*/
 		
 		int txId = tx.getTransNum();
+		int sweepCount = tx.getSweepCount();
 		String askerH = MainWindow.AGENT_H_FORMAT.format( tx.getFinalAskH() );
 		String biderH = MainWindow.AGENT_H_FORMAT.format( tx.getFinalBidH() );
 		String assetAmount = MainWindow.TRADING_VALUES_FORMAT.format( tx.getAssetAmount() );
@@ -106,6 +107,7 @@ public class TxHistoryTable extends JTable {
 
 		this.tableModel.addRow( new Object[] {
 				txId,
+				sweepCount,
 				askerH,
 				biderH,
 				assetPrice,

@@ -111,10 +111,10 @@ public class WealthVisualizer extends JPanel {
 			
 			if ( a instanceof AgentWithLoans ) {
 				AgentWithLoans aLoans = ( AgentWithLoans ) a;
-				double bonds = aLoans.getLoanGiven()[0] - aLoans.getLoanTaken()[0];
 				//double bonds = aLoans.getLoanGiven()[0];
 				double unpledgedAssets = assets - aLoans.getLoanTaken()[0];
-				
+				double bonds = aLoans.getLoanGiven()[0] - aLoans.getLoanTaken()[0];
+						
 				int yBonds = ( int ) ( yHalf - ( yHalf  * ( bonds / Y_ACHSIS_RANGE ) ) );
 				int yUnpledged = ( int ) ( yHalf - ( yHalf  * ( unpledgedAssets / Y_ACHSIS_RANGE ) ) );
 

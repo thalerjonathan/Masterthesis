@@ -118,6 +118,8 @@ public class Auction {
 		
 		while (numRound < MAX_ROUNDS)  {
 			numRound++;
+			transaction.setSweepCount( numRound );
+			
 			Iterator<Agent> agIt = agents.randomIterator( true );
 			
 			// first step: reset offerings of each agent when in first round and then calculate offerings for this round

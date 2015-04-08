@@ -37,7 +37,7 @@
 			
 	=> Weg über Gleichgewichtsfeststellung
 		-> Wenn kein Agent mehr mit einem anderen handeln kann d.h. wenn kein Agent mehr in der Lage ist ein Offer zu machen, das ein andere NACHBAR matchen kann, 
-			dann ist das Gleichgewicht erreicht.
+			dann ist das Gleichgewicht erreicht (aber nicht das Preis-Gleichgewicht)
 		
 	=> Folgende Zustände 
 		1. Cash & Assets vorhanden: handelt beide Märkte (Asset->Cash und Asset->Loan)
@@ -82,8 +82,8 @@
 			d.h. der erwartete wert eines assets berechnet sich für einen agenten mit limitPriceAsset = h*pU + (1-h)*pD
 		-> Agenten versuchen natürlich beim handeln gewinn zu machen, wobei dies natürlich über die wahl eines entsprechenden preises geschieht
 		-> Kauft ein Agent ein Asset, bietet er natürlich WENIGER als den Wert den er annimmt, den das Asset "morgen" wert sein wird - limitPriceAsset - da wenn er mehr bietet einen verlust machen würde:
-			bietet er mehr würde der zustand eintreten auf den er gewettet hat (h), so hätte er für das asset mehr bezahlt als es morgen wert ist und somit hat er einen verlust gemacht
-			somit bietet er für den kauf eines assets immer im Bereich [ pD, limitPriceAsset ], denn so macht er immer einen Gewinn - BASIEREND AUF SEINER UTILITY (die sich nie ändert)!
+			bietet er mehr und würde der zustand eintreten auf den er gewettet hat (h), so hätte er für das asset mehr bezahlt als es morgen wert ist und somit hat er einen verlust gemacht
+			somit bietet er für den kauf eines assets immer im Bereich [ pD, limitPriceAsset ], denn so macht er immer einen erwartetetn Gewinn - BASIEREND AUF SEINER UTILITY (die sich nie ändert)!
 		-> Verkauft ein Agent ein Asset, bietet er natürlich MEHR als limitPriceAsset, da wenn er weniger bietet einen verlust machen würde - siehe analog zum käufer 
 			somit bietet er für den kauf eines assets immer im bereich [ limitPriceAsset, pU ]
 		-> Zwei Angebote (Kauf und Verkauf) treffen sich, wenn der käufer mehr für ein Asset bietet als der Verkäufer dafür haben will. Daraus folgt, dass der Käufer ein höheres h haben muss als der Verkäufer.
@@ -185,8 +185,33 @@
 					das bedeutet, dass die pessimisten immer cash haben, weshalb auch kein bid-offer auf assets-loan passiert
 					aber natürlich gibt es immer eine fixe anzahl an assets im system, sie können also nicht verschwinden, jedoch scheint im falle von ASCNEDING_CONNECTED 
 					mehr assets um 0.6 zentriert zu sein als im falle FULLY_CONNECTED
-			ausserdem bewegt sich die vermögensverteilung hier auch nicht von links nach rechts bzw. rechts nach links sondern entsprechend eines matches, der aber nur lokal ist
+			aufgrund der topologie (nur best-offers aufgrund lokaler informationen und nicht globaler) wandert zwar die vermögesnverteilung auch von links nach rechts
+			d.h. assets wandern zu den optimisten aber nicht global optimal.
 
-
-
+	=> ASSET-LOAN markt:
+		-> auch hier ist der käufer immer optimistischer als der verkäufer d.h. es wird das asset immer von links nach rechts transferiert d.h. die optimisten kaufen assets für bonds
+		-> da aber im ASCENDING_CONNECTED das nur zwischen paaren von nachbarn passiert kann es nicht das gleichgewicht des FULLY_CONNECTED erreichen, da im letzteren
+			die Verbindungen zwischen allen agenten bestehen und somit auch matches zwischen weiter entfernten agenten zustande kommt und da die matchingwahrscheinlichkeit
+			für diese wesentlich höher sind als zwischen nachbarn werden diese auch eher berücksichtigt - die matchingwahrscheinlichkeit liegt daran, dass verkäufer mit niedrigem
+			h "bessere" ask-offers machen, welche andere ask-offers pareto-dominieren (globales offer book) und dass käufer mit höherem h "bessere" bid-offers machen, welche
+			dann andere bid-offers pareto-dominieren, wodurch eher ein match zwischen diesen zustande kommt.
+			-> trotzdem ist aber noch unklar wieso das bei asset-cash bei beiden topologien zu einem gleichgewicht kommt
+				
+				-> Aber: die vermögensverteilung ist etwas anders in beiden fällen wenn man sich die visualisierung ansieht
+					 bei ascending_connected sammelt sich mehr um den marginal buyer (0.6) an d.h. steigt an
+					 bei fully_connected ist es ausgeglichener d.h. steigt kaum an bis zum marginal buyer
 		
+		
+	WICHTIG !!! WICHTIG !!! WICHTIG !!! WICHTIG !!! WICHTIG !!! WICHTIG !!! WICHTIG !!! WICHTIG !!! WICHTIG !!! WICHTIG !!! WICHTIG !!! WICHTIG !!! WICHTIG !!! WICHTIG !!! WICHTIG !!! WICHTIG !!! WICHTIG !!! WICHTIG !!! 
+	WICHTIG !!! WICHTIG !!! WICHTIG !!! WICHTIG !!! WICHTIG !!! WICHTIG !!! WICHTIG !!! WICHTIG !!! WICHTIG !!! WICHTIG !!! WICHTIG !!! WICHTIG !!! WICHTIG !!! WICHTIG !!! WICHTIG !!! WICHTIG !!! WICHTIG !!! WICHTIG !!! 
+	
+	=> Grund wieso Asset-Cash auf beiden Topologien ins gleichgewicht kommt und Asset-Loan bei ASCENDING-CONNECTED nicht ist das fehlen der Bonds Pleggeability BP
+		-> BP existiert bei asset-cash markt ja implizit da gekaufte assets wieder verkauft werden können. bei ascending-topologie ermöglicht dies, 
+			das "wandern" der assets von links nach rechts ohne große distanzen. asset-cash markt konvergiert nämlich sowohl bei ascending- als auch fully-topologie
+		-> bei assets-bonds existiert dies noch nicht d.h. einmal gekaufte assets bleiben "gelocked" d.h. es ist nicht möglich, dass hier kollateralisierte assets wieder freigegeben werden
+			somit kann die asset-vermögesnverteilung auch nicht weiter zu den optimisten wandern!
+			
+		=> Hypothese: asset-loan müsste auch im ASCENDING topologie konvergieren, wenn BP eingebaut wird
+			(vermutung: im FULLY-topologie fall gibt es bei moderaten pessimisten immer wieder kleine ausschläge
+			d.h. die kurve verläuft nicht so sanft, wahrscheinlich behebt dies BP)
+			

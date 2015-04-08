@@ -1,0 +1,67 @@
+Theorie
+Loans sind "Leihgaben", die für einen bestimmen Preis q gekauft werden und einen sogenannten Facevalue V haben. Der Preis q wird beim Kauf "heute" gezahlt und der Facevalue V
+muss "morgen" zurückgezahlt werden. Damit also ein Loan einen Gewinn für den Verkäufer bringt muss q < V sein. Dadurch erleidet zwar der Käufer einen verlust, aber eventuell
+braucht er das Geld "heute", damit er weiter Handeln kann und so seinen Gewinn für "morgen" erhöht. 
+Damit der Verkäufer aber eine Sicherheit hat um nicht eventuell leer auszugehen, muss der käufer eine einheit von asset pro loan den er kauft als sicherheit "abstellen".
+D.h. der Käufer zahlt dem Verkäufer q für den Loan und kollateralisiert 1 Einheit seiner freien Assets als Sicherheit. Kann der Käufer "morgen" den Facevalue V nichtmehr
+zurückzahlen, so muss er diese 1 Einheit von kollateralisiertem Asset an den Verkäufer abgeben. 
+
+Implementierung
+In der Implementierung wird die kollateralisierung direkt gemacht, da es sonst zu kompliziert wird, da zwei handel gekoppelt werden müssen 
+d.h. der Loan verkäufer gibt anstatt dem Cash das Asset. (Siehe Paper Seite 10. 3.2 "Rationale behind the Auction Mechanism" (a) ... ) 
+dies ist im Paper mit dem ABM - Marktmechanismus beschrieben.
+
+Ein Verkäufer und ein Käufer bieten einen offer auf dem "asset-loan" markt an.
+Der Verkäufer verkauft eine bestimmte Mene von Assets für Loans d.h. er gibt loans aus ("Loans Given")
+Der Käufer kauft eine bestimmte Menge von Assets für Loans  d.h. er nimmt Loans ans ("Loans Taken")
+
+Utility-Funktionen
+	Wert eines assets, den ein Agent mit optimismusfaktor h "morgen" erwartet:
+		limitPriceAsset(h) = h*pU + (1-h)*pD
+		ist die summe aus dem wert den der agent dem asset "morgen" im UP zustand zuweist und dem wert den er dem asset "morgen" im DOWN zustand zuweist.
+		dies ist eine lineare funktion d.h. gerade d.h. eine lineare interpolation zwischen [pD, pU] wobei die lineare variable h ist. 
+		So erwartet ein Agent mit größtem pessimismus h=0.0 "morgen" den wert 0.2 für sein Asset: 0*1 + (1-0)*0.2 = 0.2
+		Ein mittlerer optimistischer Agent mit h=0.5 erwartet "morgen" den wert 0.2 für sein Asset: 0.5*1 + (1-0.5)*0.2 = 0.6
+		
+	Wert eines bonds, den ein Agent mit optimismusfaktor h "morgen" erwartet:
+		limitPriceBond(h) = h*j + (1-h)*pD
+		Ist die Summe aus dem wert den der agent für den bond "morgen" im UP zustand zurückzahlen muss bzw. bekommt und dem wert den er "morgen" für den bond im down 
+		zurückzahlen muss bzw. bekommt: im UP-zustand zahlt er den Facevalue, im Down zustand den wert des assets im downzustand.
+		Ein optimist erwartet sich, dass er eher den UP-zustand zurückzahlen muss bzw. zurückbekommt als den down-zustand und schätzt somit den wert des bonds höher ein d.h. er
+		erwartet sich, dass er mehr zurückzahlen muss bzw. mehr zurückbekommt.
+		
+	Verkäufer ziehen einen Asset-Preis p aus dem Bereich [pD, pU] und einen Loan-Preis q aus [0, j] (j ist der Facevalue) solange bis ihre utility >= 0:
+	utility-funktion: p - limitPriceAsset(h) + (p/q) * ( limitPriceBond(h) - q )
+		p - limitPriceAsset(h) ist die utility des reinen asset-preises d.h. wenn dieser negativ ist, so macht der verkäufer laut erwartetem preis einen verlust
+		d.h. er verkauft unter dem wert, den er annimmt, den das asset "morgen" haben wird. Somit muss p größer als limitPriceAsset(h) sein, sonst wird es negativ.
+
+		limitPriceBond(h) - q ist die utility des reinen bond-preises d.h. wenn dieser negativ ist, so macht der verkäufer laut erwartetem bondpreis einen verlust
+		d.h. er verkauft unter dem wert, den er annimmt, den er "morgen" zurück bekommt. hier ist die gleichung "umgekehrt" im vergleich zur reinen utility des asset-preis,
+		da auch die ranges anders sind d.h. um so niedriger der bond-preis, um so höher der gewinn des verkäufers.
+
+	Käufer ziehen einen Asset-Preis p aus dem Bereich [pD, pU] und einen Loan-Preis q aus [0, j] (j ist der Facevalue) solange bis ihre utility positiv ist:
+	utility-funktion: limitPriceAsset(h) - p + (p/q) * ( q - limitPriceBond(h) )
+
+		imitPriceAsset(h) - p ist die utility des reinen asset-preises d.h. wenn dieser negativ ist, so macht der käufer laut erwartetem preis einen verlust
+		d.h. er verkauft unter dem wert, den er annimmt, den das asset "morgen" haben wird. somit darf p maximal den wert limitPriceAsset(h) annehmen, ansonsten wird es negativ.
+
+		q - limitPriceBond(h) ist die utility des reinen bond-preises. der käufer erwartet sich, dass er morgen den erwarteten preis zurückzahlen muss
+		und um dies zu minimieren, so versucht er einen bond-preis zu handeln, der ihm einen gwinn bringt d.h. dass er weniger zurückzahlt als er dafür
+		bezahlt hat.
+		
+	p/q ist die benötigte loan-menge für ein asset bei gegebenen asset- und loan-preisen. wird benötigt um die utility des loans auf die menge von 1 asset zu normalisieren
+
+	somit setzt sich die utility-funktion aus der summe aus der utility des assets und der utility des bonds zusammen wobei die bond-utility skaliert wird, um 
+	auf die asset-menge von 1.0 (bzw. 0.1) zu kommen.
+			
+Somit ergeben sich folgende Parameter für beide Offers:
+Asset-Preis		Der Preis um den das Asset gehandelt wird. 
+				Der Käufer muss >= als der Verkäufer bieten, damit der Verkäufer überhaupt einen Gewinnt macht. Die Annahme ist hier, dass der Käufer den Wert 
+				sowieso höher einschätzt (Wirtschaftstheorie).
+
+Loan-Preis		Der Preis um den der Loan gehandelt wird. 
+				Der Käufer muss <= als der Verkäufer bieten, damit der Verkäufer einen Gewinn macht, denn der Käufer muss "morgen" V zurückzahlen d.h.
+				der Gewinn für den Verkäufer ergibt sich aus V - q d.h. umso kleiner q ist umso größer der Gewinn der Verkäufers und deshalb auch diese Matching-Bedingung.
+				
+Loan-Menge
+Asset-Menge

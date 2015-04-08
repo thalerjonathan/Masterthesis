@@ -1,0 +1,10 @@
+
+
+Asset-Preis		Der Preis um den das Asset gehandelt wird. 
+				Der Käufer muss >= als der Verkäufer bieten, damit der Verkäufer überhaupt einen Gewinnt macht. 
+				Die Annahme ist hier, dass der Käufer den Wert sowieso höher einschätzt (Wirtschaftstheorie).
+
+				Der Käufer bietet im bereich [pD, limitPrice]
+				Der Verkäufer bietet im Bereich [limitPrice, pU]
+				limitPrice ist individuell und abhängig vom optimismusfaktor h: limitPrice = h*pU + (1-h)*pD
+				

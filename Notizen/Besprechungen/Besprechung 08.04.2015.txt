@@ -1,0 +1,37 @@
+Besprechung 08.04.2015
+
+Anwesende Personen:
+Vollbrecht Hans
+Thaler Jonathan
+
+Insgesamt war Hans sehr zufrieden mit den Ergebnissen 
+
+Folgende Weiteren Schritte
+TODO	 CC (=BP) von martin übernehmen
+
+TODO	Eventuell Formeln von Martin zum ABM markt übernehmen
+	-> er hat keine pareto-front sondern einen einzigen wert, dadurch viel performanter, da keine liste iteriert werden muss
+
+TODO	Loan-Cash Markt aktivieren
+
+TODO	Einschränkung aufheben, dass Asset-Loans erst gehandlet werden dürfen, wenn kein Cash mehr vorhanden
+
+OK		Simulatives Zeigen, dass ohne BP bei ASCENDING zu keinem gleichgewicht kommt, reicht aus
+
+TODO	eventuell noch Martins simulator als benchmark hernehmen um eine unabhängige validierung meiner ergebnisse zu haben
+
+TODO	"optimierung"
+	-> anpassung an die nachbar limitprices, aber nicht deterministisch sondern auch zufällig. somit kommt es mit höherer wahrscheinlichkeit zu matches
+		zwischen ascending-nachbaren. ABER: dann keine reinen zero-intelligence agents.
+		mit 1/10 diese optimierung machen und dann untersuchen
+		
+TODO	experimente definieren und beobachten
+	-> FULLY_CONNECTED und ASCENDING_CONNECTED OHNE BP miteinander vergleichen
+	-> FULLY_CONNECTED und ASCENDING_CONNECTED MIT BP miteinander vergleichen
+	-> ?
+	
+Noch Zeigen:
+	-> es gibt keine blockierenden situationen mehr trotz topologien
+	-> wie sieht eine vermögensverteilung dann mit BP aus wo 2 nachbarn garnixmehr miteinander machen können
+	
+- Ab Mai beginnen mit schreiben um für ein gefühl bekommen wie wir beide zusammen kommen d.h. wie ich mit dem schreiben vorankomme und was hans von mir verlangt
