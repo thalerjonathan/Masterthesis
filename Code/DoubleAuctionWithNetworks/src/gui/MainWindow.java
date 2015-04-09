@@ -63,7 +63,6 @@ import agents.network.AgentConnection;
 import agents.network.AgentNetwork;
 import doubleAuction.Auction;
 import doubleAuction.Auction.MatchingType;
-import doubleAuction.AuctionWithLoans;
 import doubleAuction.offer.AskOffering;
 import doubleAuction.offer.BidOffering;
 import doubleAuction.tx.Transaction;
@@ -830,15 +829,7 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 			this.pauseButton.setSelected( true );
 			this.pauseButton.setEnabled( true );
 			
-			Auction auction = null;
-			
-			if ( MainWindow.this.assetLoanMarketCheck.isSelected() ) {
-				auction = new AuctionWithLoans( this.agents, this.asset );
-				
-			} else {
-				auction = new Auction( this.agents, this.asset );
-			}
-
+			Auction auction = new Auction( this.agents, this.asset );
 			auction.init();
 			
 			// let simulation run in a separate thread to prevent blocking of gui

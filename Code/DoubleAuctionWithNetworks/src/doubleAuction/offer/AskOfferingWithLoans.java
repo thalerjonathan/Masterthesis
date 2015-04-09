@@ -1,6 +1,6 @@
 package doubleAuction.offer;
 
-import doubleAuction.AuctionWithLoans;
+import doubleAuction.Auction;
 import agents.Agent;
 
 public class AskOfferingWithLoans extends AskOffering {
@@ -19,7 +19,7 @@ public class AskOfferingWithLoans extends AskOffering {
 		this.loanType = loanType;
 		this.loanPromise = loanPromise;
 		this.loanAmount = loanAmount;
-		this.NUMMARKETS = AuctionWithLoans.NUMMARKETS;
+		this.NUMMARKETS = Auction.NUMMARKETS;
 	}
 
 	public AskOfferingWithLoans( double assetPrice, double loanPrice, 
@@ -29,7 +29,7 @@ public class AskOfferingWithLoans extends AskOffering {
 		this.loanType = loanType;
 		this.loanPromise = loanPromise;
 		this.loanAmount = loanAmount;
-		this.NUMMARKETS = AuctionWithLoans.NUMMARKETS;
+		this.NUMMARKETS = Auction.NUMMARKETS;
 	}
 
 	public double getLoanPrice() {

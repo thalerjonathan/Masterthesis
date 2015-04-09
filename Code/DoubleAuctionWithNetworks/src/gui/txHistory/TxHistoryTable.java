@@ -12,7 +12,6 @@ import javax.swing.table.TableRowSorter;
 import doubleAuction.offer.AskOfferingWithLoans;
 import doubleAuction.offer.BidOfferingWithLoans;
 import doubleAuction.tx.Transaction;
-import doubleAuction.tx.TransactionWithLoans;
 
 @SuppressWarnings("serial")
 public class TxHistoryTable extends JTable {
@@ -96,13 +95,13 @@ public class TxHistoryTable extends JTable {
 		String loanBidPrice = "-";
 		
 		if ( tx.getMatchingAskOffer() instanceof AskOfferingWithLoans ) {
-			loanAmount = MainWindow.TRADING_VALUES_FORMAT.format( ( ( TransactionWithLoans ) tx ).getLoanAmount() );
-			loanPrice = MainWindow.TRADING_VALUES_FORMAT.format( ( ( TransactionWithLoans ) tx ).getLoanPrice() );
-			loanAskPrice = MainWindow.TRADING_VALUES_FORMAT.format( ( ( TransactionWithLoans ) tx ).getFinalAskLoanPrice() );
+			loanAmount = MainWindow.TRADING_VALUES_FORMAT.format( tx.getLoanAmount() );
+			loanPrice = MainWindow.TRADING_VALUES_FORMAT.format( tx.getLoanPrice() );
+			loanAskPrice = MainWindow.TRADING_VALUES_FORMAT.format( tx.getFinalAskLoanPrice() );
 		}
 		
 		if ( tx.getMatchingBidOffer() instanceof BidOfferingWithLoans ) {
-			loanBidPrice = MainWindow.TRADING_VALUES_FORMAT.format( ( ( TransactionWithLoans ) tx ).getFinalBidLoanPrice() );
+			loanBidPrice = MainWindow.TRADING_VALUES_FORMAT.format( tx.getFinalBidLoanPrice() );
 		}
 
 		this.tableModel.addRow( new Object[] {

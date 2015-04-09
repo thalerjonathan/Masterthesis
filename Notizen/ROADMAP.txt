@@ -83,10 +83,17 @@ Zeitpunkte
 		-> OK		Klarheit wieso konvergenz bei Asset-Cash in beiden Topologien aber Asset-Loan nur bei FULLY_CONNECTED gegeben ist
 		-> OK		TX-Controls Buttons besser layouten, diverse refaktorisierungen
 		
+		-> TODO		Refactoring:
+					OK	Transaction & TransactionWithLoans zusammenführen
+					OK	Auction & AuctionWithLoans zusammenführen
+					- unnötige variablen raushauen
+					- globale variablen raushauen
+					- ABM, LOAN/CASH und BP schalter in den agent hineintragen
+					
 		-> TODO		Einschränkung aufheben, dass Asset-Loans erst gehandelt werden dürfen, wenn kein Cash mehr vorhanden
 		-> TODO		Loan-Cash Markt aktivieren und funktionierbar bekommen
 		-> TODO		BP (=CC von martin) einbauen
-		-> TODO		Formeln zu ABM und loan-Cash von martin übernehmen um pareto-front wegzubekommen
+		-> TODO		Formeln zu ABM und loan-Cash von martin übernehmen um pareto-front wegzubekommen => keine liste mehr pro markt, nurmehr ein ask/bid 
 		-> TODO		Optimieren von Matchingwahrscheinlichkeiten
 				anpassung an die nachbar limitprices, aber nicht deterministisch sondern auch zufällig ( mit 1/10 diese optimierung machen und dann untersuchen). 
 				somit kommt es mit höherer wahrscheinlichkeit zu matches zwischen ascending-nachbaren. ABER: dann keine reinen zero-intelligence agents.
