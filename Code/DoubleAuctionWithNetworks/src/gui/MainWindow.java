@@ -79,7 +79,11 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 	private Loans loans;
 	
 	private JCheckBox keepSuccTXHighCheck;
-	private JCheckBox cashAssetOnlyCheck;
+	
+	private JCheckBox assetLoanMarketCheck;
+	private JCheckBox loanCashMarketCheck;
+	private JCheckBox bpMechanismCheck;
+	
 	private JCheckBox keepAgentHistoryCheck;
 	
 	private JButton simulateButton;
@@ -262,18 +266,21 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 			}
 		});
 		
-		this.cashAssetOnlyCheck = new JCheckBox( "Cash-Asset Market Only" );
-		this.cashAssetOnlyCheck.setSelected( false );
-		this.cashAssetOnlyCheck.addActionListener( this );
-		
+		this.assetLoanMarketCheck = new JCheckBox( "Asset/Loan Market" );
+		this.loanCashMarketCheck = new JCheckBox( "Loan/Cash Market" );
+		this.bpMechanismCheck = new JCheckBox( "Bonds Pledgeability" );
 		this.keepAgentHistoryCheck = new JCheckBox( "Keep Agent History" );
-		
+
 		this.txHistoryTable = new TxHistoryTable();
 		JScrollPane txHistoryScrollPane = new JScrollPane( this.txHistoryTable );
 		txHistoryScrollPane.setVerticalScrollBarPolicy( JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED );
 		txHistoryScrollPane.setHorizontalScrollBarPolicy( JScrollPane.HORIZONTAL_SCROLLBAR_NEVER );
 		
 		// setting properties of components ////////////////////////////////////
+		this.assetLoanMarketCheck.setSelected( true );
+		this.loanCashMarketCheck.setSelected( true );
+		this.bpMechanismCheck.setSelected( true );
+		
 		this.nextTxButton.setEnabled( false );
 		this.advance10TxButton.setEnabled( false );
 		this.advance100TxButton.setEnabled( false );
@@ -402,7 +409,9 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 		controlsPanel.add( this.agentCountSpinner );
 		controlsPanel.add( this.topologySelection );
 		controlsPanel.add( this.simulateButton );
-		controlsPanel.add( this.cashAssetOnlyCheck );
+		controlsPanel.add( this.assetLoanMarketCheck );
+		controlsPanel.add( this.loanCashMarketCheck );
+		controlsPanel.add( this.bpMechanismCheck );		
 		controlsPanel.add( this.keepAgentHistoryCheck );
 		
 		networkVisControlsPanel.add( this.recreateButton );
@@ -608,10 +617,11 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 						optimism = agentArea / totalArea;
 					}
 					
-					if ( MainWindow.this.cashAssetOnlyCheck.isSelected() ) {
-						a = new Agent( i, optimism, consumEndow, assetEndow, asset );
-					} else {
+					if ( MainWindow.this.assetLoanMarketCheck.isSelected() ) {
 						a = new AgentWithLoans( this.i, optimism, consumEndow, assetEndow, loans, asset );
+						
+					} else {
+						a = new Agent( i, optimism, consumEndow, assetEndow, asset );
 					}
 					
 					this.i++;
@@ -797,7 +807,9 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 			this.topologySelection.setEnabled( false );
 			this.optimismSelection.setEnabled( false );
 			this.recreateButton.setEnabled( false );
-			this.cashAssetOnlyCheck.setEnabled( false );
+			this.assetLoanMarketCheck.setEnabled( false );
+			this.loanCashMarketCheck.setEnabled( false );
+			this.bpMechanismCheck.setEnabled( false );
 			this.keepAgentHistoryCheck.setEnabled( false );
 			
 			// reset controls
@@ -820,10 +832,11 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 			
 			Auction auction = null;
 			
-			if ( this.cashAssetOnlyCheck.isSelected() ) {
-				auction = new Auction( this.agents, this.asset );
-			} else {
+			if ( MainWindow.this.assetLoanMarketCheck.isSelected() ) {
 				auction = new AuctionWithLoans( this.agents, this.asset );
+				
+			} else {
+				auction = new Auction( this.agents, this.asset );
 			}
 
 			auction.init();
@@ -854,7 +867,9 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 			this.topologySelection.setEnabled( true );
 			this.optimismSelection.setEnabled( true );
 			this.recreateButton.setEnabled( true );
-			this.cashAssetOnlyCheck.setEnabled( true );
+			this.assetLoanMarketCheck.setEnabled( true );
+			this.loanCashMarketCheck.setEnabled( true );
+			this.bpMechanismCheck.setEnabled( true );
 			this.keepAgentHistoryCheck.setEnabled( true );
 			
 		}
