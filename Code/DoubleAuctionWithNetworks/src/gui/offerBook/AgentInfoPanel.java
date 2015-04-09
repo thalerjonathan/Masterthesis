@@ -9,7 +9,6 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import agents.Agent;
-import agents.AgentWithLoans;
 
 @SuppressWarnings("serial")
 public class AgentInfoPanel extends JPanel {
@@ -36,37 +35,35 @@ public class AgentInfoPanel extends JPanel {
 		this.assetEndowLabel.setText( MainWindow.TRADING_VALUES_FORMAT.format( a.getAssetEndow() ) );
 		this.expectedAssetPriceLabel.setText( MainWindow.TRADING_VALUES_FORMAT.format( a.getLimitPriceAsset() ) );
 
-		if ( a instanceof AgentWithLoans ) {
-			this.freeAssetEndowLabel.setText( MainWindow.TRADING_VALUES_FORMAT.format( ( ( AgentWithLoans ) a ).getFreeAssetEndow() ) );
+		this.freeAssetEndowLabel.setText( MainWindow.TRADING_VALUES_FORMAT.format( a.getFreeAssetEndow() ) );
 			
-			double[] val = ( ( AgentWithLoans ) a ).getLimitPricesLoansBuy();
-			String str = "";
-			for ( double v : val ) {
-				str += MainWindow.TRADING_VALUES_FORMAT.format( v ) + " ";
-			}
-			this.expectedLoansBuyLabel.setText( str );
-			
-			val = ( ( AgentWithLoans ) a ).getLimitPricesLoansSell();
-			str = "";
-			for ( double v : val ) {
-				str += MainWindow.TRADING_VALUES_FORMAT.format( v ) + " ";
-			}
-			this.expectedLoansSellLabel.setText( str );
-			
-			val = ( ( AgentWithLoans ) a ).getLoanGiven();
-			str = "";
-			for ( double v : val ) {
-				str += MainWindow.TRADING_VALUES_FORMAT.format( v ) + " ";
-			}
-			this.loansGivenLabel.setText( str );
-			
-			val = ( ( AgentWithLoans ) a ).getLoanTaken();
-			str = "";
-			for ( double v : val ) {
-				str += MainWindow.TRADING_VALUES_FORMAT.format( v ) + " ";
-			}
-			this.loansTakenLabel.setText( str );
+		double[] val = a.getLimitPricesLoansBuy();
+		String str = "";
+		for ( double v : val ) {
+			str += MainWindow.TRADING_VALUES_FORMAT.format( v ) + " ";
 		}
+		this.expectedLoansBuyLabel.setText( str );
+		
+		val = a.getLimitPricesLoansSell();
+		str = "";
+		for ( double v : val ) {
+			str += MainWindow.TRADING_VALUES_FORMAT.format( v ) + " ";
+		}
+		this.expectedLoansSellLabel.setText( str );
+		
+		val = a.getLoanGiven();
+		str = "";
+		for ( double v : val ) {
+			str += MainWindow.TRADING_VALUES_FORMAT.format( v ) + " ";
+		}
+		this.loansGivenLabel.setText( str );
+		
+		val = a.getLoanTaken();
+		str = "";
+		for ( double v : val ) {
+			str += MainWindow.TRADING_VALUES_FORMAT.format( v ) + " ";
+		}
+		this.loansTakenLabel.setText( str );
 	}
 	
 	private void createControls() {

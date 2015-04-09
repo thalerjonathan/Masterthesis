@@ -55,7 +55,6 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
 import agents.Agent;
-import agents.AgentWithLoans;
 import agents.IAgentFactory;
 import agents.markets.Asset;
 import agents.markets.Loans;
@@ -616,13 +615,8 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 						optimism = agentArea / totalArea;
 					}
 					
-					if ( MainWindow.this.assetLoanMarketCheck.isSelected() ) {
-						a = new AgentWithLoans( this.i, optimism, consumEndow, assetEndow, loans, asset );
-						
-					} else {
-						a = new Agent( i, optimism, consumEndow, assetEndow, asset );
-					}
-					
+					a = new Agent( i, optimism, consumEndow, assetEndow, asset, loans );
+
 					this.i++;
 				}
 				

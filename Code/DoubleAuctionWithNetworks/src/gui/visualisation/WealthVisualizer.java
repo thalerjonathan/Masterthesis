@@ -10,7 +10,6 @@ import java.util.List;
 import javax.swing.JPanel;
 
 import agents.Agent;
-import agents.AgentWithLoans;
 
 @SuppressWarnings("serial")
 public class WealthVisualizer extends JPanel {
@@ -94,11 +93,16 @@ public class WealthVisualizer extends JPanel {
 			double cash = a.getConumEndow();
 			double assets = a.getAssetEndow();
 			double optimism = a.getH();
-			
+			//double bonds = aLoans.getLoanGiven()[0];
+			double unpledgedAssets = assets - a.getLoanTaken()[0];
+			double bonds = a.getLoanGiven()[0] - a.getLoanTaken()[0];
+
 			int x = ( int ) ( width * optimism ) + SCALA_WIDTH;
 			int yCash = ( int ) ( yHalf - ( yHalf  * ( cash / Y_ACHSIS_RANGE ) ) );
 			int yAssets = ( int ) ( yHalf - ( yHalf  * ( assets / Y_ACHSIS_RANGE ) ) );
-			
+			int yBonds = ( int ) ( yHalf - ( yHalf  * ( bonds / Y_ACHSIS_RANGE ) ) );
+			int yUnpledged = ( int ) ( yHalf - ( yHalf  * ( unpledgedAssets / Y_ACHSIS_RANGE ) ) );
+
 			g.setColor( Color.BLUE );
 			if ( i > 0 )
 				g.drawLine( lastX, lastYCash, x, yCash );
@@ -108,33 +112,23 @@ public class WealthVisualizer extends JPanel {
 			if ( i > 0 )
 				g.drawLine( lastX, lastYAsset, x, yAssets );
 			g.fillOval( x - POINT_RADIUS, yAssets - POINT_RADIUS, POINT_DIAMETER, POINT_DIAMETER );
-			
-			if ( a instanceof AgentWithLoans ) {
-				AgentWithLoans aLoans = ( AgentWithLoans ) a;
-				//double bonds = aLoans.getLoanGiven()[0];
-				double unpledgedAssets = assets - aLoans.getLoanTaken()[0];
-				double bonds = aLoans.getLoanGiven()[0] - aLoans.getLoanTaken()[0];
-						
-				int yBonds = ( int ) ( yHalf - ( yHalf  * ( bonds / Y_ACHSIS_RANGE ) ) );
-				int yUnpledged = ( int ) ( yHalf - ( yHalf  * ( unpledgedAssets / Y_ACHSIS_RANGE ) ) );
 
-				g.setColor( Color.RED );
-				if ( i > 0 )
-					g.drawLine( lastX, lastYBonds, x, yBonds );
-				g.fillOval( x - POINT_RADIUS, yBonds - POINT_RADIUS, POINT_DIAMETER, POINT_DIAMETER );
-				
-				g.setColor( DARK_GREEN );
-				if ( i > 0 )
-					g.drawLine( lastX, lastYUnpledged, x, yUnpledged );
-				g.fillOval( x - POINT_RADIUS, yUnpledged - POINT_RADIUS, POINT_DIAMETER, POINT_DIAMETER );
-				
-				lastYBonds = yBonds;
-				lastYUnpledged = yUnpledged;
-			}
+			g.setColor( Color.RED );
+			if ( i > 0 )
+				g.drawLine( lastX, lastYBonds, x, yBonds );
+			g.fillOval( x - POINT_RADIUS, yBonds - POINT_RADIUS, POINT_DIAMETER, POINT_DIAMETER );
 			
-			lastX = x;
+			g.setColor( DARK_GREEN );
+			if ( i > 0 )
+				g.drawLine( lastX, lastYUnpledged, x, yUnpledged );
+			g.fillOval( x - POINT_RADIUS, yUnpledged - POINT_RADIUS, POINT_DIAMETER, POINT_DIAMETER );
+			
 			lastYCash = yCash;
 			lastYAsset = yAssets;
+			lastYBonds = yBonds;
+			lastYUnpledged = yUnpledged;
+			
+			lastX = x;
 		}
 
 		// draw legend-box

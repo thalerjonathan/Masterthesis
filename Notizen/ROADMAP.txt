@@ -86,6 +86,8 @@ Zeitpunkte
 		-> TODO		Refactoring:
 					OK	Transaction & TransactionWithLoans zusammenführen
 					OK	Auction & AuctionWithLoans zusammenführen
+					OK 	Agent & AgentWithLoans zusammenführen
+					- *Offers & *OffersWithLoans zusammenführen
 					- unnötige variablen raushauen
 					- globale variablen raushauen
 					- ABM, LOAN/CASH und BP schalter in den agent hineintragen
