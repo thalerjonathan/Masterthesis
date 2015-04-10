@@ -1,21 +1,19 @@
 package doubleAuction.offer;
-import doubleAuction.Auction;
+
 import agents.Agent;
 
 public class AskOffering extends Offering {
 
 	// ASK-Offer is SELLING (asking for a price for a good) 
-	public AskOffering(double assetPrice, double assetAmount, Agent agent, int market, MarketType marketType)  {
+	public AskOffering(double assetPrice, double assetAmount, Agent agent, MarketType marketType)  {
 		this.assetAmount = assetAmount;
 		this.assetPrice = assetPrice;
 		this.agent = agent;
-		this.market = market;  //1+NUMLOANS asset markets (asset for cash and asset for loan type j) + NUMLOANS loan markets
-		this.marketType = marketType;//0:assets against cash; 1:assets against loans; 2: loans
-		this.NUMMARKETS = Auction.NUMMARKETS;
+		this.marketType = marketType;
 	}
 	
-	public AskOffering(double assetPrice, Agent agent, int market, MarketType marketType)  {
-		this( assetPrice, Agent.UNIT, agent,  market, marketType);
+	public AskOffering(double assetPrice, Agent agent, MarketType marketType)  {
+		this( assetPrice, Agent.UNIT, agent,  marketType);
 	}
 	
 	public boolean matches(BidOffering offer)  {

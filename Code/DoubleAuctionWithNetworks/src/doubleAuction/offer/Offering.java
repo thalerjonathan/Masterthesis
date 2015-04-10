@@ -4,7 +4,6 @@ import agents.Agent;
 public abstract class Offering {
 	
 	//abstract super class for both ask and bid offerings
-	protected int market;
 	protected MarketType marketType;
 	protected int NUMMARKETS;
 	protected double assetPrice;
@@ -22,14 +21,6 @@ public abstract class Offering {
 
 	public Agent getAgent() {
 		return agent;
-	}
-
-	public int getMarket() {
-		return market;
-	}
-
-	public void setMarket(int market) {
-		this.market = market;
 	}
 
 	public MarketType getMarketType() {

@@ -56,8 +56,7 @@ import javax.swing.event.ListSelectionListener;
 
 import agents.Agent;
 import agents.IAgentFactory;
-import agents.markets.Asset;
-import agents.markets.Loans;
+import agents.markets.Markets;
 import agents.network.AgentConnection;
 import agents.network.AgentNetwork;
 import doubleAuction.Auction;
@@ -73,8 +72,7 @@ import edu.uci.ics.jung.algorithms.layout.Layout;
 public class MainWindow extends JFrame implements ActionListener, ChangeListener {
 	
 	private AgentNetwork agents;
-	private Asset asset;
-	private Loans loans;
+	private Markets markets;
 	
 	private JCheckBox keepSuccTXHighCheck;
 	
@@ -132,8 +130,10 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 	private static final int AGENTS_COUNT_HIDE_NETWORK_PANEL = 51;
 	private static final int REPAINT_WEALTH_WHENRUNNING_INTERVAL = 1000;
 	
-	public MainWindow() {
+	public MainWindow( Markets markets ) {
 		super("Continuous Double-Auctions");
+		
+		this.markets = markets;
 		
 		this.successfulTx = new ArrayList<Transaction>();
 		
@@ -573,18 +573,10 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 	}
 
 	private void createAgents() {
-		double assetPrice = 0.6;
-		double consumEndow = 1.0;
-		double assetEndow = 1.0;
 		int agentCount = (int) this.agentCountSpinner.getValue();
 		int optimismFunctionIndex = this.optimismSelection.getSelectedIndex();
-		
-		double[] J = new double[] { 0.2 };
-		double[] initialLoanPrices = new double[] { 0.2 };
-		
-		// create asset-market
-		this.asset = new Asset( assetPrice, agentCount * assetEndow );
-		this.loans = new Loans( initialLoanPrices, J);
+		double consumEndow = 1.0;
+		double assetEndow = 1.0;
 		
 		// create agent-factory
 		IAgentFactory agentFactory = new IAgentFactory() {
@@ -615,7 +607,7 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 						optimism = agentArea / totalArea;
 					}
 					
-					a = new Agent( i, optimism, consumEndow, assetEndow, asset, loans );
+					a = new Agent( i, optimism, consumEndow, assetEndow, markets );
 
 					this.i++;
 				}
@@ -823,8 +815,7 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 			this.pauseButton.setSelected( true );
 			this.pauseButton.setEnabled( true );
 			
-			Auction auction = new Auction( this.agents, this.asset );
-			auction.init();
+			Auction auction = new Auction( this.agents, this.markets );
 			
 			// let simulation run in a separate thread to prevent blocking of gui
 			this.simulationThread = new SimulationThread( auction, this );

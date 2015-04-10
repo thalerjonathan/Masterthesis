@@ -94,8 +94,8 @@ public class WealthVisualizer extends JPanel {
 			double assets = a.getAssetEndow();
 			double optimism = a.getH();
 			//double bonds = aLoans.getLoanGiven()[0];
-			double unpledgedAssets = assets - a.getLoanTaken()[0];
-			double bonds = a.getLoanGiven()[0] - a.getLoanTaken()[0];
+			double unpledgedAssets = assets - a.getLoanTaken();
+			double bonds = a.getLoanGiven() - a.getLoanTaken();
 
 			int x = ( int ) ( width * optimism ) + SCALA_WIDTH;
 			int yCash = ( int ) ( yHalf - ( yHalf  * ( cash / Y_ACHSIS_RANGE ) ) );

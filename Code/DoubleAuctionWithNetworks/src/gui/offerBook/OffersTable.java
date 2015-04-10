@@ -24,13 +24,13 @@ public class OffersTable extends JTable {
 	public OffersTable( MarketType marketType ) {
 		Object[] columns = COLUMN_LABELS_ASSETCASH;
 		
-		if ( MarketType.ASSET_AGAINST_CASH == marketType ) {
+		if ( MarketType.ASSET_CASH == marketType ) {
 			columns = COLUMN_LABELS_ASSETCASH;
 			
-		} else if ( MarketType.ASSET_AGAINST_LOAN == marketType ) {
+		} else if ( MarketType.ASSET_LOAN == marketType ) {
 			columns = COLUMN_LABELS_ASSETLOANS;
 			
-		} else if ( MarketType.LOAN_AGAINST_CASH == marketType ) {
+		} else if ( MarketType.LOAN_CASH == marketType ) {
 			columns = COLUMN_LABELS_LOANS;
 		}
 		

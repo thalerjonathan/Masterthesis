@@ -36,34 +36,11 @@ public class AgentInfoPanel extends JPanel {
 		this.expectedAssetPriceLabel.setText( MainWindow.TRADING_VALUES_FORMAT.format( a.getLimitPriceAsset() ) );
 
 		this.freeAssetEndowLabel.setText( MainWindow.TRADING_VALUES_FORMAT.format( a.getFreeAssetEndow() ) );
-			
-		double[] val = a.getLimitPricesLoansBuy();
-		String str = "";
-		for ( double v : val ) {
-			str += MainWindow.TRADING_VALUES_FORMAT.format( v ) + " ";
-		}
-		this.expectedLoansBuyLabel.setText( str );
 		
-		val = a.getLimitPricesLoansSell();
-		str = "";
-		for ( double v : val ) {
-			str += MainWindow.TRADING_VALUES_FORMAT.format( v ) + " ";
-		}
-		this.expectedLoansSellLabel.setText( str );
-		
-		val = a.getLoanGiven();
-		str = "";
-		for ( double v : val ) {
-			str += MainWindow.TRADING_VALUES_FORMAT.format( v ) + " ";
-		}
-		this.loansGivenLabel.setText( str );
-		
-		val = a.getLoanTaken();
-		str = "";
-		for ( double v : val ) {
-			str += MainWindow.TRADING_VALUES_FORMAT.format( v ) + " ";
-		}
-		this.loansTakenLabel.setText( str );
+		this.expectedLoansBuyLabel.setText( MainWindow.TRADING_VALUES_FORMAT.format( a.getLimitPriceLoansBuy() ) );
+		this.expectedLoansSellLabel.setText( MainWindow.TRADING_VALUES_FORMAT.format( a.getLimitPriceLoansSell() ) );
+		this.loansGivenLabel.setText( MainWindow.TRADING_VALUES_FORMAT.format( a.getLoanGiven() ) );
+		this.loansTakenLabel.setText( MainWindow.TRADING_VALUES_FORMAT.format( a.getLoanTaken() ) );
 	}
 	
 	private void createControls() {

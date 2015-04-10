@@ -4,44 +4,46 @@ package agents.markets;
 public class Asset {
 	// current price
 	protected double p = 0;
-   // price when market moves UP
-   protected double pU = 1;
-   // price when market moves DOWN
-   protected double pD = 0.2;
-   // minimal price, won't fall below
-   protected double pMin = pD;
-   // price ranges
-   protected double[] pMax = {pU,pU};
-   // TODO: ?
-   protected double[] priceLag;
-   // TODO: ?
-   protected int lagCount = 0;
-   protected double MAXPRICE = 1;
-   protected double PRECISION = 0;
-   protected double STARTSTEPSIZE = 0.01;
-   protected double stepSize = 0.01;
-   protected double lastStepSize = 0.01;
-   protected double MAXASSETS = 0;
-   protected int LAGSIZE = 10;
+	// price when market moves UP
+	protected double pU = 1;
+	// price when market moves DOWN
+	protected double pD = 0.2;
+	// minimal price, won't fall below
+	protected double pMin = pD;
+	// price ranges
+	protected double[] pMax = {pU,pU};
+	// TODO: ?
+	protected double[] priceLag;
+	// TODO: ?
+	protected int lagCount = 0;
+	protected double MAXPRICE = 1;
+	protected double PRECISION = 0;
+	protected double STARTSTEPSIZE = 0.01;
+	protected double stepSize = 0.01;
+	protected double lastStepSize = 0.01;
+	protected int LAGSIZE = 10;
 
-   public Asset(double p, double maxassets)  {
+   public Asset(double p)  {
 	   this.p = p;
-	   MAXASSETS = maxassets;
 	   priceLag = new double[LAGSIZE];
    }
    
+   /*
 	public void setStepsize(double stepSize) {
 		lastStepSize = this.stepSize;
 		this.stepSize = stepSize;
 	}
 	
+	
 	public void resetStepsize() {
 		this.stepSize = STARTSTEPSIZE;
 	}
 	
+	
 	public void resetStepsizeToLast() {
-//		stepSize = lastStepSize;
+		stepSize = lastStepSize;
 	}
+	*/
 	
 	public double getStepsize() {
 		return stepSize;
@@ -51,13 +53,11 @@ public class Asset {
 	   return p;
    }
    
+   /*
    public void setP(double price)  {
 	   p = price;
    }
-   
-   public double getMAXASSETS()  {
-	   return MAXASSETS;
-   }
+   */
    
    public double getPU() {
 	   return pU;
@@ -71,9 +71,11 @@ public class Asset {
 		return pMin;
 	}
 	
+	/*
 	public void setPMin(double pMin) {
 		this.pMin = pMin;
 	}
+	
 	
 	public double[] getPMax() {
 		return pMax;
@@ -82,6 +84,7 @@ public class Asset {
 	public void setPMax(double[] pMax) {
 		this.pMax = pMax;
 	}
+	*/
 	
 	public void updatePrice(double assetPrice) {
 		if (lagCount >= LAGSIZE) {

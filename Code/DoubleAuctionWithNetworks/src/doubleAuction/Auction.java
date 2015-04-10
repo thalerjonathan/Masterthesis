@@ -4,24 +4,17 @@ import java.util.Iterator;
 import java.util.List;
 
 import agents.Agent;
-import agents.markets.Asset;
-import agents.markets.Loans;
+import agents.markets.Markets;
 import agents.network.AgentNetwork;
 import doubleAuction.offer.Offering;
 import doubleAuction.tx.Transaction;
 
 public class Auction {
-	public static int NUMMARKETS;
-	public static int NUMMARKETTYPES;
-	private int num_trans; 
+	private int numTrans;
 	
-	private double[] initialLoanPrices;
-	private double[] J;
-	private Loans loanMarket;
-
 	private AgentNetwork agents;
-	private Asset asset;
-
+	private Markets markets;
+	
 	private final static int MAX_SWEEPS = 500;
 	
 	public enum MatchingType {
@@ -30,21 +23,16 @@ public class Auction {
 		RANDOM_NEIGHOUR;
 	}
 
-	public Auction( AgentNetwork agents, Asset asset ) {
+	public Auction( AgentNetwork agents, Markets markets ) {
 		this.agents = agents;
-		this.asset = asset;
+		this.markets = markets;
 		
-		this.num_trans = 1;
-	}
-	
-	public void init() {
-		initializeMarkets();
-		initializeAgents();
+		this.numTrans = 1;
 	}
 	
 	public Transaction executeSingleTransactionByType( MatchingType type, boolean keepAgentHistory )  {
 		int sweep = 1;
-		Transaction transaction = new Transaction( this );
+		Transaction transaction = new Transaction( this.markets );
 		
 		while ( sweep < Auction.MAX_SWEEPS )  {
 			transaction.setSweepCount( sweep );
@@ -63,14 +51,6 @@ public class Auction {
 		}
 		
 		return transaction;
-	}
-	
-	public Asset getAsset() {
-		return asset;
-	}
-	
-	public Loans getLoanMarket() {
-		return loanMarket;
 	}
 	
 	private void makeOfferings( int numRound ) {
@@ -120,7 +100,7 @@ public class Auction {
 				// won't calculate a new offering, this is only done once in each round
 				if ( a.execTransaction( match, true ) )  {
 					transaction.matched( match );
-					transaction.setTransNum(num_trans++);
+					transaction.setTransNum(this.numTrans++);
 					
 					List<Agent> finalAgents = null;
 					
@@ -161,7 +141,7 @@ public class Auction {
 	}
 	
 	private boolean canTrade( Agent a1, Agent a2 ) {
-		for ( int i = 0; i < NUMMARKETS; ++i ) {
+		for ( int i = 0; i < Markets.NUMMARKETS; ++i ) {
 			// asume neighbour has higher H => must be the buyer
 			int sellerOfferingsCount = a1.getBestAskOfferings().get( i ).size();
 			int buyerOfferingsCount = a2.getBestBidOfferings().get( i ).size();
@@ -182,51 +162,4 @@ public class Auction {
 		
 		return false;
 	}
-	
-	private void initializeMarkets()  {
-		//assets
-		//initialAssetprice = 0.6;
-		
-		//1. initialize asset market
-		// TODO: Agent.NUM_AGENTS*assetEndow will always be 0 because assetEndow is 0
-		//asset = new Asset(initialAssetprice, Agent.NUM_AGENTS*assetEndow);
-
-		//2. set NUMMARKETS: one market - assets for cash
-		
-		NUMMARKETS = 1;
-		NUMMARKETTYPES = 1;
-		
-		//loans
-//		J = new double[] {0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.6, 0.7, 0.8, 0.9};
-		J = new double[] {0.2};
-//    	J = new double[] {0.1};
-		//	    	initialLoanPrices = new double[] { 0.3, 0.34, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2};
-		//	    	initialLoanPrices = new double[] {0.199999, 0.234499};
-		//	    	initialLoanPrices = new double[] {0.2, 0.25};
-//		initialLoanPrices = new double[] {0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.6, 0.7, 0.8, 0.9};
-		//	    	initialLoanPrices = new double[] {0.025, 0.5, 0.075, 0.1, 0.125, 0.15, 0.175, 0.2, 0.225, 0.25, 0.3, 0.35, 0.4, 0.45};
-    	initialLoanPrices = new double[] {0.2};
-
-		//assets
-		//initialAssetprice = 0.6;
-		
-		//1. initialize asset market
-		//asset = new Asset(initialAssetprice, Agent.NUM_AGENTS*assetEndow);
-
-		//2. initialize loan market
-		loanMarket = new Loans(initialLoanPrices,J);
-
-		//3. set NUMMARKETS: NUMLOANS loan markets and 1+NUMLOANS asset markets (asset for cash and asset for loan type j)
-		NUMMARKETS = Loans.NUMLOANS + Loans.NUMLOANS + 1;
-		NUMMARKETTYPES = 3; //0:assets against cash; 1:assets against loans; 2: loans
-	}
-
-	private void initializeAgents()  {
-		//assetEndow=1;
-		//consumEndow=1;
-		//Agent.NUM_AGENTS = NUM_AGENTS;
-		Agent.TRADE_ONLY_FULL_UNITS = true;
-		Agent.NUMMARKETS = NUMMARKETS;
-	}
-
 }

@@ -8,9 +8,8 @@ import java.util.Random;
 import org.apache.commons.math.random.RandomDataImpl;
 
 import agents.Agent;
-import agents.markets.Loans;
+import agents.markets.Markets;
 import agents.network.AgentNetwork;
-import doubleAuction.Auction;
 import doubleAuction.offer.AskOffering;
 import doubleAuction.offer.AskOfferingWithLoans;
 import doubleAuction.offer.BidOffering;
@@ -28,8 +27,8 @@ public class Transaction  {
 	private double finalAskH;
 	private double finalBidH;
 	private int transNum;
-	private int NUMMARKETS; //NUMLOANS loan markets and 1+NUMLOANS asset markets (asset for cash and asset for loan type j)
-	private Auction auction;
+	
+	private Markets markets;
 	private ArrayList<ArrayList<AskOffering>> bestAskOfferings;
 	private ArrayList<ArrayList<BidOffering>> bestBidOfferings;
 	
@@ -44,18 +43,16 @@ public class Transaction  {
 	
 	private double loanPrice=0;
 	private double loanAmount;
-	private int loanType;
 	private double finalAskLoanPrice;
 	private double finalBidLoanPrice;
-	private int NUMLOANS;
 	
-	public Transaction(Auction auct) {
-		NUMMARKETS = Auction.NUMMARKETS;
-		auction = auct;
+	
+	public Transaction( Markets markets ) {
+		this.markets = markets;
 		bestAskOfferings = new ArrayList<ArrayList<AskOffering>>();
 		bestBidOfferings = new ArrayList<ArrayList<BidOffering>>();
 		
-		for (int i=0; i<NUMMARKETS;i++)  {
+		for (int i=0; i<Markets.NUMMARKETS;i++)  {
 			bestAskOfferings.add(new ArrayList<AskOffering>());
 			bestBidOfferings.add(new ArrayList<BidOffering>());
 		}
@@ -173,7 +170,7 @@ public class Transaction  {
 		List<List<AskOffering>> bestAsks = new ArrayList<>();
 		List<List<BidOffering>> bestBids = new ArrayList<>();
 		
-		for ( int i = 0; i < Auction.NUMMARKETS; ++i ) {
+		for ( int i = 0; i < Markets.NUMMARKETS; ++i ) {
 			List<AskOffering> marketAsks = new ArrayList<>();
 			List<BidOffering> marketBids = new ArrayList<>();
 			
@@ -259,7 +256,7 @@ public class Transaction  {
 	public Offering[] matchOffers( AskOffering[] askOfferings, BidOffering[] bidOfferings, 
 			List<List<AskOffering>> bestAsks, List<List<BidOffering>> bestBids ) {
 		
-		Offering[] match = new Offering[ Auction.NUMMARKETTYPES * 2 ];
+		Offering[] match = new Offering[ Markets.NUMMARKETTYPES * 2 ];
 		
 		Iterator<BidOffering> itBestBids;
 		Iterator<AskOffering> itBestAsks;
@@ -271,16 +268,16 @@ public class Transaction  {
 		
 		int[] perm, altPerm;
 		// generate perumtation of the markets to randomly search for matches
-		perm = rdi.nextPermutation(NUMMARKETS, NUMMARKETS);
+		perm = rdi.nextPermutation( Markets.NUMMARKETS, Markets.NUMMARKETS );
 		
-		for (int i=0; i<NUMMARKETS; i++) {
+		for (int i=0; i< Markets.NUMMARKETS; i++) {
 	//loop on markets
 		  int market = perm[i];
 		  boolean testFirstAsk = (myRand.nextFloat()<0.5);
 		
 		  for (int w=0; w<2;w++) {
 			if (testFirstAsk && askOfferings[market] != null) {
-			  if ( MarketType.LOAN_AGAINST_CASH != askOfferings[market].getMarketType() ) {
+			  if ( MarketType.LOAN_CASH != askOfferings[market].getMarketType() ) {
 				//search a matching bid transaction in same market, if the ask offer is not a pure loan offer
 				itBestBids = bestBids.get(market).iterator();
 				
@@ -291,7 +288,7 @@ public class Transaction  {
 					if ((askOfferings[market].getAgent() != bestBid.getAgent()) && askOfferings[market].matches(bestBid))  {
 						askOfferings[market].setFinalAssetPrice(bestBid.getAssetPrice());
 						bestBid.setFinalAssetPrice(bestBid.getAssetPrice());
-						if ( MarketType.ASSET_AGAINST_LOAN == askOfferings[market].getMarketType() )  {
+						if ( MarketType.ASSET_LOAN == askOfferings[market].getMarketType() )  {
 							((AskOfferingWithLoans)askOfferings[market]).setFinalLoanPrice(((BidOfferingWithLoans)bestBid).getLoanPrice());
 							((BidOfferingWithLoans)bestBid).setFinalLoanPrice(((BidOfferingWithLoans)bestBid).getLoanPrice());
 						}						
@@ -303,11 +300,11 @@ public class Transaction  {
 				}
 				
 	//no match found in market mkt: search in alternative markets a matching bid transaction - depending on the market type
-				if ( MarketType.ASSET_AGAINST_CASH == askOfferings[market].getMarketType() && Loans.LOANMARKET)  {
+				if ( MarketType.ASSET_CASH == askOfferings[market].getMarketType() && this.markets.isLoanMarket() )  {
 					//asset against cash - try a match for a bidding agent in market 1			
 					int altMkt;
-					altPerm = rdi.nextPermutation(NUMLOANS, NUMLOANS);
-					for (int j=0;j<NUMLOANS;j++)   {
+					altPerm = rdi.nextPermutation(Markets.NUMLOANS, Markets.NUMLOANS);
+					for (int j=0;j<Markets.NUMLOANS;j++)   {
 						altMkt = altPerm[j];
 						itBestBids = bestBids.get(altMkt+1).iterator();
 						//iterate on all best bid offerings searching for a match
@@ -316,7 +313,7 @@ public class Transaction  {
 							
 							if ((askOfferings[market].getAgent() != bestBid.getAgent()) && askOfferings[market].matches(bestBid))  {
 	//partial match: asset prices match - now find a loan for bestBid
-								itBestAsks = bestAsks.get(1+NUMLOANS+altMkt).iterator();
+								itBestAsks = bestAsks.get(1+Markets.NUMLOANS+altMkt).iterator();
 								//iterate on all best ask offerings searching for a match
 								while (itBestAsks.hasNext())  {
 									AskOfferingWithLoans bestAsk = (AskOfferingWithLoans)itBestAsks.next();			
@@ -341,7 +338,7 @@ public class Transaction  {
 			  }
 			  else {
 	//pure loan offer: find a bid offer for an asset against loan
-				itBestBids = bestBids.get(1+((AskOfferingWithLoans)askOfferings[market]).getLoanType()).iterator();
+				itBestBids = bestBids.get(1).iterator();
 				//iterate on all best bid offerings searching for a match
 				while (itBestBids.hasNext())  {
 					BidOfferingWithLoans bestBid = (BidOfferingWithLoans)itBestBids.next();  //bids for an asset against loan			
@@ -380,7 +377,7 @@ public class Transaction  {
 					if ((bidOfferings[market].getAgent() != bestAsk.getAgent()) && bidOfferings[market].matches(bestAsk))  {
 						bidOfferings[market].setFinalAssetPrice(bestAsk.getAssetPrice());
 						bestAsk.setFinalAssetPrice(bestAsk.getAssetPrice());
-						if ( MarketType.ASSET_AGAINST_LOAN == bidOfferings[market].getMarketType() )  {
+						if ( MarketType.ASSET_LOAN == bidOfferings[market].getMarketType() )  {
 							((BidOfferingWithLoans)bidOfferings[market]).setFinalLoanPrice(((AskOfferingWithLoans)bestAsk).getLoanPrice());
 							((AskOfferingWithLoans)bestAsk).setFinalLoanPrice(((AskOfferingWithLoans)bestAsk).getLoanPrice());
 						}						
@@ -391,9 +388,9 @@ public class Transaction  {
 					}
 				}
 	//no match found in market mkt: search in alternative markets a matching ask transaction - depending on the market type
-				if ( MarketType.ASSET_AGAINST_LOAN == bidOfferings[market].getMarketType() && Loans.LOANMARKET)  {
+				if ( MarketType.ASSET_LOAN == bidOfferings[market].getMarketType() && this.markets.isLoanMarket())  {
 	//1. find an askOffer for a loan of type bidOfferings[mkt].loanType			
-					itBestAsks = bestAsks.get(1+NUMLOANS+((BidOfferingWithLoans)bidOfferings[market]).getLoanType()).iterator();
+					itBestAsks = bestAsks.get(2).iterator();
 					//iterate on all best ask offerings searching for a match
 					while (itBestAsks.hasNext())  {
 						AskOfferingWithLoans bestAsk = (AskOfferingWithLoans)itBestAsks.next();			
@@ -438,18 +435,16 @@ public class Transaction  {
 		AskOfferingWithLoans askOffLoan = (AskOfferingWithLoans)match[2];
 		
 		assetPrice = this.matchingAskOffer.getFinalAssetPrice();
-		auction.getAsset().updatePrice(assetPrice);
-
-		if ( MarketType.ASSET_AGAINST_LOAN == this.matchingBidOffer.getMarketType() )  {
+		this.markets.getAsset().updatePrice(assetPrice);
+		
+		if ( MarketType.ASSET_LOAN == this.matchingBidOffer.getMarketType() )  {
 			loanPrice = ((BidOfferingWithLoans)this.matchingBidOffer).getFinalLoanPrice();
 			loanAmount = ((BidOfferingWithLoans)this.matchingBidOffer).getLoanAmount();
-			loanType = ((BidOfferingWithLoans)this.matchingBidOffer).getLoanType();
-			auction.getLoanMarket().updatePrice(loanPrice,loanType);
+			this.markets.getLoans().updatePrice(loanPrice);
 		}
 		else  {
 			loanPrice = 0;
 			loanAmount = 0;
-			loanType = -1;
 		}
 			
 //		if (loanType > 2)
@@ -461,7 +456,7 @@ public class Transaction  {
 		finalBidAssetPrice = this.matchingBidOffer.getAssetPrice();
 		finalAskH = this.matchingAskOffer.getAgent().getH();
 		finalBidH = this.matchingBidOffer.getAgent().getH();
-		if ( MarketType.ASSET_AGAINST_LOAN == this.matchingAskOffer.getMarketType() )  {
+		if ( MarketType.ASSET_LOAN == this.matchingAskOffer.getMarketType() )  {
 			finalAskLoanPrice = ((AskOfferingWithLoans)this.matchingAskOffer).getLoanPrice();
 			finalBidLoanPrice = ((BidOfferingWithLoans)this.matchingBidOffer).getLoanPrice();
 		}	
@@ -506,7 +501,7 @@ public class Transaction  {
 	}
 	
 	public void updateBestAskOfferings( AskOffering offer)   {
-		int mkt = offer.getMarket();
+		int mkt = offer.getMarketType().ordinal();
 		Iterator<AskOffering> askIt = bestAskOfferings.get(mkt).iterator();
 		
 		// removes all offers which are worse than offer
@@ -529,7 +524,7 @@ public class Transaction  {
 	}
 	
 	public void updateBestBidOfferings( BidOffering offer)   {
-		int mkt = offer.getMarket();
+		int mkt = offer.getMarketType().ordinal();
 		Iterator<BidOffering> bidIt = bestBidOfferings.get(mkt).iterator();
 		
 		// removes all offers which are worse than offer
@@ -553,7 +548,7 @@ public class Transaction  {
 	
 	public void addOfferings(AskOffering[] askoff, BidOffering[] bidoff)   {
 		//side effect: updates best offerings
-		for (int i=0;i<NUMMARKETS;i++)  {
+		for (int i=0;i<Markets.NUMMARKETS;i++)  {
 			if (askoff[i] != null)  {
 				updateBestAskOfferings(askoff[i]);
 			}				
@@ -564,7 +559,7 @@ public class Transaction  {
 	}
 
 	public void removeAllOfferings(Agent agent) {
-		for (int mkt=0; mkt<NUMMARKETS;mkt++)  {
+		for (int mkt=0; mkt<Markets.NUMMARKETS;mkt++)  {
 			Iterator<BidOffering> bidIt = bestBidOfferings.get(mkt).iterator();
 			BidOffering bestBid;
 		
@@ -632,12 +627,12 @@ public class Transaction  {
 	}
 
 	public void addToBestAskOfferings(AskOffering offer)  {
-		int mkt = offer.getMarket();
+		int mkt = offer.getMarketType().ordinal();
 		bestAskOfferings.get(mkt).add(offer);
 	}
 	
 	public void addToBestBidOfferings(BidOffering offer)  {
-		int mkt = offer.getMarket();
+		int mkt = offer.getMarketType().ordinal();
 		bestBidOfferings.get(mkt).add(offer);
 	}
 	

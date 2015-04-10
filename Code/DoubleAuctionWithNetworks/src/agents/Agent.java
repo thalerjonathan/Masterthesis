@@ -1,14 +1,10 @@
 package agents;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Random;
 
-import agents.markets.Asset;
-import agents.markets.Loans;
-import doubleAuction.Auction;
+import agents.markets.Markets;
 import doubleAuction.offer.AskOffering;
 import doubleAuction.offer.AskOfferingWithLoans;
 import doubleAuction.offer.BidOffering;
@@ -17,30 +13,38 @@ import doubleAuction.offer.MarketType;
 import doubleAuction.offer.Offering;
 
 public class Agent {
-	//public static int NUM_AGENTS; 
-	public static boolean TRADE_ONLY_FULL_UNITS;
 	public final static double UNIT = 0.1;
-	public final static double MAXUNIT = 0.5;
-	
 	private final static double CONSUME_INSENSIBILITY = 1E-5;
 	private final static double ASSET_INSENSIBILITY = 1E-4;
 	private final static double PMARGIN = 1.0;   //asset prices are samples from U(p-PMARGIN,p+PMARGIN
-    
-	private Random agRand = new Random();
+
+	private static final double QMARGIN = 1.0; // loan prices are samples from
+	// U(q-PMARGIN,q+PMARGIN
+
+	private Markets markets;
 	
 	private int id;
 	// optimism factor
 	private double h;
-	// a reference to the asset-market
-	private Asset asset;
 	// amount of consumption-good endowment (cash) still available
 	private double consumEndow;
 	// amount of asset endowment still available
 	private double assetEndow;
 	// Expected Value (E, Erwartungswert) of the Asset
 	private double limitPriceAsset;
-
-	public static int NUMMARKETS;
+	
+	// a reference to the loan-market (bonds)
+	private double jJ;
+	private double limitPriceLoansBuy;
+	private double limitPriceLoansSell;
+	
+	private double expectJ;
+	// the amount of unpledged assets, this amount can be sold or pledged when selling bonds
+	private double freeAssetEndow;
+	// the amount of loans taken from other agents
+	private double loanTaken;
+	// the amount of loans given to other agents
+	private double loanGiven;
 	
 	private AskOffering[] currentAskOfferings;
 	private BidOffering[] currentBidOfferings;
@@ -50,62 +54,40 @@ public class Agent {
 	
 	private boolean highlighted;
 
-	// a reference to the loan-market (bonds)
-	private Loans loans;
-	private int NUMLOANS;
-	private double[] jJ, limitPricesLoansBuy, limitPricesLoansSell;
-	
-	private double[] expectJ;
-	// the amount of unpledged assets, this amount can be sold or pledged when selling bonds
-	private double freeAssetEndow;
-	// the amount of loans taken from other agents
-	private double[] loanTaken;
-	// the amount of loans given to other agents
-	private double[] loanGiven;
-
-	private static final double QMARGIN = 1.0; // loan prices are samples from
-										// U(q-PMARGIN,q+PMARGIN
-
-	public Agent(int id, double h, double consumEndow, double assetEndow, Asset asset, Loans loans ) {
+	public Agent(int id, double h, double consumEndow, double assetEndow, Markets markets ) {
 		this.id = id;
 		this.h = h;
 		this.consumEndow = consumEndow; 
 		this.assetEndow = assetEndow;
-		this.asset = asset;
 		this.highlighted = false;
-		this.loans = loans;
-		this.jJ = loans.getJ();
-		NUMLOANS = Loans.NUMLOANS;
+		this.markets = markets;
+		this.jJ = markets.getLoans().getJ();
 		
 		init();
 	}
 	
 	private void init() {
-		limitPricesLoansBuy = new double[NUMLOANS];
-		limitPricesLoansSell = new double[NUMLOANS];
+		limitPriceLoansBuy = 0;
+		limitPriceLoansSell = 0;
 		detLimitPricesLoansSeller();
 		detLimitPriceAsset();
 		
-		loanTaken = new double[NUMLOANS];
-		loanGiven = new double[NUMLOANS];
-		expectJ = new double[NUMLOANS];
-		for (int i = 0; i < NUMLOANS; i++) {
-			loanTaken[i] = 0;
-			loanGiven[i] = 0;
-			expectJ[i] = h * (loans.getJ()[i] - asset.getPD()) + asset.getPD();
-		}
+		loanTaken = 0;
+		loanGiven = 0;
+		expectJ = h * markets.getLoans().getJ() + ( 1.0 - h ) * markets.getAsset().getPD();
+		
 		freeAssetEndow = assetEndow;
 	}
 	
-	public double[] getLimitPricesLoansBuy() {
-		return limitPricesLoansBuy;
+	public double getLimitPriceLoansBuy() {
+		return limitPriceLoansBuy;
 	}
 
-	public double[] getLimitPricesLoansSell() {
-		return limitPricesLoansSell;
+	public double getLimitPriceLoansSell() {
+		return limitPriceLoansSell;
 	}
 
-	public double[] getLoanGiven() {
+	public double getLoanGiven() {
 		return loanGiven;
 	}
 
@@ -154,13 +136,13 @@ public class Agent {
 			this.bestAskOfferings = new ArrayList<>();
 			this.bestBidOfferings = new ArrayList<>();
 			
-			for ( int i = 0; i < Auction.NUMMARKETS; ++i ) {
+			for ( int i = 0; i < Markets.NUMMARKETS; ++i ) {
 				this.bestAskOfferings.add( new ArrayList<>() );
 				this.bestBidOfferings.add( new ArrayList<>() );
 			}
 		}
 			
-		for ( int i = 0; i < Auction.NUMMARKETS; ++i ) {
+		for ( int i = 0; i < Markets.NUMMARKETS; ++i ) {
 			AskOffering ask = this.currentAskOfferings[ i ];
 			
 			if ( null != ask ) {
@@ -223,15 +205,15 @@ public class Agent {
 		double maxQ;
 		double pa, qa; // assetPrice, loanPrice
 
-		AskOffering[] askOfferings = new AskOffering[ NUMMARKETS ];
+		AskOffering[] askOfferings = new AskOffering[ Markets.NUMMARKETS ];
 		
 		// market type 0: generate an ask offer for market m=0: sell an asset
 		// against cash
 		if (freeAssetEndow > 0 && maxP > limitPriceAsset) {
 			// draw a uniform random asset price from [limitPriceAsset,PU]
 			// intersect [minP,maxP]
-			double r = agRand.nextDouble();
-			
+			double r = Math.random();
+
 			// if improvement possible
 			if ( limitPriceAsset > minP ) {
 				// sell asset at least for limitPriceAsset and maximum in a range up to how much the optimism-factor h allows it
@@ -241,7 +223,7 @@ public class Agent {
 				pa = minP + r * (maxP - minP);
 			}
 			
-			askOfferings[0] = new AskOffering(pa, Math.min(UNIT, freeAssetEndow), this, 0, MarketType.ASSET_AGAINST_CASH );
+			askOfferings[0] = new AskOffering(pa, Math.min(UNIT, freeAssetEndow), this, MarketType.ASSET_CASH );
 			
 		} else {
 			// agent has no free assets, or cannot offer at current price level
@@ -256,44 +238,42 @@ public class Agent {
 		// changed at 08/17/2011: error in distribution - bias towards uniform q
 		// which is not true
 
-		if ( Loans.ASSETFORLOANMARKET ) {
-			for (int j = 0; j < NUMLOANS; j++) {
-				minQ = 0.0;
-				maxQ = jJ[j];
-				minP = limitPriceAsset;
-				maxP = 1.0;
+		if ( this.markets.isABM() ) {
+			minQ = 0.0;
+			maxQ = jJ;
+			minP = limitPriceAsset;
+			maxP = 1.0;
+			
+			if (freeAssetEndow <= 0) {
+				askOfferings[1] = null;
+			} else if (minQ > 0 && (limitPriceAsset + (maxP / minQ) * expectJ) <= 0) {
+				askOfferings[1] = null;
+			} else {
+				numTrials = MAXTRIALS;
+				//initial asset price and loan price such that we enter always the "while"
+				qa = minQ + Math.random() * (maxQ - minQ);
+				pa = minP + Math.random() * (maxP - minP);
+				while ((numTrials > 0)
+						&& (-limitPriceAsset + (pa / qa) * expectJ< 0)) {
+					// negative utility and we may try another draw from
+					// random prices
+					pa = minP + Math.random() * (maxP - minP);
+					qa = minQ + Math.random() * (maxQ - minQ);
+					numTrials--;
+				}
 				
-				if (freeAssetEndow <= 0) {
-					askOfferings[j + 1] = null;
-				} else if (minQ > 0 && (limitPriceAsset + (maxP / minQ) * expectJ[j]) <= 0) {
-					askOfferings[j + 1] = null;
+				if (numTrials > 0) {
+					// found asset and loan price with non-negative utility
+					assetAmount = Math.min(UNIT, freeAssetEndow);
+					askOfferings[1] = new AskOfferingWithLoans(pa,
+							assetAmount, qa, this.markets.getLoans().getJ(),
+							assetAmount * pa / qa, this, MarketType.ASSET_LOAN );
 				} else {
-					numTrials = MAXTRIALS;
-					//initial asset price and loan price such that we enter always the "while"
-					qa = minQ + agRand.nextDouble() * (maxQ - minQ);
-					pa = minP + agRand.nextDouble() * (maxP - minP);
-					while ((numTrials > 0)
-							&& (-limitPriceAsset + (pa / qa) * expectJ[j] < 0)) {
-						// negative utility and we may try another draw from
-						// random prices
-						pa = minP + agRand.nextDouble() * (maxP - minP);
-						qa = minQ + agRand.nextDouble() * (maxQ - minQ);
-						numTrials--;
-					}
-					
-					if (numTrials > 0) {
-						// found asset and loan price with non-negative utility
-						assetAmount = Math.min(UNIT, freeAssetEndow);
-						askOfferings[j + 1] = new AskOfferingWithLoans(pa,
-								assetAmount, qa, j, loans.getJ()[j],
-								assetAmount * pa / qa, this, j + 1, MarketType.ASSET_AGAINST_LOAN );
-					} else {
-						System.out
-								.println("in calcAskOfferings: after "
-										+ MAXTRIALS
-										+ " trials no (pa,qa) with positive utility found");
-						askOfferings[j + 1] = null;
-					}
+					System.out
+							.println("in calcAskOfferings: after "
+									+ MAXTRIALS
+									+ " trials no (pa,qa) with positive utility found");
+					askOfferings[1] = null;
 				}
 			}
 		}
@@ -303,23 +283,21 @@ public class Agent {
 		// draw random loan price qa from Uniform(0,expectJ[j]),
 		// i.e. prices that guarantee a non-negative utility for agent h
 
-		if ( Loans.LOANMARKET) {
-			for (int j = 0; j < NUMLOANS; j++) {
-				// loop on loan types
-				minQ = getQMin(j);
-				maxQ = getQMax(j);
+		if ( this.markets.isLoanMarket() ) {
+			// loop on loan types
+			minQ = getQMin();
+			maxQ = getQMax();
 
-				if (consumEndow > 0 && minQ < expectJ[j]) {
-					// qa = agRand.nextDouble()*expectJ[j];
-					qa = minQ + agRand.nextDouble()
-							* (Math.min(maxQ, expectJ[j]) - minQ);
-					askOfferings[1 + NUMLOANS + j] = new AskOfferingWithLoans(
-							0, 0, qa, j, loans.getJ()[j], consumEndow / qa,
-							this, 1 + NUMLOANS + j, MarketType.LOAN_AGAINST_CASH );
-				} else {
-					// agent has nothing to borrow
-					askOfferings[1 + NUMLOANS + j] = null;
-				}
+			if (consumEndow > 0 && minQ < expectJ) {
+				// qa = agRand.nextDouble()*expectJ[j];
+				qa = minQ +  Math.random()
+						* (Math.min(maxQ, expectJ) - minQ);
+				askOfferings[2] = new AskOfferingWithLoans(
+						0, 0, qa, this.markets.getLoans().getJ(), consumEndow / qa,
+						this, MarketType.LOAN_CASH );
+			} else {
+				// agent has nothing to borrow
+				askOfferings[2] = null;
 			}
 		}
 		
@@ -336,7 +314,7 @@ public class Agent {
 		double maxQ;
 		double pb, qb;
 
-		BidOffering[] bidOfferings = new BidOffering[ NUMMARKETS ];
+		BidOffering[] bidOfferings = new BidOffering[ Markets.NUMMARKETS ];
 		
 		// market type 0: generate an bid offer for market m=0: buy an asset against cash
 		if (consumEndow > 0) {
@@ -344,7 +322,7 @@ public class Agent {
 				bidOfferings[0] = null;
 				
 			} else {
-				double r = agRand.nextDouble();
+				double r = Math.random();
 				if (maxP > limitPriceAsset) {
 					pb = minP + r * (limitPriceAsset - minP);
 				} else {
@@ -352,7 +330,7 @@ public class Agent {
 				}
 				
 				assetAmount = Math.min(UNIT, consumEndow / pb);
-				bidOfferings[0] = new BidOffering(pb, assetAmount, this, 0, MarketType.ASSET_AGAINST_CASH );
+				bidOfferings[0] = new BidOffering(pb, assetAmount, this, MarketType.ASSET_CASH );
 			}
 
 			for (int i = 1; i < bidOfferings.length; i++)
@@ -370,76 +348,76 @@ public class Agent {
 			// M2={(p,q)|limitPriceAsset-p + (p/q)*(q-expectJ[j]) >= 0},
 			// i.e. prices that guarantee a non-negative utility for agent h
 
-			for (int j = 0; j < NUMLOANS; j++) {
-				// loop an markets/loan types
-				numTrials = MAXTRIALS;
-				bidOfferings[j + 1] = null;
-				minP = 0.2;
-				maxP = limitPriceAsset;
-				minQ = 0.0;
-				maxQ = jJ[j];
+			// loop an markets/loan types
+			numTrials = MAXTRIALS;
+			bidOfferings[1] = null;
+			minP = 0.2;
+			maxP = limitPriceAsset;
+			minQ = 0.0;
+			maxQ = jJ;
 
-				double ratio = minP / maxQ;
-				double utility = limitPriceAsset - ( ratio * expectJ[j] );
+			double ratio = minP / maxQ;
+			double utility = limitPriceAsset - ( ratio * expectJ );
 
-				if ( utility > 0) {
-					for (int i = numTrials; i > 0; i--) {
-						pb = minP + agRand.nextDouble() * (maxP - minP);
-						qb = minQ + agRand.nextDouble() * (maxQ - minQ);
+			if ( utility > 0) {
+				for (int i = numTrials; i > 0; i--) {
+					pb = minP + Math.random() * (maxP - minP);
+					qb = minQ + Math.random() * (maxQ - minQ);
 
-						ratio = pb / qb;
-						utility = limitPriceAsset - ( ratio * expectJ[j] );
+					ratio = pb / qb;
+					utility = limitPriceAsset - ( ratio * expectJ );
 
-						if ( utility >= 0 ) {
-							// nonnegative utility
-							// try to buy UNIT assets
-							double loanAmount = pb * UNIT / qb;
-							double lowerEndLoanPrice = Math.max( 0, pb * UNIT / ( freeAssetEndow + UNIT ) );
-							// minimum loan price for fulfilling collateral
-							// constraint
-							if (qb >= lowerEndLoanPrice) {
-								// nice: bid offer fulfills the collateral
-								// requirement
-								bidOfferings[j + 1] = new BidOfferingWithLoans(
-										pb, UNIT, qb, j, loans.getJ()[j],
-										loanAmount, this, j + 1, MarketType.ASSET_AGAINST_LOAN );
+					if ( utility >= 0 ) {
+						// nonnegative utility
+						// try to buy UNIT assets
+						double loanAmount = pb * UNIT / qb;
+						double lowerEndLoanPrice = Math.max( 0, pb * UNIT / ( freeAssetEndow + UNIT ) );
+						// minimum loan price for fulfilling collateral
+						// constraint
+						if (qb >= lowerEndLoanPrice) {
+							// nice: bid offer fulfills the collateral
+							// requirement
+							bidOfferings[1] = new BidOfferingWithLoans(
+									pb, UNIT, qb, this.markets.getLoans().getJ(),
+									loanAmount, this, MarketType.ASSET_LOAN );
+							break;
+						} else {
+							// not enough collateral for loan for UNIT
+							// assets: try less
+							if ((pb > qb) && (freeAssetEndow > 0)) {
+								// quite nice: bid offer fulfills the
+								// collateral requirement, but the
+								// computation of the
+								// limitAssetAmount requires some agent
+								// intelligence
+								assetAmount = qb * freeAssetEndow
+										/ (pb - qb);
+								if (qb < Math.max(0, pb * assetAmount
+										/ (freeAssetEndow + assetAmount))
+										- CONSUME_INSENSIBILITY)
+									System.err
+											.println("in calcBidOfferings: violation of collateral constraint");
+								bidOfferings[1] = new BidOfferingWithLoans(
+										pb, assetAmount, qb,
+										this.markets.getLoans().getJ(), pb * assetAmount
+												/ qb, this, MarketType.ASSET_LOAN );
 								break;
-							} else {
-								// not enough collateral for loan for UNIT
-								// assets: try less
-								if ((pb > qb) && (freeAssetEndow > 0)) {
-									// quite nice: bid offer fulfills the
-									// collateral requirement, but the
-									// computation of the
-									// limitAssetAmount requires some agent
-									// intelligence
-									assetAmount = qb * freeAssetEndow
-											/ (pb - qb);
-									if (qb < Math.max(0, pb * assetAmount
-											/ (freeAssetEndow + assetAmount))
-											- CONSUME_INSENSIBILITY)
-										System.err
-												.println("in calcBidOfferings: violation of collateral constraint");
-									bidOfferings[j + 1] = new BidOfferingWithLoans(
-											pb, assetAmount, qb, j,
-											loans.getJ()[j], pb * assetAmount
-													/ qb, this, j + 1, MarketType.ASSET_AGAINST_LOAN );
-									break;
-								}
 							}
 						}
-						// else
-						// System.err.println("in calcBidOfferings: negative utility gain");
 					}
+					// else
+					// System.err.println("in calcBidOfferings: negative utility gain");
 				}
-				if (numTrials == 0)
-					System.out
-							.println("agent "
-									+ h
-									+ " didn't find any bid offering for market 1 after "
-									+ MAXTRIALS + " trials");
 			}
+			if (numTrials == 0)
+				System.out
+						.println("agent "
+								+ h
+								+ " didn't find any bid offering for market 1 after "
+								+ MAXTRIALS + " trials");
 		}
+
+		// TODO: bid-offerings on loan
 		
 		return bidOfferings;
 	}
@@ -632,7 +610,7 @@ public class Agent {
 			return;
 		}
 		
-		for ( int i = 0; i < NUMMARKETS; ++i ) {
+		for ( int i = 0; i < Markets.NUMMARKETS; ++i ) {
 			this.bestAskOfferings.get( i ).clear();
 			this.bestBidOfferings.get( i ).clear();
 		}
@@ -678,17 +656,17 @@ public class Agent {
 		// calculate expected value (E, Erwartungswert) of the Asset
 		
 		// derived from the formula: h*pU+(1-h)*pD
-		limitPriceAsset = (asset.getPU() - asset.getPD())*h + asset.getPD();
+		limitPriceAsset = (this.markets.getAsset().getPU() - this.markets.getAsset().getPD())*h + this.markets.getAsset().getPD();
 	}
 	
 	private double getPMax() {
-		double refP = asset.getP();
-		return Math.min(asset.getPU(), refP + PMARGIN);
+		double refP = this.markets.getAsset().getP();
+		return Math.min(this.markets.getAsset().getPU(), refP + PMARGIN);
 	}
 	
 	private double getPMin() {
-		double refP = asset.getP();
-		return Math.max(asset.getPD(), refP - PMARGIN);
+		double refP = this.markets.getAsset().getP();
+		return Math.max(this.markets.getAsset().getPD(), refP - PMARGIN);
 	}
 	
 	public boolean execTransaction(Offering[] match, boolean first) {
@@ -722,7 +700,7 @@ public class Agent {
 		BidOfferingWithLoans bid = (BidOfferingWithLoans) match[1];
 		double loanAmount = bid.getLoanAmount();
 		consumEndow -= loanAmount * bid.getFinalLoanPrice();
-		loanGiven[bid.getLoanType()] += loanAmount;
+		loanGiven += loanAmount;
 
 		if (consumEndow < CONSUME_INSENSIBILITY) {
 			if (consumEndow < -CONSUME_INSENSIBILITY)
@@ -764,7 +742,7 @@ public class Agent {
 				freeAssetEndow = 0;
 		}
 
-		if ( MarketType.ASSET_AGAINST_CASH == myAsk.getMarketType() ) {
+		if ( MarketType.ASSET_CASH == myAsk.getMarketType() ) {
 			// asset against cash
 			consumEndow += myAsk.getFinalAssetPrice() * toSell;
 
@@ -778,7 +756,7 @@ public class Agent {
 			// market type 1: asset against loan
 			double loanAmount = toSell * myAsk.getFinalAssetPrice() / ((AskOfferingWithLoans) myAsk).getFinalLoanPrice();
 
-			loanGiven[((AskOfferingWithLoans) myAsk).getLoanType()] += loanAmount;
+			loanGiven += loanAmount;
 		}
 		
 		// need to reset when match to force a recalculation of offers
@@ -799,7 +777,7 @@ public class Agent {
 		// adjust bidders amounts
 		myBid.setAssetAmount(toBuy);
 
-		if ( MarketType.ASSET_AGAINST_LOAN == myBid.getMarketType() ) {
+		if ( MarketType.ASSET_LOAN == myBid.getMarketType() ) {
 			// adjust loan amount
 			loanAmount = toBuy * myBid.getFinalAssetPrice()
 					/ ((BidOfferingWithLoans) myBid).getFinalLoanPrice();
@@ -810,7 +788,7 @@ public class Agent {
 		assetEndow += toBuy;
 		freeAssetEndow += toBuy;
 
-		if ( MarketType.ASSET_AGAINST_CASH == myBid.getMarketType() ) {
+		if ( MarketType.ASSET_CASH == myBid.getMarketType() ) {
 			// asset against cash
 			consumEndow -= myBid.getFinalAssetPrice() * toBuy;
 			if (consumEndow < CONSUME_INSENSIBILITY) {
@@ -822,7 +800,7 @@ public class Agent {
 		} else {
 			// asset against loan
 			freeAssetEndow -= loanAmount;
-			loanTaken[((BidOfferingWithLoans) myBid).getLoanType()] += loanAmount;
+			loanTaken += loanAmount;
 
 			if (freeAssetEndow < ASSET_INSENSIBILITY) {
 				if (freeAssetEndow < -ASSET_INSENSIBILITY)
@@ -840,7 +818,7 @@ public class Agent {
 		return true;
 	}
 
-	public double[] getLoanTaken() {
+	public double getLoanTaken() {
 		return loanTaken;
 	}
 
@@ -848,7 +826,7 @@ public class Agent {
 		// pb and qb are offered prices by another asking agent: matching occurs
 		// when this agent
 		// as a bidder would achieve positive utility
-		if (limitPriceAsset - (pb / qb) * expectJ[offer.getLoanType()] > 0) {
+		if (limitPriceAsset - (pb / qb) * expectJ > 0) {
 			// nonnegative utility
 			// try to buy UNIT assets
 			double loanAmount = pb * UNIT / qb;
@@ -892,7 +870,7 @@ public class Agent {
 		// pa and qa are offered prices by another bidding agent: matching
 		// occurs when this agent
 		// as an asker would achieve positive utility
-		if ((-limitPriceAsset + (pa / qa) * expectJ[offer.getLoanType()] > 0)
+		if ((-limitPriceAsset + (pa / qa) * expectJ > 0)
 				&& (freeAssetEndow > 0)) {
 			offer.setAssetAmount(Math.min(UNIT, freeAssetEndow));
 			offer.setAssetPrice(pa);
@@ -905,45 +883,42 @@ public class Agent {
 
 	@Override
 	public Object clone() {
-		Agent clone = new Agent(this.id, this.h, this.consumEndow, this.assetEndow, this.asset, this.loans );
+		Agent clone = new Agent(this.id, this.h, this.consumEndow, this.assetEndow, this.markets );
 		clone.freeAssetEndow = this.freeAssetEndow;
-		clone.loanGiven = Arrays.copyOf( this.loanGiven, this.loanGiven.length );
-		clone.loanTaken = Arrays.copyOf( this.loanTaken, this.loanTaken.length );
+		clone.loanGiven = this.loanGiven;
+		clone.loanTaken = this.loanTaken;
 		
 		this.copyBestOfferingsTo( clone );
 		
 		return clone;
 	}
 	
-	protected double getQMax(int loanType) {
-		double refQ = loans.getLoanPrices()[loanType];
+	private double getQMax() {
+		double refQ = this.markets.getLoans().getLoanPrice();
 		
-		return Math.min(jJ[loanType], refQ + QMARGIN);
+		return Math.min(jJ, refQ + QMARGIN);
 	}
 
-	protected double getQMin(int loanType) {
-		double refQ = loans.getLoanPrices()[loanType];
+	private double getQMin() {
+		double refQ = this.markets.getLoans().getLoanPrice();
 
 		return Math.max(0, refQ - QMARGIN);
 	}
 
-	protected void detLimitPricesLoansBuyer() {
-		double pU = asset.getPU();
-		double pD = asset.getPD();
-		double p = asset.getP();
+	private void detLimitPricesLoansBuyer() {
+		double pU = this.markets.getAsset().getPU();
+		double pD = this.markets.getAsset().getPD();
+		double p = this.markets.getAsset().getP();
 
 		// limit prices buy
-		for (int j = 0; j < NUMLOANS; j++) {
-			limitPricesLoansBuy[j] = p * ((jJ[j] - pD) * h + pD)
-					/ ((pU - pD) * h + pD);
-		}
+		limitPriceLoansBuy = p * ((jJ - pD) * h + pD)/ ((pU - pD) * h + pD);
+
 	}
 
-	protected void detLimitPricesLoansSeller() {
-		double pD = asset.getPD();
+	private void detLimitPricesLoansSeller() {
+		double pD = this.markets.getAsset().getPD();
 
 		// limit prices sell
-		for (int j = 0; j < NUMLOANS; j++)
-			limitPricesLoansSell[j] = (jJ[j] - pD) * h + pD;
+		limitPriceLoansSell= (jJ - pD) * h + pD;
 	}
 }
