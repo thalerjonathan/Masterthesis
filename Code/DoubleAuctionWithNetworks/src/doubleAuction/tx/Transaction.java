@@ -10,7 +10,7 @@ import agents.markets.Markets;
 import agents.network.AgentNetwork;
 import doubleAuction.offer.AskOffering;
 import doubleAuction.offer.BidOffering;
-import doubleAuction.offer.Offering;
+import doubleAuction.tx.Match.MatchDirection;
 
 public class Transaction  {
 	private boolean reachedEquilibrium;
@@ -49,19 +49,21 @@ public class Transaction  {
 		bestGlobalBidOfferings = new BidOffering[ Markets.NUMMARKETS ];
 	}
 
-	public void exec( Offering[] match ) {
+	public void exec( Match match ) {
 		// buy-offer always at index 0, sell-offer always at index 1
-		BidOffering buyOffer = ( BidOffering ) match[ 0 ];
-		AskOffering sellOffer = ( AskOffering ) match[ 1 ];
+		BidOffering buyOffer = match.getBuyOffer();
+		AskOffering sellOffer = match.getSellOffer();
 		
 		Agent buyer = buyOffer.getAgent();
 		Agent seller = sellOffer.getAgent();
 		
-		buyer.execBuyTransaction( sellOffer );
-		seller.execSellTransaction( buyOffer );
+		buyer.execBuyTransaction( match );
+		seller.execSellTransaction( match );
+		
+		this.matched( match );
 	}
 	
-	public Offering[] findMatchesByRandomNeighborhood( Agent a, AgentNetwork agents ) {
+	public Match findMatchesByRandomNeighborhood( Agent a, AgentNetwork agents ) {
 		// 1. process ask-offerings: need to find a bidder among the neighborhood of the agent
 		Agent neighbor = agents.getRandomNeighbor( a );
 		
@@ -84,7 +86,7 @@ public class Transaction  {
 		return this.matchOffers(askOfferings, bidOfferings, bestAsks, bestBids );
 	}
 	
-	public Offering[] findMatchesByBestNeighborhood( Agent a, AgentNetwork agents ) {
+	public Match findMatchesByBestNeighborhood( Agent a, AgentNetwork agents ) {
 		Iterator<Agent> neighborhood = agents.getNeighbors( a );
 		
 		AskOffering[] agentAsk = a.getCurrentAskOfferings();
@@ -127,7 +129,7 @@ public class Transaction  {
 		return this.matchOffers( agentAsk, agentBid, bestAsks, bestBids );
 	}
 	
-	public Offering[] findMatchesByGlobalOffers( Agent a, AgentNetwork agents ) {
+	public Match findMatchesByGlobalOffers( Agent a, AgentNetwork agents ) {
 		AskOffering[] askOfferings = a.getCurrentAskOfferings();
 		BidOffering[] bidOfferings = a.getCurrentBidOfferings();
 		
@@ -157,7 +159,7 @@ public class Transaction  {
 		return this.matchOffers( askOfferings, bidOfferings, bestAsks, bestBids );
 	}
 	
-	private Offering[] matchOffers( AskOffering[] agentAskOfferings, BidOffering[] agentBidOfferings, 
+	private Match matchOffers( AskOffering[] agentAskOfferings, BidOffering[] agentBidOfferings, 
 			AskOffering[] bestAsks, BidOffering[] bestBids) {
 		
 		// generate perumtation of the markets to randomly search for matches
@@ -177,10 +179,7 @@ public class Transaction  {
 					
 					if ( null != agentSellOffering && null != bestBuyOffering ) {
 						if ( agentSellOffering.matches( bestBuyOffering ) ) {
-							Offering[] match = new Offering[ 2 ];
-							match[ 0 ] = bestBuyOffering;
-							match[ 1 ] = agentSellOffering;
-							return match;
+							return new Match( bestBuyOffering, agentSellOffering, MatchDirection.SELL_MATCHES_BUY );
 						}
 					}
 					
@@ -192,10 +191,7 @@ public class Transaction  {
 		
 					if ( null != agentBuyOffering && null != bestSellOffering ) {
 						if ( agentBuyOffering.matches( bestSellOffering ) ) {
-							Offering[] match = new Offering[ 2 ];
-							match[ 0 ] = agentBuyOffering;
-							match[ 1 ] = bestSellOffering;
-							return match;
+							return new Match( agentBuyOffering, bestSellOffering, MatchDirection.BUY_MATCHES_SELL );
 						}
 					}
 					
@@ -434,10 +430,10 @@ public class Transaction  {
 	}
 	*/
 	
-	public void matched( Offering[] match )  {
+	public void matched( Match match )  {
 		//askOffer and BidOffer matched for a successful transaction: close transaction with price and amount of the asset
-		this.matchingBidOffer = (BidOffering)match[0];
-		this.matchingAskOffer = (AskOffering)match[1];
+		this.matchingBidOffer = match.getBuyOffer();
+		this.matchingAskOffer = match.getSellOffer();
 		
 		assetPrice = this.matchingAskOffer.getFinalAssetPrice();
 		this.markets.getAsset().updatePrice(assetPrice);

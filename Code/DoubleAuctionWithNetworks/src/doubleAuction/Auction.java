@@ -7,6 +7,7 @@ import agents.Agent;
 import agents.markets.Markets;
 import agents.network.AgentNetwork;
 import doubleAuction.offer.Offering;
+import doubleAuction.tx.Match;
 import doubleAuction.tx.Transaction;
 
 public class Auction {
@@ -78,7 +79,7 @@ public class Auction {
 		
 		while (agIt.hasNext())  {
 			Agent a = agIt.next();
-			Offering[] match = null;
+			Match match = null;
 			
 			// find match: must be neighbours, must be same market, bid (buy) must be larger than ask (sell)
 			
@@ -99,7 +100,6 @@ public class Auction {
 				// of change in wealth.
 				// won't calculate a new offering, this is only done once in each round
 				transaction.exec( match );
-				transaction.matched( match );
 				transaction.setTransNum(this.numTrans++);
 				
 				List<Agent> finalAgents = null;

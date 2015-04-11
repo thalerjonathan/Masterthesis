@@ -4,6 +4,7 @@ import agents.markets.Markets;
 import doubleAuction.offer.AskOffering;
 import doubleAuction.offer.BidOffering;
 import doubleAuction.offer.MarketType;
+import doubleAuction.tx.Match;
 
 public class Agent {
 	private final static double PMARGIN = 1.0; 
@@ -212,56 +213,36 @@ public class Agent {
 		}
 	}
 	
-	public void execSellTransaction( BidOffering buyOffer ) {
+	public void execSellTransaction( Match match ) {
 		// NOTE: executing a sell-transaction on this agent which means this agent is SELLING to the "other" agent
 		// the Bid-Offer is the buy-offer of the "other" agent who is the buyer
 		// the matching ask-offer is this agents ask-offer, thus its a sell transaction
 		
-		AskOffering sellOffer = this.currentAskOfferings[ buyOffer.getMarketType().ordinal() ];
-		
-		// NOTE: just for debugging purpose, should at this point never happen
-		if ( sellOffer.getMarketType() != buyOffer.getMarketType() ) {
-			System.err.println( "Warning: attempt of executing a buy- and Sell-Offer on different markets!" );
-			return;
-		}
-		
-		if ( MarketType.ASSET_CASH == sellOffer.getMarketType() ) {
-			//double price = ( buyOffer.getPrice() + sellOffer.getPrice() ) / 2.0;
+		if ( MarketType.ASSET_CASH == match.getMarket() ) {
+			this.assetEndow -= match.getAmount();
+			this.freeAssetEndow -= match.getAmount();
+			this.cashEndow += match.getAmount() * match.getPrice();
 			
-			this.assetEndow -= sellOffer.getAmount();
-			this.freeAssetEndow -= sellOffer.getAmount();
-			this.cashEndow += sellOffer.getAmount() * sellOffer.getPrice();
+		} else if ( MarketType.LOAN_CASH == match.getMarket() ) {
 			
-		} else if ( MarketType.LOAN_CASH == sellOffer.getMarketType() ) {
-			
-		} else if ( MarketType.ASSET_LOAN == sellOffer.getMarketType() ) {
+		} else if ( MarketType.ASSET_LOAN == match.getMarket() ) {
 			
 		}
 	}
 	
-	public void execBuyTransaction( AskOffering sellOffer ) {
+	public void execBuyTransaction( Match match ) {
 		// NOTE: executing a buy-transaction on this agent which means this agent is BUYING from the "other" agent
 		// the Ask-Offer is the sell-offer of the "other" agent who is the seller
 		// the matching Bid-offer is this agents Bid-offer, thus its a buy transaction
 		
-		BidOffering buyOffer = this.currentBidOfferings[ sellOffer.getMarketType().ordinal() ];
-		
-		// NOTE: just for debugging purpose, should at this point never happen
-		if ( buyOffer.getMarketType() != sellOffer.getMarketType() ) {
-			System.err.println( "Warning: attempt of executing a buy- and Sell-Offer on different markets!" );
-			return;
-		}
-		
-		if ( MarketType.ASSET_CASH == buyOffer.getMarketType() ) {
-			//double price = ( buyOffer.getPrice() + sellOffer.getPrice() ) / 2.0;
-
-			this.assetEndow += buyOffer.getAmount();
-			this.freeAssetEndow += buyOffer.getAmount();
-			this.cashEndow -= buyOffer.getAmount() * buyOffer.getPrice();
+		if ( MarketType.ASSET_CASH == match.getMarket() ) {
+			this.assetEndow += match.getAmount();
+			this.freeAssetEndow += match.getAmount();
+			this.cashEndow -= match.getAmount() * match.getPrice();
 			
-		} else if ( MarketType.LOAN_CASH == buyOffer.getMarketType() ) {
+		} else if ( MarketType.LOAN_CASH == match.getMarket() ) {
 			
-		} else if ( MarketType.ASSET_LOAN == buyOffer.getMarketType() ) {
+		} else if ( MarketType.ASSET_LOAN == match.getMarket() ) {
 			
 		}
 	}
