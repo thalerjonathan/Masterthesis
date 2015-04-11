@@ -101,6 +101,8 @@ Zeitpunkte
 					-> FULLY_CONNECTED und ASCENDING_CONNECTED MIT BP miteinander vergleichen
 					-> ?
 	
+		-> TODO		Recatorings
+					- 
 	Mai: SCHREIBEN beginnen
 		-> TODO		Paper berschreiben
 		-> TODO		implementierung beschreiben und unterschiede zum paper

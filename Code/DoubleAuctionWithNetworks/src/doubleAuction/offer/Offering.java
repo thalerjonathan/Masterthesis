@@ -3,20 +3,27 @@ import agents.Agent;
 
 public abstract class Offering {
 	
-	//abstract super class for both ask and bid offerings
-	protected MarketType marketType;
-	protected int NUMMARKETS;
-	protected double assetPrice;
-	protected double finalAssetPrice;
-	protected double assetAmount;
 	protected Agent agent;
+	protected MarketType marketType;
 	
-	public double getAssetPrice() {
-		return assetPrice;
+	protected double finalAssetPrice;
+	
+	protected double price;
+	protected double amount;
+
+	public Offering( double price, double amount, Agent agent, MarketType marketType ) {
+		this.price = price;
+		this.amount = amount;
+		this.agent = agent;
+		this.marketType = marketType;
+	}
+	
+	public double getPrice() {
+		return price;
 	}
 
-	public double getAssetAmount() {
-		return assetAmount;
+	public double getAmount() {
+		return amount;
 	}
 
 	public Agent getAgent() {
@@ -27,14 +34,6 @@ public abstract class Offering {
 		return marketType;
 	}
 
-	public void setMarketType(MarketType marketType) {
-		this.marketType = marketType;
-	}
-
-	public void setAssetPrice(double assetPrice) {
-		this.assetPrice = assetPrice;
-	}
-
 	public double getFinalAssetPrice() {
 		return finalAssetPrice;
 	}
@@ -42,8 +41,12 @@ public abstract class Offering {
 	public void setFinalAssetPrice(double finalAssetPrice) {
 		this.finalAssetPrice = finalAssetPrice;
 	}
-
-	public void setAssetAmount(double assetAmount) {
-		this.assetAmount = assetAmount;
+	
+	public void setAmount(double a) {
+		this.amount = a;
+	}
+	
+	public void setPrice( double p ) {
+		this.price = p;
 	}
 }

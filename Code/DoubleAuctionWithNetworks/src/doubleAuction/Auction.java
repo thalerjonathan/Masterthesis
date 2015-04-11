@@ -98,23 +98,22 @@ public class Auction {
 				// and will lead to a reset of the best offerings as they are invalidated because
 				// of change in wealth.
 				// won't calculate a new offering, this is only done once in each round
-				if ( a.execTransaction( match, true ) )  {
-					transaction.matched( match );
-					transaction.setTransNum(this.numTrans++);
-					
-					List<Agent> finalAgents = null;
-					
-					// WARNING: sucks up huge amount of memory if many TXs
-					if ( keepAgentHistory ) {
-						finalAgents = agents.cloneAgents();
-					} else {
-						finalAgents = agents.getOrderedList();
-					}
-
-					transaction.setFinalAgents( finalAgents );
-					
-					return true;
+				transaction.exec( match );
+				transaction.matched( match );
+				transaction.setTransNum(this.numTrans++);
+				
+				List<Agent> finalAgents = null;
+				
+				// WARNING: sucks up huge amount of memory if many TXs
+				if ( keepAgentHistory ) {
+					finalAgents = agents.cloneAgents();
+				} else {
+					finalAgents = agents.getOrderedList();
 				}
+
+				transaction.setFinalAgents( finalAgents );
+				
+				return true;
 			}
 		}
 		
@@ -143,22 +142,20 @@ public class Auction {
 	private boolean canTrade( Agent a1, Agent a2 ) {
 		for ( int i = 0; i < Markets.NUMMARKETS; ++i ) {
 			// asume neighbour has higher H => must be the buyer
-			int sellerOfferingsCount = a1.getBestAskOfferings().get( i ).size();
-			int buyerOfferingsCount = a2.getBestBidOfferings().get( i ).size();
+			boolean sellerHasOfferings = null != a1.getBestAskOfferings()[ i ];
+			boolean buyerHasOfferings = null != a2.getBestBidOfferings()[ i ];
 			
 			// adjust: neighbour has higher H => must be the buyer
 			if ( a1.getH() > a2.getH() ) {
-				buyerOfferingsCount = a1.getBestBidOfferings().get( i ).size();
-				sellerOfferingsCount = a2.getBestAskOfferings().get( i ).size();
+				buyerHasOfferings = null != a1.getBestBidOfferings()[ i ];
+				sellerHasOfferings = null != a2.getBestAskOfferings()[ i ];
 			}
 			
 			// if the buyer has still some bid offers AND the seller has still some ask offers, then they might still match
-			if ( sellerOfferingsCount > 0 && buyerOfferingsCount > 0  ) {
+			if ( buyerHasOfferings && sellerHasOfferings ) {
 				return true;
 			}
 		}
-		
-		// TODO: if bider has still cash but not enough to match neighbour asker, then its also not possible
 		
 		return false;
 	}

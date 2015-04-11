@@ -18,14 +18,6 @@ public class AskOfferingWithLoans extends AskOffering {
 		this.loanAmount = loanAmount;
 	}
 
-	public AskOfferingWithLoans( double assetPrice, double loanPrice, 
-								int loanType, double loanPromise, double loanAmount, Agent agent, MarketType marketType ) {
-		super(assetPrice, agent, marketType);
-		this.loanPrice = loanPrice;
-		this.loanPromise = loanPromise;
-		this.loanAmount = loanAmount;
-	}
-
 	public double getLoanPrice() {
 		return loanPrice;
 	}
@@ -44,15 +36,17 @@ public class AskOfferingWithLoans extends AskOffering {
 	    if (agent == offer.getAgent())
 	    	return false;
 	    
+	    // TODO: test market-type of other offer!
+		
 		if (Markets.TRADE_ONLY_FULL_UNITS)  {
 			//asset against cash
 			if ( MarketType.ASSET_CASH == this.marketType )  {  
-				return (offer.getAssetPrice() >= assetPrice) ;
+				return (offer.getPrice() >= price) ;
 				
 			//asset against loan
 			} else if ( MarketType.ASSET_LOAN == this.marketType ) {		
 				// buyer must offer a higher or equal price for the asset AND a lower or equal price for the loan
-				return ((offer.getAssetPrice() >= assetPrice) && (((BidOfferingWithLoans)offer).getLoanPrice() <= loanPrice));
+				return ((offer.getPrice() >= price) && (((BidOfferingWithLoans)offer).getLoanPrice() <= loanPrice));
 				//	return ((AgentWithLoans)agent).matchesAsk(offer.getAssetPrice(),((BidOfferingWithLoans)offer).getLoanPrice(),this);
 				
 			//just loan
@@ -74,11 +68,11 @@ public class AskOfferingWithLoans extends AskOffering {
 		if (Markets.TRADE_ONLY_FULL_UNITS) {
 			if ( MarketType.ASSET_CASH == this.marketType )  {
 				//asset against cash
-				return (offer.getAssetPrice() >= assetPrice) ;
+				return (offer.getPrice() >= price) ;
 					
 			} else if ( MarketType.ASSET_LOAN == this.marketType ) {
 				//asset against loan				
-				return ((offer.getAssetPrice() >= assetPrice) && (((AskOfferingWithLoans)offer).getLoanPrice() <= loanPrice));
+				return ((offer.getPrice() >= price) && (((AskOfferingWithLoans)offer).getLoanPrice() <= loanPrice));
 				
 			} else if ( MarketType.LOAN_CASH == this.marketType ) {
 				return ( (((AskOfferingWithLoans)offer).getLoanPrice() <= loanPrice) 

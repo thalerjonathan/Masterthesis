@@ -33,6 +33,7 @@ import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 
 import agents.Agent;
+import agents.markets.Markets;
 import doubleAuction.offer.AskOffering;
 import doubleAuction.offer.AskOfferingWithLoans;
 import doubleAuction.offer.BidOffering;
@@ -43,7 +44,7 @@ import doubleAuction.offer.MarketType;
 public class OfferBookFrame extends JFrame {
 	private JButton refreshButton;
 	private JButton cloneButton;
-	private JButton visParetoFrontiersButton;
+	//private JButton visParetoFrontiersButton;
 	
 	private JSpinner agentIndexSpinner;
 
@@ -90,8 +91,8 @@ public class OfferBookFrame extends JFrame {
 		
 		this.agentInfoPanel.setAgent( a );
 		
-		List<List<AskOffering>> askOfferings = a.getBestAskOfferings();
-		List<List<BidOffering>> bidOfferings = a.getBestBidOfferings();
+		AskOffering[] askOfferings = a.getBestAskOfferings();
+		BidOffering[] bidOfferings = a.getBestBidOfferings();
 		
 		int numMarkets = 3;
 		
@@ -101,23 +102,9 @@ public class OfferBookFrame extends JFrame {
 			this.bidOffersBookTable[ i ].clearAll();
 		}
 		
-		if ( null == askOfferings || null == bidOfferings ) {
-			return;
-		}
-		
-		for ( int i = 0; i < askOfferings.size(); ++i ) {
-			List<AskOffering> askOfferingsMarket = askOfferings.get( i );
-			List<BidOffering> bidOfferingsMarket = bidOfferings.get( i );
-			
-			for ( int j = 0; j < askOfferingsMarket.size(); ++j ) {
-				AskOffering ask = askOfferingsMarket.get( j );
-				this.askOffersBookTable[ i ].addAskOffering( ask );
-			}
-			
-			for ( int j = 0; j < bidOfferingsMarket.size(); ++j ) {
-				BidOffering bid = bidOfferingsMarket.get( j );
-				this.bidOffersBookTable[ i ].addBidOffering( bid );
-			}
+		for ( int i = 0; i < Markets.NUMMARKETS; ++i ) {
+			this.askOffersBookTable[ i ].addAskOffering( askOfferings[ i ] );
+			this.bidOffersBookTable[ i ].addBidOffering( bidOfferings[ i ] );
 		}
 	}
 	
@@ -194,7 +181,7 @@ public class OfferBookFrame extends JFrame {
 		
 		this.refreshButton = new JButton( "Refresh" );
 		this.cloneButton = new JButton( "Clone" );
-		this.visParetoFrontiersButton = new JButton( "Visualize Pareto-Frontiers" );
+		//this.visParetoFrontiersButton = new JButton( "Visualize Pareto-Frontiers" );
 
 		this.agentIndexSpinner = new JSpinner( new SpinnerNumberModel( agentIndex, 0, OfferBookFrame.agents.size() - 1, 1 ) );
 		this.agentIndexSpinner.addChangeListener( new ChangeListener() {
@@ -219,23 +206,25 @@ public class OfferBookFrame extends JFrame {
 			}
 		});
 		
+		/*
 		this.visParetoFrontiersButton.addActionListener( new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				visualizeParetoFrontiers();
 			}
 		});
+		*/
 		
 		JPanel controlsPanel = new JPanel();
 		controlsPanel.add( this.refreshButton );
 		controlsPanel.add( this.cloneButton );
-		controlsPanel.add( this.visParetoFrontiersButton );
+		//controlsPanel.add( this.visParetoFrontiersButton );
 		controlsPanel.add( this.agentIndexSpinner );
 
 		this.marketTabPane = new JTabbedPane();
-		this.marketTabPane.addTab( "Asset -> Cash", marketPanels[ 0 ] );
-		this.marketTabPane.addTab( "Asset -> Loan", marketPanels[ 1 ] );
-		//this.marketTabPane.addTab( "Loan -> Cash", marketPanels[ 2 ] );
+		this.marketTabPane.addTab( "Asset / Cash", marketPanels[ 0 ] );
+		this.marketTabPane.addTab( "Asset / Loan", marketPanels[ 1 ] );
+		this.marketTabPane.addTab( "Loan / Cash", marketPanels[ 2 ] );
 		this.marketTabPane.setSelectedIndex( tabIndex );
 		
 		this.agentInfoPanel = new AgentInfoPanel();
@@ -264,6 +253,7 @@ public class OfferBookFrame extends JFrame {
 		this.getContentPane().add( this.marketTabPane, c );
 	}
 	
+	/*
 	private void visualizeParetoFrontiers() {
 		int agentIndex = (int) this.agentIndexSpinner.getValue();
 		Agent a = OfferBookFrame.agents.get( agentIndex );
@@ -291,13 +281,13 @@ public class OfferBookFrame extends JFrame {
 		for ( int i = 0; i < askOfferingsMarket.size(); ++i ) {
 			AskOfferingWithLoans ask = ( AskOfferingWithLoans ) askOfferingsMarket.get( i );
 			
-			askOffersSeries.add( ask.getAssetPrice(), ask.getLoanPrice() );
+			askOffersSeries.add( ask.getPrice(), ask.getLoanPrice() );
 		}
 
 		for ( int i = 0; i < bidOfferingsMarket.size(); ++i ) {
 			BidOfferingWithLoans bid = ( BidOfferingWithLoans ) bidOfferingsMarket.get( i );
 
-			bidOffersSeries.add( bid.getAssetPrice(), bid.getLoanPrice() );
+			bidOffersSeries.add( bid.getPrice(), bid.getLoanPrice() );
 		}
 
 		askParetoFrontier.addSeries(askOffersSeries);
@@ -316,6 +306,7 @@ public class OfferBookFrame extends JFrame {
 		paretoFrontierFrame.pack();
 		paretoFrontierFrame.setVisible( true );
 	}
+	*/
 	
 	private static void createAndShowInstance( int agentIndex, int tabIndex ) {
 		OfferBookFrame instance = new OfferBookFrame( agentIndex, tabIndex );

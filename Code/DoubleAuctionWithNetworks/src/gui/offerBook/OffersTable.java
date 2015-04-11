@@ -53,36 +53,44 @@ public class OffersTable extends JTable {
 	}
 	
 	public void addBidOffering( BidOffering bid ) {
+		if ( null == bid ) {
+			return;
+		}
+		
 		if ( bid instanceof BidOfferingWithLoans ) {
 			this.model.addRow( new Object[] {
-					MainWindow.TRADING_VALUES_FORMAT.format( bid.getAssetAmount() ),
-					MainWindow.TRADING_VALUES_FORMAT.format( bid.getAssetPrice() ),
+					MainWindow.TRADING_VALUES_FORMAT.format( bid.getAmount() ),
+					MainWindow.TRADING_VALUES_FORMAT.format( bid.getPrice() ),
 					MainWindow.TRADING_VALUES_FORMAT.format( ((BidOfferingWithLoans) bid).getLoanAmount() ),
 					MainWindow.TRADING_VALUES_FORMAT.format( ((BidOfferingWithLoans) bid).getLoanPrice() )
 			});
 			
 		} else {
 			this.model.addRow( new Object[] {
-					MainWindow.TRADING_VALUES_FORMAT.format( bid.getAssetAmount() ),
-					MainWindow.TRADING_VALUES_FORMAT.format( bid.getAssetPrice() ),
+					MainWindow.TRADING_VALUES_FORMAT.format( bid.getAmount() ),
+					MainWindow.TRADING_VALUES_FORMAT.format( bid.getPrice() ),
 					"-", "-"
 			});
 		}
 	}
 	
 	public void addAskOffering( AskOffering ask ) {
+		if ( null == ask ) {
+			return;
+		}
+		
 		if ( ask instanceof AskOfferingWithLoans ) {
 			this.model.addRow( new Object[] {
-					MainWindow.TRADING_VALUES_FORMAT.format( ask.getAssetAmount() ),
-					MainWindow.TRADING_VALUES_FORMAT.format( ask.getAssetPrice() ),
+					MainWindow.TRADING_VALUES_FORMAT.format( ask.getAmount() ),
+					MainWindow.TRADING_VALUES_FORMAT.format( ask.getPrice() ),
 					MainWindow.TRADING_VALUES_FORMAT.format( ((AskOfferingWithLoans) ask).getLoanAmount() ),
 					MainWindow.TRADING_VALUES_FORMAT.format( ((AskOfferingWithLoans) ask).getLoanPrice() ),
 			});
 			
 		} else {
 			this.model.addRow( new Object[] {
-					MainWindow.TRADING_VALUES_FORMAT.format( ask.getAssetAmount() ),
-					MainWindow.TRADING_VALUES_FORMAT.format( ask.getAssetPrice() ),
+					MainWindow.TRADING_VALUES_FORMAT.format( ask.getAmount() ),
+					MainWindow.TRADING_VALUES_FORMAT.format( ask.getPrice() ),
 					"-", "-"
 			});
 		}

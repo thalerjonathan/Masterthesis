@@ -3,7 +3,7 @@ package agents.markets;
 // the loan-market
 public class Loans {
 	protected double loanPrice;
-	protected double j;
+	protected double faceValue;
 	protected double[] priceLag;
 	protected int lagCount;
 	protected double MAXPRICE = 1;
@@ -14,7 +14,7 @@ public class Loans {
 
 	public Loans( double loanPrice, double faceValue )  {
 		this.loanPrice = loanPrice;
-		this.j = faceValue;
+		this.faceValue = faceValue;
 		priceLag = new double[LAGSIZE];
 		lagCount = 0;
 	}
@@ -68,7 +68,7 @@ public class Loans {
 		lagCount++;		
 	}
 	
-	public double getJ()  {
-		return this.j;
+	public double getFaceValue()  {
+		return this.faceValue;
 	}
 }

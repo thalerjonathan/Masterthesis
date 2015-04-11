@@ -541,14 +541,14 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 	void addSuccessfulTX( Transaction tx, boolean forceRedraw ) {
 		long currMillis = System.currentTimeMillis();
 		if ( MainWindow.REPAINT_WEALTH_WHENRUNNING_INTERVAL < currMillis - this.lastRepaintTime || forceRedraw ) {
+			this.agentWealthPanel.setAgents( this.agents.getOrderedList() );
+
 			this.agentWealthPanel.repaint();
 			this.lastRepaintTime = currMillis;
 		}
 
 		this.successfulTx.add( tx );
 		this.txHistoryTable.addTx( tx );
-		
-		this.agentWealthPanel.setAgents( this.agents.getOrderedList() );
 
 		this.highlightTx( tx );
 	}
@@ -852,7 +852,6 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 	}
 	
 	private void highlightTx( Transaction tx ) {
-		
 		// no need for anything highlighting-related when no network-panel available
 		if ( false == this.networkPanel.isVisible() ) {
 			return;

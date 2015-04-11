@@ -21,8 +21,7 @@ public class AgentInfoPanel extends JPanel {
 	private JLabel loansTakenLabel;
 	
 	private JLabel expectedAssetPriceLabel;
-	private JLabel expectedLoansBuyLabel;
-	private JLabel expectedLoansSellLabel;
+	private JLabel expectedLoansPriceLabel;
 
 	public AgentInfoPanel() {
 		this.createControls();
@@ -37,8 +36,7 @@ public class AgentInfoPanel extends JPanel {
 
 		this.freeAssetEndowLabel.setText( MainWindow.TRADING_VALUES_FORMAT.format( a.getFreeAssetEndow() ) );
 		
-		this.expectedLoansBuyLabel.setText( MainWindow.TRADING_VALUES_FORMAT.format( a.getLimitPriceLoansBuy() ) );
-		this.expectedLoansSellLabel.setText( MainWindow.TRADING_VALUES_FORMAT.format( a.getLimitPriceLoansSell() ) );
+		this.expectedLoansPriceLabel.setText( MainWindow.TRADING_VALUES_FORMAT.format( a.getLimitPriceLoans() ) );
 		this.loansGivenLabel.setText( MainWindow.TRADING_VALUES_FORMAT.format( a.getLoanGiven() ) );
 		this.loansTakenLabel.setText( MainWindow.TRADING_VALUES_FORMAT.format( a.getLoanTaken() ) );
 	}
@@ -52,8 +50,7 @@ public class AgentInfoPanel extends JPanel {
 		JLabel loansGivenInfoLabel = new JLabel( "Loans Given: " );
 		JLabel loansTakenInfoLabel = new JLabel( "Loans Taken: " );
 		
-		JLabel expectedLoansBuyInfoLabel = new JLabel( "Loans Limit-Price Buy: " );
-		JLabel expectedLoansSellInfoLabel = new JLabel( "Loans Limit-Price Sell: " );
+		JLabel expectedLoansPriceInfoLabel = new JLabel( "Loans Limit-Price: " );
 		JLabel expectedAssetPriceInfoLabel = new JLabel( "Assets Limit-Price: " );
 		
 		this.idLabel = new JLabel();
@@ -66,8 +63,7 @@ public class AgentInfoPanel extends JPanel {
 		this.loansGivenLabel = new JLabel();
 		this.loansTakenLabel = new JLabel();
 		
-		this.expectedLoansBuyLabel = new JLabel();
-		this.expectedLoansSellLabel = new JLabel();
+		this.expectedLoansPriceLabel = new JLabel();
 		this.expectedAssetPriceLabel = new JLabel();
 
 		this.setLayout( new GridBagLayout() );
@@ -102,13 +98,10 @@ public class AgentInfoPanel extends JPanel {
 		
 		c.gridx = 0;
 		c.gridy = 3;
-		this.add( expectedLoansBuyInfoLabel, c );
+		this.add( expectedAssetPriceInfoLabel, c );
 		c.gridx = 2;
 		c.gridy = 3;
-		this.add( expectedLoansSellInfoLabel, c );
-		c.gridx = 4;
-		c.gridy = 3;
-		this.add( expectedAssetPriceInfoLabel, c );
+		this.add( expectedLoansPriceInfoLabel, c );
 		
 		
 		
@@ -138,12 +131,9 @@ public class AgentInfoPanel extends JPanel {
 		
 		c.gridx = 1;
 		c.gridy = 3;
-		this.add( this.expectedLoansBuyLabel, c );
+		this.add( this.expectedAssetPriceLabel, c );
 		c.gridx = 3;
 		c.gridy = 3;
-		this.add( this.expectedLoansSellLabel, c );
-		c.gridx = 5;
-		c.gridy = 3;
-		this.add( this.expectedAssetPriceLabel, c );
+		this.add( this.expectedLoansPriceLabel, c );
 	}
 }
