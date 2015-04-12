@@ -9,8 +9,7 @@ import javax.swing.ListSelectionModel;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableRowSorter;
 
-import doubleAuction.offer.AskOfferingWithLoans;
-import doubleAuction.offer.BidOfferingWithLoans;
+import doubleAuction.tx.Match;
 import doubleAuction.tx.Transaction;
 
 @SuppressWarnings("serial")
@@ -81,19 +80,23 @@ public class TxHistoryTable extends JTable {
 		"Loan Price", "Loan Ask", "Loan Bid", "Loan" 
 		*/
 		
+		Match match = tx.getMatch();
+		
 		int txId = tx.getTransNum();
 		int sweepCount = tx.getSweepCount();
-		String askerH = MainWindow.AGENT_H_FORMAT.format( tx.getFinalAskH() );
-		String biderH = MainWindow.AGENT_H_FORMAT.format( tx.getFinalBidH() );
-		String assetAmount = MainWindow.TRADING_VALUES_FORMAT.format( tx.getAssetAmount() );
-		String assetPrice = MainWindow.TRADING_VALUES_FORMAT.format( tx.getAssetPrice() );
-		String assetAskPrice = MainWindow.TRADING_VALUES_FORMAT.format( tx.getFinalAskAssetPrice() );
-		String assetBidPrice = MainWindow.TRADING_VALUES_FORMAT.format( tx.getFinalBidAssetPrice() );
+		String askerH = MainWindow.AGENT_H_FORMAT.format( match.getSellOffer().getAgent().getH() );
+		String biderH = MainWindow.AGENT_H_FORMAT.format( match.getBuyOffer().getAgent().getH() );
+		String assetAmount = MainWindow.TRADING_VALUES_FORMAT.format( match.getAmount() );
+		String assetPrice = MainWindow.TRADING_VALUES_FORMAT.format( match.getPrice()  );
+		String assetAskPrice = MainWindow.TRADING_VALUES_FORMAT.format( match.getSellOffer().getPrice() );
+		String assetBidPrice = MainWindow.TRADING_VALUES_FORMAT.format( match.getBuyOffer().getPrice() );
 		String loanAmount = "-";
 		String loanPrice = "-";
 		String loanAskPrice = "-";
 		String loanBidPrice = "-";
 		
+		/*
+		 * TODO
 		if ( tx.getMatchingAskOffer() instanceof AskOfferingWithLoans ) {
 			loanAmount = MainWindow.TRADING_VALUES_FORMAT.format( tx.getLoanAmount() );
 			loanPrice = MainWindow.TRADING_VALUES_FORMAT.format( tx.getLoanPrice() );
@@ -103,7 +106,8 @@ public class TxHistoryTable extends JTable {
 		if ( tx.getMatchingBidOffer() instanceof BidOfferingWithLoans ) {
 			loanBidPrice = MainWindow.TRADING_VALUES_FORMAT.format( tx.getFinalBidLoanPrice() );
 		}
-
+		 */
+		
 		this.tableModel.addRow( new Object[] {
 				txId,
 				sweepCount,

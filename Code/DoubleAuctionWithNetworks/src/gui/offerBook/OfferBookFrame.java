@@ -1,8 +1,5 @@
 package gui.offerBook;
 
-import gui.MainWindow;
-
-import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
@@ -26,18 +23,10 @@ import javax.swing.SpinnerNumberModel;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-import org.jfree.chart.ChartFactory;
-import org.jfree.chart.ChartPanel;
-import org.jfree.chart.JFreeChart;
-import org.jfree.data.xy.XYSeries;
-import org.jfree.data.xy.XYSeriesCollection;
-
 import agents.Agent;
 import agents.markets.Markets;
 import doubleAuction.offer.AskOffering;
-import doubleAuction.offer.AskOfferingWithLoans;
 import doubleAuction.offer.BidOffering;
-import doubleAuction.offer.BidOfferingWithLoans;
 import doubleAuction.offer.MarketType;
 
 @SuppressWarnings("serial")
@@ -222,9 +211,10 @@ public class OfferBookFrame extends JFrame {
 		controlsPanel.add( this.agentIndexSpinner );
 
 		this.marketTabPane = new JTabbedPane();
-		this.marketTabPane.addTab( "Asset / Cash", marketPanels[ 0 ] );
+		this.marketTabPane.addTab( "Cash / Asset", marketPanels[ 0 ] );
+		this.marketTabPane.addTab( "Cash / Loan", marketPanels[ 2 ] );
 		this.marketTabPane.addTab( "Asset / Loan", marketPanels[ 1 ] );
-		this.marketTabPane.addTab( "Loan / Cash", marketPanels[ 2 ] );
+
 		this.marketTabPane.setSelectedIndex( tabIndex );
 		
 		this.agentInfoPanel = new AgentInfoPanel();

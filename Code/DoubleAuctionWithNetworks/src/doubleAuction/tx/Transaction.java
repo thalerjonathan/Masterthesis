@@ -1,5 +1,6 @@
 package doubleAuction.tx;
 
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
@@ -13,40 +14,31 @@ import doubleAuction.offer.BidOffering;
 import doubleAuction.tx.Match.MatchDirection;
 
 public class Transaction  {
-	private boolean reachedEquilibrium;
-	private double assetPrice;
-	private double assetAmount = -1;
-	private double finalAskAssetPrice;
-	private double finalBidAssetPrice;
-	private double limitPrice;
-	private double finalAskH;
-	private double finalBidH;
-	private int transNum;
 	
-	private Markets markets;
+	private int transNum;
+	private int sweepCount;
+	private boolean reachedEquilibrium;
+	
+	private Match match;
+	
 	private AskOffering[] bestGlobalAskOfferings;
 	private BidOffering[] bestGlobalBidOfferings;
 	
-	private AskOffering matchingAskOffer;
-	private BidOffering matchingBidOffer;
+	private AskOffering[] bestLocalAskOfferings;
+	private BidOffering[] bestLocalBidOfferings;
 	
 	// NOTE: if a transaction was successful the agents are cloned (see agent.clone) and 
 	// stored in this list
 	private List<Agent> finalAgents;
-	
-	private int sweepCount;
-	
-	private double loanPrice=0;
-	private double loanAmount;
-	private double finalAskLoanPrice;
-	private double finalBidLoanPrice;
-	
+
 	private final static RandomDataImpl PERMUTATOR = new RandomDataImpl();
 	
-	public Transaction( Markets markets ) {
-		this.markets = markets;
-		bestGlobalAskOfferings = new AskOffering[ Markets.NUMMARKETS ];
-		bestGlobalBidOfferings = new BidOffering[ Markets.NUMMARKETS ];
+	public Transaction() {
+		this.bestGlobalAskOfferings = new AskOffering[ Markets.NUMMARKETS ];
+		this.bestGlobalBidOfferings = new BidOffering[ Markets.NUMMARKETS ];
+		
+		this.bestLocalAskOfferings = new AskOffering[ Markets.NUMMARKETS ];
+		this.bestLocalBidOfferings = new BidOffering[ Markets.NUMMARKETS ];
 	}
 
 	public void exec( Match match ) {
@@ -60,7 +52,7 @@ public class Transaction  {
 		buyer.execBuyTransaction( match );
 		seller.execSellTransaction( match );
 		
-		this.matched( match );
+		this.match = match;
 	}
 	
 	public Match findMatchesByRandomNeighborhood( Agent a, AgentNetwork agents ) {
@@ -83,7 +75,7 @@ public class Transaction  {
 			return null;
 		}
 		
-		return this.matchOffers(askOfferings, bidOfferings, bestAsks, bestBids );
+		return this.matchOffers( askOfferings, bidOfferings, bestAsks, bestBids );
 	}
 	
 	public Match findMatchesByBestNeighborhood( Agent a, AgentNetwork agents ) {
@@ -92,9 +84,9 @@ public class Transaction  {
 		AskOffering[] agentAsk = a.getCurrentAskOfferings();
 		BidOffering[] agentBid = a.getCurrentBidOfferings();
 		
-		AskOffering[] bestAsks = new AskOffering[ Markets.NUMMARKETS ];
-		BidOffering[] bestBids = new BidOffering[ Markets.NUMMARKETS ];
-
+		Arrays.fill( this.bestLocalAskOfferings, null );
+		Arrays.fill( this.bestLocalBidOfferings, null );
+		
 		// NOTE: each market can have multiple bestAsk/bestBids because dominate leads to a single bestAsk/bestBid only in case of Asset->Cash market
 		// store offerings over multiple runs, findMatches keeps track of multiple offerings
 		// find best ask and bid offers in neighborhood
@@ -104,11 +96,11 @@ public class Transaction  {
 			AskOffering[] neighbourAsk = neighbor.getBestAskOfferings();
 			for ( int i = 0; i < Markets.NUMMARKETS; ++i ) {
 				AskOffering ask = neighbourAsk[ i ];
-				AskOffering bestAsk = bestAsks[ i ];
+				AskOffering bestAsk = this.bestLocalAskOfferings[ i ];
 						
 				if ( null != ask ) {
 					if ( bestAsk == null || ask.dominates( bestAsk ) ) {
-						bestAsks[ i ] = ask;
+						this.bestLocalAskOfferings[ i ] = ask;
 					}
 				}
 			}
@@ -116,39 +108,39 @@ public class Transaction  {
 			BidOffering[] neighbourBid = neighbor.getBestBidOfferings();
 			for ( int i = 0; i < Markets.NUMMARKETS; ++i ) {
 				BidOffering bid = neighbourBid[ i ];
-				BidOffering bestBid = bestBids[ i ];
+				BidOffering bestBid = this.bestLocalBidOfferings[ i ];
 						
 				if ( null != bid ) {
 					if ( bestBid == null || bid.dominates( bestBid ) ) {
-						bestBids[ i ] = bid;
+						this.bestLocalBidOfferings[ i ] = bid;
 					}
 				}
 			}
 		}
 		
-		return this.matchOffers( agentAsk, agentBid, bestAsks, bestBids );
+		return this.matchOffers( agentAsk, agentBid, bestLocalAskOfferings, bestLocalBidOfferings );
 	}
 	
 	public Match findMatchesByGlobalOffers( Agent a, AgentNetwork agents ) {
 		AskOffering[] askOfferings = a.getCurrentAskOfferings();
 		BidOffering[] bidOfferings = a.getCurrentBidOfferings();
 		
-		AskOffering[] bestAsks = new AskOffering[ Markets.NUMMARKETS ];
-		BidOffering[] bestBids = new BidOffering[ Markets.NUMMARKETS ];
-
+		Arrays.fill( this.bestLocalAskOfferings, null );
+		Arrays.fill( this.bestLocalBidOfferings, null );
+		
 		for ( int i = 0; i < Markets.NUMMARKETS; ++i ) {
 			AskOffering ask = this.bestGlobalAskOfferings[ i ];
 			BidOffering bid = this.bestGlobalBidOfferings[ i ];
 			
 			if ( null != ask ) {
 				if ( agents.isNeighbor( a, ask.getAgent() ) ) {
-					bestAsks[ i ] = ask;
+					this.bestLocalAskOfferings[ i ] = ask;
 				}
 			}
 
 			if ( null != bid ) {
 				if ( agents.isNeighbor( a, bid.getAgent() ) ) {
-					bestBids[ i ] = bid;
+					this.bestLocalBidOfferings[ i ] = bid;
 				}
 			}
 		}
@@ -156,7 +148,7 @@ public class Transaction  {
 		// add offerings to the global offer-book
 		this.addOfferings( askOfferings, bidOfferings );
 		
-		return this.matchOffers( askOfferings, bidOfferings, bestAsks, bestBids );
+		return this.matchOffers( askOfferings, bidOfferings, this.bestLocalAskOfferings, this.bestLocalBidOfferings );
 	}
 	
 	private Match matchOffers( AskOffering[] agentAskOfferings, BidOffering[] agentBidOfferings, 
@@ -202,7 +194,107 @@ public class Transaction  {
 		
 		return null;
 	}
+	
+	public void updateBestAskOfferings( AskOffering offer )   {
+		int mkt = offer.getMarketType().ordinal();
+		AskOffering bestAsk = bestGlobalAskOfferings[ mkt ];
+		
+		if ( null == bestAsk || offer.dominates( bestAsk ) ) {
+			bestGlobalAskOfferings[ mkt ] = offer;
+		}
+	}
+	
+	public void updateBestBidOfferings( BidOffering offer )   {
+		int mkt = offer.getMarketType().ordinal();
+		BidOffering bestBid = bestGlobalBidOfferings[ mkt ];
+		
+		if ( null == bestBid || offer.dominates( bestBid ) ) {
+			bestGlobalBidOfferings[ mkt ] = bestBid;
+		}
+	}
+	
+	public void addOfferings(AskOffering[] askoff, BidOffering[] bidoff)   {
+		//side effect: updates best offerings
+		for (int i=0;i<Markets.NUMMARKETS;i++)  {
+			if (askoff[i] != null)  {
+				updateBestAskOfferings(askoff[i]);
+			}				
+			if (bidoff[i] != null)  {
+				updateBestBidOfferings(bidoff[i]);
+			}				
+		}
+	}
 
+	public void clearGlobalOfferings(Agent agent) {
+		Arrays.fill( this.bestGlobalBidOfferings, null );
+		Arrays.fill( this.bestGlobalAskOfferings, null );	
+	}
+
+	public boolean removeAskOfferingsForMarket( Agent agent, int mkt ) {
+		for (int i=0; i<Markets.NUMMARKETS; ++i )  {
+			if ( null != bestGlobalAskOfferings[ i ] ) {
+				if ( bestGlobalAskOfferings[ i ].getAgent() == agent ) {
+					bestGlobalAskOfferings[ i ] = null;
+					return true;
+				}
+			}
+		}	
+		
+		return false;
+	}
+
+	public boolean removeBidOfferingsForMarket(Agent agent, int mkt) {
+		for (int i=0; i<Markets.NUMMARKETS; ++i )  {
+			if ( null != bestGlobalBidOfferings[ i ] ) {
+				if ( bestGlobalBidOfferings[ i ].getAgent() == agent ) {
+					bestGlobalBidOfferings[ i ] = null;
+					return true;
+				}
+			}
+		}	
+		
+		return false;
+	}
+
+	public Match getMatch() {
+		return this.match;
+	}
+	
+	public boolean wasSuccessful()  {
+		return this.match != null;
+	}
+
+	public int getTransNum() {
+		return transNum;
+	}
+
+	public void setTransNum(int transNum) {
+		this.transNum = transNum;
+	}
+	
+	public boolean isReachedEquilibrium() {
+		return reachedEquilibrium;
+	}
+
+	public void setReachedEquilibrium(boolean reachedEquilibrium) {
+		this.reachedEquilibrium = reachedEquilibrium;
+	}
+
+	public List<Agent> getFinalAgents() {
+		return finalAgents;
+	}
+
+	public void setFinalAgents(List<Agent> finalAgents) {
+		this.finalAgents = finalAgents;
+	}
+
+	public int getSweepCount() {
+		return sweepCount;
+	}
+
+	public void setSweepCount(int sweepCount) {
+		this.sweepCount = sweepCount;
+	}
 	/*
 	// NOTE: neighborhood must be already checked
 	private Offering[] matchOffers( AskOffering[] askOfferings, BidOffering[] bidOfferings, 
@@ -430,58 +522,6 @@ public class Transaction  {
 	}
 	*/
 	
-	public void matched( Match match )  {
-		//askOffer and BidOffer matched for a successful transaction: close transaction with price and amount of the asset
-		this.matchingBidOffer = match.getBuyOffer();
-		this.matchingAskOffer = match.getSellOffer();
-		
-		assetPrice = this.matchingAskOffer.getFinalAssetPrice();
-		this.markets.getAsset().updatePrice(assetPrice);
-		
-		/*
-		if ( MarketType.ASSET_LOAN == this.matchingBidOffer.getMarketType() )  {
-			loanPrice = ((BidOfferingWithLoans)this.matchingBidOffer).getFinalLoanPrice();
-			loanAmount = ((BidOfferingWithLoans)this.matchingBidOffer).getLoanAmount();
-			this.markets.getLoans().updatePrice(loanPrice);
-		}
-		else  {
-			loanPrice = 0;
-			loanAmount = 0;
-		}
-			
-//		if (loanType > 2)
-//			loanType = 2;
-		*/
-		assetAmount = this.matchingAskOffer.getAmount();
-		
-		finalAskAssetPrice = this.matchingAskOffer.getPrice();
-		finalBidAssetPrice = this.matchingBidOffer.getPrice();
-		finalAskH = this.matchingAskOffer.getAgent().getH();
-		finalBidH = this.matchingBidOffer.getAgent().getH();
-		/*
-		if ( MarketType.ASSET_LOAN == this.matchingAskOffer.getMarketType() )  {
-			finalAskLoanPrice = ((AskOfferingWithLoans)this.matchingAskOffer).getLoanPrice();
-			finalBidLoanPrice = ((BidOfferingWithLoans)this.matchingBidOffer).getLoanPrice();
-		}	
-		else if (match[2] != null)  {
-			finalAskLoanPrice = askOffLoan.getLoanPrice();
-			finalBidLoanPrice = ((BidOfferingWithLoans)this.matchingBidOffer).getLoanPrice();
-		}
-		else  {
-			finalAskLoanPrice = 0;
-			finalBidLoanPrice = 0;
-		}
-		*/
-	}
-
-	public AskOffering getMatchingAskOffer() {
-		return this.matchingAskOffer;
-	}
-	
-	public BidOffering getMatchingBidOffer() {
-		return this.matchingBidOffer;
-	}
-	
 	/*
 	public void matched(Offering[] match)  {
 		//askOffer and BidOffer matched for a successful transaction: close transaction with price and amount of the asset
@@ -499,163 +539,4 @@ public class Transaction  {
 		assetAmount = Math.min(matchingAskOffer.getAssetAmount(), matchingBidOffer.getAssetAmount());	
 	}
 	*/
-	
-	public boolean wasSuccessful()  {
-		return (assetAmount>0);
-	}
-	
-	public void updateBestAskOfferings( AskOffering offer )   {
-		int mkt = offer.getMarketType().ordinal();
-		AskOffering bestAsk = bestGlobalAskOfferings[ mkt ];
-		
-		if ( null == bestAsk || offer.dominates( bestAsk ) ) {
-			bestGlobalAskOfferings[ mkt ] = offer;
-		}
-	}
-	
-	public void updateBestBidOfferings( BidOffering offer )   {
-		int mkt = offer.getMarketType().ordinal();
-		BidOffering bestBid = bestGlobalBidOfferings[ mkt ];
-		
-		if ( null == bestBid || offer.dominates( bestBid ) ) {
-			bestGlobalBidOfferings[ mkt ] = bestBid;
-		}
-	}
-	
-	public void addOfferings(AskOffering[] askoff, BidOffering[] bidoff)   {
-		//side effect: updates best offerings
-		for (int i=0;i<Markets.NUMMARKETS;i++)  {
-			if (askoff[i] != null)  {
-				updateBestAskOfferings(askoff[i]);
-			}				
-			if (bidoff[i] != null)  {
-				updateBestBidOfferings(bidoff[i]);
-			}				
-		}
-	}
-
-	public void removeAllOfferings(Agent agent) {
-		for (int i=0; i<Markets.NUMMARKETS; ++i )  {
-			bestGlobalBidOfferings[ i ] = null;
-			bestGlobalAskOfferings[ i ] = null;
-		}		
-	}
-
-	public boolean removeAskOfferingsForMarket( Agent agent, int mkt ) {
-		for (int i=0; i<Markets.NUMMARKETS; ++i )  {
-			if ( null != bestGlobalAskOfferings[ i ] ) {
-				if ( bestGlobalAskOfferings[ i ].getAgent() == agent ) {
-					bestGlobalAskOfferings[ i ] = null;
-					return true;
-				}
-			}
-		}	
-		
-		return false;
-	}
-
-	public boolean removeBidOfferingsForMarket(Agent agent, int mkt) {
-		for (int i=0; i<Markets.NUMMARKETS; ++i )  {
-			if ( null != bestGlobalBidOfferings[ i ] ) {
-				if ( bestGlobalBidOfferings[ i ].getAgent() == agent ) {
-					bestGlobalBidOfferings[ i ] = null;
-					return true;
-				}
-			}
-		}	
-		
-		return false;
-	}
-	
-	public double getLimitPrice() {
-		return limitPrice;
-	}
-
-	public void setLimitPrice(double limitPrice) {
-		this.limitPrice = limitPrice;
-	}
-
-	/*
-	public void addToBestAskOfferings(AskOffering offer)  {
-		int mkt = offer.getMarketType().ordinal();
-		bestGlobalAskOfferings.get(mkt).add(offer);
-	}
-	
-	public void addToBestBidOfferings(BidOffering offer)  {
-		int mkt = offer.getMarketType().ordinal();
-		bestGlobalBidOfferings.get(mkt).add(offer);
-	}
-	*/
-	
-	public double getAssetPrice() {
-		return assetPrice;
-	}
-
-	public double getAssetAmount() {
-		return assetAmount;
-	}
-
-	public double getFinalAskAssetPrice() {
-		return finalAskAssetPrice;
-	}
-
-	public double getFinalBidAssetPrice() {
-		return finalBidAssetPrice;
-	}
-
-	public int getTransNum() {
-		return transNum;
-	}
-
-	public void setTransNum(int transNum) {
-		this.transNum = transNum;
-	}
-
-	public double getFinalAskH() {
-		return finalAskH;
-	}
-	
-	public double getFinalBidH() {
-		return finalBidH;
-	}
-	
-	public boolean isReachedEquilibrium() {
-		return reachedEquilibrium;
-	}
-
-	public void setReachedEquilibrium(boolean reachedEquilibrium) {
-		this.reachedEquilibrium = reachedEquilibrium;
-	}
-
-	public List<Agent> getFinalAgents() {
-		return finalAgents;
-	}
-
-	public void setFinalAgents(List<Agent> finalAgents) {
-		this.finalAgents = finalAgents;
-	}
-
-	public int getSweepCount() {
-		return sweepCount;
-	}
-
-	public void setSweepCount(int sweepCount) {
-		this.sweepCount = sweepCount;
-	}
-	
-	public double getLoanAmount() {
-		return loanAmount;
-	}
-	
-	public double getLoanPrice() {
-		return loanPrice;
-	}
-	
-	public double getFinalAskLoanPrice() {
-		return finalAskLoanPrice;
-	}
-	
-	public double getFinalBidLoanPrice() {
-		return finalBidLoanPrice;
-	}
 }

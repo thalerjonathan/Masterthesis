@@ -13,6 +13,7 @@ public class Match {
 	
 	private double price;
 	private double amount;
+	private double normalizedPrice;
 	
 	private MarketType market;
 	
@@ -23,7 +24,7 @@ public class Match {
 	
 	public Match( BidOffering buyOffer, AskOffering sellOffer, MatchDirection direction ) {
 		if ( sellOffer.getMarketType() != buyOffer.getMarketType() ) {
-			throw new RuntimeException( "ERROR: attempt of executing a buy- and Sell-Offer on different markets!" );
+			throw new RuntimeException( "ERROR: attempt of matching a buy- and sell-Offer on different markets!" );
 		}
 		
 		this.sellOffer = sellOffer;
@@ -39,6 +40,8 @@ public class Match {
 		}
 		
 		this.amount = Math.min( this.buyOffer.getAmount(), this.sellOffer.getAmount() );
+		
+		this.normalizedPrice = this.amount * this.price;
 	}
 
 	public AskOffering getSellOffer() {
@@ -53,6 +56,10 @@ public class Match {
 		return direction;
 	}
 
+	public double getNormalizedPrice() {
+		return this.normalizedPrice;
+	}
+	
 	public double getPrice() {
 		return price;
 	}

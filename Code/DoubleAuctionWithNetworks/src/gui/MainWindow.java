@@ -76,7 +76,7 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 	
 	private JCheckBox keepSuccTXHighCheck;
 	
-	private JCheckBox assetLoanMarketCheck;
+	private JCheckBox abmMarketCheck;
 	private JCheckBox loanCashMarketCheck;
 	private JCheckBox bpMechanismCheck;
 	
@@ -264,7 +264,7 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 			}
 		});
 		
-		this.assetLoanMarketCheck = new JCheckBox( "Asset/Loan Market" );
+		this.abmMarketCheck = new JCheckBox( "Asset/Loan Market" );
 		this.loanCashMarketCheck = new JCheckBox( "Loan/Cash Market" );
 		this.bpMechanismCheck = new JCheckBox( "Bonds Pledgeability" );
 		this.keepAgentHistoryCheck = new JCheckBox( "Keep Agent History" );
@@ -275,9 +275,9 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 		txHistoryScrollPane.setHorizontalScrollBarPolicy( JScrollPane.HORIZONTAL_SCROLLBAR_NEVER );
 		
 		// setting properties of components ////////////////////////////////////
-		this.assetLoanMarketCheck.setSelected( true );
-		this.loanCashMarketCheck.setSelected( true );
-		this.bpMechanismCheck.setSelected( true );
+		this.abmMarketCheck.setSelected( this.markets.isABM() );
+		this.loanCashMarketCheck.setSelected( this.markets.isLoanMarket() );
+		this.bpMechanismCheck.setSelected( this.markets.isBP() );
 		
 		this.nextTxButton.setEnabled( false );
 		this.advance10TxButton.setEnabled( false );
@@ -395,6 +395,27 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 		this.optimismSelection.addActionListener( this );
 		this.agentCountSpinner.addChangeListener( this );
 
+		this.bpMechanismCheck.addActionListener( new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				MainWindow.this.markets.setBP( MainWindow.this.bpMechanismCheck.isSelected() );
+			}
+		});
+		
+		this.abmMarketCheck.addActionListener( new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				MainWindow.this.markets.setABM( MainWindow.this.abmMarketCheck.isSelected() );
+			}
+		});
+		
+		this.loanCashMarketCheck.addActionListener( new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				MainWindow.this.markets.setLoanMarket( MainWindow.this.loanCashMarketCheck.isSelected() );
+			}
+		});
+
 		// adding components ////////////////////////////////////
 
 		JLabel succTxCounterInfoLabel = new JLabel( "Successful TX: " );
@@ -407,7 +428,7 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 		controlsPanel.add( this.agentCountSpinner );
 		controlsPanel.add( this.topologySelection );
 		controlsPanel.add( this.simulateButton );
-		controlsPanel.add( this.assetLoanMarketCheck );
+		controlsPanel.add( this.abmMarketCheck );
 		controlsPanel.add( this.loanCashMarketCheck );
 		controlsPanel.add( this.bpMechanismCheck );		
 		controlsPanel.add( this.keepAgentHistoryCheck );
@@ -678,6 +699,7 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 			this.networkPanel.remove( this.networkVisPanel );
 		}
 		
+		// TODO: don't create when this.agents.size() > MainWindow.AGENTS_COUNT_HIDE_NETWORK_PANEL
 		this.networkVisPanel = MainWindow.this.agents.getNetworkRenderingPanel( layout, new INetworkSelectionObserver() {
 			@Override
 			public void agentSeleted( AgentSelectedEvent agentSelectedEvent ) {
@@ -732,10 +754,10 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 						Agent a2 = null;
 						Transaction tx = MainWindow.this.successfulTx.get( i );
 
-						if ( a1 == tx.getMatchingAskOffer().getAgent() ) {
-							a2 = tx.getMatchingBidOffer().getAgent();
-						} else if ( a1 == tx.getMatchingBidOffer().getAgent() ) {
-							a2 = tx.getMatchingAskOffer().getAgent();
+						if ( a1 == tx.getMatch().getSellOffer().getAgent() ) {
+							a2 = tx.getMatch().getBuyOffer().getAgent();
+						} else if ( a1 == tx.getMatch().getBuyOffer().getAgent() ) {
+							a2 = tx.getMatch().getSellOffer().getAgent();
 						}
 						
 						if ( null != a2 ) {
@@ -792,7 +814,7 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 			this.topologySelection.setEnabled( false );
 			this.optimismSelection.setEnabled( false );
 			this.recreateButton.setEnabled( false );
-			this.assetLoanMarketCheck.setEnabled( false );
+			this.abmMarketCheck.setEnabled( false );
 			this.loanCashMarketCheck.setEnabled( false );
 			this.bpMechanismCheck.setEnabled( false );
 			this.keepAgentHistoryCheck.setEnabled( false );
@@ -815,7 +837,7 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 			this.pauseButton.setSelected( true );
 			this.pauseButton.setEnabled( true );
 			
-			Auction auction = new Auction( this.agents, this.markets );
+			Auction auction = new Auction( this.agents );
 			
 			// let simulation run in a separate thread to prevent blocking of gui
 			this.simulationThread = new SimulationThread( auction, this );
@@ -843,7 +865,7 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 			this.topologySelection.setEnabled( true );
 			this.optimismSelection.setEnabled( true );
 			this.recreateButton.setEnabled( true );
-			this.assetLoanMarketCheck.setEnabled( true );
+			this.abmMarketCheck.setEnabled( true );
 			this.loanCashMarketCheck.setEnabled( true );
 			this.bpMechanismCheck.setEnabled( true );
 			this.keepAgentHistoryCheck.setEnabled( true );
@@ -859,8 +881,8 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 	
 		this.resetNetworkHighlights();
 		
-		AskOffering askOffering = tx.getMatchingAskOffer();
-		BidOffering bidOffering = tx.getMatchingBidOffer();
+		AskOffering askOffering = tx.getMatch().getSellOffer();
+		BidOffering bidOffering = tx.getMatch().getBuyOffer();
 		
 		Agent a1 = askOffering.getAgent();
 		Agent a2 = bidOffering.getAgent();
@@ -893,8 +915,8 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 		for ( int i = 0; i < MainWindow.this.successfulTx.size(); ++i ) {
 			Transaction tx = MainWindow.this.successfulTx.get( i );
 			
-			Agent a1 = tx.getMatchingAskOffer().getAgent();
-			Agent a2 = tx.getMatchingBidOffer().getAgent();
+			Agent a1 = tx.getMatch().getSellOffer().getAgent();
+			Agent a2 = tx.getMatch().getBuyOffer().getAgent();
 
 			if ( c == MainWindow.this.agents.getConnection( a1, a2 ) ) {
 				a1.setHighlighted( true );

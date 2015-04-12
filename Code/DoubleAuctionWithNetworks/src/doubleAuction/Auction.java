@@ -6,7 +6,6 @@ import java.util.List;
 import agents.Agent;
 import agents.markets.Markets;
 import agents.network.AgentNetwork;
-import doubleAuction.offer.Offering;
 import doubleAuction.tx.Match;
 import doubleAuction.tx.Transaction;
 
@@ -14,7 +13,6 @@ public class Auction {
 	private int numTrans;
 	
 	private AgentNetwork agents;
-	private Markets markets;
 	
 	private final static int MAX_SWEEPS = 500;
 	
@@ -24,16 +22,15 @@ public class Auction {
 		RANDOM_NEIGHOUR;
 	}
 
-	public Auction( AgentNetwork agents, Markets markets ) {
+	public Auction( AgentNetwork agents ) {
 		this.agents = agents;
-		this.markets = markets;
 		
 		this.numTrans = 1;
 	}
 	
 	public Transaction executeSingleTransactionByType( MatchingType type, boolean keepAgentHistory )  {
 		int sweep = 1;
-		Transaction transaction = new Transaction( this.markets );
+		Transaction transaction = new Transaction();
 		
 		while ( sweep < Auction.MAX_SWEEPS )  {
 			transaction.setSweepCount( sweep );

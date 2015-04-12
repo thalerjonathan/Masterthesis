@@ -1,44 +1,72 @@
 package agents.markets;
 
 public class Markets {
-	public final static double TRADING_UNIT = 0.1;
+	// price when market moves UP
+	private double pU = 1.0;
+	// price when market moves DOWN
+	private double pD = 0.2;
+	// the face-value of the loan
+	private double V = 0.2;
+	
+	private boolean abm;
+	private boolean bp;
+	private boolean loanMarket;
+	
+	public final static double TRADING_UNIT_ASSET = 0.1;
+	public final static double TRADING_UNIT_LOAN = 0.2;
+	
 	public final static int NUMMARKETS = 3;
 	public final static int NUMLOANS = 1;
 	public final static int NUMMARKETTYPES = 3;
 	
-	public static boolean TRADE_ONLY_FULL_UNITS;
+	public final static boolean TRADE_ONLY_FULL_UNITS = true;
 
-	private Asset asset;
-	private Loans loans;
-	
 	public Markets() {
-		double assetPrice = 0.6;
-		double J = 0.2;
-		double initialLoanPrice = 0.2;
-		
-		TRADE_ONLY_FULL_UNITS = true;
-		
-		this.asset = new Asset( assetPrice );
-		this.loans = new Loans( initialLoanPrice, J );
+		this.abm = true;
+		this.bp = false;
+		this.loanMarket = false;
 	}
 	
+	public Markets( double pD, double pU, double V ) {
+		this();
+		this.pD = pD;
+		this.pU = pU;		
+		this.V = V;
+	}
+
+	public void setABM(boolean abm) {
+		this.abm = abm;
+	}
+
+	public void setBP(boolean bp) {
+		this.bp = bp;
+	}
+
+	public void setLoanMarket(boolean loanMarket) {
+		this.loanMarket = loanMarket;
+	}
+
 	public boolean isABM() {
-		return false;
+		return abm;
 	}
 
 	public boolean isBP() {
-		return false;
+		return bp;
 	}
 	
 	public boolean isLoanMarket() {
-		return false;
+		return loanMarket;
 	}
 	
-	public Asset getAsset() {
-		return this.asset;
+	public double pU() {
+		return this.pU;
 	}
 	
-	public Loans getLoans() {
-		return this.loans;
+	public double pD() {
+		return this.pD;
+	}
+	
+	public double V() {
+		return this.V;
 	}
 }

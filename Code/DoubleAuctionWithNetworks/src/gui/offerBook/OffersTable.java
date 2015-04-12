@@ -7,9 +7,7 @@ import javax.swing.ListSelectionModel;
 import javax.swing.table.DefaultTableModel;
 
 import doubleAuction.offer.AskOffering;
-import doubleAuction.offer.AskOfferingWithLoans;
 import doubleAuction.offer.BidOffering;
-import doubleAuction.offer.BidOfferingWithLoans;
 import doubleAuction.offer.MarketType;
 
 @SuppressWarnings("serial")
@@ -57,21 +55,11 @@ public class OffersTable extends JTable {
 			return;
 		}
 		
-		if ( bid instanceof BidOfferingWithLoans ) {
-			this.model.addRow( new Object[] {
-					MainWindow.TRADING_VALUES_FORMAT.format( bid.getAmount() ),
-					MainWindow.TRADING_VALUES_FORMAT.format( bid.getPrice() ),
-					MainWindow.TRADING_VALUES_FORMAT.format( ((BidOfferingWithLoans) bid).getLoanAmount() ),
-					MainWindow.TRADING_VALUES_FORMAT.format( ((BidOfferingWithLoans) bid).getLoanPrice() )
-			});
-			
-		} else {
-			this.model.addRow( new Object[] {
-					MainWindow.TRADING_VALUES_FORMAT.format( bid.getAmount() ),
-					MainWindow.TRADING_VALUES_FORMAT.format( bid.getPrice() ),
-					"-", "-"
-			});
-		}
+		this.model.addRow( new Object[] {
+				MainWindow.TRADING_VALUES_FORMAT.format( bid.getAmount() ),
+				MainWindow.TRADING_VALUES_FORMAT.format( bid.getPrice() ),
+				"-", "-"
+		});
 	}
 	
 	public void addAskOffering( AskOffering ask ) {
@@ -79,20 +67,10 @@ public class OffersTable extends JTable {
 			return;
 		}
 		
-		if ( ask instanceof AskOfferingWithLoans ) {
-			this.model.addRow( new Object[] {
-					MainWindow.TRADING_VALUES_FORMAT.format( ask.getAmount() ),
-					MainWindow.TRADING_VALUES_FORMAT.format( ask.getPrice() ),
-					MainWindow.TRADING_VALUES_FORMAT.format( ((AskOfferingWithLoans) ask).getLoanAmount() ),
-					MainWindow.TRADING_VALUES_FORMAT.format( ((AskOfferingWithLoans) ask).getLoanPrice() ),
-			});
-			
-		} else {
-			this.model.addRow( new Object[] {
-					MainWindow.TRADING_VALUES_FORMAT.format( ask.getAmount() ),
-					MainWindow.TRADING_VALUES_FORMAT.format( ask.getPrice() ),
-					"-", "-"
-			});
-		}
+		this.model.addRow( new Object[] {
+				MainWindow.TRADING_VALUES_FORMAT.format( ask.getAmount() ),
+				MainWindow.TRADING_VALUES_FORMAT.format( ask.getPrice() ),
+				"-", "-"
+		});
 	}
 }

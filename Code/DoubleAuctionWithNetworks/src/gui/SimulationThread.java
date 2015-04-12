@@ -7,7 +7,7 @@ import java.util.concurrent.locks.ReentrantLock;
 import javax.swing.SwingUtilities;
 
 import doubleAuction.Auction;
-import doubleAuction.offer.AskOfferingWithLoans;
+import doubleAuction.offer.MarketType;
 import doubleAuction.tx.Transaction;
 
 public class SimulationThread implements Runnable {
@@ -222,7 +222,7 @@ public class SimulationThread implements Runnable {
 						
 					} else if ( AdvanceMode.SUCCESSFUL_LOAN_TX == this.advanceMode && 
 							tx.wasSuccessful()  ) {
-						if ( tx.getMatchingAskOffer() instanceof AskOfferingWithLoans ) {
+						if ( MarketType.ASSET_LOAN == tx.getMatch().getMarket() ) {
 							this.advanceTxCountCurrent++;
 						}
 					}
