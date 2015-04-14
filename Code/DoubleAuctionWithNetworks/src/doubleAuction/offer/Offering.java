@@ -1,5 +1,6 @@
 package doubleAuction.offer;
 import agents.Agent;
+import agents.markets.MarketType;
 
 public abstract class Offering {
 	

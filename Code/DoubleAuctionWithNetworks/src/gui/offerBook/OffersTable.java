@@ -6,9 +6,9 @@ import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
 import javax.swing.table.DefaultTableModel;
 
+import agents.markets.MarketType;
 import doubleAuction.offer.AskOffering;
 import doubleAuction.offer.BidOffering;
-import doubleAuction.offer.MarketType;
 
 @SuppressWarnings("serial")
 public class OffersTable extends JTable {

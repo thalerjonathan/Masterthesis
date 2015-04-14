@@ -6,8 +6,8 @@ import java.util.concurrent.locks.ReentrantLock;
 
 import javax.swing.SwingUtilities;
 
+import agents.markets.MarketType;
 import doubleAuction.Auction;
-import doubleAuction.offer.MarketType;
 import doubleAuction.tx.Transaction;
 
 public class SimulationThread implements Runnable {

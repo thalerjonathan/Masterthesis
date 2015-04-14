@@ -1,6 +1,7 @@
 package doubleAuction.offer;
 
 import agents.Agent;
+import agents.markets.MarketType;
 
 public class AskOffering extends Offering {
 

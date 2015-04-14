@@ -153,7 +153,7 @@ public class WealthVisualizer extends JPanel {
 		g.setColor( DARK_GREEN );
 		g.drawLine( LEGEND_BOX_X + 5, d.height - LEGEND_BOX_Y + 73, LEGEND_BOX_X + 50, d.height - LEGEND_BOX_Y + 73 );
 		g.setColor( Color.BLACK );
-		g.drawChars( "free Assets".toCharArray(), 0, "free Assets".length(), LEGEND_BOX_X + 60, d.height - LEGEND_BOX_Y + 78 );
+		g.drawChars( "uncoll. Assets".toCharArray(), 0, "uncoll. Assets".length(), LEGEND_BOX_X + 60, d.height - LEGEND_BOX_Y + 78 );
 		
 		// draw border of legend-box
 		( ( Graphics2D ) g ).setStroke( new BasicStroke( 1 ) );

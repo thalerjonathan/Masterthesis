@@ -17,7 +17,7 @@ public class AgentInfoPanel extends JPanel {
 	private JLabel consumEndowLabel;
 	private JLabel assetEndowLabel;
 	private JLabel uncollAssetEndowLabel;
-	private JLabel loansLabel;
+	private JLabel collateralLabel;
 	private JLabel loansGivenLabel;
 	private JLabel loansTakenLabel;
 	
@@ -34,12 +34,12 @@ public class AgentInfoPanel extends JPanel {
 		
 		this.consumEndowLabel.setText( MainWindow.TRADING_VALUES_FORMAT.format( a.getConumEndow() ) );
 		this.assetEndowLabel.setText( MainWindow.TRADING_VALUES_FORMAT.format( a.getAssetEndow() ) );
-		this.uncollAssetEndowLabel.setText( MainWindow.TRADING_VALUES_FORMAT.format( a.getAssetEndow() - a.getCollateral() ) );
+		this.uncollAssetEndowLabel.setText( MainWindow.TRADING_VALUES_FORMAT.format( a.getUncollateralizedAssets() ) );
 		
 		this.expectedAssetPriceLabel.setText( MainWindow.TRADING_VALUES_FORMAT.format( a.getLimitPriceAsset() ) );
 		this.expectedLoansPriceLabel.setText( MainWindow.TRADING_VALUES_FORMAT.format( a.getLimitPriceLoans() ) );
 		
-		this.loansLabel.setText( MainWindow.TRADING_VALUES_FORMAT.format( a.getLoan() ) );
+		this.collateralLabel.setText( MainWindow.TRADING_VALUES_FORMAT.format( a.getCollateral() ) );
 		this.loansGivenLabel.setText( MainWindow.TRADING_VALUES_FORMAT.format( a.getLoanGiven() ) );
 		this.loansTakenLabel.setText( MainWindow.TRADING_VALUES_FORMAT.format( a.getLoanTaken() ) );
 	}
@@ -50,7 +50,7 @@ public class AgentInfoPanel extends JPanel {
 		JLabel consumEndowInfoLabel = new JLabel( "Cash:" );
 		JLabel assetEndowInfoLabel = new JLabel( "Assets:" );
 		JLabel freeAssetEndowInfoLabel = new JLabel( "Uncoll. Assets:" );
-		JLabel loansInfoLabel = new JLabel( "Loans:" );
+		JLabel collateralInfoLabel = new JLabel( "Collateral:" );
 		JLabel loansGivenInfoLabel = new JLabel( "Loans Given:" );
 		JLabel loansTakenInfoLabel = new JLabel( "Loans Taken:" );
 		
@@ -64,7 +64,7 @@ public class AgentInfoPanel extends JPanel {
 		this.assetEndowLabel = new JLabel();
 		this.uncollAssetEndowLabel = new JLabel();
 
-		this.loansLabel = new JLabel();
+		this.collateralLabel = new JLabel();
 		this.loansGivenLabel = new JLabel();
 		this.loansTakenLabel = new JLabel();
 		
@@ -96,7 +96,7 @@ public class AgentInfoPanel extends JPanel {
 		
 		c.gridx = 0;
 		c.gridy = 2;
-		this.add( loansInfoLabel, c );
+		this.add( collateralInfoLabel, c );
 		c.gridx = 2;
 		c.gridy = 2;
 		this.add( loansGivenInfoLabel, c );
@@ -130,7 +130,7 @@ public class AgentInfoPanel extends JPanel {
 		
 		c.gridx = 1;
 		c.gridy = 2;
-		this.add( this.loansLabel, c );
+		this.add( this.collateralLabel, c );
 		c.gridx = 3;
 		c.gridy = 2;
 		this.add( this.loansGivenLabel, c );

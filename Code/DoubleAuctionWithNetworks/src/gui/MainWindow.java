@@ -395,26 +395,23 @@ public class MainWindow extends JFrame implements ActionListener, ChangeListener
 		this.optimismSelection.addActionListener( this );
 		this.agentCountSpinner.addChangeListener( this );
 
-		this.bpMechanismCheck.addActionListener( new ActionListener() {
+		ActionListener checkListener = new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				if ( false == MainWindow.this.abmMarketCheck.isSelected() ) {
+					MainWindow.this.loanCashMarketCheck.setSelected( false );
+					MainWindow.this.bpMechanismCheck.setSelected( false );
+				}
+				
+				MainWindow.this.markets.setABM( MainWindow.this.abmMarketCheck.isSelected() );
+				MainWindow.this.markets.setLoanMarket( MainWindow.this.loanCashMarketCheck.isSelected() );
 				MainWindow.this.markets.setBP( MainWindow.this.bpMechanismCheck.isSelected() );
 			}
-		});
+		};
 		
-		this.abmMarketCheck.addActionListener( new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				MainWindow.this.markets.setABM( MainWindow.this.abmMarketCheck.isSelected() );
-			}
-		});
-		
-		this.loanCashMarketCheck.addActionListener( new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				MainWindow.this.markets.setLoanMarket( MainWindow.this.loanCashMarketCheck.isSelected() );
-			}
-		});
+		this.bpMechanismCheck.addActionListener( checkListener );
+		this.abmMarketCheck.addActionListener( checkListener );
+		this.loanCashMarketCheck.addActionListener( checkListener );
 
 		// adding components ////////////////////////////////////
 

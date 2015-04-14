@@ -1,9 +1,9 @@
 package agents;
 
+import agents.markets.MarketType;
 import agents.markets.Markets;
 import doubleAuction.offer.AskOffering;
 import doubleAuction.offer.BidOffering;
-import doubleAuction.offer.MarketType;
 import doubleAuction.tx.Match;
 
 public class Agent {
@@ -12,17 +12,19 @@ public class Agent {
 	private int id;
 	// optimism factor
 	private double h;
-	// amount of consumption-good endowment (cash) still available
-	private double cashEndow;
-	// amount of asset endowment still available
-	private double assetEndow;
 	// Expected Value (E, Erwartungswert) of the Asset
 	private double limitPriceAsset;
 	// Expected Value (E, Erwartungswert) of the loan
 	private double limitPriceLoan;
 	
+	// amount of consumption-good endowment (cash) still available
+	private double cashEndow;
+	// amount of assets this agent owns REALLY 
+	private double assetEndow;
 	// = loanGiven-loanTaken
-	private double loan;
+	// if negative then there are more collaterlized assets
+	// if positive then there are more uncollaterlized assets
+	//private double loan;
 	// the amount of loans sold to other agents for cash or assets. is the amount of collateralized assets
 	private double loanTaken;
 	// the amount of loans bought from other agents for cash or assets. is the amount of UN-collateralized assets
@@ -42,6 +44,9 @@ public class Agent {
 		this.id = id;
 		this.h = h;
 		this.markets = markets;
+	
+		this.limitPriceAsset = markets.calculateLimitPriceAsset( h );
+		this.limitPriceLoan = markets.calculateLimitPriceLoan( h );
 		
 		this.reset( consumEndow, assetEndow );
 	}
@@ -51,12 +56,9 @@ public class Agent {
 		this.assetEndow = assetEndow;
 		this.highlighted = false;
 
-		this.loan = 0;
+		//this.loan = 0;
 		this.loanTaken = 0;
 		this.loanGiven = 0;
-		this.limitPriceAsset = h * markets.pU() + ( 1.0 - h ) * markets.pD();
-		this.limitPriceLoan = h * Math.min( markets.pU(), markets.V() ) + 
-				( 1.0 - h ) * Math.min( markets.pD(), markets.V() );
 		
 		this.currentAskOfferings = new AskOffering[ Markets.NUMMARKETS ];
 		this.currentBidOfferings = new BidOffering[ Markets.NUMMARKETS ];
@@ -82,11 +84,18 @@ public class Agent {
 		// => getting asset from seller
 		// => need to have positive amount of cash
 		if ( this.cashEndow > 0 ) {
-			double assetPrice = randomRange( Math.min( pD, limitPriceAsset ), limitPriceAsset );
-			// asset price is always for one unit of asset
-			double assetAmount = Math.min( Markets.TRADING_UNIT_ASSET, this.cashEndow / assetPrice );
+			double minAssetPriceInCash = Math.min( pD, limitPriceAsset );
 			
-			offerings[ MarketType.ASSET_CASH.ordinal() ] = new BidOffering( assetPrice, assetAmount, this, MarketType.ASSET_CASH );
+			// the price for 1.0 Units of asset - will be normalized during a Match
+			// to the given amount below - the unit of this variable is CASH
+			double assetPriceInCash = randomRange( minAssetPriceInCash, limitPriceAsset );
+			// calculate how much assets we can buy MAX
+			double assetAmount = this.cashEndow / assetPriceInCash;
+			// upper limit: trade at most TRADING_UNIT_ASSETS assets - if below take the lesser assetAmount
+			// => trading down till reaching 0
+			assetAmount = Math.min( Markets.TRADING_UNIT_ASSET, assetAmount );
+			
+			offerings[ MarketType.ASSET_CASH.ordinal() ] = new BidOffering( assetPriceInCash, assetAmount, this, MarketType.ASSET_CASH );
 		} else {
 			offerings[ MarketType.ASSET_CASH.ordinal() ] = null;
 		}
@@ -96,49 +105,64 @@ public class Agent {
 		// => getting bond from seller
 		// => need to have positive amount of cash
 		if ( this.markets.isLoanMarket() && this.cashEndow > 0 ) {
-			double loanPrice = randomRange( Math.min( Math.min( pD, V ), limitPriceLoan ), limitPriceLoan );
-			//double loanAmount = Math.min( Markets.TRADING_UNIT, this.cashEndow / loanPrice );
-			double loanAmount = this.cashEndow / loanPrice;
-			loanAmount = Math.min( loanAmount, Markets.TRADING_UNIT_LOAN );
+			double minLoanPriceInCash = Math.min( Math.min( pD, V ), limitPriceLoan );
 			
-			offerings[ MarketType.LOAN_CASH.ordinal() ] = new BidOffering( loanPrice, loanAmount, this, MarketType.LOAN_CASH );
+			// the price for 1.0 Units of loans - will be normalized during a Match
+			// to the given amount below - the unit of this variable is CASH
+			double loanPriceInCash = randomRange( minLoanPriceInCash, limitPriceLoan );
+			// calculate which amount of loans we can buy MAX
+			double loanAmount = this.cashEndow / loanPriceInCash;
+			// upper limit: trade at most TRADING_UNIT_LOAN loans - if below take the lesser loanAmount
+			// => trading down till reaching 0
+			loanAmount = Math.min( Markets.TRADING_UNIT_LOAN, loanAmount );
+			
+			offerings[ MarketType.LOAN_CASH.ordinal() ] = new BidOffering( loanPriceInCash, loanAmount, this, MarketType.LOAN_CASH );
 		
 		} else {
 			offerings[ MarketType.LOAN_CASH.ordinal() ] = null;
 		}
 		
-		// want to BUY a loan against an asset
-		// => giving loan to seller 
+		// want to BUY a asset against loan
+		// => giving loan to seller: taking loan, collateralizing asset
 		// => getting asset from seller
-		// => because of giving loan: need to have enough amount of uncollateralized assets
+		// => because of taking loan: need to have enough amount of uncollateralized assets
 		if ( this.markets.isABM() && uncollateralizedAssets > 0 ) {
-			double price = randomRange( pD / Math.min( pU, V ), limitPriceAsset / limitPriceLoan );
-			double amount = Math.min( Markets.TRADING_UNIT_ASSET, uncollateralizedAssets );
-			offerings[ MarketType.ASSET_LOAN.ordinal() ] = new BidOffering( price, amount, this, MarketType.ASSET_LOAN );
+			double minAssetPrice = pD;
+			double maxLoanPrice = Math.min( pU, V );
+			double minAssetPriceInLoans = minAssetPrice / maxLoanPrice;
 			
+			double expectedAssetPriceInLoans = limitPriceAsset / limitPriceLoan;
+			
+			// the price for 1.0 unit of assets in loans => the unit of this variable is LOANS
+			double assetPriceInLoans = randomRange( minAssetPriceInLoans, expectedAssetPriceInLoans );
+			
+			// TODO: need to account for the asset we get from seller
+			
+			double amount = Math.min( Markets.TRADING_UNIT_ASSET, uncollateralizedAssets );
+			
+			offerings[ MarketType.ASSET_LOAN.ordinal() ] = new BidOffering( assetPriceInLoans, amount, this, MarketType.ASSET_LOAN );
+	
+
 			/*
 			double tmp = 0.0;
 			
 			if ( markets.isBP() ) {
-				tmp = -( loan - Markets.TRADING_UNIT_ASSET * price );
+				tmp = -( loan - Markets.TRADING_UNIT_ASSET * assetPriceInLoans );
 			} else {
-				tmp = ( loanTaken + Markets.TRADING_UNIT_ASSET * price );
+				tmp = ( loanTaken + Markets.TRADING_UNIT_ASSET * assetPriceInLoans );
 			}
 			
 			if ( this.assetEndow + Markets.TRADING_UNIT_ASSET >= Math.max( 0, tmp ) ) {
-				offerings[ MarketType.ASSET_LOAN.ordinal() ] = new BidOffering( price, Markets.TRADING_UNIT_ASSET, this, MarketType.ASSET_LOAN );
+				offerings[ MarketType.ASSET_LOAN.ordinal() ] = new BidOffering( assetPriceInLoans, Markets.TRADING_UNIT_ASSET, this, MarketType.ASSET_LOAN );
 				
 			} else {
 				offerings[ MarketType.ASSET_LOAN.ordinal() ] = null;
 			}
-			*/
+		*/
+			
 		} else {
 			offerings[ MarketType.ASSET_LOAN.ordinal() ] = null;
 		}
-	}
-	
-	private double getUncollateralizedAssets() {
-		return this.assetEndow + this.loanGiven - this.loanTaken;
 	}
 	
 	private void calcAskOfferings( AskOffering[] offerings ) {
@@ -153,23 +177,38 @@ public class Agent {
 		// => getting cash from buyer
 		// => can only do so it if there are uncollateralized assets left
 		if ( uncollateralizedAssets > 0 ) {
-			double assetPrice = randomRange( limitPriceAsset, Math.max( pU, limitPriceAsset ) );
+			double maxAssetPriceInCash = Math.max( pU, limitPriceAsset );
+			
+			// this is always the price for 1.0 Units of asset - will be normalized during a Match
+			// to the given amount below - the unit of this variable is CASH
+			double assetPriceInCash = randomRange( limitPriceAsset, maxAssetPriceInCash );
+			// determine the amount of asset to trade: at most TRADING_UNIT_ASSET, or the
+			// rest of uncollateralizedAssets if any left
 			double assetAmount = Math.min( Markets.TRADING_UNIT_ASSET, uncollateralizedAssets );
 
-			offerings[ MarketType.ASSET_CASH.ordinal() ] = new AskOffering( assetPrice, assetAmount, this, MarketType.ASSET_CASH );
+			offerings[ MarketType.ASSET_CASH.ordinal() ] = new AskOffering( assetPriceInCash, assetAmount, this, MarketType.ASSET_CASH );
 			
 		} else {
 			offerings[ MarketType.ASSET_CASH.ordinal() ] = null;
 		}
 
 		// want to SELL a loan against cash
-		// => collateralize assets of the same amount 
+		// => collateralize assets of the same amount as security
 		// => getting money from buyer 
-		// => need to have anough uncollateralized assets
+		// => need to have enough uncollateralized assets
 		if ( this.markets.isLoanMarket() && uncollateralizedAssets > 0 ) {
-			double loanPrice = randomRange( limitPriceLoan, Math.max( Math.min( pU, V ), limitPriceLoan ) );
-			double loanAmount = Math.min( uncollateralizedAssets, Markets.TRADING_UNIT_ASSET );
-			offerings[ MarketType.LOAN_CASH.ordinal() ] = new AskOffering( loanPrice, loanAmount, this, MarketType.LOAN_CASH );
+			double maxLoanPriceInCash = Math.max( Math.min( pU, V ), limitPriceLoan );
+			
+			// this is always the price for 1.0 Units of loans - will be normalized during a Match
+			// to the given amount below - the unit of this variable is CASH
+			double loanPriceInCash = randomRange( limitPriceLoan, maxLoanPriceInCash );
+			// calculate which amount of loans we can sell MAX
+			double loanAmount = uncollateralizedAssets / loanPriceInCash;
+			// upper limit: trade at most TRADING_UNIT_LOAN loans - if below take the lesser loanAmount
+			// => trading down till reaching 0		
+			loanAmount = Math.min( Markets.TRADING_UNIT_LOAN, loanAmount );
+			
+			offerings[ MarketType.LOAN_CASH.ordinal() ] = new AskOffering( loanPriceInCash, loanAmount, this, MarketType.LOAN_CASH );
 			
 			/*
 			double tmp = this.getCollateral();
@@ -188,29 +227,36 @@ public class Agent {
 		
 		// want to SELL a loan against an asset 
 		// => giving asset to buyer
-		// => getting bond from buyer
+		// => getting bond from buyer: giving loan, "un"-collateralize assets
 		// => beecause of giving asset: need to have enough amount of uncollateralized assets
 		if ( this.markets.isABM() && uncollateralizedAssets > 0 ) {
-			double price = randomRange( limitPriceAsset / limitPriceLoan, pU / Math.min( pD, V ) );
-			double amount = Math.min( Markets.TRADING_UNIT_ASSET, uncollateralizedAssets );
-			offerings[ MarketType.ASSET_LOAN.ordinal() ] = new AskOffering( price, amount, this, MarketType.ASSET_LOAN );
+			double expectedAssetPriceInLoans = limitPriceAsset / limitPriceLoan;
 			
+			double maxAssetPrice = pU;
+			double minLoanPrice = Math.min( pD, V );
+			double maxAssetPriceInLoans = maxAssetPrice / minLoanPrice;
+			
+			// the price for 1.0 unit of assets in loans => the unit of this variable is LOANS
+			double assetPriceInLoans = randomRange( expectedAssetPriceInLoans, maxAssetPriceInLoans );
+			
+			
+			double amount = Math.min( Markets.TRADING_UNIT_ASSET, uncollateralizedAssets );
+			offerings[ MarketType.ASSET_LOAN.ordinal() ] = new AskOffering( assetPriceInLoans, amount, this, MarketType.ASSET_LOAN );
+	
 			/*
-			 * double tmp = this.getCollateral();
-				tmp = 0.0;
+			double tmp = 0.0;
+			if ( markets.isBP() ) {
+				tmp = -( loan + Markets.TRADING_UNIT_ASSET * pricePerAssetInLoans );
+			} else {
+				tmp = ( loanTaken - Markets.TRADING_UNIT_ASSET * pricePerAssetInLoans );
+			}
+			
+			if ( this.assetEndow - Markets.TRADING_UNIT_ASSET >= Math.max( 0, tmp ) ) {
+				offerings[ MarketType.ASSET_LOAN.ordinal() ] = new AskOffering( pricePerAssetInLoans, Markets.TRADING_UNIT_ASSET, this, MarketType.ASSET_LOAN );
 				
-				if ( markets.isBP() ) {
-					tmp = -( loan + Markets.TRADING_UNIT_ASSET * price );
-				} else {
-					tmp = ( loanTaken - Markets.TRADING_UNIT_ASSET * price );
-				}
-				
-				if ( this.assetEndow - Markets.TRADING_UNIT_ASSET >= Math.max( 0, tmp ) ) {
-					offerings[ MarketType.ASSET_LOAN.ordinal() ] = new AskOffering( price, Markets.TRADING_UNIT_ASSET, this, MarketType.ASSET_LOAN );
-					
-				} else {
-					offerings[ MarketType.ASSET_LOAN.ordinal() ] = null;
-				}
+			} else {
+				offerings[ MarketType.ASSET_LOAN.ordinal() ] = null;
+			}
 			*/
 			
 		} else {
@@ -232,16 +278,20 @@ public class Agent {
 		// => collateralizing the amount of assets which correspond to the sold amount of loans
 		// => getting money from buyer
 		} else if ( MarketType.LOAN_CASH == match.getMarket() ) {
-			this.loan -= match.getAmount();
+			//this.loan -= match.getAmount();
 			this.loanTaken += match.getAmount();			// collateralize assets
 			this.cashEndow += match.getNormalizedPrice();	// getting money from buyer
 			
 		// SELLING asset for loan
 		// => giving asset to buyer
-		// => getting loan from buyer - "un"-collateralizes the amount of assets which corresponds to the sold amount of loans
+		// => giving loan to buyer - "un"-collateralizes the amount of assets which corresponds to the sold amount of loans
 		} else if ( MarketType.ASSET_LOAN == match.getMarket() ) {
-			this.loan += match.getNormalizedPrice();
-			this.loanGiven += match.getNormalizedPrice();	// "un"-colalteralize assets
+			//this.loan += match.getNormalizedPrice();
+			
+			// price is in this case the asset-price in LOANS: amount of loans for 1.0 unit of assets
+			// amount is in this case the asset-amount traded
+			// getNormalizedPrice returns in this case the amount of loans needed for the given asset-amount
+			this.loanGiven += match.getNormalizedPrice();	// "un"-collateralize assets
 			this.assetEndow -= match.getAmount();			// giving asset to buyer
 		}
 	}
@@ -260,18 +310,44 @@ public class Agent {
 		// => getting loans from the seller: "un"-collateralizes assets
 		// => paying cash to the seller 
 		} else if ( MarketType.LOAN_CASH == match.getMarket() ) {
-			this.loan += match.getAmount();
+			//this.loan += match.getAmount();
 			this.loanGiven += match.getAmount();			// "un"-collateralizes assets
 			this.cashEndow -= match.getNormalizedPrice();	// paying money to seller
 			
 		// BUYING an asset for loan
 		// => getting assets from seller
-		// => giving loan to seller: need to collateralize same amount of assets
+		// => taking loan from seller: need to collateralize same amount of assets
 		} else if ( MarketType.ASSET_LOAN == match.getMarket() ) {
-			this.loan -= match.getNormalizedPrice();
+			//this.loan -= match.getNormalizedPrice();
+			
+			// price is in this case the asset-price in LOANS: amount of loans for 1.0 unit of assets
+			// amount is in this case the asset-amount traded
+			// getNormalizedPrice returns in this case the amount of loans needed for the given asset-amount
 			this.loanTaken += match.getNormalizedPrice();	// collateralize asset for loan
 			this.assetEndow += match.getAmount();			// getting asset from seller
 		}
+	}
+	
+	public double getUncollateralizedAssets() {
+		// the uncollateralized assets are those which are available for trades
+		// assetEndow
+		return this.assetEndow - this.getCollateral();
+	}
+
+	public double getCollateral() {
+		// when no BP Mechanism, loans given to other agents cannot be traded
+		// thus the collateral is the loans taken from other agents which implies
+		// assets as collateral 
+		double collateral = this.loanTaken;
+		
+		// when using Bonds-Pledgeability (BP) Mechanism, then it is possible
+		// to trade assets aquired by loans given to other agents
+		if ( this.markets.isBP() ) {
+			// loanGiven decreases the collateral in case of BP because it is available for trades
+			collateral -= this.loanGiven;
+		}
+		
+		return collateral;
 	}
 	
 	public void clearBestOfferings() {
@@ -279,14 +355,6 @@ public class Agent {
 			this.bestAskOfferings[ i ] = null;
 			this.bestBidOfferings[ i ] = null;
 		}
-	}
-	
-	public double getCollateral() {
-		if ( this.markets.isBP() ) {
-			return -this.loan;
-		}
-	
-		return this.loanTaken;
 	}
 	
 	public AskOffering[] getCurrentAskOfferings() {
@@ -313,10 +381,12 @@ public class Agent {
 		return limitPriceLoan;
 	}
 	
+	/*
 	public double getLoan() {
 		return loan;
 	}
-
+*/
+	
 	public double getLoanGiven() {
 		return loanGiven;
 	}
@@ -372,7 +442,7 @@ public class Agent {
 	@Override
 	public Object clone() {
 		Agent clone = new Agent(this.id, this.h, this.cashEndow, this.assetEndow, this.markets );
-		clone.loan = this.loan;
+		//clone.loan = this.loan;
 		clone.loanGiven = this.loanGiven;
 		clone.loanTaken = this.loanTaken;
 		

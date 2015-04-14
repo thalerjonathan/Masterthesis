@@ -1,4 +1,4 @@
-package doubleAuction.offer;
+package agents.markets;
 
 public enum MarketType {
 	// Trading ASSETS against CASH

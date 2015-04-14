@@ -24,10 +24,10 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import agents.Agent;
+import agents.markets.MarketType;
 import agents.markets.Markets;
 import doubleAuction.offer.AskOffering;
 import doubleAuction.offer.BidOffering;
-import doubleAuction.offer.MarketType;
 
 @SuppressWarnings("serial")
 public class OfferBookFrame extends JFrame {

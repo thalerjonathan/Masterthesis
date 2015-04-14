@@ -9,6 +9,7 @@ import javax.swing.ListSelectionModel;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableRowSorter;
 
+import agents.markets.MarketType;
 import doubleAuction.tx.Match;
 import doubleAuction.tx.Transaction;
 
@@ -86,27 +87,28 @@ public class TxHistoryTable extends JTable {
 		int sweepCount = tx.getSweepCount();
 		String askerH = MainWindow.AGENT_H_FORMAT.format( match.getSellOffer().getAgent().getH() );
 		String biderH = MainWindow.AGENT_H_FORMAT.format( match.getBuyOffer().getAgent().getH() );
-		String assetAmount = MainWindow.TRADING_VALUES_FORMAT.format( match.getAmount() );
-		String assetPrice = MainWindow.TRADING_VALUES_FORMAT.format( match.getPrice()  );
-		String assetAskPrice = MainWindow.TRADING_VALUES_FORMAT.format( match.getSellOffer().getPrice() );
-		String assetBidPrice = MainWindow.TRADING_VALUES_FORMAT.format( match.getBuyOffer().getPrice() );
+		
+		String assetAmount = "-";
+		String assetPrice = "-";
+		String assetAskPrice = "-";
+		String assetBidPrice = "-";
 		String loanAmount = "-";
 		String loanPrice = "-";
 		String loanAskPrice = "-";
 		String loanBidPrice = "-";
 		
-		/*
-		 * TODO
-		if ( tx.getMatchingAskOffer() instanceof AskOfferingWithLoans ) {
-			loanAmount = MainWindow.TRADING_VALUES_FORMAT.format( tx.getLoanAmount() );
-			loanPrice = MainWindow.TRADING_VALUES_FORMAT.format( tx.getLoanPrice() );
-			loanAskPrice = MainWindow.TRADING_VALUES_FORMAT.format( tx.getFinalAskLoanPrice() );
+		if ( MarketType.ASSET_CASH == match.getMarket() ) {
+			assetAmount = MainWindow.TRADING_VALUES_FORMAT.format( match.getAmount() );
+			assetPrice = MainWindow.TRADING_VALUES_FORMAT.format( match.getPrice()  );
+			assetAskPrice = MainWindow.TRADING_VALUES_FORMAT.format( match.getSellOffer().getPrice() );
+			assetBidPrice = MainWindow.TRADING_VALUES_FORMAT.format( match.getBuyOffer().getPrice() );
+			
+		} else if ( MarketType.LOAN_CASH == match.getMarket() ) {
+			loanAmount = MainWindow.TRADING_VALUES_FORMAT.format( match.getAmount() );
+			loanPrice = MainWindow.TRADING_VALUES_FORMAT.format( match.getPrice()  );
+			loanAskPrice = MainWindow.TRADING_VALUES_FORMAT.format( match.getSellOffer().getPrice() );
+			loanBidPrice = MainWindow.TRADING_VALUES_FORMAT.format( match.getBuyOffer().getPrice() );
 		}
-		
-		if ( tx.getMatchingBidOffer() instanceof BidOfferingWithLoans ) {
-			loanBidPrice = MainWindow.TRADING_VALUES_FORMAT.format( tx.getFinalBidLoanPrice() );
-		}
-		 */
 		
 		this.tableModel.addRow( new Object[] {
 				txId,

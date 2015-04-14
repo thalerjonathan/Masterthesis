@@ -34,6 +34,15 @@ public class Markets {
 		this.V = V;
 	}
 
+	public double calculateLimitPriceAsset( double h ) {
+		return h * this.pU + ( 1.0 - h ) * this.pD;
+	}
+	
+	public double calculateLimitPriceLoan( double h ) {
+		return h * Math.min( this.pU, this.V ) + 
+				( 1.0 - h ) * Math.min( this.pD, this.V );
+	}
+	
 	public void setABM(boolean abm) {
 		this.abm = abm;
 	}

@@ -83,16 +83,17 @@ Zeitpunkte
 		-> OK		Klarheit wieso konvergenz bei Asset-Cash in beiden Topologien aber Asset-Loan nur bei FULLY_CONNECTED gegeben ist
 		-> OK		TX-Controls Buttons besser layouten, diverse refaktorisierungen
 		-> OK		Refactoring:
-					- Transaction & TransactionWithLoans zusammenf¸hren
-					- Auction & AuctionWithLoans zusammenf¸hren
-					- Agent & AgentWithLoans zusammenf¸hren
-					- ABM, LOAN/CASH und BP schalter in den agent hineintragen
+					OK Transaction & TransactionWithLoans zusammenf¸hren
+					OK Auction & AuctionWithLoans zusammenf¸hren
+					OK Agent & AgentWithLoans zusammenf¸hren
+					OK ABM, LOAN/CASH und BP schalter in den agent hineintragen
 		-> OK		nurmehr einen loan-type und diesen ‰nderbar machen
+		-> OK		Formeln zu ABM und loan-Cash von martin ¸bernehmen um pareto-front wegzubekommen => keine liste mehr pro markt, nurmehr ein ask/bid 	
+		-> OK		Einschr‰nkung aufheben, dass Asset-Loans erst gehandelt werden d¸rfen, wenn kein Cash mehr vorhanden
+		-> OK		Loan-Cash Markt aktivieren und funktionierbar bekommen
+		-> OK		BP (=CC von martin) einbauen
 		
-		-> TODO		Formeln zu ABM und loan-Cash von martin ¸bernehmen um pareto-front wegzubekommen => keine liste mehr pro markt, nurmehr ein ask/bid 	
-		-> TODO		Einschr‰nkung aufheben, dass Asset-Loans erst gehandelt werden d¸rfen, wenn kein Cash mehr vorhanden
-		-> TODO		Loan-Cash Markt aktivieren und funktionierbar bekommen
-		-> TODO		BP (=CC von martin) einbauen
+		-> TODO		M‰rkte m¸ssen funktionieren
 		-> TODO		Optimieren von Matchingwahrscheinlichkeiten
 						anpassung an die nachbar limitprices, aber nicht deterministisch sondern auch zuf‰llig ( mit 1/10 diese optimierung machen und dann untersuchen). 
 						somit kommt es mit hˆherer wahrscheinlichkeit zu matches zwischen ascending-nachbaren. ABER: dann keine reinen zero-intelligence agents.
@@ -100,12 +101,14 @@ Zeitpunkte
 					-> FULLY_CONNECTED und ASCENDING_CONNECTED OHNE BP miteinander vergleichen
 					-> FULLY_CONNECTED und ASCENDING_CONNECTED MIT BP miteinander vergleichen
 					-> ?
-	
+		
 		-> TODO		Recatorings
 					- 
 	Mai: SCHREIBEN beginnen
 		-> TODO		Paper berschreiben
 		-> TODO		implementierung beschreiben und unterschiede zum paper
+		
+		-> VIELLEICHT		wieder mehere bond-typen zur¸ckeinbauen, da ein wesentlicher punkt im paper ist, dass wenn mehrere loans zur verf¸gung stehen, die riskioreichen NICHT gehandelt werden
 		
 	Juni: SCHREIBEN
 		-> Kapitel 1 "Theorie" schreiben. Dieser erst ganz zum schluss, damit der theorieteil einen sinnvollen kontext bekommt und nicht bloﬂ als trockener nackter theorieteil daherkommt, 
