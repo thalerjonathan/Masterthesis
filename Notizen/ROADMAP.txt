@@ -92,11 +92,39 @@ Zeitpunkte
 		-> OK		Einschränkung aufheben, dass Asset-Loans erst gehandelt werden dürfen, wenn kein Cash mehr vorhanden
 		-> OK		Loan-Cash Markt aktivieren und funktionierbar bekommen
 		-> OK		BP (=CC von martin) einbauen
+		-> OK		Märkte müssen mit martin jandackas gleichungen funktionieren
 		
-		-> TODO		Märkte müssen funktionieren
+		-> TODO		Märkte müssen mit meinen gleichungen (?) funktionieren d.h. bis auf 0 herunterhandeln
+		-> TODO		Über mehrere Läufe mitteln und grafisch auch darstellen
+						sollte relativ einfach sein: die endzustände aller läufe aufbewahren und dann die vermögensverteilungen mitteln
+						-> gui unterstützt
+						-> PARALLELISIERT !!!!
+
+					- 2 Tabs in Hauptfenster: Inspector (bisherige Funktionalität) und Replicator
+					- controls herausziehen und in beiden einbauen
+						-> topology-creator
+						-> agent-count
+						-> Face-Value (neu einbauen)
+						-> ABM/BP/Loan-Market
+						-> Hide Network & Keep Agent History nach unten richtung open offer-book verschieben
+					- MainWindow wird zum InspectorPanel
+					- Neues MainWindow: instantiiert nur InspectorPanel und ReplicatorPanel und fügt es in ein TabbedPane ein
+					- WICHTIG: Inspection und Replication sollen gleichzeitig funktionieren
+					- Replicator
+						- controls wie bei Inspector (siehe oben)
+						- anzahl replikationen einstellbar
+						- parallelisieren (bis zu 4 Threads gleichzeitig)
+						- abbruchbedingungen einstellbar: kein handel mehr möglich, N unsuccessful TXs
+						- statistiken über aktuelle vermögensverteilung, usw... 
+						- agent-inspektor der endzustände
+					
+					- dann keep agent history check entfernen und IMMER agent-history merken: dies ist die funktionalität des INSPECTORS:
+						die dynamiken genau untersuchen zu können. will man endzustände untersuchen so dient dazu der REPLICATOR
+					
 		-> TODO		Optimieren von Matchingwahrscheinlichkeiten
 						anpassung an die nachbar limitprices, aber nicht deterministisch sondern auch zufällig ( mit 1/10 diese optimierung machen und dann untersuchen). 
 						somit kommt es mit höherer wahrscheinlichkeit zu matches zwischen ascending-nachbaren. ABER: dann keine reinen zero-intelligence agents.
+						-> IMPORTANCE-SAMPLING
 		-> TODO 	experimente definieren und beobachten
 					-> FULLY_CONNECTED und ASCENDING_CONNECTED OHNE BP miteinander vergleichen
 					-> FULLY_CONNECTED und ASCENDING_CONNECTED MIT BP miteinander vergleichen
