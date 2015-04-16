@@ -11,10 +11,10 @@ public class ReplicationTable extends JTable {
 	
 	@SuppressWarnings("rawtypes")
 	public ReplicationTable() {
-		Class[] columnClasses = new Class[]{ Integer.class };
+		//Class[] columnClasses = new Class[]{ Integer.class };
 		
 		this.tableModel = new DefaultTableModel(
-				new Object[] { "Number", "Thread" }, 0 ) {
+				new Object[] { "Replication-Number", "Task-Id", "TX Count" }, 0 ) {
 
 		    @Override
 		    public boolean isCellEditable(int row, int column) {
@@ -23,7 +23,7 @@ public class ReplicationTable extends JTable {
 
 			@Override
 			public Class<?> getColumnClass(int columnIndex) {
-				return columnClasses[ columnIndex ];
+				return Integer.class;
 			}
 		};
 		
@@ -40,7 +40,7 @@ public class ReplicationTable extends JTable {
 		}
 	}
 	
-	public void addReplication( int number, int thread ) {
-		this.tableModel.addRow( new Object[] { number, thread } );
+	public void addReplication( ReplicationData data ) {
+		this.tableModel.addRow( new Object[] { data.getNumber(), data.getTaskId(), data.getTxCount() } );
 	}
 }
