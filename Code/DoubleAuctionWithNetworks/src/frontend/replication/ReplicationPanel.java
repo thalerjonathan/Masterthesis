@@ -3,8 +3,12 @@ package frontend.replication;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -14,12 +18,13 @@ import java.util.concurrent.atomic.AtomicInteger;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
-import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingUtilities;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
@@ -33,6 +38,7 @@ import backend.markets.Markets;
 import backend.tx.Transaction;
 import edu.uci.ics.jung.algorithms.layout.CircleLayout;
 import edu.uci.ics.jung.algorithms.layout.Layout;
+import frontend.inspection.NetworkVisualisationFrame;
 import frontend.networkCreators.AscendingConnectedCreator;
 import frontend.networkCreators.AscendingFullShortcutsCreator;
 import frontend.networkCreators.AscendingRandomShortcutsCreator;
@@ -47,6 +53,7 @@ import frontend.networkCreators.MaximumHubCreator;
 import frontend.networkCreators.MedianHubCreator;
 import frontend.networkCreators.ThreeMedianHubsCreator;
 import frontend.networkCreators.WattStrogatzCreator;
+import frontend.networkVisualisation.NetworkRenderPanel;
 import frontend.visualisation.WealthVisualizer;
 
 @SuppressWarnings( value = {"serial", "rawtypes" } )
@@ -70,31 +77,31 @@ public class ReplicationPanel extends JPanel {
 	private JButton replicationButton;
 	private JButton showNetworkButton;
 	
+	private Timer spinnerChangedTimer;
+	
 	private ReplicationTable replicationTable;
 	
 	private WealthVisualizer agentWealthPanel;
+	private NetworkVisualisationFrame netVisFrame;
 	
 	private ExecutorService replicationTaskExecutor;
 	private List<ReplicationTask> replicationTasks;
 	private Thread awaitFinishThread;
 	
 	private List<ReplicationData> replicationData;
-	private List<Agent> medianAgents;
 	
 	private long startingTime;
-	
-	private final static int PARALLEL_REPLICATONS_THREAD_COUNT = 4;
 	
 	public ReplicationPanel() {
 		this.markets = new Markets( 0.2, 1.0, 0.5 );
 
-		this.medianAgents = new ArrayList<>();
 		this.replicationTasks = new ArrayList<>();
 		this.replicationData = new ArrayList<>();
 		
 		this.setLayout( new BorderLayout() );
 		
 		this.createControls();
+		this.createAgents();
 	}
 	
 	private void createControls() {
@@ -131,7 +138,13 @@ public class ReplicationPanel extends JPanel {
 						return;
 					}
 					
+					int replicationNumber = (int) ReplicationPanel.this.replicationTable.getValueAt( rowIndex, 0 );
+					if ( -1 == replicationNumber ) {
+						replicationNumber = ReplicationPanel.this.replicationData.size();
+					}
+					ReplicationData data = ReplicationPanel.this.replicationData.get( replicationNumber - 1 );
 					
+					ReplicationPanel.this.agentWealthPanel.setAgents( data.getFinalAgents() );
 		        }
 			}
 		});
@@ -181,17 +194,69 @@ public class ReplicationPanel extends JPanel {
 			}
 		});
 		
+		this.topologySelection.addActionListener( new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				INetworkCreator newSelected = (INetworkCreator) ReplicationPanel.this.topologySelection.getSelectedItem();
+
+				// creator signals to be created immediately
+				if ( newSelected.createInstant() ) {
+					ReplicationPanel.this.createAgents();
+				
+				// creator signals to defer creation for later (e.g. after user-input of parameters
+				// the creator needs)
+				} else {
+					// defer creation and provide creator with a callback to continue creation
+					newSelected.deferCreation( new Runnable() {
+						@Override
+						public void run() {
+							ReplicationPanel.this.createAgents();
+						}
+					});
+				}
+			}
+		});
+		
+		this.agentCountSpinner.addChangeListener( new ChangeListener() {
+			public void stateChanged(ChangeEvent arg0) {
+				TimerTask task = new TimerTask() {
+					@Override
+					public void run() {
+						// we are running inside a thread => need to invoke SwingUtilities.invokeLater !
+						SwingUtilities.invokeLater( new Runnable() {
+							@Override
+							public void run() {
+								ReplicationPanel.this.createAgents();
+							}
+						});
+					}
+				};
+				
+				// cancel already scheduled timer
+				if ( null != ReplicationPanel.this.spinnerChangedTimer ) {
+					ReplicationPanel.this.spinnerChangedTimer.cancel();
+					ReplicationPanel.this.spinnerChangedTimer.purge();
+				}
+				
+				// schedule a recreation of the agents after 500ms
+				ReplicationPanel.this.spinnerChangedTimer = new Timer();
+				ReplicationPanel.this.spinnerChangedTimer.schedule( task, 500 );
+			}
+		} );
+
 		this.showNetworkButton.addActionListener( new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if ( null != ReplicationPanel.this.agentNetworkTemplate ) {
-					JPanel networkPanel = ReplicationPanel.this.agentNetworkTemplate.getNetworkRenderingPanel( (Class<? extends Layout<Agent, AgentConnection>>) CircleLayout.class, null );
+				if ( null == ReplicationPanel.this.netVisFrame ) {
+					ReplicationPanel.this.netVisFrame = new NetworkVisualisationFrame( new WindowAdapter() {
+						@Override
+						public void windowClosed( WindowEvent e ) {
+							ReplicationPanel.this.netVisFrame = null;
+						}
+					});
 					
-					JFrame networkWindow = new JFrame( "Agent Network" );
-					networkWindow.setDefaultCloseOperation( JFrame.DISPOSE_ON_CLOSE );
-					networkWindow.getContentPane().add( networkPanel );
-					networkWindow.pack();
-					networkWindow.setVisible( true );
+					NetworkRenderPanel networkPanel = ReplicationPanel.this.agentNetworkTemplate.getNetworkRenderingPanel( (Class<? extends Layout<Agent, AgentConnection>>) CircleLayout.class, null );
+					ReplicationPanel.this.netVisFrame.setNetworkRenderPanel( networkPanel );
 				}
 			}
 		});
@@ -229,15 +294,13 @@ public class ReplicationPanel extends JPanel {
 			this.topologySelection.setEnabled( false );
 			this.replicationCountSpinner.setEnabled( false );
 
-			this.agentNetworkTemplate = null;
-			
 			this.replicationTable.clearAll();
 			this.replicationData.clear();
 			
 			int replicationThreadCount = 1;
 			
 			if ( this.parallelEvaluationCheck.isSelected() ) {
-				replicationThreadCount = PARALLEL_REPLICATONS_THREAD_COUNT;
+				replicationThreadCount = Runtime.getRuntime().availableProcessors();
 			}
 			
 			this.replicationTaskExecutor = Executors.newFixedThreadPool( replicationThreadCount );
@@ -308,14 +371,22 @@ public class ReplicationPanel extends JPanel {
 
 		this.awaitFinishThread = null;
 		this.replicationTasks.clear();
+		
+		this.replicationTaskExecutor.shutdown();
 	}
 
 	private void allReplicationsFinished() {
 		System.out.println( "All Replications finished after " + ( ( System.currentTimeMillis() -  this.startingTime ) / 1000.0 ) + " sec" );
 		
 		int agentCount = this.agentNetworkTemplate.size();
-		this.medianAgents.clear();
+		List<Agent> medianAgents = new ArrayList<>();
 		
+		ReplicationData finalData = new ReplicationData();
+		finalData.setNumber( -1 );
+		finalData.setTaskId( -1 );
+		finalData.setTxCount( 0 );
+		finalData.setFinalAgents( medianAgents );
+
 		double[] medianConsumEndow = new double[ agentCount ];
 		double[] medianAssetEndow = new double[ agentCount ];
 		double[] medianLoanEndow = new double[ agentCount ];
@@ -372,10 +443,12 @@ public class ReplicationPanel extends JPanel {
 				}
 			};
 			
-			this.medianAgents.add( medianAgent );
+			medianAgents.add( medianAgent );
 		}
 		
-		this.agentWealthPanel.setAgents( this.medianAgents );
+		this.agentWealthPanel.setAgents( medianAgents );
+		this.replicationData.add( finalData );
+		this.replicationTable.addReplication( finalData );
 	}
 	
 	private synchronized void replicationFinished( ReplicationData data ) {
@@ -391,9 +464,9 @@ public class ReplicationPanel extends JPanel {
 	}
 	
 	private void createAgents() {
-		int agentCount = (int) this.agentCountSpinner.getValue();
 		int optimismFunctionIndex = 0;
-		
+		int agentCount = (int) this.agentCountSpinner.getValue();
+
 		// create agent-factory
 		IAgentFactory agentFactory = new IAgentFactory() {
 			private int i = 0;
@@ -432,9 +505,17 @@ public class ReplicationPanel extends JPanel {
 			}
 		};
 		
+		this.replicationData.clear();
+		this.replicationTable.clearAll();
+		
 		INetworkCreator creator = (INetworkCreator) this.topologySelection.getSelectedItem();
 		this.agentNetworkTemplate = creator.createNetwork( agentFactory );
 		this.agentWealthPanel.setAgents( this.agentNetworkTemplate.getOrderedList() );
+		
+		if ( null != this.netVisFrame ) {
+			NetworkRenderPanel networkPanel = ReplicationPanel.this.agentNetworkTemplate.getNetworkRenderingPanel( (Class<? extends Layout<Agent, AgentConnection>>) CircleLayout.class, null );
+			this.netVisFrame.setNetworkRenderPanel( networkPanel );
+		}	
 	}
 	
 	private class ReplicationTask implements Runnable {
@@ -448,7 +529,7 @@ public class ReplicationPanel extends JPanel {
 		
 		public ReplicationTask( int taskId, AtomicInteger replicationCount ) {
 			this.taskId = taskId;
-			this.canceledFlag = true;
+			this.canceledFlag = false;
 			this.replicationCount = replicationCount;
 		}
 		
@@ -470,19 +551,8 @@ public class ReplicationPanel extends JPanel {
 		
 		@Override
 		public void run() {
-			// creation of template of agent-network is postponed to the first thread which hits
-			// this check because it could take > 1sec. If this is done in GUI it will freeze for this time
-			synchronized( ReplicationPanel.this ) {
-				if ( null == ReplicationPanel.this.agentNetworkTemplate ) {
-					long ms = System.currentTimeMillis();
-					ReplicationPanel.this.createAgents();
-					System.out.println( "Creating initial network took " + ( System.currentTimeMillis() - ms ) + " ms" );
-					
-				}
-			}
-			
 			while ( ( this.currentReplication = this.replicationCount.getAndDecrement() ) > 0 
-					&& this.canceledFlag ) {
+					&& false == this.canceledFlag ) {
 				long ms = System.currentTimeMillis();
 				// creates a deep copy of the network, need for parallel execution
 				AgentNetwork agents = new AgentNetwork( ReplicationPanel.this.agentNetworkTemplate );
@@ -501,7 +571,7 @@ public class ReplicationPanel extends JPanel {
 		private ReplicationData calculateReplication( Auction auction ) {
 			int count = 0;
 			
-			while ( this.canceledFlag ) {
+			while ( false == this.canceledFlag ) {
 				Transaction tx = auction.executeSingleTransactionByType( MatchingType.BEST_NEIGHBOUR, false );
 				count++;
 				
