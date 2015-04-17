@@ -93,34 +93,22 @@ Zeitpunkte
 		-> OK		Loan-Cash Markt aktivieren und funktionierbar bekommen
 		-> OK		BP (=CC von martin) einbauen
 		-> OK		Märkte müssen mit martin jandackas gleichungen funktionieren
-		
-
-		-> TODO		Über mehrere Läufe mitteln und grafisch auch darstellen
+		-> OK		Über mehrere Läufe mitteln und grafisch auch darstellen
 						sollte relativ einfach sein: die endzustände aller läufe aufbewahren und dann die vermögensverteilungen mitteln
-						-> gui unterstützt
-						-> PARALLELISIERT !!!!
+						OK gui unterstützt
+						OK PARALLELISIERT !!!!
+					OK 2 Tabs in Hauptfenster: Inspector (bisherige Funktionalität) und Replicator
+					OK MainWindow wird zum InspectorPanel
+					OK Neues MainWindow: instantiiert nur InspectorPanel und ReplicatorPanel und fügt es in ein TabbedPane ein
+					OK WICHTIG: Inspection und Replication sollen gleichzeitig funktionieren
+					OK Replicator
+						OK controls wie bei Inspector (siehe oben)
+						OK anzahl replikationen einstellbar
+						OK parallelisieren (bis zu N Threads gleichzeitig - N anzahl der Prozessorkerne)
+						OK abbruchbedingungen einstellbar: kein handel mehr möglich, N unsuccessful TXs
+						OK agent-inspektor der endzustände
 
-					- 2 Tabs in Hauptfenster: Inspector (bisherige Funktionalität) und Replicator
-					- controls herausziehen und in beiden einbauen
-						-> topology-creator
-						-> agent-count
-						-> Face-Value (neu einbauen)
-						-> ABM/BP/Loan-Market
-						-> Hide Network & Keep Agent History nach unten richtung open offer-book verschieben
-					- MainWindow wird zum InspectorPanel
-					- Neues MainWindow: instantiiert nur InspectorPanel und ReplicatorPanel und fügt es in ein TabbedPane ein
-					- WICHTIG: Inspection und Replication sollen gleichzeitig funktionieren
-					- Replicator
-						- controls wie bei Inspector (siehe oben)
-						- anzahl replikationen einstellbar
-						- parallelisieren (bis zu 4 Threads gleichzeitig)
-						- abbruchbedingungen einstellbar: kein handel mehr möglich, N unsuccessful TXs
-						- statistiken über aktuelle vermögensverteilung, usw... 
-						- agent-inspektor der endzustände
-					
-					- dann keep agent history check entfernen und IMMER agent-history merken: dies ist die funktionalität des INSPECTORS:
-						die dynamiken genau untersuchen zu können. will man endzustände untersuchen so dient dazu der REPLICATOR
-					
+		-> TODO 	statistiken über aktuelle vermögensverteilung, usw... 
 		-> TODO		Märkte müssen mit meinen gleichungen (?) funktionieren d.h. bis auf 0 herunterhandeln
 		-> TODO		Optimieren von Matchingwahrscheinlichkeiten
 						anpassung an die nachbar limitprices, aber nicht deterministisch sondern auch zufällig ( mit 1/10 diese optimierung machen und dann untersuchen). 

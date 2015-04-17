@@ -1,7 +1,5 @@
 package frontend.inspection;
 
-import java.awt.event.WindowAdapter;
-
 import javax.swing.JFrame;
 
 import frontend.networkVisualisation.NetworkRenderPanel;
@@ -11,13 +9,12 @@ public class NetworkVisualisationFrame extends JFrame {
 
 	private NetworkRenderPanel networkRenderPanel;
 	
-	public NetworkVisualisationFrame( WindowAdapter adapter ) {
+	public NetworkVisualisationFrame() {
 		super( "Agent Network" );
 		
 		// TODO: add layout-selection
 		
-		this.setDefaultCloseOperation( JFrame.DISPOSE_ON_CLOSE );
-		this.addWindowListener( adapter );
+		this.setDefaultCloseOperation( JFrame.HIDE_ON_CLOSE );
 		this.pack();
 		this.setVisible( true );
 	}

@@ -3,8 +3,6 @@ package frontend.replication;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
@@ -18,6 +16,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSpinner;
@@ -38,6 +37,7 @@ import backend.markets.Markets;
 import backend.tx.Transaction;
 import edu.uci.ics.jung.algorithms.layout.CircleLayout;
 import edu.uci.ics.jung.algorithms.layout.Layout;
+import frontend.agentInfo.AgentInfoFrame;
 import frontend.inspection.NetworkVisualisationFrame;
 import frontend.networkCreators.AscendingConnectedCreator;
 import frontend.networkCreators.AscendingFullShortcutsCreator;
@@ -69,13 +69,20 @@ public class ReplicationPanel extends JPanel {
 	private JCheckBox parallelEvaluationCheck;
 	
 	private JComboBox<INetworkCreator> topologySelection;
+	private JComboBox<TerminationMode> terminationSelection;
 	
 	private JSpinner agentCountSpinner;
 	private JSpinner faceValueSpinner;
 	private JSpinner replicationCountSpinner;
+	private JSpinner maxTxSpinner;
 	
 	private JButton replicationButton;
 	private JButton showNetworkButton;
+	private JButton showAgentInfoButton;
+
+	private JLabel runningTimeLabel;
+	
+	private AgentInfoFrame agentInfoFrame;
 	
 	private Timer spinnerChangedTimer;
 	
@@ -91,6 +98,12 @@ public class ReplicationPanel extends JPanel {
 	private List<ReplicationData> replicationData;
 	
 	private long startingTime;
+	
+	public enum TerminationMode {
+		MAX_TOTAL_TX,
+		MAX_FAIL_TX,
+		EQUILIBRIUM
+	}
 	
 	public ReplicationPanel() {
 		this.markets = new Markets( 0.2, 1.0, 0.5 );
@@ -115,14 +128,19 @@ public class ReplicationPanel extends JPanel {
 		this.parallelEvaluationCheck = new JCheckBox( "Parallel Evaluation" );
 		
 		this.topologySelection = new JComboBox<INetworkCreator>();
+		this.terminationSelection = new JComboBox<TerminationMode>( TerminationMode.values() );
 		
 		this.replicationButton = new JButton( "Start Replications" );
 		this.showNetworkButton = new JButton( "Show Network" );
+		this.showAgentInfoButton = new JButton( "Show Agent-Info" );
 		
 		this.agentCountSpinner = new JSpinner( new SpinnerNumberModel( 30, 10, 1000, 10 ) );
 		this.faceValueSpinner = new JSpinner( new SpinnerNumberModel( 0.5, 0.1, 1.0, 0.1 ) );
 		this.replicationCountSpinner = new JSpinner( new SpinnerNumberModel( 4, 1, 100, 1 ) );
-
+		this.maxTxSpinner = new JSpinner( new SpinnerNumberModel( 1_000_000, 1, 1_000_000_000, 100_000 ) );
+		
+		this.runningTimeLabel = new JLabel( "Running Time: 0 sec" );
+		
 		this.replicationTable = new ReplicationTable();
 		JScrollPane txHistoryScrollPane = new JScrollPane( this.replicationTable );
 		txHistoryScrollPane.setVerticalScrollBarPolicy( JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED );
@@ -133,17 +151,17 @@ public class ReplicationPanel extends JPanel {
 			@Override
 			public void valueChanged( ListSelectionEvent e ) {
 				if (e.getValueIsAdjusting() == false) {
-					int rowIndex = replicationTable.getSelectedRow();
+					int rowIndex = ReplicationPanel.this.replicationTable.getSelectedRow();
 					if ( -1 == rowIndex ) {
 						return;
 					}
 					
-					int replicationNumber = (int) ReplicationPanel.this.replicationTable.getValueAt( rowIndex, 0 );
-					if ( -1 == replicationNumber ) {
-						replicationNumber = ReplicationPanel.this.replicationData.size();
-					}
-					ReplicationData data = ReplicationPanel.this.replicationData.get( replicationNumber - 1 );
+					int modelIndex = ReplicationPanel.this.replicationTable.getRowSorter().convertRowIndexToModel( rowIndex );
+					//int viewIndex = ReplicationPanel.this.replicationTable.getRowSorter().convertRowIndexToView( rowIndex );
 					
+					//System.out.println( "rowIndex = " + rowIndex + " modelIndex = " + modelIndex + " viewIndex = " + viewIndex );
+
+					ReplicationData data = ReplicationPanel.this.replicationData.get( modelIndex );
 					ReplicationPanel.this.agentWealthPanel.setAgents( data.getFinalAgents() );
 		        }
 			}
@@ -248,38 +266,63 @@ public class ReplicationPanel extends JPanel {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if ( null == ReplicationPanel.this.netVisFrame ) {
-					ReplicationPanel.this.netVisFrame = new NetworkVisualisationFrame( new WindowAdapter() {
-						@Override
-						public void windowClosed( WindowEvent e ) {
-							ReplicationPanel.this.netVisFrame = null;
-						}
-					});
-					
-					NetworkRenderPanel networkPanel = ReplicationPanel.this.agentNetworkTemplate.getNetworkRenderingPanel( (Class<? extends Layout<Agent, AgentConnection>>) CircleLayout.class, null );
-					ReplicationPanel.this.netVisFrame.setNetworkRenderPanel( networkPanel );
+					ReplicationPanel.this.netVisFrame = new NetworkVisualisationFrame();
+					ReplicationPanel.this.updateNetworkVisualisationFrame();
 				}
+				
+				ReplicationPanel.this.netVisFrame.setVisible( true );
 			}
 		});
 
+		this.showAgentInfoButton.addActionListener( new ActionListener() {	
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				ReplicationPanel.this.showAgentInfoFrame();
+			}
+		});
+		
 		// adding components ////////////////////////////////////
 		JPanel controlsPanel = new JPanel();
 		
+		controlsPanel.add( this.maxTxSpinner );
 		controlsPanel.add( this.replicationCountSpinner );
 		controlsPanel.add( this.faceValueSpinner );
 		controlsPanel.add( this.agentCountSpinner );
 		controlsPanel.add( this.topologySelection );
+		controlsPanel.add( this.terminationSelection );
 		controlsPanel.add( this.abmMarketCheck );
 		controlsPanel.add( this.loanCashMarketCheck );
 		controlsPanel.add( this.bpMechanismCheck );	
 		controlsPanel.add( this.parallelEvaluationCheck );	
 		controlsPanel.add( this.replicationButton );
 		controlsPanel.add( this.showNetworkButton );
+		controlsPanel.add( this.showAgentInfoButton );
+		controlsPanel.add( this.runningTimeLabel );
 		
 		this.agentWealthPanel.setSize( this.getSize() );
 		
 		this.add( controlsPanel, BorderLayout.NORTH );
 		this.add( this.agentWealthPanel, BorderLayout.CENTER );
 		this.add( txHistoryScrollPane, BorderLayout.SOUTH );
+	}
+	
+	private void showAgentInfoFrame() {
+		if ( null == this.agentInfoFrame ) {
+			this.agentInfoFrame = new AgentInfoFrame();
+		}
+		
+		List<Agent> selectedAgents = null;
+		int selectedRow = this.replicationTable.getSelectedRow();
+		
+		if ( selectedRow >= 0 ) {
+			int modelIndex = ReplicationPanel.this.replicationTable.getRowSorter().convertRowIndexToModel( selectedRow );
+			selectedAgents = this.replicationData.get( modelIndex ).getFinalAgents();
+		} else {
+			selectedAgents = this.agentNetworkTemplate.getOrderedList();
+		}
+		
+		this.agentInfoFrame.setAgents( selectedAgents );
+		this.agentInfoFrame.setVisible( true );
 	}
 	
 	private void toggleReplication() {
@@ -290,8 +333,10 @@ public class ReplicationPanel extends JPanel {
 			this.bpMechanismCheck.setEnabled( false );
 			this.parallelEvaluationCheck.setEnabled( false );
 			this.agentCountSpinner.setEnabled( false );
+			this.maxTxSpinner.setEnabled( false );
 			this.faceValueSpinner.setEnabled( false );
 			this.topologySelection.setEnabled( false );
+			this.terminationSelection.setEnabled( false );
 			this.replicationCountSpinner.setEnabled( false );
 
 			this.replicationTable.clearAll();
@@ -310,7 +355,9 @@ public class ReplicationPanel extends JPanel {
 			this.startingTime = System.currentTimeMillis();
 			
 			for ( int i = 0; i < replicationThreadCount; ++i ) {
-				ReplicationTask task = new ReplicationTask( i, count );
+				ReplicationTask task = new ReplicationTask( i, count, 
+						( TerminationMode ) this.terminationSelection.getSelectedItem(), 
+						( int ) this.maxTxSpinner.getValue() );
 				
 				Future future = this.replicationTaskExecutor.submit( task );
 				task.setFuture( future );
@@ -365,8 +412,10 @@ public class ReplicationPanel extends JPanel {
 		this.bpMechanismCheck.setEnabled( true );
 		this.parallelEvaluationCheck.setEnabled( true );
 		this.agentCountSpinner.setEnabled( true );
+		this.maxTxSpinner.setEnabled( true );
 		this.faceValueSpinner.setEnabled( true );
 		this.topologySelection.setEnabled( true );
+		this.terminationSelection.setEnabled( true );
 		this.replicationCountSpinner.setEnabled( true );
 
 		this.awaitFinishThread = null;
@@ -376,7 +425,7 @@ public class ReplicationPanel extends JPanel {
 	}
 
 	private void allReplicationsFinished() {
-		System.out.println( "All Replications finished after " + ( ( System.currentTimeMillis() -  this.startingTime ) / 1000.0 ) + " sec" );
+		this.updateRunningTimeLabel( System.currentTimeMillis() );
 		
 		int agentCount = this.agentNetworkTemplate.size();
 		List<Agent> medianAgents = new ArrayList<>();
@@ -458,9 +507,10 @@ public class ReplicationPanel extends JPanel {
 			@Override
 			public void run() {
 				ReplicationPanel.this.agentWealthPanel.setAgents( data.getFinalAgents() );
+				ReplicationPanel.this.updateAgentInfoFrame( data.getFinalAgents() );
 				ReplicationPanel.this.replicationTable.addReplication( data );
 			}
-		});
+		} );
 	}
 	
 	private void createAgents() {
@@ -507,15 +557,34 @@ public class ReplicationPanel extends JPanel {
 		
 		this.replicationData.clear();
 		this.replicationTable.clearAll();
-		
+
 		INetworkCreator creator = (INetworkCreator) this.topologySelection.getSelectedItem();
 		this.agentNetworkTemplate = creator.createNetwork( agentFactory );
+		
+		List<Agent> agents = this.agentNetworkTemplate.getOrderedList();
 		this.agentWealthPanel.setAgents( this.agentNetworkTemplate.getOrderedList() );
 		
-		if ( null != this.netVisFrame ) {
+		this.updateNetworkVisualisationFrame();
+		this.updateAgentInfoFrame( agents );
+	}
+	
+	private void updateAgentInfoFrame( List<Agent> agents ) {
+		if ( null != this.agentInfoFrame && this.agentInfoFrame.isVisible() ) {
+			this.agentInfoFrame.setAgents( agents );
+		}
+	}
+	
+	@SuppressWarnings("unchecked")
+	private void updateNetworkVisualisationFrame() {
+		if ( null != this.netVisFrame && this.netVisFrame.isVisible() ) {
 			NetworkRenderPanel networkPanel = ReplicationPanel.this.agentNetworkTemplate.getNetworkRenderingPanel( (Class<? extends Layout<Agent, AgentConnection>>) CircleLayout.class, null );
 			this.netVisFrame.setNetworkRenderPanel( networkPanel );
-		}	
+		}
+	}
+	
+	private void updateRunningTimeLabel( long currSysMillis ) {
+		long duration = currSysMillis - this.startingTime;
+		this.runningTimeLabel.setText( "Running Time: " + ( duration / 1000 ) + " sec" );
 	}
 	
 	private class ReplicationTask implements Runnable {
@@ -527,10 +596,16 @@ public class ReplicationPanel extends JPanel {
 
 		private Future future;
 		
-		public ReplicationTask( int taskId, AtomicInteger replicationCount ) {
+		private TerminationMode terminationMode;
+		private long maxTx;
+		
+		public ReplicationTask( int taskId, AtomicInteger replicationCount, TerminationMode terminationMode, long maxTx ) {
 			this.taskId = taskId;
 			this.canceledFlag = false;
 			this.replicationCount = replicationCount;
+			
+			this.terminationMode = terminationMode;
+			this.maxTx = maxTx;
 		}
 		
 		public Future getFuture() {
@@ -542,7 +617,7 @@ public class ReplicationPanel extends JPanel {
 		}
 
 		public void cancel() {
-			this.canceledFlag = false;
+			this.canceledFlag = true;
 		}
 		
 		public boolean isCanceled() {
@@ -553,12 +628,8 @@ public class ReplicationPanel extends JPanel {
 		public void run() {
 			while ( ( this.currentReplication = this.replicationCount.getAndDecrement() ) > 0 
 					&& false == this.canceledFlag ) {
-				long ms = System.currentTimeMillis();
 				// creates a deep copy of the network, need for parallel execution
 				AgentNetwork agents = new AgentNetwork( ReplicationPanel.this.agentNetworkTemplate );
-				
-				System.out.println( "copying of network took " + ( System.currentTimeMillis() - ms ) + " ms" );
-				
 				Auction auction = new Auction( agents );
 				
 				ReplicationData data = this.calculateReplication( auction );
@@ -569,20 +640,47 @@ public class ReplicationPanel extends JPanel {
 		}
 		
 		private ReplicationData calculateReplication( Auction auction ) {
-			int count = 0;
+			int totalTxCount = 0;
+			int failTxCount = 0;
+			boolean terminated = false;
+			long lastRunningTimeUpdate = 0;
 			
 			while ( false == this.canceledFlag ) {
 				Transaction tx = auction.executeSingleTransactionByType( MatchingType.BEST_NEIGHBOUR, false );
-				count++;
 				
-				if ( count >= 20_000 || tx.isReachedEquilibrium() ) {
+				totalTxCount++;
+				
+				if ( false == tx.wasSuccessful() ) {
+					failTxCount++;
+				}
+				
+				if ( tx.isReachedEquilibrium() ) {
+					terminated = true;
+				}
+				
+				if ( TerminationMode.MAX_TOTAL_TX == this.terminationMode ) {
+					terminated = totalTxCount >= this.maxTx;
+					
+				} else if ( TerminationMode.MAX_FAIL_TX == this.terminationMode ) {
+					terminated = failTxCount >= this.maxTx;
+				}
+			
+				if ( terminated ) {
 					ReplicationData data = new ReplicationData();
 					data.setNumber( ( int ) ReplicationPanel.this.replicationCountSpinner.getValue() - this.currentReplication + 1 );
 					data.setTaskId( this.taskId );
-					data.setTxCount( count );
+					data.setTxCount( totalTxCount );
 					data.setFinalAgents( tx.getFinalAgents() );
 
 					return data;
+				}
+				
+				if ( 0 == this.taskId ) {
+					long currSysMillis = System.currentTimeMillis();
+					if ( currSysMillis - lastRunningTimeUpdate >= 1000 ) {
+						lastRunningTimeUpdate = currSysMillis;
+						updateRunningTimeLabel( currSysMillis );
+					}
 				}
 			}
 			
