@@ -11,10 +11,10 @@ public class ReplicationTable extends JTable {
 	
 	@SuppressWarnings("rawtypes")
 	public ReplicationTable() {
-		//Class[] columnClasses = new Class[]{ Integer.class };
+		Class[] columnClasses = new Class[]{ Integer.class, Integer.class, Integer.class, Boolean.class, Boolean.class, String.class };
 		
 		this.tableModel = new DefaultTableModel(
-				new Object[] { "Replication-Number", "Task-Id", "TX Count" }, 0 ) {
+				new Object[] { "Replication-Number", "Task-Id", "TX Count", "Equilibrium", "Canceled", "Finished at" }, 0 ) {
 
 		    @Override
 		    public boolean isCellEditable(int row, int column) {
@@ -41,6 +41,8 @@ public class ReplicationTable extends JTable {
 	}
 	
 	public void addReplication( ReplicationData data ) {
-		this.tableModel.addRow( new Object[] { data.getNumber(), data.getTaskId(), data.getTxCount() } );
+		this.tableModel.addRow( new Object[] { data.getNumber(), data.getTaskId(), 
+				data.getTxCount(), data.isReachedEquilibrium(), 
+				data.isWasCanceled(), ReplicationPanel.DATE_FORMATTER.format( data.getFinishTime() ) } );
 	}
 }

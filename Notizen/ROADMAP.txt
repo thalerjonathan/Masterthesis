@@ -108,7 +108,11 @@ Zeitpunkte
 						OK abbruchbedingungen einstellbar: kein handel mehr möglich, N unsuccessful TXs
 						OK agent-inspektor der endzustände
 
-		-> TODO 	statistiken über aktuelle vermögensverteilung, usw... 
+		-> TODO 	Replication Inspector
+					- zeigt die momentan laufenden replikationen inklusive fortschritt an (nur bei MAX TOTAL TX)
+					- erlaubt eine einzelne replikation zu canceln
+					- erlaubt in eine einzelne replikation hineinzuschauen:
+						- vermögensverteilung, refresh button, agent info
 		-> TODO		Märkte müssen mit meinen gleichungen (?) funktionieren d.h. bis auf 0 herunterhandeln
 		-> TODO		Optimieren von Matchingwahrscheinlichkeiten
 						anpassung an die nachbar limitprices, aber nicht deterministisch sondern auch zufällig ( mit 1/10 diese optimierung machen und dann untersuchen). 

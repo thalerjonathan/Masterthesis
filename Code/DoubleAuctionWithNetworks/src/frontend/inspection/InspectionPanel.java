@@ -33,6 +33,7 @@ import javax.swing.event.ListSelectionListener;
 import backend.Auction;
 import backend.Auction.MatchingType;
 import backend.agents.Agent;
+import backend.agents.AgentFactoryImpl;
 import backend.agents.IAgentFactory;
 import backend.agents.network.AgentConnection;
 import backend.agents.network.AgentNetwork;
@@ -319,6 +320,7 @@ public class InspectionPanel extends JPanel implements ActionListener, ChangeLis
 				if ( InspectionPanel.this.pauseButton.isSelected() ) {
 					InspectionPanel.this.pauseButton.setText( "Paused" );
 					InspectionPanel.this.nextTxButton.setEnabled( true );
+					InspectionPanel.this.agentWealthPanel.repaint();
 				} else {
 					InspectionPanel.this.pauseButton.setText( "Pause" );
 					InspectionPanel.this.nextTxButton.setEnabled( false );
@@ -589,48 +591,9 @@ public class InspectionPanel extends JPanel implements ActionListener, ChangeLis
 
 	private void createAgents() {
 		int agentCount = (int) this.agentCountSpinner.getValue();
-		int optimismFunctionIndex = this.optimismSelection.getSelectedIndex();
-		
-		// create agent-factory
-		IAgentFactory agentFactory = new IAgentFactory() {
-			private int i = 0;
-			
-			@Override
-			public Agent createAgent() {
-				Agent a = null;
-			
-				if ( i <= agentCount ) {
-					// linear
-					double optimism = ( double ) i  / ( double ) agentCount;
-					
-					// triangle
-					if ( 1 == optimismFunctionIndex ) {
-						double halfAgentCount = agentCount / 2.0;
-						double totalArea = ( agentCount * halfAgentCount ) / 2.0;
-						double halfArea = totalArea / 2.0;
-						double agentArea = ( ( ( halfAgentCount - this.i ) * ( halfAgentCount - this.i ) ) / 2.0 );
-						
-						if ( i <= halfAgentCount ) {
-							agentArea = halfArea - agentArea;
-							
-						} else {
-							agentArea = halfArea + agentArea;
-						}
-						
-						optimism = agentArea / totalArea;
-					}
-					
-					a = new Agent( i, optimism, markets );
 
-					this.i++;
-				}
-				
-				return a;
-			}
-		};
-		
 		INetworkCreator creator = (INetworkCreator) this.topologySelection.getSelectedItem();
-		this.agents = creator.createNetwork( agentFactory );
+		this.agents = creator.createNetwork( new AgentFactoryImpl( agentCount, this.markets ) );
 		
 		// if agent-wealth-visualisation panel is already there, remove it bevore adding a new instance
 		if ( null != this.agentWealthPanel ) {
@@ -679,6 +642,7 @@ public class InspectionPanel extends JPanel implements ActionListener, ChangeLis
 		if ( this.agents.size() > InspectionPanel.AGENTS_COUNT_HIDE_NETWORK_PANEL || 
 				this.toggleNetworkPanelButton.isSelected() ) {
 			this.networkPanel.setVisible( false );
+			this.revalidate();
 			return;
 
 		} else {
@@ -782,7 +746,7 @@ public class InspectionPanel extends JPanel implements ActionListener, ChangeLis
 			}
 		} );
 
-		this.networkPanel.setBorder( BorderFactory.createTitledBorder( BorderFactory.createLineBorder( Color.black ), "") );
+		this.networkPanel.setBorder( BorderFactory.createTitledBorder( BorderFactory.createLineBorder( Color.black ), "" ) );
 		
 		this.networkPanel.add( this.networkVisPanel, BorderLayout.CENTER );
 		this.networkPanel.revalidate();

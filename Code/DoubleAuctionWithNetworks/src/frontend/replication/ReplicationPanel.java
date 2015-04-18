@@ -3,7 +3,9 @@ package frontend.replication;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -30,6 +32,7 @@ import javax.swing.event.ListSelectionListener;
 import backend.Auction;
 import backend.Auction.MatchingType;
 import backend.agents.Agent;
+import backend.agents.AgentFactoryImpl;
 import backend.agents.IAgentFactory;
 import backend.agents.network.AgentConnection;
 import backend.agents.network.AgentNetwork;
@@ -97,7 +100,9 @@ public class ReplicationPanel extends JPanel {
 	
 	private List<ReplicationData> replicationData;
 	
-	private long startingTime;
+	private Date startingTime;
+
+	public final static SimpleDateFormat DATE_FORMATTER = new SimpleDateFormat( "dd.MM HH:mm:ss" );
 	
 	public enum TerminationMode {
 		MAX_TOTAL_TX,
@@ -139,7 +144,7 @@ public class ReplicationPanel extends JPanel {
 		this.replicationCountSpinner = new JSpinner( new SpinnerNumberModel( 4, 1, 100, 1 ) );
 		this.maxTxSpinner = new JSpinner( new SpinnerNumberModel( 1_000_000, 1, 1_000_000_000, 100_000 ) );
 		
-		this.runningTimeLabel = new JLabel( "Running Time: 0 sec" );
+		this.runningTimeLabel = new JLabel( "Running since: -" );
 		
 		this.replicationTable = new ReplicationTable();
 		JScrollPane txHistoryScrollPane = new JScrollPane( this.replicationTable );
@@ -327,7 +332,7 @@ public class ReplicationPanel extends JPanel {
 	
 	private void toggleReplication() {
 		if ( null == this.awaitFinishThread ) {
-			this.replicationButton.setText( "Stop Replications" );
+			this.replicationButton.setText( "Terminate" );
 			this.abmMarketCheck.setEnabled( false );
 			this.loanCashMarketCheck.setEnabled( false );
 			this.bpMechanismCheck.setEnabled( false );
@@ -342,17 +347,20 @@ public class ReplicationPanel extends JPanel {
 			this.replicationTable.clearAll();
 			this.replicationData.clear();
 			
+			this.agentWealthPanel.setAgents( this.agentNetworkTemplate.getOrderedList() );
+			
 			int replicationThreadCount = 1;
 			
 			if ( this.parallelEvaluationCheck.isSelected() ) {
 				replicationThreadCount = Runtime.getRuntime().availableProcessors();
+				//replicationThreadCount = Runtime.getRuntime().availableProcessors() - 1; // leave one free for other tasks
 			}
 			
 			this.replicationTaskExecutor = Executors.newFixedThreadPool( replicationThreadCount );
 			
 			AtomicInteger count = new AtomicInteger( (int) this.replicationCountSpinner.getValue() );
 			
-			this.startingTime = System.currentTimeMillis();
+			this.startingTime = new Date();
 			
 			for ( int i = 0; i < replicationThreadCount; ++i ) {
 				ReplicationTask task = new ReplicationTask( i, count, 
@@ -368,23 +376,16 @@ public class ReplicationPanel extends JPanel {
 			this.awaitFinishThread = new Thread( new Runnable() {
 				@Override
 				public void run() {
-					ReplicationTask lastTask = null;
-					
 					for ( ReplicationTask task : replicationTasks ) {
 						try {
-							lastTask = task;
 							task.getFuture().get();
 						} catch (InterruptedException | ExecutionException e) {
 							e.printStackTrace();
 						}
 					}
 					
-					// do calculations only when replications wheren't canceled
-					if ( false == lastTask.isCanceled() ) {
-						ReplicationPanel.this.allReplicationsFinished();
-					}
-					
-					resetStateForStart();
+					// do calculations also only when replications were canceled
+					ReplicationPanel.this.allReplicationsFinished();
 				}
 			} );
 			
@@ -501,11 +502,10 @@ public class ReplicationPanel extends JPanel {
 	}
 	
 	private synchronized void replicationFinished( ReplicationData data ) {
-		this.replicationData.add( data );
-		
 		SwingUtilities.invokeLater( new Runnable() {
 			@Override
 			public void run() {
+				ReplicationPanel.this.replicationData.add( data );
 				ReplicationPanel.this.agentWealthPanel.setAgents( data.getFinalAgents() );
 				ReplicationPanel.this.updateAgentInfoFrame( data.getFinalAgents() );
 				ReplicationPanel.this.replicationTable.addReplication( data );
@@ -514,52 +514,13 @@ public class ReplicationPanel extends JPanel {
 	}
 	
 	private void createAgents() {
-		int optimismFunctionIndex = 0;
 		int agentCount = (int) this.agentCountSpinner.getValue();
-
-		// create agent-factory
-		IAgentFactory agentFactory = new IAgentFactory() {
-			private int i = 0;
-			
-			@Override
-			public Agent createAgent() {
-				Agent a = null;
-			
-				if ( i <= agentCount ) {
-					// linear
-					double optimism = ( double ) i  / ( double ) agentCount;
-					
-					// triangle
-					if ( 1 == optimismFunctionIndex ) {
-						double halfAgentCount = agentCount / 2.0;
-						double totalArea = ( agentCount * halfAgentCount ) / 2.0;
-						double halfArea = totalArea / 2.0;
-						double agentArea = ( ( ( halfAgentCount - this.i ) * ( halfAgentCount - this.i ) ) / 2.0 );
-						
-						if ( i <= halfAgentCount ) {
-							agentArea = halfArea - agentArea;
-							
-						} else {
-							agentArea = halfArea + agentArea;
-						}
-						
-						optimism = agentArea / totalArea;
-					}
-					
-					a = new Agent( i, optimism, markets );
-
-					this.i++;
-				}
-				
-				return a;
-			}
-		};
 		
 		this.replicationData.clear();
 		this.replicationTable.clearAll();
 
 		INetworkCreator creator = (INetworkCreator) this.topologySelection.getSelectedItem();
-		this.agentNetworkTemplate = creator.createNetwork( agentFactory );
+		this.agentNetworkTemplate = creator.createNetwork( new AgentFactoryImpl( agentCount, this.markets ) );
 		
 		List<Agent> agents = this.agentNetworkTemplate.getOrderedList();
 		this.agentWealthPanel.setAgents( this.agentNetworkTemplate.getOrderedList() );
@@ -583,8 +544,8 @@ public class ReplicationPanel extends JPanel {
 	}
 	
 	private void updateRunningTimeLabel( long currSysMillis ) {
-		long duration = currSysMillis - this.startingTime;
-		this.runningTimeLabel.setText( "Running Time: " + ( duration / 1000 ) + " sec" );
+		long duration = currSysMillis - this.startingTime.getTime();
+		this.runningTimeLabel.setText( "Running since " + DATE_FORMATTER.format( this.startingTime ) + ", " + ( duration / 1000 ) + " sec." );
 	}
 	
 	private class ReplicationTask implements Runnable {
@@ -620,10 +581,6 @@ public class ReplicationPanel extends JPanel {
 			this.canceledFlag = true;
 		}
 		
-		public boolean isCanceled() {
-			return this.canceledFlag;
-		}
-		
 		@Override
 		public void run() {
 			while ( ( this.currentReplication = this.replicationCount.getAndDecrement() ) > 0 
@@ -645,7 +602,7 @@ public class ReplicationPanel extends JPanel {
 			boolean terminated = false;
 			long lastRunningTimeUpdate = 0;
 			
-			while ( false == this.canceledFlag ) {
+			while ( true ) {
 				Transaction tx = auction.executeSingleTransactionByType( MatchingType.BEST_NEIGHBOUR, false );
 				
 				totalTxCount++;
@@ -653,11 +610,7 @@ public class ReplicationPanel extends JPanel {
 				if ( false == tx.wasSuccessful() ) {
 					failTxCount++;
 				}
-				
-				if ( tx.isReachedEquilibrium() ) {
-					terminated = true;
-				}
-				
+
 				if ( TerminationMode.MAX_TOTAL_TX == this.terminationMode ) {
 					terminated = totalTxCount >= this.maxTx;
 					
@@ -665,8 +618,19 @@ public class ReplicationPanel extends JPanel {
 					terminated = failTxCount >= this.maxTx;
 				}
 			
+				if ( this.canceledFlag ) {
+					terminated = true;
+				}
+				
+				if ( tx.isReachedEquilibrium() ) {
+					terminated = true;
+				}
+				
 				if ( terminated ) {
 					ReplicationData data = new ReplicationData();
+					data.setFinishTime( new Date() );
+					data.setReachedEquilibrium( tx.isReachedEquilibrium() );
+					data.setWasCanceled( this.canceledFlag );
 					data.setNumber( ( int ) ReplicationPanel.this.replicationCountSpinner.getValue() - this.currentReplication + 1 );
 					data.setTaskId( this.taskId );
 					data.setTxCount( totalTxCount );
@@ -683,8 +647,6 @@ public class ReplicationPanel extends JPanel {
 					}
 				}
 			}
-			
-			return null;
 		}
 	}
 }

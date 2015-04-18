@@ -1,5 +1,6 @@
 package frontend.replication;
 
+import java.util.Date;
 import java.util.List;
 
 import backend.agents.Agent;
@@ -10,10 +11,14 @@ public class ReplicationData {
 	private int taskId;
 	private long txCount;
 	
+	private boolean wasCanceled;
+	private boolean reachedEquilibrium;
+	private Date finishTime;
+	
 	private List<Agent> finalAgents;
 	
 	public ReplicationData() {
-		
+		this.finishTime = new Date();
 	}
 
 	public List<Agent> getFinalAgents() {
@@ -46,6 +51,30 @@ public class ReplicationData {
 
 	public void setTxCount(long txCount) {
 		this.txCount = txCount;
+	}
+
+	public boolean isWasCanceled() {
+		return wasCanceled;
+	}
+
+	public void setWasCanceled(boolean wasCanceled) {
+		this.wasCanceled = wasCanceled;
+	}
+
+	public boolean isReachedEquilibrium() {
+		return reachedEquilibrium;
+	}
+
+	public void setReachedEquilibrium(boolean reachedEquilibrium) {
+		this.reachedEquilibrium = reachedEquilibrium;
+	}
+
+	public Date getFinishTime() {
+		return finishTime;
+	}
+
+	public void setFinishTime(Date finishTime) {
+		this.finishTime = finishTime;
 	}
 	
 	
