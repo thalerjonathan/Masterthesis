@@ -56,7 +56,7 @@ public class Agent {
 		this.assetEndow = this.markets.getAssetEndow();
 		this.highlighted = false;
 
-		//this.loan = 0;
+		this.loan = 0;
 		this.loanTaken = 0;
 		this.loanGiven = 0;
 		
@@ -87,7 +87,7 @@ public class Agent {
 		// => need to have positive amount of cash
 		//if ( this.cashEndow > 0 ) {
 			double minAssetPriceInCash = Math.min( pD, limitPriceAsset );
-			
+			 
 			// the price for 1.0 Units of asset - will be normalized during a Match
 			// to the given amount below - the unit of this variable is CASH
 			double assetPriceInCash = randomRange( minAssetPriceInCash, limitPriceAsset );
@@ -120,6 +120,7 @@ public class Agent {
 		// => need to have positive amount of cash
 		if ( this.markets.isLoanMarket() && this.cashEndow > 0 ) {
 			double minLoanPriceInCash = Math.min( Math.min( pD, V ), limitPriceLoan );
+			
 			
 			// the price for 1.0 Units of loans - will be normalized during a Match
 			// to the given amount below - the unit of this variable is CASH
@@ -220,7 +221,7 @@ public class Agent {
 		// => need to have enough uncollateralized assets
 		if ( this.markets.isLoanMarket() /*&& uncollateralizedAssets > 0 */ && this.assetEndow - Math.max( 0, tmp ) > 0 ) {
 			double maxLoanPriceInCash = Math.max( Math.min( pU, V ), limitPriceLoan );
-			
+
 			// this is always the price for 1.0 Units of loans - will be normalized during a Match
 			// to the given amount below - the unit of this variable is CASH
 			double loanPriceInCash = randomRange( limitPriceLoan, maxLoanPriceInCash );
@@ -250,7 +251,7 @@ public class Agent {
 		// => beecause of giving asset: need to have enough amount of uncollateralized assets
 		if ( this.markets.isABM() /* && uncollateralizedAssets > 0 */ ) {
 			double expectedAssetPriceInLoans = limitPriceAsset / limitPriceLoan;
-			
+
 			double maxAssetPrice = pU;
 			double minLoanPrice = Math.min( pD, V );
 			double maxAssetPriceInLoans = maxAssetPrice / minLoanPrice;
@@ -348,21 +349,20 @@ public class Agent {
 	
 	public double getUncollateralizedAssets() {
 		// the uncollateralized assets are those which are available for trades
-		// assetEndow
-		return this.assetEndow - this.getCollateral();
+		return this.getAssetEndow() - this.getCollateral() - Math.max( 0, this.getLoan() );
 	}
 
 	public double getCollateral() {
 		// when no BP Mechanism, loans given to other agents cannot be traded
 		// thus the collateral is the loans taken from other agents which implies
 		// assets as collateral 
-		double collateral = this.loanTaken;
+		double collateral = this.getLoanTaken();
 		
 		// when using Bonds-Pledgeability (BP) Mechanism, then it is possible
 		// to trade assets aquired by loans given to other agents
 		if ( this.markets.isBP() ) {
 			// loanGiven decreases the collateral in case of BP because it is available for trades
-			collateral -= this.loanGiven;
+			collateral -= this.getLoanGiven();
 		}
 		
 		return collateral;

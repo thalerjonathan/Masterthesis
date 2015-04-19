@@ -1,14 +1,12 @@
 package frontend.inspection.offerBook;
 
-import frontend.inspection.InspectionPanel;
-
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
 import javax.swing.table.DefaultTableModel;
 
 import backend.markets.MarketType;
-import backend.offers.AskOffering;
-import backend.offers.BidOffering;
+import backend.offers.Offering;
+import frontend.inspection.InspectionPanel;
 
 @SuppressWarnings("serial")
 public class OffersTable extends JTable {
@@ -16,8 +14,8 @@ public class OffersTable extends JTable {
 	private DefaultTableModel model;
 	
 	private final static Object[] COLUMN_LABELS_ASSETCASH = new Object[] { "Asset Amount", "Asset Price" };
-	private final static Object[] COLUMN_LABELS_ASSETLOANS = new Object[] { "Asset Amount", "Asset Price",  "Loan Amount", "Loan Price" };
 	private final static Object[] COLUMN_LABELS_LOANS = new Object[] { "Loan Amount", "Loan Price" };
+	private final static Object[] COLUMN_LABELS_ASSETLOANS = new Object[] { "Asset Amount", "Loan Amount (Asset Price in Loans)" };
 	
 	public OffersTable( MarketType marketType ) {
 		Object[] columns = COLUMN_LABELS_ASSETCASH;
@@ -50,27 +48,15 @@ public class OffersTable extends JTable {
 		this.revalidate();
 	}
 	
-	public void addBidOffering( BidOffering bid ) {
-		if ( null == bid ) {
-			return;
-		}
-		
-		this.model.addRow( new Object[] {
-				InspectionPanel.TRADING_VALUES_FORMAT.format( bid.getAmount() ),
-				InspectionPanel.TRADING_VALUES_FORMAT.format( bid.getPrice() ),
-				"-", "-"
-		});
-	}
-	
-	public void addAskOffering( AskOffering ask ) {
+	public void addOffering( Offering ask ) {
 		if ( null == ask ) {
 			return;
 		}
 		
 		this.model.addRow( new Object[] {
 				InspectionPanel.TRADING_VALUES_FORMAT.format( ask.getAmount() ),
-				InspectionPanel.TRADING_VALUES_FORMAT.format( ask.getPrice() ),
-				"-", "-"
+				InspectionPanel.TRADING_VALUES_FORMAT.format( ask.getPrice() )
 		});
+		
 	}
 }

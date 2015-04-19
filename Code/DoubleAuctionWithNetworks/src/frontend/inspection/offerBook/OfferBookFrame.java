@@ -93,8 +93,8 @@ public class OfferBookFrame extends JFrame {
 		}
 		
 		for ( int i = 0; i < Markets.NUMMARKETS; ++i ) {
-			this.askOffersBookTable[ i ].addAskOffering( askOfferings[ i ] );
-			this.bidOffersBookTable[ i ].addBidOffering( bidOfferings[ i ] );
+			this.askOffersBookTable[ i ].addOffering( askOfferings[ i ] );
+			this.bidOffersBookTable[ i ].addOffering( bidOfferings[ i ] );
 		}
 	}
 	
@@ -104,6 +104,7 @@ public class OfferBookFrame extends JFrame {
 
 		this.createControls( agentIndex, tabIndex );
 		
+		this.setResizable(false);
 		this.setDefaultCloseOperation( JFrame.DISPOSE_ON_CLOSE );
 		this.addWindowListener( new WindowAdapter() {
 			@Override
@@ -112,7 +113,7 @@ public class OfferBookFrame extends JFrame {
 			}
 		});
 		
-		this.setPreferredSize( new Dimension( 640, 768 ) );
+		this.setPreferredSize( new Dimension( 550, 400 ) );
 		
 		this.pack();
 	}
@@ -213,8 +214,8 @@ public class OfferBookFrame extends JFrame {
 
 		this.marketTabPane = new JTabbedPane();
 		this.marketTabPane.addTab( "Cash / Asset", marketPanels[ 0 ] );
-		this.marketTabPane.addTab( "Cash / Loan", marketPanels[ 2 ] );
-		this.marketTabPane.addTab( "Asset / Loan", marketPanels[ 1 ] );
+		this.marketTabPane.addTab( "Cash / Loan", marketPanels[ 1 ] );
+		this.marketTabPane.addTab( "Asset / Loan", marketPanels[ 2 ] );
 
 		this.marketTabPane.setSelectedIndex( tabIndex );
 		

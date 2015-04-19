@@ -113,11 +113,14 @@ Zeitpunkte
 					- erlaubt eine einzelne replikation zu canceln
 					- erlaubt in eine einzelne replikation hineinzuschauen:
 						- vermögensverteilung, refresh button, agent info
-		-> TODO		Märkte müssen mit meinen gleichungen (?) funktionieren d.h. bis auf 0 herunterhandeln
 		-> TODO		Optimieren von Matchingwahrscheinlichkeiten
 						anpassung an die nachbar limitprices, aber nicht deterministisch sondern auch zufällig ( mit 1/10 diese optimierung machen und dann untersuchen). 
 						somit kommt es mit höherer wahrscheinlichkeit zu matches zwischen ascending-nachbaren. ABER: dann keine reinen zero-intelligence agents.
 						-> IMPORTANCE-SAMPLING
+						-> upper/lower limit immer auf nachbar käufer/verkäufer limitprice setzen funktioniert bei ascending_connected nicht - wieso eigentlich nicht? wahrscheinlich reduziert es die wahrscheinlichkeit noch mehr
+						-> ober/unter grenze währenddessen erlernen d.h. bei erfolgreichen transaktionen nach oben bzw. unten verschieben und dann mit einer 50% wahrscheinlichkeit daraus ziehen funktioniert auch nicht
+						
+		-> TODO		Märkte müssen mit meinen gleichungen (?) funktionieren d.h. bis auf 0 herunterhandeln
 		-> TODO 	experimente definieren und beobachten
 					-> FULLY_CONNECTED und ASCENDING_CONNECTED OHNE BP miteinander vergleichen
 					-> FULLY_CONNECTED und ASCENDING_CONNECTED MIT BP miteinander vergleichen
@@ -126,6 +129,8 @@ Zeitpunkte
 		-> TODO		Recatorings
 					- 
 	Mai: SCHREIBEN beginnen
+		-> TODO		Introduction
+		-> TODO		Implementation
 		-> TODO		Paper berschreiben
 		-> TODO		implementierung beschreiben und unterschiede zum paper
 		

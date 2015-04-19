@@ -13,6 +13,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.swing.JButton;
@@ -33,7 +34,6 @@ import backend.Auction;
 import backend.Auction.MatchingType;
 import backend.agents.Agent;
 import backend.agents.AgentFactoryImpl;
-import backend.agents.IAgentFactory;
 import backend.agents.network.AgentConnection;
 import backend.agents.network.AgentNetwork;
 import backend.markets.Markets;
@@ -162,10 +162,7 @@ public class ReplicationPanel extends JPanel {
 					}
 					
 					int modelIndex = ReplicationPanel.this.replicationTable.getRowSorter().convertRowIndexToModel( rowIndex );
-					//int viewIndex = ReplicationPanel.this.replicationTable.getRowSorter().convertRowIndexToView( rowIndex );
 					
-					//System.out.println( "rowIndex = " + rowIndex + " modelIndex = " + modelIndex + " viewIndex = " + viewIndex );
-
 					ReplicationData data = ReplicationPanel.this.replicationData.get( modelIndex );
 					ReplicationPanel.this.agentWealthPanel.setAgents( data.getFinalAgents() );
 		        }
@@ -356,8 +353,12 @@ public class ReplicationPanel extends JPanel {
 				//replicationThreadCount = Runtime.getRuntime().availableProcessors() - 1; // leave one free for other tasks
 			}
 			
-			this.replicationTaskExecutor = Executors.newFixedThreadPool( replicationThreadCount );
-			
+			this.replicationTaskExecutor = Executors.newFixedThreadPool( replicationThreadCount, new ThreadFactory() {
+				public Thread newThread( Runnable r ) {
+					return new Thread( r, "Replication-Thread" );
+				}
+			});
+	
 			AtomicInteger count = new AtomicInteger( (int) this.replicationCountSpinner.getValue() );
 			
 			this.startingTime = new Date();
@@ -388,7 +389,7 @@ public class ReplicationPanel extends JPanel {
 					ReplicationPanel.this.allReplicationsFinished();
 				}
 			} );
-			
+			this.awaitFinishThread.setName( "Replications finished wait-thread" );
 			this.awaitFinishThread.start();
 			
 		} else {
@@ -401,30 +402,9 @@ public class ReplicationPanel extends JPanel {
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
-			
-			this.resetStateForStart();
 		}
 	}
 	
-	private void resetStateForStart() {
-		this.replicationButton.setText( "Start Replications" );
-		this.abmMarketCheck.setEnabled( true );
-		this.loanCashMarketCheck.setEnabled( true );
-		this.bpMechanismCheck.setEnabled( true );
-		this.parallelEvaluationCheck.setEnabled( true );
-		this.agentCountSpinner.setEnabled( true );
-		this.maxTxSpinner.setEnabled( true );
-		this.faceValueSpinner.setEnabled( true );
-		this.topologySelection.setEnabled( true );
-		this.terminationSelection.setEnabled( true );
-		this.replicationCountSpinner.setEnabled( true );
-
-		this.awaitFinishThread = null;
-		this.replicationTasks.clear();
-		
-		this.replicationTaskExecutor.shutdown();
-	}
-
 	private void allReplicationsFinished() {
 		this.updateRunningTimeLabel( System.currentTimeMillis() );
 		
@@ -499,6 +479,23 @@ public class ReplicationPanel extends JPanel {
 		this.agentWealthPanel.setAgents( medianAgents );
 		this.replicationData.add( finalData );
 		this.replicationTable.addReplication( finalData );
+		
+		this.replicationButton.setText( "Start Replications" );
+		this.abmMarketCheck.setEnabled( true );
+		this.loanCashMarketCheck.setEnabled( true );
+		this.bpMechanismCheck.setEnabled( true );
+		this.parallelEvaluationCheck.setEnabled( true );
+		this.agentCountSpinner.setEnabled( true );
+		this.maxTxSpinner.setEnabled( true );
+		this.faceValueSpinner.setEnabled( true );
+		this.topologySelection.setEnabled( true );
+		this.terminationSelection.setEnabled( true );
+		this.replicationCountSpinner.setEnabled( true );
+
+		this.awaitFinishThread = null;
+		this.replicationTasks.clear();
+		
+		this.replicationTaskExecutor.shutdown();
 	}
 	
 	private synchronized void replicationFinished( ReplicationData data ) {
@@ -506,9 +503,9 @@ public class ReplicationPanel extends JPanel {
 			@Override
 			public void run() {
 				ReplicationPanel.this.replicationData.add( data );
+				ReplicationPanel.this.replicationTable.addReplication( data );
 				ReplicationPanel.this.agentWealthPanel.setAgents( data.getFinalAgents() );
 				ReplicationPanel.this.updateAgentInfoFrame( data.getFinalAgents() );
-				ReplicationPanel.this.replicationTable.addReplication( data );
 			}
 		} );
 	}

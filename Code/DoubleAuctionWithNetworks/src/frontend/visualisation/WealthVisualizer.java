@@ -100,7 +100,7 @@ public class WealthVisualizer extends JPanel {
 			double cash = a.getConumEndow();
 			double assets = a.getAssetEndow();
 			double bonds = a.getLoan();
-			double unpledgedAssets = a.getLoanGiven() - a.getLoanTaken() + assets;
+			double unpledgedAssets = a.getUncollateralizedAssets();
 			
 			int x = ( int ) ( width * optimism ) + SCALA_WIDTH;
 			
@@ -123,13 +123,12 @@ public class WealthVisualizer extends JPanel {
 			if ( i > 0 )
 				g.drawLine( lastX, lastYBonds, x, yBonds );
 			g.fillOval( x - POINT_RADIUS, yBonds - POINT_RADIUS, POINT_DIAMETER, POINT_DIAMETER );
-			
-			/*
+
 			g.setColor( Color.CYAN );
 			if ( i > 0 )
 				g.drawLine( lastX, lastYUnpledged, x, yUnpledged );
 			g.fillOval( x - POINT_RADIUS, yUnpledged - POINT_RADIUS, POINT_DIAMETER, POINT_DIAMETER );
-*/
+
 			lastYCash = yCash;
 			lastYAsset = yAssets;
 			lastYBonds = yBonds;
@@ -157,14 +156,12 @@ public class WealthVisualizer extends JPanel {
 		g.drawLine( LEGEND_BOX_X + 5, d.height - LEGEND_BOX_Y + 53, LEGEND_BOX_X + 50, d.height - LEGEND_BOX_Y + 53 );
 		g.setColor( Color.BLACK );
 		g.drawChars( "Bonds".toCharArray(), 0, "Bonds".length(), LEGEND_BOX_X + 60, d.height - LEGEND_BOX_Y + 58 );
-		
-		/*
+
 		g.setColor( Color.CYAN );
 		g.drawLine( LEGEND_BOX_X + 5, d.height - LEGEND_BOX_Y + 73, LEGEND_BOX_X + 50, d.height - LEGEND_BOX_Y + 73 );
 		g.setColor( Color.BLACK );
 		g.drawChars( "uncoll. Assets".toCharArray(), 0, "uncoll. Assets".length(), LEGEND_BOX_X + 60, d.height - LEGEND_BOX_Y + 78 );
-		*/
-		
+
 		// draw border of legend-box
 		( ( Graphics2D ) g ).setStroke( new BasicStroke( 1 ) );
 		g.setColor( Color.BLACK );

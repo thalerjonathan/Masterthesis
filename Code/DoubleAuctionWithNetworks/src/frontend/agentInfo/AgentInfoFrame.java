@@ -1,6 +1,7 @@
 package frontend.agentInfo;
 
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.util.List;
 
 import javax.swing.JFrame;
@@ -37,8 +38,10 @@ public class AgentInfoFrame extends JFrame {
 		this.getContentPane().setLayout( new BorderLayout() );
 		this.getContentPane().add( this.agentIndexSpinner, BorderLayout.NORTH );
 		this.getContentPane().add( this.agentInfoPanel, BorderLayout.CENTER );
+		this.getContentPane().setPreferredSize( new Dimension( 550, 100 ) );
 		
 		this.setDefaultCloseOperation( JFrame.DISPOSE_ON_CLOSE );
+		this.setResizable(false);
 		this.pack();
 	}
 	

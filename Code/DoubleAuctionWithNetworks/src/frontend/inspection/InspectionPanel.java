@@ -34,7 +34,6 @@ import backend.Auction;
 import backend.Auction.MatchingType;
 import backend.agents.Agent;
 import backend.agents.AgentFactoryImpl;
-import backend.agents.IAgentFactory;
 import backend.agents.network.AgentConnection;
 import backend.agents.network.AgentNetwork;
 import backend.markets.Markets;
@@ -774,7 +773,6 @@ public class InspectionPanel extends JPanel implements ActionListener, ChangeLis
 			this.abmMarketCheck.setEnabled( false );
 			this.loanCashMarketCheck.setEnabled( false );
 			this.bpMechanismCheck.setEnabled( false );
-			this.keepAgentHistoryCheck.setEnabled( false );
 			
 			// reset controls
 			this.inspectionButton.setText( "Stop Inspection" );
@@ -825,8 +823,6 @@ public class InspectionPanel extends JPanel implements ActionListener, ChangeLis
 			this.abmMarketCheck.setEnabled( true );
 			this.loanCashMarketCheck.setEnabled( true );
 			this.bpMechanismCheck.setEnabled( true );
-			this.keepAgentHistoryCheck.setEnabled( true );
-			
 		}
 	}
 	

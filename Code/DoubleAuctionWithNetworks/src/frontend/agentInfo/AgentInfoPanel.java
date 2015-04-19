@@ -1,7 +1,5 @@
 package frontend.agentInfo;
 
-import frontend.inspection.InspectionPanel;
-
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 
@@ -9,6 +7,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import backend.agents.Agent;
+import frontend.inspection.InspectionPanel;
 
 @SuppressWarnings("serial")
 public class AgentInfoPanel extends JPanel {
