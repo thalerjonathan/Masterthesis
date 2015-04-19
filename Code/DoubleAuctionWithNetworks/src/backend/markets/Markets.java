@@ -30,6 +30,10 @@ public class Markets {
 		this.loanMarket = true;
 	}
 	
+	public Markets( double V ) {
+		this( 0.2, 1.0, V );
+	}
+	
 	public Markets( double pD, double pU, double V ) {
 		this();
 		this.pD = pD;
@@ -82,6 +86,10 @@ public class Markets {
 		return this.V;
 	}
 
+	public void setV( double v ) {
+		this.V = v;
+	}
+	
 	public double getConsumEndow() {
 		return consumEndow;
 	}

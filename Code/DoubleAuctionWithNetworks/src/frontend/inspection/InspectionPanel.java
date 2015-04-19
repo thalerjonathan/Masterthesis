@@ -101,13 +101,14 @@ public class InspectionPanel extends JPanel implements ActionListener, ChangeLis
 	private JComboBox<InspectionThread.AdvanceMode> advcanceModeSelection;
 	
 	private JSpinner agentCountSpinner;
+	private JSpinner faceValueSpinner;
 	
 	private JLabel computationTimeLabel;
 	
 	private JLabel succTxCounterLabel;
 	private JLabel totalTxCounterLabel;
-	private JLabel noSuccTxCounterLabel;
-	private JLabel totalNoSuccTxCounterLabel;
+	private JLabel failedTxCounterLabel;
+	private JLabel totalfailedTxCounterLabel;
 
 	private TxHistoryTable txHistoryTable;
 	
@@ -129,7 +130,7 @@ public class InspectionPanel extends JPanel implements ActionListener, ChangeLis
 	private static final int REPAINT_WEALTH_WHENRUNNING_INTERVAL = 1000;
 	
 	public InspectionPanel() {
-		this.markets = new Markets( 0.2, 1.0, 0.5 );
+		this.markets = new Markets();
 
 		this.successfulTx = new ArrayList<Transaction>();
 		
@@ -223,11 +224,12 @@ public class InspectionPanel extends JPanel implements ActionListener, ChangeLis
 		this.advcanceModeSelection = new JComboBox<InspectionThread.AdvanceMode>( InspectionThread.AdvanceMode.values() );
 		
 		this.agentCountSpinner = new JSpinner( new SpinnerNumberModel( 30, 10, 1000, 10 ) );
-
+		this.faceValueSpinner = new JSpinner( new SpinnerNumberModel( this.markets.V(), 0.1, 1.0, 0.1 ) );
+		
 		this.computationTimeLabel = new JLabel( "0,00 sec" );
 		this.succTxCounterLabel = new JLabel( "0" );
-		this.noSuccTxCounterLabel = new JLabel( "0" );
-		this.totalNoSuccTxCounterLabel = new JLabel( "0" );
+		this.failedTxCounterLabel = new JLabel( "0" );
+		this.totalfailedTxCounterLabel = new JLabel( "0" );
 		this.totalTxCounterLabel = new JLabel( "0" );		
 		
 		this.recreateButton = new JButton( "Recreate" );
@@ -387,7 +389,8 @@ public class InspectionPanel extends JPanel implements ActionListener, ChangeLis
 		this.recreateButton.addActionListener( this );
 		this.optimismSelection.addActionListener( this );
 		this.agentCountSpinner.addChangeListener( this );
-
+		this.faceValueSpinner.addChangeListener( this );
+		
 		ActionListener checkListener = new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -395,10 +398,6 @@ public class InspectionPanel extends JPanel implements ActionListener, ChangeLis
 					InspectionPanel.this.loanCashMarketCheck.setSelected( false );
 					InspectionPanel.this.bpMechanismCheck.setSelected( false );
 				}
-				
-				InspectionPanel.this.markets.setABM( InspectionPanel.this.abmMarketCheck.isSelected() );
-				InspectionPanel.this.markets.setLoanMarket( InspectionPanel.this.loanCashMarketCheck.isSelected() );
-				InspectionPanel.this.markets.setBP( InspectionPanel.this.bpMechanismCheck.isSelected() );
 			}
 		};
 		
@@ -409,11 +408,12 @@ public class InspectionPanel extends JPanel implements ActionListener, ChangeLis
 		// adding components ////////////////////////////////////
 
 		JLabel succTxCounterInfoLabel = new JLabel( "Successful TX: " );
-		JLabel noSuccTxCounterInfoLabel = new JLabel( "No Succ. TX: " );
+		JLabel failedTxCounterInfoLabel = new JLabel( "Failed TX: " );
 		JLabel totalTxCounterInfoLabel = new JLabel( "Total TX: " );
-		JLabel totalNoSuccTxCounterInfoLabel = new JLabel( "Total No Succ. TX: " );
+		JLabel totalfailedTxCounterInfoLabel = new JLabel( "Total failed TX: " );
 		JLabel computationTimeInfoLabel = new JLabel( "Computation Time: " );
 
+		controlsPanel.add( this.faceValueSpinner );
 		controlsPanel.add( this.agentCountSpinner );
 		controlsPanel.add( this.topologySelection );
 		controlsPanel.add( this.abmMarketCheck );
@@ -448,16 +448,16 @@ public class InspectionPanel extends JPanel implements ActionListener, ChangeLis
 	    txLabelsPanel.add( this.succTxCounterLabel, c );
 	    c.gridx = 0;
 	    c.gridy = 2;
-	    txLabelsPanel.add( noSuccTxCounterInfoLabel, c );
+	    txLabelsPanel.add( failedTxCounterInfoLabel, c );
 		c.gridx = 1;
 	    c.gridy = 2;
-	    txLabelsPanel.add( this.noSuccTxCounterLabel, c );
+	    txLabelsPanel.add( this.failedTxCounterLabel, c );
 	    c.gridx = 0;
 	    c.gridy = 3;
-	    txLabelsPanel.add( totalNoSuccTxCounterInfoLabel, c );
+	    txLabelsPanel.add( totalfailedTxCounterInfoLabel, c );
 		c.gridx = 1;
 	    c.gridy = 3;
-	    txLabelsPanel.add( this.totalNoSuccTxCounterLabel, c );
+	    txLabelsPanel.add( this.totalfailedTxCounterLabel, c );
 		c.gridx = 0;
 	    c.gridy = 4;
 	    txLabelsPanel.add( totalTxCounterInfoLabel, c );
@@ -571,9 +571,9 @@ public class InspectionPanel extends JPanel implements ActionListener, ChangeLis
 	
 	void updateTXCounter( int succTx, int noSuccTX, int totalTX, int totalNotSuccTx, long calculationTime ) {
 		this.succTxCounterLabel.setText( "" + succTx );
-		this.noSuccTxCounterLabel.setText( "" + noSuccTX );
+		this.failedTxCounterLabel.setText( "" + noSuccTX );
 		this.totalTxCounterLabel.setText( "" + totalTX );
-		this.totalNoSuccTxCounterLabel.setText( "" + totalNotSuccTx );
+		this.totalfailedTxCounterLabel.setText( "" + totalNotSuccTx );
 		this.computationTimeLabel.setText( COMP_TIME_FORMAT.format( calculationTime / 1000.0 ) + " sec." );
 	}
 	
@@ -590,7 +590,11 @@ public class InspectionPanel extends JPanel implements ActionListener, ChangeLis
 
 	private void createAgents() {
 		int agentCount = (int) this.agentCountSpinner.getValue();
-
+		this.markets = new Markets( (double) this.faceValueSpinner.getValue() );
+		this.markets.setABM( InspectionPanel.this.abmMarketCheck.isSelected() );
+		this.markets.setLoanMarket( InspectionPanel.this.loanCashMarketCheck.isSelected() );
+		this.markets.setBP( InspectionPanel.this.bpMechanismCheck.isSelected() );
+		
 		INetworkCreator creator = (INetworkCreator) this.topologySelection.getSelectedItem();
 		this.agents = creator.createNetwork( new AgentFactoryImpl( agentCount, this.markets ) );
 		
@@ -767,6 +771,7 @@ public class InspectionPanel extends JPanel implements ActionListener, ChangeLis
 	
 			// disable controls, to prevent changes by user
 			this.agentCountSpinner.setEnabled( false );
+			this.faceValueSpinner.setEnabled( false );
 			this.topologySelection.setEnabled( false );
 			this.optimismSelection.setEnabled( false );
 			this.recreateButton.setEnabled( false );
@@ -817,6 +822,7 @@ public class InspectionPanel extends JPanel implements ActionListener, ChangeLis
 			this.pauseButton.setEnabled( false );
 			
 			this.agentCountSpinner.setEnabled( true );
+			this.faceValueSpinner.setEnabled( true );
 			this.topologySelection.setEnabled( true );
 			this.optimismSelection.setEnabled( true );
 			this.recreateButton.setEnabled( true );

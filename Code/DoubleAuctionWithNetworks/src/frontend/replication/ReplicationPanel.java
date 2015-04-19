@@ -1,6 +1,8 @@
 package frontend.replication;
 
 import java.awt.BorderLayout;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.text.SimpleDateFormat;
@@ -57,6 +59,7 @@ import frontend.networkCreators.MedianHubCreator;
 import frontend.networkCreators.ThreeMedianHubsCreator;
 import frontend.networkCreators.WattStrogatzCreator;
 import frontend.networkVisualisation.NetworkRenderPanel;
+import frontend.replication.info.ReplicationInfoFrame;
 import frontend.visualisation.WealthVisualizer;
 
 @SuppressWarnings( value = {"serial", "rawtypes" } )
@@ -82,17 +85,19 @@ public class ReplicationPanel extends JPanel {
 	private JButton replicationButton;
 	private JButton showNetworkButton;
 	private JButton showAgentInfoButton;
-
+	private JButton showReplicationInfoButton;
+	
 	private JLabel runningTimeLabel;
 	
 	private AgentInfoFrame agentInfoFrame;
+	private ReplicationInfoFrame replicationInfoFrame;
+	
+	private WealthVisualizer agentWealthPanel;
+	private NetworkVisualisationFrame netVisFrame;
 	
 	private Timer spinnerChangedTimer;
 	
 	private ReplicationTable replicationTable;
-	
-	private WealthVisualizer agentWealthPanel;
-	private NetworkVisualisationFrame netVisFrame;
 	
 	private ExecutorService replicationTaskExecutor;
 	private List<ReplicationTask> replicationTasks;
@@ -111,7 +116,7 @@ public class ReplicationPanel extends JPanel {
 	}
 	
 	public ReplicationPanel() {
-		this.markets = new Markets( 0.2, 1.0, 0.5 );
+		this.markets = new Markets();
 
 		this.replicationTasks = new ArrayList<>();
 		this.replicationData = new ArrayList<>();
@@ -138,6 +143,7 @@ public class ReplicationPanel extends JPanel {
 		this.replicationButton = new JButton( "Start Replications" );
 		this.showNetworkButton = new JButton( "Show Network" );
 		this.showAgentInfoButton = new JButton( "Show Agent-Info" );
+		this.showReplicationInfoButton = new JButton( "Show Replication-Info" );
 		
 		this.agentCountSpinner = new JSpinner( new SpinnerNumberModel( 30, 10, 1000, 10 ) );
 		this.faceValueSpinner = new JSpinner( new SpinnerNumberModel( 0.5, 0.1, 1.0, 0.1 ) );
@@ -196,10 +202,6 @@ public class ReplicationPanel extends JPanel {
 					ReplicationPanel.this.loanCashMarketCheck.setSelected( false );
 					ReplicationPanel.this.bpMechanismCheck.setSelected( false );
 				}
-				
-				ReplicationPanel.this.markets.setABM( ReplicationPanel.this.abmMarketCheck.isSelected() );
-				ReplicationPanel.this.markets.setLoanMarket( ReplicationPanel.this.loanCashMarketCheck.isSelected() );
-				ReplicationPanel.this.markets.setBP( ReplicationPanel.this.bpMechanismCheck.isSelected() );
 			}
 		};
 		
@@ -237,7 +239,7 @@ public class ReplicationPanel extends JPanel {
 			}
 		});
 		
-		this.agentCountSpinner.addChangeListener( new ChangeListener() {
+		ChangeListener spinnerChanged = new ChangeListener() {
 			public void stateChanged(ChangeEvent arg0) {
 				TimerTask task = new TimerTask() {
 					@Override
@@ -262,8 +264,11 @@ public class ReplicationPanel extends JPanel {
 				ReplicationPanel.this.spinnerChangedTimer = new Timer();
 				ReplicationPanel.this.spinnerChangedTimer.schedule( task, 500 );
 			}
-		} );
-
+		};
+		
+		this.agentCountSpinner.addChangeListener( spinnerChanged );
+		this.faceValueSpinner.addChangeListener( spinnerChanged );
+		
 		this.showNetworkButton.addActionListener( new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -283,31 +288,59 @@ public class ReplicationPanel extends JPanel {
 			}
 		});
 		
-		// adding components ////////////////////////////////////
-		JPanel controlsPanel = new JPanel();
+		showReplicationInfoButton.setEnabled( false );
+		this.showReplicationInfoButton.addActionListener( new ActionListener() {	
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				ReplicationPanel.this.showReplicationInfo();
+			}
+		});
 		
-		controlsPanel.add( this.maxTxSpinner );
-		controlsPanel.add( this.replicationCountSpinner );
-		controlsPanel.add( this.faceValueSpinner );
-		controlsPanel.add( this.agentCountSpinner );
-		controlsPanel.add( this.topologySelection );
-		controlsPanel.add( this.terminationSelection );
-		controlsPanel.add( this.abmMarketCheck );
-		controlsPanel.add( this.loanCashMarketCheck );
-		controlsPanel.add( this.bpMechanismCheck );	
-		controlsPanel.add( this.parallelEvaluationCheck );	
-		controlsPanel.add( this.replicationButton );
-		controlsPanel.add( this.showNetworkButton );
-		controlsPanel.add( this.showAgentInfoButton );
-		controlsPanel.add( this.runningTimeLabel );
+		// adding components ////////////////////////////////////
+		JPanel controlsPanel = new JPanel( new GridBagLayout() );
+		JPanel agentsConfigPanel = new JPanel();
+		JPanel replicationsConfigPanel = new JPanel();
+		
+		agentsConfigPanel.add( this.faceValueSpinner );
+		agentsConfigPanel.add( this.agentCountSpinner );
+		agentsConfigPanel.add( this.topologySelection );
+		agentsConfigPanel.add( this.abmMarketCheck );
+		agentsConfigPanel.add( this.loanCashMarketCheck );
+		agentsConfigPanel.add( this.bpMechanismCheck );	
+		agentsConfigPanel.add( this.parallelEvaluationCheck );	
+		agentsConfigPanel.add( this.replicationButton );
+
+		replicationsConfigPanel.add( this.maxTxSpinner );
+		replicationsConfigPanel.add( this.terminationSelection );
+		replicationsConfigPanel.add( this.replicationCountSpinner );
+		replicationsConfigPanel.add( this.showNetworkButton );
+		replicationsConfigPanel.add( this.showAgentInfoButton );
+		replicationsConfigPanel.add( this.showReplicationInfoButton );
+		replicationsConfigPanel.add( this.runningTimeLabel );
 		
 		this.agentWealthPanel.setSize( this.getSize() );
 		
+		GridBagConstraints c = new GridBagConstraints();
+		
+		c.gridy = 0;
+		controlsPanel.add( agentsConfigPanel, c );
+		c.gridy = 1;
+		controlsPanel.add( replicationsConfigPanel, c );
+
 		this.add( controlsPanel, BorderLayout.NORTH );
 		this.add( this.agentWealthPanel, BorderLayout.CENTER );
 		this.add( txHistoryScrollPane, BorderLayout.SOUTH );
 	}
 	
+	private void showReplicationInfo() {
+		if ( null == this.replicationInfoFrame ) {
+			this.replicationInfoFrame = new ReplicationInfoFrame();
+		}
+		
+		this.replicationInfoFrame.setTasks( this.replicationTasks );
+		this.replicationInfoFrame.setVisible( true );
+	}
+
 	private void showAgentInfoFrame() {
 		if ( null == this.agentInfoFrame ) {
 			this.agentInfoFrame = new AgentInfoFrame();
@@ -340,18 +373,22 @@ public class ReplicationPanel extends JPanel {
 			this.topologySelection.setEnabled( false );
 			this.terminationSelection.setEnabled( false );
 			this.replicationCountSpinner.setEnabled( false );
-
+			this.showReplicationInfoButton.setEnabled( true );
+			
 			this.replicationTable.clearAll();
 			this.replicationData.clear();
 			
 			this.agentWealthPanel.setAgents( this.agentNetworkTemplate.getOrderedList() );
 			
 			int replicationThreadCount = 1;
+			AtomicInteger replicationCount = new AtomicInteger( (int) this.replicationCountSpinner.getValue() );
 			
 			if ( this.parallelEvaluationCheck.isSelected() ) {
 				replicationThreadCount = Runtime.getRuntime().availableProcessors();
 				//replicationThreadCount = Runtime.getRuntime().availableProcessors() - 1; // leave one free for other tasks
 			}
+			
+			replicationThreadCount = Math.min( replicationCount.get(), replicationThreadCount );
 			
 			this.replicationTaskExecutor = Executors.newFixedThreadPool( replicationThreadCount, new ThreadFactory() {
 				public Thread newThread( Runnable r ) {
@@ -359,12 +396,11 @@ public class ReplicationPanel extends JPanel {
 				}
 			});
 	
-			AtomicInteger count = new AtomicInteger( (int) this.replicationCountSpinner.getValue() );
 			
 			this.startingTime = new Date();
 			
 			for ( int i = 0; i < replicationThreadCount; ++i ) {
-				ReplicationTask task = new ReplicationTask( i, count, 
+				ReplicationTask task = new ReplicationTask( i, replicationCount, 
 						( TerminationMode ) this.terminationSelection.getSelectedItem(), 
 						( int ) this.maxTxSpinner.getValue() );
 				
@@ -491,7 +527,8 @@ public class ReplicationPanel extends JPanel {
 		this.topologySelection.setEnabled( true );
 		this.terminationSelection.setEnabled( true );
 		this.replicationCountSpinner.setEnabled( true );
-
+		this.showReplicationInfoButton.setEnabled( false );
+		
 		this.awaitFinishThread = null;
 		this.replicationTasks.clear();
 		
@@ -513,10 +550,15 @@ public class ReplicationPanel extends JPanel {
 	private void createAgents() {
 		int agentCount = (int) this.agentCountSpinner.getValue();
 		
+		this.markets = new Markets( (double) this.faceValueSpinner.getValue() );
+		this.markets.setABM( ReplicationPanel.this.abmMarketCheck.isSelected() );
+		this.markets.setLoanMarket( ReplicationPanel.this.loanCashMarketCheck.isSelected() );
+		this.markets.setBP( ReplicationPanel.this.bpMechanismCheck.isSelected() );
+		
 		this.replicationData.clear();
 		this.replicationTable.clearAll();
 
-		INetworkCreator creator = (INetworkCreator) this.topologySelection.getSelectedItem();
+		INetworkCreator creator = ( INetworkCreator ) this.topologySelection.getSelectedItem();
 		this.agentNetworkTemplate = creator.createNetwork( new AgentFactoryImpl( agentCount, this.markets ) );
 		
 		List<Agent> agents = this.agentNetworkTemplate.getOrderedList();
@@ -545,19 +587,25 @@ public class ReplicationPanel extends JPanel {
 		this.runningTimeLabel.setText( "Running since " + DATE_FORMATTER.format( this.startingTime ) + ", " + ( duration / 1000 ) + " sec." );
 	}
 	
-	private class ReplicationTask implements Runnable {
+	public class ReplicationTask implements Runnable {
 		private int taskId;
+		
 		private int currentReplication;
 		private boolean canceledFlag;
+		
+		private int totalTxCount;
+		private int failTxCount;
 		
 		private AtomicInteger replicationCount;
 
 		private Future future;
 		
 		private TerminationMode terminationMode;
-		private long maxTx;
+		private int maxTx;
 		
-		public ReplicationTask( int taskId, AtomicInteger replicationCount, TerminationMode terminationMode, long maxTx ) {
+		private AgentNetwork currentAgents;
+		
+		public ReplicationTask( int taskId, AtomicInteger replicationCount, TerminationMode terminationMode, int maxTx ) {
 			this.taskId = taskId;
 			this.canceledFlag = false;
 			this.replicationCount = replicationCount;
@@ -566,6 +614,10 @@ public class ReplicationPanel extends JPanel {
 			this.maxTx = maxTx;
 		}
 		
+		public int getTaskId() {
+			return taskId;
+		}
+
 		public Future getFuture() {
 			return future;
 		}
@@ -574,6 +626,30 @@ public class ReplicationPanel extends JPanel {
 			this.future = future;
 		}
 
+		public int getCurrentReplication() {
+			return currentReplication;
+		}
+
+		public TerminationMode getTerminationMode() {
+			return terminationMode;
+		}
+		
+		public int getTotalTxCount() {
+			return totalTxCount;
+		}
+
+		public int getFailTxCount() {
+			return failTxCount;
+		}
+
+		public int getMaxTx() {
+			return maxTx;
+		}
+
+		public List<Agent> getAgents() {
+			return this.currentAgents.getOrderedList();
+		}
+		
 		public void cancel() {
 			this.canceledFlag = true;
 		}
@@ -583,8 +659,8 @@ public class ReplicationPanel extends JPanel {
 			while ( ( this.currentReplication = this.replicationCount.getAndDecrement() ) > 0 
 					&& false == this.canceledFlag ) {
 				// creates a deep copy of the network, need for parallel execution
-				AgentNetwork agents = new AgentNetwork( ReplicationPanel.this.agentNetworkTemplate );
-				Auction auction = new Auction( agents );
+				this.currentAgents = new AgentNetwork( ReplicationPanel.this.agentNetworkTemplate );
+				Auction auction = new Auction( this.currentAgents );
 				
 				ReplicationData data = this.calculateReplication( auction );
 				if ( null != data ) {
@@ -594,10 +670,11 @@ public class ReplicationPanel extends JPanel {
 		}
 		
 		private ReplicationData calculateReplication( Auction auction ) {
-			int totalTxCount = 0;
-			int failTxCount = 0;
 			boolean terminated = false;
 			long lastRunningTimeUpdate = 0;
+			
+			this.totalTxCount = 0;
+			this.failTxCount = 0;
 			
 			while ( true ) {
 				Transaction tx = auction.executeSingleTransactionByType( MatchingType.BEST_NEIGHBOUR, false );
