@@ -349,7 +349,7 @@ public class Agent {
 	
 	public double getUncollateralizedAssets() {
 		// the uncollateralized assets are those which are available for trades
-		return this.getAssetEndow() - this.getCollateral() - Math.max( 0, this.getLoan() );
+		return Math.max( 0, this.getAssetEndow() - this.getCollateral() - Math.max( 0, this.getLoan() ) );
 	}
 
 	public double getCollateral() {
