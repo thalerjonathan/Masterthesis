@@ -1,5 +1,7 @@
 package backend.agents;
 
+import java.util.concurrent.ThreadLocalRandom;
+
 import backend.markets.MarketType;
 import backend.markets.Markets;
 import backend.offers.AskOffering;
@@ -469,6 +471,6 @@ public class Agent {
 	}
 	
 	private static double randomRange( double min, double max ) {
-		return min + Math.random() * ( max - min );
+		return min + ThreadLocalRandom.current().nextDouble() * ( max - min );
 	}
 }

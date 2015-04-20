@@ -592,6 +592,7 @@ public class ReplicationPanel extends JPanel {
 		
 		private int currentReplication;
 		private boolean canceledFlag;
+		private boolean nextTxFlag;
 		
 		private int totalTxCount;
 		private int failTxCount;
@@ -605,9 +606,11 @@ public class ReplicationPanel extends JPanel {
 		
 		private AgentNetwork currentAgents;
 		
-		public ReplicationTask( int taskId, AtomicInteger replicationCount, TerminationMode terminationMode, int maxTx ) {
+		public ReplicationTask( int taskId, AtomicInteger replicationCount, 
+				TerminationMode terminationMode, int maxTx ) {
 			this.taskId = taskId;
 			this.canceledFlag = false;
+			this.nextTxFlag = false;
 			this.replicationCount = replicationCount;
 			
 			this.terminationMode = terminationMode;
@@ -654,10 +657,21 @@ public class ReplicationPanel extends JPanel {
 			this.canceledFlag = true;
 		}
 		
+		public void nextReplication() {
+			this.nextTxFlag = true;
+		}
+		
 		@Override
 		public void run() {
-			while ( ( this.currentReplication = this.replicationCount.getAndDecrement() ) > 0 
-					&& false == this.canceledFlag ) {
+			while ( true ) {
+				if ( this.canceledFlag ) {
+					break;
+				}
+				
+				if (  ( this.currentReplication = this.replicationCount.getAndDecrement() ) <= 0 ) {
+					break;
+				}
+				
 				// creates a deep copy of the network, need for parallel execution
 				this.currentAgents = new AgentNetwork( ReplicationPanel.this.agentNetworkTemplate );
 				Auction auction = new Auction( this.currentAgents );
@@ -679,19 +693,23 @@ public class ReplicationPanel extends JPanel {
 			while ( true ) {
 				Transaction tx = auction.executeSingleTransactionByType( MatchingType.BEST_NEIGHBOUR, false );
 				
-				totalTxCount++;
+				this.totalTxCount++;
 				
 				if ( false == tx.wasSuccessful() ) {
-					failTxCount++;
+					this.failTxCount++;
 				}
 
 				if ( TerminationMode.MAX_TOTAL_TX == this.terminationMode ) {
-					terminated = totalTxCount >= this.maxTx;
+					terminated = this.totalTxCount >= this.maxTx;
 					
 				} else if ( TerminationMode.MAX_FAIL_TX == this.terminationMode ) {
-					terminated = failTxCount >= this.maxTx;
+					terminated = this.failTxCount >= this.maxTx;
 				}
 			
+				if ( this.nextTxFlag ) {
+					terminated = true;
+				}
+				
 				if ( this.canceledFlag ) {
 					terminated = true;
 				}
@@ -704,12 +722,14 @@ public class ReplicationPanel extends JPanel {
 					ReplicationData data = new ReplicationData();
 					data.setFinishTime( new Date() );
 					data.setReachedEquilibrium( tx.isReachedEquilibrium() );
-					data.setWasCanceled( this.canceledFlag );
+					data.setWasCanceled( this.canceledFlag || this.nextTxFlag );
 					data.setNumber( ( int ) ReplicationPanel.this.replicationCountSpinner.getValue() - this.currentReplication + 1 );
 					data.setTaskId( this.taskId );
-					data.setTxCount( totalTxCount );
+					data.setTxCount( this.totalTxCount );
 					data.setFinalAgents( tx.getFinalAgents() );
 
+					this.nextTxFlag = false;
+					
 					return data;
 				}
 				

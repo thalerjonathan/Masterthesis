@@ -33,7 +33,7 @@ public class ReplicationInfoFrame extends JFrame {
 		this.createControls();
 		
 		this.getContentPane().setLayout( new BorderLayout() );
-		this.getContentPane().setPreferredSize( new Dimension( 750, 400 ) );
+		this.getContentPane().setPreferredSize( new Dimension( 880, 400 ) );
 		
 		this.setDefaultCloseOperation( JFrame.HIDE_ON_CLOSE );
 		this.setResizable( false );

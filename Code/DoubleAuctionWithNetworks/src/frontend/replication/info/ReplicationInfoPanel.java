@@ -26,6 +26,7 @@ public class ReplicationInfoPanel extends JPanel {
 	private JLabel replicationNumberLabel;
 	
 	private JButton cancelButton;
+	private JButton nextRepButton;
 	private JButton showWealthButton;
 	
 	private JProgressBar progressBar;
@@ -58,6 +59,7 @@ public class ReplicationInfoPanel extends JPanel {
 		this.replicationNumberLabel = new JLabel();
 				
 		this.cancelButton = new JButton( "Cancel" );
+		this.nextRepButton = new JButton( "Next Rep." );
 		this.showWealthButton = new JButton( "Show Wealth" );
 		
 		this.progressBar = new JProgressBar();
@@ -68,6 +70,13 @@ public class ReplicationInfoPanel extends JPanel {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				ReplicationInfoPanel.this.task.cancel();
+			}
+		} );
+		
+		this.nextRepButton.addActionListener( new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				ReplicationInfoPanel.this.task.nextReplication();
 			}
 		} );
 		
@@ -129,6 +138,11 @@ public class ReplicationInfoPanel extends JPanel {
 		this.add( this.cancelButton, c );
 		c.gridx = 9;
 		c.gridy = 1;
+		this.add( this.nextRepButton, c );
+		c.gridx = 10;
+		c.gridy = 0;
+		c.gridwidth = 2;
+		c.gridheight = 2;
 		this.add( this.showWealthButton, c );
 	}
 

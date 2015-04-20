@@ -3,6 +3,7 @@ package backend.tx;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
 
 import org.apache.commons.math.random.RandomDataImpl;
 
@@ -161,7 +162,7 @@ public class Transaction  {
 		for ( int i = 0; i < Markets.NUMMARKETS; ++i ) {
 			int marketIndex = perm[ i ];
 			
-			boolean checkAgentSellFirst = Math.random() >= 0.5;
+			boolean checkAgentSellFirst = ThreadLocalRandom.current().nextDouble() >= 0.5;
 			
 			// check whether a sell matches or a buy matches in random order - first match wins
 			for ( int j = 0; j < 2; ++j ) {
