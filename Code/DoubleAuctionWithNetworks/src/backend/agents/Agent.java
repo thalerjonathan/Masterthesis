@@ -221,7 +221,7 @@ public class Agent {
 		// => collateralize assets of the same amount as security
 		// => getting money from buyer 
 		// => need to have enough uncollateralized assets
-		if ( this.markets.isLoanMarket() /*&& uncollateralizedAssets > 0 */ && this.assetEndow - Math.max( 0, tmp ) > 0 ) {
+		if ( this.markets.isLoanMarket() /*&& uncollateralizedAssets > 0 */ && this.assetEndow - Math.max( 0, tmp ) > Markets.TRADING_EPSILON ) {
 			double maxLoanPriceInCash = Math.max( Math.min( pU, V ), limitPriceLoan );
 
 			// this is always the price for 1.0 Units of loans - will be normalized during a Match
@@ -241,6 +241,10 @@ public class Agent {
 			double loanAmount = this.assetEndow - Math.max( 0, tmp );
 			loanAmount = Math.min( loanAmount, Markets.TRADING_UNIT_LOAN );
 				
+			if ( loanAmount == 0 ) {
+				System.out.println( "0" );
+			}
+			
 			offerings[ MarketType.LOAN_CASH.ordinal() ] = new AskOffering( loanPriceInCash, loanAmount, this, MarketType.LOAN_CASH );
 			
 		} else {

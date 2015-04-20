@@ -23,6 +23,7 @@ public class Markets {
 	public final static int NUMMARKETTYPES = 3;
 	
 	public final static boolean TRADE_ONLY_FULL_UNITS = true;
+	public final static double TRADING_EPSILON = 0.0000001;
 
 	public Markets() {
 		this.abm = true;

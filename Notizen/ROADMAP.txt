@@ -75,7 +75,7 @@ Zeitpunkte
 		-> NEIN		Multithreaded: kurz probiert, viel zu komplex, müsste die ganze backend-architektur komplett umbauen und selbst dann ists noch fraglich ob es wirklich was bringt
 					großer nutzen nur bei vielen agenten (ab 500) und für das gleichgewicht auch schon unter 100 agenten ausreichen 
 		
-	April: THEORIE VERTIEFUNG UND AUSARBEITUNG
+	April: THEORIE VERTIEFUNG, AUSARBEITUNG und IMPLEMENTIERUNG
 		-> OK		Offer-Book: Anzeigen der Besten-Offers eines Agenten nach jeder TX
 		-> OK		Paretofront visualisieren
 		-> OK		History der offer-books & wealth-visualisierung: speichere für jede erfolgreiche TX die zustände der agents und deren offers
@@ -111,47 +111,38 @@ Zeitpunkte
 					OK zeigt die momentan laufenden replikationen inklusive fortschritt an (nur bei MAX TOTAL TX)
 					OK erlaubt eine einzelne replikation zu canceln
 					OK erlaubt die vermögensverteilung einer einzelne replikation hineinzuschauen:
-						
-		-> TODO		Optimieren von Matchingwahrscheinlichkeiten
-						anpassung an die nachbar limitprices, aber nicht deterministisch sondern auch zufällig ( mit 1/10 diese optimierung machen und dann untersuchen). 
-						somit kommt es mit höherer wahrscheinlichkeit zu matches zwischen ascending-nachbaren. ABER: dann keine reinen zero-intelligence agents.
-						-> IMPORTANCE-SAMPLING
-						-> upper/lower limit immer auf nachbar käufer/verkäufer limitprice setzen funktioniert bei ascending_connected nicht - wieso eigentlich nicht? wahrscheinlich reduziert es die wahrscheinlichkeit noch mehr
-						-> ober/unter grenze währenddessen erlernen d.h. bei erfolgreichen transaktionen nach oben bzw. unten verschieben und dann mit einer 50% wahrscheinlichkeit daraus ziehen funktioniert auch nicht
-						
-		-> TODO		Märkte müssen mit meinen gleichungen (?) funktionieren d.h. bis auf 0 herunterhandeln
+
+		-> TODO		Märkte müssen bis auf 0 herunterhandeln bzw. bis auf ein epsilon
+			
 		-> TODO 	experimente definieren und beobachten
-					-> FULLY_CONNECTED und ASCENDING_CONNECTED OHNE BP miteinander vergleichen
-					-> FULLY_CONNECTED und ASCENDING_CONNECTED MIT BP miteinander vergleichen
-					-> ?
+				-> FULLY_CONNECTED und ASCENDING_CONNECTED OHNE BP miteinander vergleichen
+				-> FULLY_CONNECTED und ASCENDING_CONNECTED MIT BP miteinander vergleichen
+				
+		-> TODO		Bugfixes
+					- wenn network hidden in inspection-mode und ein anderes network ausgewählt wird und dann wieder show network, dann ist noch das ursprüngliche angezeigt
+Aufgaben
+	
+	-> TODO		SCHREIBEN: Introduction 
+	-> TODO		SCHREIBEN: Implementation
+	-> TODO		SCHREIBEN: Paper berschreiben
+	-> TODO		SCHREIBEN: implementierung beschreiben und unterschiede zum paper
 		
-		-> TODO		Refatorings
-					
-	Mai: SCHREIBEN beginnen
-		-> TODO		Introduction
-		-> TODO		Implementation
-		-> TODO		Paper berschreiben
-		-> TODO		implementierung beschreiben und unterschiede zum paper
-		
-		-> VIELLEICHT		wieder mehere bond-typen zurückeinbauen, da ein wesentlicher punkt im paper ist, dass wenn mehrere loans zur verfügung stehen, die riskioreichen NICHT gehandelt werden
-		
-	Juni: SCHREIBEN
-		-> Kapitel 1 "Theorie" schreiben. Dieser erst ganz zum schluss, damit der theorieteil einen sinnvollen kontext bekommt und nicht bloß als trockener nackter theorieteil daherkommt, 
+	-> TODO		SCHREIBEN: Theorie Dieser erst ganz zum schluss, damit der theorieteil einen sinnvollen kontext bekommt und nicht bloß als trockener nackter theorieteil daherkommt, 
 				den man vor jede andere x-beliebige masterthesis setzen kann die sich auch mit komplexeren netzwerken auseinandersetzt.
-		-> Kapitel 5 "Conclusions and Perspectives" schreiben.
-		
-	Juli: KORREKTUREN
-		-> Feintuning und Überarbeitung
-		-> Finale Abgabe am 27.
-			-> wenn auf das Kinderlager mit am 17. Juli abgabe
+	-> TODO		SCHREIBEN: "Conclusions and Perspectives" schreiben.
+
+	-> TODO		Feintuning und Überarbeitung
+	-> TODO		Finale Abgabe am 27.
 
 
-Wieso Doktorarbeit nichtmehr:
-- im moment nicht sehr dazu motiviert
-- garantiert mir keine Lehrstelle in der FH
-- ich bezweifle ob ich überhaupt der typ dazu bin
-- da nottingham weggefallen ist, stellt sich die frage nach der uni und thema
-- mind. 3 weitere jahre in Ausbildung investieren
-- finde sicher einen sehr guten job stattedessen
-- viel parallel machen: doktorstudium, forschungsprojekte (smartsleep, jmarkets), unterrichten. ist mühsam
+Wenn noch zeit:
+	-> TODO		Optimieren von Matchingwahrscheinlichkeiten
+				anpassung an die nachbar limitprices, aber nicht deterministisch sondern auch zufällig ( mit 1/10 diese optimierung machen und dann untersuchen). 
+				somit kommt es mit höherer wahrscheinlichkeit zu matches zwischen ascending-nachbaren. ABER: dann keine reinen zero-intelligence agents.
+				-> IMPORTANCE-SAMPLING
+				-> upper/lower limit immer auf nachbar käufer/verkäufer limitprice setzen funktioniert bei ascending_connected nicht - wieso eigentlich nicht? wahrscheinlich reduziert es die wahrscheinlichkeit noch mehr
+				-> ober/unter grenze währenddessen erlernen d.h. bei erfolgreichen transaktionen nach oben bzw. unten verschieben und dann mit einer 50% wahrscheinlichkeit daraus ziehen funktioniert auch nicht
+	-> TODO		wieder mehere bond-typen zurückeinbauen, da ein wesentlicher punkt im paper ist, dass wenn mehrere loans zur verfügung stehen, die riskioreichen NICHT gehandelt werden
 
+	-> TODO		Refatorings
+			
