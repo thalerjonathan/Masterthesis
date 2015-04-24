@@ -31,8 +31,8 @@ public class MainWindow extends JFrame {
 		this.replicatorPanel = new ReplicationPanel();
 		
 		this.simulationModesTabPane = new JTabbedPane();
-		this.simulationModesTabPane.addTab( "Replication", this.replicatorPanel );
 		this.simulationModesTabPane.addTab( "Inspection", this.inspectorPanel );
+		this.simulationModesTabPane.addTab( "Replication", this.replicatorPanel );
 		
 		this.simulationModesTabPane.setSelectedIndex( 0 );
 		

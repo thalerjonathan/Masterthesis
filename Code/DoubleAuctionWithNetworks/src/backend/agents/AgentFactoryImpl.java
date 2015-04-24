@@ -1,5 +1,7 @@
 package backend.agents;
 
+import java.util.List;
+
 import backend.markets.Markets;
 
 public class AgentFactoryImpl implements IAgentFactory {
@@ -7,9 +9,9 @@ public class AgentFactoryImpl implements IAgentFactory {
 	private int i;
 	private int agentCount;
 	private Markets markets;
-	
+
 	private boolean triangleOptimismDistribution = false;
-	
+
 	public AgentFactoryImpl( int agentCount, Markets markets ) {
 		this.agentCount = agentCount;
 		this.markets = markets;
@@ -19,7 +21,7 @@ public class AgentFactoryImpl implements IAgentFactory {
 	public Agent createAgent() {
 		Agent a = null;
 		
-		if ( i <= agentCount ) {
+		if ( i < agentCount ) {
 			// linear
 			double optimism = ( double ) i  / ( double ) agentCount;
 			

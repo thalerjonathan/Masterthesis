@@ -52,6 +52,8 @@ Arbeitsschritte & Meilensteine bis zur Abgabe
 		
 
 Zeitpunkte
+	Finale Abgabe am 27.
+
 	Bis Februar
 		-> Thema fixieren
 		-> Literaturübersicht
@@ -112,16 +114,21 @@ Zeitpunkte
 					OK erlaubt eine einzelne replikation zu canceln
 					OK erlaubt die vermögensverteilung einer einzelne replikation hineinzuschauen:
 
-		-> TODO		Märkte müssen bis auf 0 herunterhandeln bzw. bis auf ein epsilon
-			
-		-> TODO 	experimente definieren und beobachten
-				-> FULLY_CONNECTED und ASCENDING_CONNECTED OHNE BP miteinander vergleichen
-				-> FULLY_CONNECTED und ASCENDING_CONNECTED MIT BP miteinander vergleichen
+Implementierung		
+	-> TODO		Gleichgewichtszustand wie im Paper feststellen
+	-> TODO		Importance Sampling
+				-> Initiale Sampleanzahl von Anzahl der Agenten und Topologie abhängig: wie berechnen
+					-> Variante mit Sampling muss mindestens gleich gut funktionieren wie die mit uniform random 
+				-> Neue Samples müssen mit einer gewissen Wahrscheinlichkkeit hinzugefügt werden: welcher?
+					-> Integralfläche?
+					-> Wichtigkeit des Samples?
 				
-		-> TODO		Bugfixes
+	-> TODO 	experimente definieren und beobachten
+				
+	-> TODO		Bugfixes
 					- wenn network hidden in inspection-mode und ein anderes network ausgewählt wird und dann wieder show network, dann ist noch das ursprüngliche angezeigt
-Aufgaben
-	
+
+Schreiben
 	-> TODO		SCHREIBEN: Introduction 
 	-> TODO		SCHREIBEN: Implementation
 	-> TODO		SCHREIBEN: Paper berschreiben
@@ -130,9 +137,6 @@ Aufgaben
 	-> TODO		SCHREIBEN: Theorie Dieser erst ganz zum schluss, damit der theorieteil einen sinnvollen kontext bekommt und nicht bloß als trockener nackter theorieteil daherkommt, 
 				den man vor jede andere x-beliebige masterthesis setzen kann die sich auch mit komplexeren netzwerken auseinandersetzt.
 	-> TODO		SCHREIBEN: "Conclusions and Perspectives" schreiben.
-
-	-> TODO		Feintuning und Überarbeitung
-	-> TODO		Finale Abgabe am 27.
 
 
 Wenn noch zeit:
@@ -145,4 +149,3 @@ Wenn noch zeit:
 	-> TODO		wieder mehere bond-typen zurückeinbauen, da ein wesentlicher punkt im paper ist, dass wenn mehrere loans zur verfügung stehen, die riskioreichen NICHT gehandelt werden
 
 	-> TODO		Refatorings
-			

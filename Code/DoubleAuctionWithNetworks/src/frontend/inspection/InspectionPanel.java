@@ -204,12 +204,12 @@ public class InspectionPanel extends JPanel implements ActionListener, ChangeLis
 		JPanel networkVisControlsPanel = new JPanel();
 		
 		this.topologySelection = new JComboBox<INetworkCreator>();
-		this.topologySelection.addItem( new FullyConnectedCreator() );
-		this.topologySelection.addItem( new HalfFullyConnectedCreator() );
 		this.topologySelection.addItem( new AscendingConnectedCreator() );
 		this.topologySelection.addItem( new AscendingFullShortcutsCreator() );
 		this.topologySelection.addItem( new AscendingRegularShortcutsCreator() );
 		this.topologySelection.addItem( new AscendingRandomShortcutsCreator() );
+		this.topologySelection.addItem( new FullyConnectedCreator() );
+		this.topologySelection.addItem( new HalfFullyConnectedCreator() );
 		this.topologySelection.addItem( new HubConnectedCreator() );
 		this.topologySelection.addItem( new MedianHubCreator() );
 		this.topologySelection.addItem( new MaximumHubCreator() );
@@ -271,7 +271,7 @@ public class InspectionPanel extends JPanel implements ActionListener, ChangeLis
 		this.abmMarketCheck.setSelected( this.markets.isABM() );
 		this.loanCashMarketCheck.setSelected( this.markets.isLoanMarket() );
 		this.bpMechanismCheck.setSelected( this.markets.isBP() );
-		this.keepAgentHistoryCheck.setSelected( true );
+		this.keepAgentHistoryCheck.setSelected( false );
 		
 		this.nextTxButton.setEnabled( false );
 		this.advance10TxButton.setEnabled( false );
@@ -588,6 +588,81 @@ public class InspectionPanel extends JPanel implements ActionListener, ChangeLis
 		OfferBookFrame.offerBookChanged();
 	}
 
+	public void setLimits( List<Agent> agents ) {
+		int agentCount = agents.size();
+		double[] ca = new double[ agentCount + 1 ];
+		double[] cl = new double[ agentCount + 1 ];
+		double[] cal = new double[ agentCount + 1 ];
+		ca[1] = 0;
+		cl[1] = 0;
+		cal[1] = 0;
+		
+		double FV = this.markets.V();
+		
+		// NOTE: i MUST run from 1 to agentCount
+		for (int i = 1; i <= agentCount; i++)  {
+			int k = agentCount;
+			if (i < agentCount*0.5)  {
+				ca[i] = (k - i)*(i + 2)*(0.8 / (k + 1) + ca[i]) / ((k + 1 - i)*(i + 1)) - 0.8 / (k + 1);
+				cl[i] = (i + 2)*(k - i)*((FV - 0.2) / (k + 1) + cl[i]) / ((i + 1)*(k + 1 - i)) - (FV - 0.2) / (k + 1);
+				double ei0 = (0.2 + 0.8*i / (k + 1)) / (0.2 + (FV - 0.2)*i / (k + 1));
+				double ei1 = (0.2 + 0.8*(i + 1) / (k + 1)) / (0.2 + (FV - 0.2)*(i + 1) / (k + 1));
+				double ei2 = (0.2 + 0.8*(i + 2) / (k + 1)) / (0.2 + (FV - 0.2)*(i + 2) / (k + 1));
+				double deltai0 = ei1 - ei0;
+				double deltai1 = ei2 - ei1;
+				cal[i] = deltai0*(5.0 - ei1)*(ei2 - 0.2 / FV)*(deltai0 + cal[i]) / (deltai1*(5.0 - ei0)*(ei1 - 0.2 / FV)) - deltai1;
+				//		  std::cout << ca[i + 1] << ", " << cl[i + 1] << ", " << cal[i + 1] << std::endl;
+			}
+			else {
+				ca[i] = ca[agentCount - i];
+				cl[i] = cl[agentCount - i];
+				cal[i] = cal[agentCount - i];
+			}
+		}
+		
+		for (int i = 1; i <= agentCount; i++)  {
+			double[][] limitAssets = new double[2][2]; //first index: 0: buy, 1: sell; second index: 0: lower 1: upper limit
+			double[][] limitLoans = new double[2][2];
+			double[][] limitAssetLoans= new double[2][2];
+			
+			if (i < agentCount)  {
+				limitAssets[1][0] = agents.get( i - 1 ).getLimitPriceAsset();
+				limitAssets[1][1] = agents.get(i).getLimitPriceAsset() + ca[i];
+				limitLoans[1][0] = agents.get(i - 1).getLimitPriceLoans();
+				limitLoans[1][1] = agents.get(i).getLimitPriceLoans() + cl[i];
+				limitAssetLoans[1][0] = agents.get(i - 1).getLimitPriceAsset() / agents.get(i - 1).getLimitPriceLoans();
+				limitAssetLoans[1][1] = agents.get(i).getLimitPriceAsset() / agents.get(i).getLimitPriceLoans() + cal[i];
+			}
+			else {
+				limitAssets[1][0] = 1000000;
+				limitAssets[1][1] = 1000000;
+				limitLoans[1][0] = 1000000;
+				limitLoans[1][1] = 1000000;
+				limitAssetLoans[1][0] = 1000000;
+				limitAssetLoans[1][1] = 1000000;
+			}
+			if (i > 1)  {
+				limitAssets[0][0] = agents.get(i - 2).getLimitPriceAsset();
+				limitAssets[0][1] = agents.get(i - 1).getLimitPriceAsset();
+				limitLoans[0][0] = agents.get(i - 2).getLimitPriceLoans();
+				limitLoans[0][1] = agents.get(i - 1).getLimitPriceLoans();
+				limitAssetLoans[0][0] = agents.get(i - 2).getLimitPriceAsset() / agents.get(i - 2).getLimitPriceLoans();
+				limitAssetLoans[0][1] = agents.get(i - 1).getLimitPriceAsset() / agents.get(i - 1).getLimitPriceLoans();
+	
+			}
+			else  {
+				limitAssets[0][0] = -1000000;
+				limitAssets[0][1] = -1000000;
+				limitLoans[0][0] = -1000000;
+				limitLoans[0][1] = -1000000;
+				limitAssetLoans[0][0] = -1000000;
+				limitAssetLoans[0][1] = -1000000;
+			}
+			
+			agents.get(i - 1).setISData(limitAssets, limitLoans, limitAssetLoans);
+		}
+	}
+	
 	private void createAgents() {
 		int agentCount = (int) this.agentCountSpinner.getValue();
 		this.markets = new Markets( (double) this.faceValueSpinner.getValue() );
@@ -597,6 +672,9 @@ public class InspectionPanel extends JPanel implements ActionListener, ChangeLis
 		
 		INetworkCreator creator = (INetworkCreator) this.topologySelection.getSelectedItem();
 		this.agents = creator.createNetwork( new AgentFactoryImpl( agentCount, this.markets ) );
+		
+		// TODO: only when ASCENDING_CONNECTED
+		setLimits( this.agents.getOrderedList() );
 		
 		// if agent-wealth-visualisation panel is already there, remove it bevore adding a new instance
 		if ( null != this.agentWealthPanel ) {

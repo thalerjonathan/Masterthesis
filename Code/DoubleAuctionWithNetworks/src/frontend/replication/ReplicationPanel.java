@@ -560,7 +560,7 @@ public class ReplicationPanel extends JPanel {
 
 		INetworkCreator creator = ( INetworkCreator ) this.topologySelection.getSelectedItem();
 		this.agentNetworkTemplate = creator.createNetwork( new AgentFactoryImpl( agentCount, this.markets ) );
-		
+
 		List<Agent> agents = this.agentNetworkTemplate.getOrderedList();
 		this.agentWealthPanel.setAgents( this.agentNetworkTemplate.getOrderedList() );
 		

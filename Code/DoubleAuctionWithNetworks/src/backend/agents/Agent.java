@@ -1,5 +1,7 @@
 package backend.agents;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
 import backend.markets.MarketType;
@@ -9,8 +11,6 @@ import backend.offers.BidOffering;
 import backend.tx.Match;
 
 public class Agent {
-	private Markets markets;
-	
 	private int id;
 	// optimism factor
 	private double h;
@@ -32,6 +32,10 @@ public class Agent {
 	// the amount of loans bought from other agents for cash or assets. is the amount of UN-collateralized assets
 	private double loanGiven;
 	
+	private Markets markets;
+	
+	private boolean highlighted;
+	
 	// NOTE: holds the offerings of the current sweeping-round
 	private AskOffering[] currentAskOfferings;
 	private BidOffering[] currentBidOfferings;
@@ -40,8 +44,15 @@ public class Agent {
 	private AskOffering[] bestAskOfferings;
 	private BidOffering[] bestBidOfferings;
 	
-	private boolean highlighted;
-
+	private List<List<Double>> askSampleRanges;
+	private List<List<Double>> bidSampleRanges;
+	
+	double[][] assetLimits; //first index: 0: buy, 1: sell; second index: 0: lower 1: upper limit
+	double[][] loanLimits;
+	double[][] assetLoanLimits;
+	
+	private final static int MAX_SAMPLES = 1000;
+	
 	public Agent(int id, double h, Markets markets ) {
 		this.id = id;
 		this.h = h;
@@ -50,7 +61,122 @@ public class Agent {
 		this.limitPriceAsset = markets.calculateLimitPriceAsset( h );
 		this.limitPriceLoan = markets.calculateLimitPriceLoan( h );
 				
+		this.bidSampleRanges = new ArrayList<>();
+		this.askSampleRanges = new ArrayList<>();
+		
+		for ( int i = 0; i < Markets.NUMMARKETS; ++i ) {
+			this.bidSampleRanges.add( new ArrayList<>() );
+			this.askSampleRanges.add( new ArrayList<>() );
+		}
+
+		double Sdown = markets.pD();
+		double Sup = markets.pU();
+		double FV = markets.V();
+		double EPSILON = 0.000001;
+		double EuS = this.limitPriceAsset;
+		double EuL = this.limitPriceLoan;
+		
+		assetLimits = new double[2][2]; //first index: 0: buy, 1: sell; second index: 0: lower 1: upper limit
+		loanLimits = new double[2][2];
+		assetLoanLimits = new double[2][2];
+		
+		assetLimits[0][0] = Math.min(Sdown, EuS - EPSILON); //buy lower
+		  assetLimits[0][1] = EuS - EPSILON; //buy upper
+		  assetLimits[1][0] = EuS + EPSILON; //sell lower
+		  assetLimits[1][1] = Math.max(Sup, EuS + EPSILON); //sell upper
+		  loanLimits[0][0] = Math.min(Math.min(Sdown, FV), EuL - EPSILON); //buy lower
+		  loanLimits[0][1] = EuL - EPSILON; //buy upper
+		  loanLimits[1][0] = EuL + EPSILON; //sell lower
+		  loanLimits[1][1] = Math.max(Math.min(Sup, FV), EuL + EPSILON); //sell upper
+		  assetLoanLimits[0][0] = Sdown / Math.min(Sup, FV); //buy lower
+		  assetLoanLimits[0][1] = EuS / EuL - EPSILON; //buy upper
+		  assetLoanLimits[1][0] = EuS / EuL + EPSILON; //sell lower
+		  assetLoanLimits[1][1] = Sup / Math.min(Sdown, FV); //sell upper
+		  
+		  
+		defineBidSamples();
+		defineAskSamples();
+		
 		this.reset();
+	}
+	
+	public void printSamples() {
+		for ( int i = 0; i < Markets.NUMMARKETS; ++i ) {
+			java.util.Collections.sort( bidSampleRanges.get( i ) );
+			java.util.Collections.sort( askSampleRanges.get( i ) );
+			
+			System.out.println( "bidSamples_" + MarketType.values()[ i ] + " = [" );
+			for ( int j = 0; j < bidSampleRanges.get( i ).size(); ++j ) {
+				System.out.println( bidSampleRanges.get( i ).get( j ) );
+			}
+			System.out.println( "]" );
+
+			System.out.println( "askSamples_" + MarketType.values()[ i ] + " = [" );
+			for ( int j = 0; j < askSampleRanges.get( i ).size(); ++j ) {
+				System.out.println( askSampleRanges.get( i ).get( j ) );
+			}
+			System.out.println( "]" );
+		}
+		
+		System.out.println();
+	}
+	
+	private void defineBidSamples() {
+		double pD = markets.pD();
+		double pU = markets.pU();
+		double V = markets.V();
+		
+		bidSampleRanges.get( 0 ).clear();
+		bidSampleRanges.get( 1 ).clear();
+		bidSampleRanges.get( 2 ).clear();
+		
+		double minAssetPriceInCash = Math.min( pD, limitPriceAsset );
+		calculateSampleRange( minAssetPriceInCash, limitPriceAsset, MAX_SAMPLES, bidSampleRanges.get( 0 ) );
+		
+		double minLoanPriceInCash = Math.min( Math.min( pD, V ), limitPriceLoan );
+		calculateSampleRange( minLoanPriceInCash, limitPriceLoan, MAX_SAMPLES, bidSampleRanges.get( 1 ) );
+		
+		double minAssetPrice = pD;
+		double maxLoanPrice = Math.min( pU, V );
+		double minAssetPriceInLoans = minAssetPrice / maxLoanPrice;
+		double expectedAssetPriceInLoans = limitPriceAsset / limitPriceLoan;
+		
+		calculateSampleRange( minAssetPriceInLoans, expectedAssetPriceInLoans, MAX_SAMPLES, bidSampleRanges.get( 2 ) );
+	}
+	
+	private void defineAskSamples() {
+		double pD = markets.pD();
+		double pU = markets.pU();
+		double V = markets.V();
+		
+		askSampleRanges.get( 0 ).clear();
+		askSampleRanges.get( 1 ).clear();
+		askSampleRanges.get( 2 ).clear();
+		
+		double maxAssetPriceInCash = Math.max( pU, limitPriceAsset );
+		calculateSampleRange( limitPriceAsset, maxAssetPriceInCash, MAX_SAMPLES, askSampleRanges.get( 0 ) );
+		
+		double maxLoanPriceInCash = Math.max( Math.min( pU, V ), limitPriceLoan );
+		calculateSampleRange( limitPriceLoan, maxLoanPriceInCash, MAX_SAMPLES, askSampleRanges.get( 1 ) );
+		
+		double expectedAssetPriceInLoans = limitPriceAsset / limitPriceLoan;
+		double maxAssetPrice = pU;
+		double minLoanPrice = Math.min( pD, V );
+		double maxAssetPriceInLoans = maxAssetPrice / minLoanPrice;
+		calculateSampleRange( expectedAssetPriceInLoans, maxAssetPriceInLoans, MAX_SAMPLES, askSampleRanges.get( 2 ) );
+	}
+	
+	private void calculateSampleRange( double min, double max, int sampleCount, List<Double> range ) {
+		if ( min == max ) {
+			range.add( min );
+			return;
+		}
+		
+		for ( int i = 0; i < sampleCount; ++i ) {
+			double value = min + ( ( max - min ) * ( double ) i / sampleCount );
+			
+			range.add( value );
+		}
 	}
 	
 	public void reset() {
@@ -67,6 +193,9 @@ public class Agent {
 		
 		this.bestAskOfferings = new AskOffering[ Markets.NUMMARKETS ];
 		this.bestBidOfferings = new BidOffering[ Markets.NUMMARKETS ];
+	
+		//defineBidSamples();
+		//defineAskSamples();
 	}
 	
 	public void calcNewOfferings() {
@@ -87,34 +216,19 @@ public class Agent {
 		// => paying cash to seller
 		// => getting asset from seller
 		// => need to have positive amount of cash
-		//if ( this.cashEndow > 0 ) {
-			double minAssetPriceInCash = Math.min( pD, limitPriceAsset );
-			 
-			// the price for 1.0 Units of asset - will be normalized during a Match
-			// to the given amount below - the unit of this variable is CASH
-			double assetPriceInCash = randomRange( minAssetPriceInCash, limitPriceAsset );
+		double minAssetPriceInCash = Math.min( pD, limitPriceAsset );
+		// the price for 1.0 Units of asset - will be normalized during a Match
+		// to the given amount below - the unit of this variable is CASH
+		//double assetPriceInCash = randomRange( minAssetPriceInCash, limitPriceAsset );
+		//double assetPriceInCash = drawRandomFromRange( bidSampleRanges.get( 0 ) );
+		double assetPriceInCash = randomRange( assetLimits[0][0], assetLimits[0][1] );
+		
+		if ( this.cashEndow >= Markets.TRADING_UNIT_ASSET * assetPriceInCash ) {
+			offerings[ MarketType.ASSET_CASH.ordinal() ] = new BidOffering( assetPriceInCash, Markets.TRADING_UNIT_ASSET, this, MarketType.ASSET_CASH );
 			
-			/*
-			// calculate how much assets we can buy MAX
-			double assetAmount = this.cashEndow / assetPriceInCash;
-			// upper limit: trade at most TRADING_UNIT_ASSETS assets - if below take the lesser assetAmount
-			// => trading down till reaching 0
-			assetAmount = Math.min( Markets.TRADING_UNIT_ASSET, assetAmount );
-			
-			offerings[ MarketType.ASSET_CASH.ordinal() ] = new BidOffering( assetPriceInCash, assetAmount, this, MarketType.ASSET_CASH );
-		*/
-			
-			if ( this.cashEndow >= Markets.TRADING_UNIT_ASSET * assetPriceInCash ) {
-				offerings[ MarketType.ASSET_CASH.ordinal() ] = new BidOffering( assetPriceInCash, Markets.TRADING_UNIT_ASSET, this, MarketType.ASSET_CASH );
-				
-			} else {
-				offerings[ MarketType.ASSET_CASH.ordinal() ] = null;
-			}
-			/*
 		} else {
 			offerings[ MarketType.ASSET_CASH.ordinal() ] = null;
 		}
-		*/
 			
 		// want to BUY a loan against cash 
 		// => paying cash to seller
@@ -122,11 +236,13 @@ public class Agent {
 		// => need to have positive amount of cash
 		if ( this.markets.isLoanMarket() && this.cashEndow > 0 ) {
 			double minLoanPriceInCash = Math.min( Math.min( pD, V ), limitPriceLoan );
-			
-			
+
 			// the price for 1.0 Units of loans - will be normalized during a Match
 			// to the given amount below - the unit of this variable is CASH
-			double loanPriceInCash = randomRange( minLoanPriceInCash, limitPriceLoan );
+			//double loanPriceInCash = randomRange( minLoanPriceInCash, limitPriceLoan );
+			//double loanPriceInCash = drawRandomFromRange( bidSampleRanges.get( 1 ) );
+			double loanPriceInCash = randomRange( loanLimits[0][0], loanLimits[0][1] );
+			
 			// calculate which amount of loans we can buy MAX
 			double loanAmount = this.cashEndow / loanPriceInCash;
 			// upper limit: trade at most TRADING_UNIT_LOAN loans - if below take the lesser loanAmount
@@ -143,7 +259,7 @@ public class Agent {
 		// => giving loan to seller: taking loan, collateralizing asset
 		// => getting asset from seller
 		// => because of taking loan: need to have enough amount of uncollateralized assets
-		if ( this.markets.isABM() /* && uncollateralizedAssets > 0 */ ) {
+		if ( this.markets.isABM() ) {
 			double minAssetPrice = pD;
 			double maxLoanPrice = Math.min( pU, V );
 			double minAssetPriceInLoans = minAssetPrice / maxLoanPrice;
@@ -151,16 +267,10 @@ public class Agent {
 			double expectedAssetPriceInLoans = limitPriceAsset / limitPriceLoan;
 			
 			// the price for 1.0 unit of assets in loans => the unit of this variable is LOANS
-			double assetPriceInLoans = randomRange( minAssetPriceInLoans, expectedAssetPriceInLoans );
+			//double assetPriceInLoans = randomRange( minAssetPriceInLoans, expectedAssetPriceInLoans );
+			//double assetPriceInLoans = drawRandomFromRange( bidSampleRanges.get( 2 ) );
+			double assetPriceInLoans = randomRange( assetLoanLimits[0][0], assetLoanLimits[0][1] );
 			
-			/*
-			// TODO: need to account for the asset we get from seller
-			double amount = Math.min( Markets.TRADING_UNIT_ASSET, uncollateralizedAssets );
-			
-			offerings[ MarketType.ASSET_LOAN.ordinal() ] = new BidOffering( assetPriceInLoans, amount, this, MarketType.ASSET_LOAN );
-	*/
-
-
 			double tmp = 0.0;
 			
 			if ( markets.isBP() ) {
@@ -181,6 +291,10 @@ public class Agent {
 		}
 	}
 	
+	private static double drawRandomFromRange( List<Double> range ) {
+		return range.get( (int) (range.size() * ThreadLocalRandom.current().nextDouble()) );
+	}
+	
 	private void calcAskOfferings( AskOffering[] offerings ) {
 		double pD = markets.pD();
 		double pU = markets.pU();
@@ -190,60 +304,37 @@ public class Agent {
 		// => giving asset to buayer
 		// => getting cash from buyer
 		// => can only do so it if there are uncollateralized assets left
-		//if ( uncollateralizedAssets > 0 ) {
-			double maxAssetPriceInCash = Math.max( pU, limitPriceAsset );
+		double maxAssetPriceInCash = Math.max( pU, limitPriceAsset );
+		
+		// this is always the price for 1.0 Units of asset - will be normalized during a Match
+		// to the given amount below - the unit of this variable is CASH
+		//double assetPriceInCash = randomRange( limitPriceAsset, maxAssetPriceInCash );
+		//double assetPriceInCash = drawRandomFromRange( askSampleRanges.get( 0 ) );
+		double assetPriceInCash = randomRange( assetLimits[1][0], assetLimits[1][1] );
+		
+		double tmp=this.markets.isBP()?(-loan):(loanTaken);
+		if ( this.assetEndow - Markets.TRADING_UNIT_ASSET >= Math.max( 0, tmp ) ) {
+			offerings[ MarketType.ASSET_CASH.ordinal() ] = new AskOffering( assetPriceInCash, Markets.TRADING_UNIT_ASSET, this, MarketType.ASSET_CASH );
 			
-			// this is always the price for 1.0 Units of asset - will be normalized during a Match
-			// to the given amount below - the unit of this variable is CASH
-			double assetPriceInCash = randomRange( limitPriceAsset, maxAssetPriceInCash );
-			/*
-			// determine the amount of asset to trade: at most TRADING_UNIT_ASSET, or the
-			// rest of uncollateralizedAssets if any left
-			double assetAmount = Math.min( Markets.TRADING_UNIT_ASSET, uncollateralizedAssets );
-
-			offerings[ MarketType.ASSET_CASH.ordinal() ] = new AskOffering( assetPriceInCash, assetAmount, this, MarketType.ASSET_CASH );
-			*/
-			
-			double tmp=this.markets.isBP()?(-loan):(loanTaken);
-			if ( this.assetEndow - Markets.TRADING_UNIT_ASSET >= Math.max( 0, tmp ) ) {
-				offerings[ MarketType.ASSET_CASH.ordinal() ] = new AskOffering( assetPriceInCash, Markets.TRADING_UNIT_ASSET, this, MarketType.ASSET_CASH );
-				
-			} else {
-				offerings[ MarketType.ASSET_CASH.ordinal() ] = null;
-			}
-			/*
 		} else {
 			offerings[ MarketType.ASSET_CASH.ordinal() ] = null;
 		}
-*/
 			
 		// want to SELL a loan against cash
 		// => collateralize assets of the same amount as security
 		// => getting money from buyer 
 		// => need to have enough uncollateralized assets
-		if ( this.markets.isLoanMarket() /*&& uncollateralizedAssets > 0 */ && this.assetEndow - Math.max( 0, tmp ) > Markets.TRADING_EPSILON ) {
+		if ( this.markets.isLoanMarket() && this.assetEndow - Math.max( 0, tmp ) > Markets.TRADING_EPSILON ) {
 			double maxLoanPriceInCash = Math.max( Math.min( pU, V ), limitPriceLoan );
 
 			// this is always the price for 1.0 Units of loans - will be normalized during a Match
 			// to the given amount below - the unit of this variable is CASH
-			double loanPriceInCash = randomRange( limitPriceLoan, maxLoanPriceInCash );
-			
-			/*
-			// calculate which amount of loans we can sell MAX
-			double loanAmount = uncollateralizedAssets / loanPriceInCash;
-			// upper limit: trade at most TRADING_UNIT_LOAN loans - if below take the lesser loanAmount
-			// => trading down till reaching 0		
-			loanAmount = Math.min( Markets.TRADING_UNIT_LOAN, loanAmount );
-			
-			offerings[ MarketType.LOAN_CASH.ordinal() ] = new AskOffering( loanPriceInCash, loanAmount, this, MarketType.LOAN_CASH );
-			*/
+			//double loanPriceInCash = randomRange( limitPriceLoan, maxLoanPriceInCash );
+			//double loanPriceInCash = drawRandomFromRange( askSampleRanges.get( 1 ) );
+			double loanPriceInCash = randomRange( loanLimits[1][0], loanLimits[1][1] );
 			
 			double loanAmount = this.assetEndow - Math.max( 0, tmp );
 			loanAmount = Math.min( loanAmount, Markets.TRADING_UNIT_LOAN );
-				
-			if ( loanAmount == 0 ) {
-				System.out.println( "0" );
-			}
 			
 			offerings[ MarketType.LOAN_CASH.ordinal() ] = new AskOffering( loanPriceInCash, loanAmount, this, MarketType.LOAN_CASH );
 			
@@ -263,13 +354,10 @@ public class Agent {
 			double maxAssetPriceInLoans = maxAssetPrice / minLoanPrice;
 			
 			// the price for 1.0 unit of assets in loans => the unit of this variable is LOANS
-			double assetPriceInLoans = randomRange( expectedAssetPriceInLoans, maxAssetPriceInLoans );
+			//double assetPriceInLoans = randomRange( expectedAssetPriceInLoans, maxAssetPriceInLoans );
+			//double assetPriceInLoans = drawRandomFromRange( askSampleRanges.get( 2 ) );
+			double assetPriceInLoans = randomRange( assetLoanLimits[1][0], assetLoanLimits[1][1] );
 			
-			/*
-			double amount = Math.min( Markets.TRADING_UNIT_ASSET, uncollateralizedAssets );
-			offerings[ MarketType.ASSET_LOAN.ordinal() ] = new AskOffering( assetPriceInLoans, amount, this, MarketType.ASSET_LOAN );
-	*/
-	
 			if ( markets.isBP() ) {
 				tmp = -( loan + Markets.TRADING_UNIT_ASSET * assetPriceInLoans );
 			} else {
@@ -283,7 +371,6 @@ public class Agent {
 				offerings[ MarketType.ASSET_LOAN.ordinal() ] = null;
 			}
 			
-			
 		} else {
 			offerings[ MarketType.ASSET_LOAN.ordinal() ] = null;
 		}
@@ -291,6 +378,26 @@ public class Agent {
 	
 	public void execSellTransaction( Match match ) {
 		// NOTE: executing a sell-transaction on this agent which means this agent is SELLING
+		
+		// NOTE: add sample with probability p
+		// probability p: need to account how often the ask-price exists already in the range. the more often the lower the probability p
+		/*
+		int askPriceSampleCount = 0;
+		int totalSampleCount = this.askSampleRanges.get( match.getMarket().ordinal() ).size();
+		
+		for ( Double s : this.askSampleRanges.get( match.getMarket().ordinal() ) ) {
+			if ( s == match.getSellOffer().getPrice() ) {
+				askPriceSampleCount++;
+			}
+		}
+		
+		// TODO: still seems to be biased - need to account for the imporance of this sample:
+		// if the function is sampled already "enough" then reduce likelihood for adding this sample. BUT HOW?
+		double p = 1.0 - ( ( double ) askPriceSampleCount / ( double ) totalSampleCount );
+		if ( p > ThreadLocalRandom.current().nextDouble() ) {
+			this.askSampleRanges.get( match.getMarket().ordinal() ).add( match.getSellOffer().getPrice() );
+		}
+		*/
 		
 		// SELLING an asset for cash
 		// => giving asset to buyer
@@ -323,7 +430,25 @@ public class Agent {
 	
 	public void execBuyTransaction( Match match ) {
 		// NOTE: executing a buy-transaction on this agent which means this agent is BUYING
-
+	
+		/*
+		// NOTE: add sample with probability p
+		// probability p: need to account how often the bid-price exists already in the range. the more often the lower the probability p
+		int bidPriceSampleCount = 0;
+		int totalSampleCount = this.bidSampleRanges.get( match.getMarket().ordinal() ).size();
+		
+		for ( Double s : this.bidSampleRanges.get( match.getMarket().ordinal() ) ) {
+			if ( s == match.getBuyOffer().getPrice() ) {
+				bidPriceSampleCount++;
+			}
+		}
+		
+		double p = 1.0 - ( ( double ) bidPriceSampleCount / ( double ) totalSampleCount );
+		if ( p > ThreadLocalRandom.current().nextDouble() ) {
+			//this.bidSampleRanges.get( match.getMarket().ordinal() ).add( match.getBuyOffer().getPrice() );
+		}*/
+		
+				
 		// BUYING an asset for cash
 		// => getting assets from seller
 		// => paying cash to seller
@@ -466,6 +591,10 @@ public class Agent {
 		clone.loanGiven = this.loanGiven;
 		clone.loanTaken = this.loanTaken;
 		
+		clone.assetLimits = this.assetLimits;
+		clone.loanLimits = this.loanLimits;
+		clone.assetLoanLimits = this.assetLoanLimits;
+		
 		for ( int i = 0; i < Markets.NUMMARKETS; ++i ) {
 			clone.bestAskOfferings[ i ] = this.bestAskOfferings[ i ];
 			clone.bestBidOfferings[ i ] = this.bestBidOfferings[ i ];
@@ -476,5 +605,12 @@ public class Agent {
 	
 	private static double randomRange( double min, double max ) {
 		return min + ThreadLocalRandom.current().nextDouble() * ( max - min );
+	}
+
+	public void setISData(double[][] limitAssets, double[][] limitLoans,
+			double[][] limitAssetLoans) {
+		this.assetLimits = limitAssets;
+		this.loanLimits = limitLoans;
+		this.assetLoanLimits = limitAssetLoans;
 	}
 }
