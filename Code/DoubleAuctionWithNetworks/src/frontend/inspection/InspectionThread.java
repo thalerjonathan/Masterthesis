@@ -181,7 +181,7 @@ public class InspectionThread implements Runnable {
 				long ts = System.currentTimeMillis();
 				
 				// execute the next transaction
-				Transaction tx = this.auction.executeSingleTransactionByType( 
+				Transaction tx = this.auction.executeSingleTransaction( 
 						InspectionThread.this.inspectorPanel.getSelectedMatchingType(),
 						InspectionThread.this.inspectorPanel.isKeepAgentHistory() );
 				

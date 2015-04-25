@@ -69,7 +69,7 @@ import frontend.visualisation.WealthVisualizer;
 @SuppressWarnings("serial")
 public class InspectionPanel extends JPanel implements ActionListener, ChangeListener {
 	
-	private AgentNetwork agents;
+	private AgentNetwork agentNetwork;
 	private Markets markets;
 	
 	private JCheckBox keepSuccTXHighCheck;
@@ -286,6 +286,12 @@ public class InspectionPanel extends JPanel implements ActionListener, ChangeLis
 		this.matchingTypeSelection.setEnabled( false );
 		this.pauseButton.setEnabled( false );
 
+		this.importanceSamplingCheck.addActionListener( new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				InspectionPanel.this.handleImportanceSampling();
+			}
+		});
 		// setting up event-listeners of components ////////////////////////////////////
 		this.txHistoryTable.getSelectionModel().addListSelectionListener( new ListSelectionListener() {
 			@Override
@@ -354,7 +360,7 @@ public class InspectionPanel extends JPanel implements ActionListener, ChangeLis
 		this.layoutSelection.addActionListener( new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				if ( null == InspectionPanel.this.agents ) {
+				if ( null == InspectionPanel.this.agentNetwork ) {
 					return;
 				}
 				
@@ -404,6 +410,8 @@ public class InspectionPanel extends JPanel implements ActionListener, ChangeLis
 					InspectionPanel.this.loanCashMarketCheck.setSelected( false );
 					InspectionPanel.this.bpMechanismCheck.setSelected( false );
 				}
+				
+				InspectionPanel.this.setMarketMechanisms();
 			}
 		};
 		
@@ -562,7 +570,7 @@ public class InspectionPanel extends JPanel implements ActionListener, ChangeLis
 	void addSuccessfulTX( Transaction tx, boolean forceRedraw ) {
 		long currMillis = System.currentTimeMillis();
 		if ( InspectionPanel.REPAINT_WEALTH_WHENRUNNING_INTERVAL < currMillis - this.lastRepaintTime || forceRedraw ) {
-			this.agentWealthPanel.setAgents( this.agents.getOrderedList() );
+			this.agentWealthPanel.setAgents( this.agentNetwork.getOrderedList() );
 
 			this.agentWealthPanel.repaint();
 			this.lastRepaintTime = currMillis;
@@ -595,19 +603,33 @@ public class InspectionPanel extends JPanel implements ActionListener, ChangeLis
 		this.offerBook.offerBookChanged();
 	}
 	
-	private void createAgents() {
-		int agentCount = (int) this.agentCountSpinner.getValue();
-		this.markets = new Markets( (double) this.faceValueSpinner.getValue() );
+	private void setMarketMechanisms() {
 		this.markets.setABM( InspectionPanel.this.abmMarketCheck.isSelected() );
 		this.markets.setLoanMarket( InspectionPanel.this.loanCashMarketCheck.isSelected() );
 		this.markets.setBP( InspectionPanel.this.bpMechanismCheck.isSelected() );
+	}
+	
+	private void handleImportanceSampling() {
+		INetworkCreator creator = (INetworkCreator) this.topologySelection.getSelectedItem();
+		if ( this.importanceSamplingCheck.isSelected() ) {
+			creator.createImportanceSampling( this.agentNetwork, this.markets );
+		} else {
+			Iterator<Agent> iter = this.agentNetwork.iterator();
+			while ( iter.hasNext() ) {
+				iter.next().resetImportanceSamplingData();
+			}
+		}
+	}
+	
+	private void createAgents() {
+		int agentCount = (int) this.agentCountSpinner.getValue();
+		this.markets = new Markets( (double) this.faceValueSpinner.getValue() );
+		this.setMarketMechanisms();
 		
 		INetworkCreator creator = (INetworkCreator) this.topologySelection.getSelectedItem();
-		this.agents = creator.createNetwork( new AgentFactoryImpl( agentCount, this.markets ) );
+		this.agentNetwork = creator.createNetwork( new AgentFactoryImpl( agentCount, this.markets ) );
 		
-		if ( this.importanceSamplingCheck.isSelected() ) {
-			creator.createTradingLimits( this.agents, this.markets );
-		}
+		this.handleImportanceSampling();
 		
 		// if agent-wealth-visualisation panel is already there, remove it bevore adding a new instance
 		if ( null != this.agentWealthPanel ) {
@@ -615,7 +637,7 @@ public class InspectionPanel extends JPanel implements ActionListener, ChangeLis
 			this.agentWealthPanel = null;
 		}
 
-		this.agentWealthPanel = this.agents.getWealthVisualizer();
+		this.agentWealthPanel = this.agentNetwork.getWealthVisualizer();
 		
 		GridBagConstraints c = new GridBagConstraints();
 		c.fill = GridBagConstraints.BOTH;
@@ -626,7 +648,7 @@ public class InspectionPanel extends JPanel implements ActionListener, ChangeLis
 		c.gridx = 1;
 		c.gridy = 0;
 		
-		if ( this.agents.size() > InspectionPanel.AGENTS_COUNT_HIDE_NETWORK_PANEL ) {
+		if ( this.agentNetwork.size() > InspectionPanel.AGENTS_COUNT_HIDE_NETWORK_PANEL ) {
 			c.weightx = 1.0;
 			c.gridx = 0;
 		}
@@ -636,7 +658,7 @@ public class InspectionPanel extends JPanel implements ActionListener, ChangeLis
 		this.txHistoryTable.clearAll();
 		
 		// close opened offer-books because agents changed (number of agents,...)
-		this.offerBook.agentsChanged( this.agents.getOrderedList() );
+		this.offerBook.agentsChanged( this.agentNetwork.getOrderedList() );
 		
 		// need to create the layout too, will do the final pack-call on this frame
 		this.createLayout();
@@ -650,10 +672,10 @@ public class InspectionPanel extends JPanel implements ActionListener, ChangeLis
 			layout = (Class<? extends Layout<Agent, AgentConnection>>) KKLayout.class;
 		}
 		
-		this.toggleNetworkPanelButton.setVisible( this.agents.size() <= InspectionPanel.AGENTS_COUNT_HIDE_NETWORK_PANEL );
+		this.toggleNetworkPanelButton.setVisible( this.agentNetwork.size() <= InspectionPanel.AGENTS_COUNT_HIDE_NETWORK_PANEL );
 		
 		// don't show network-panel when too many agents
-		if ( this.agents.size() > InspectionPanel.AGENTS_COUNT_HIDE_NETWORK_PANEL || 
+		if ( this.agentNetwork.size() > InspectionPanel.AGENTS_COUNT_HIDE_NETWORK_PANEL || 
 				this.toggleNetworkPanelButton.isSelected() ) {
 			this.networkPanel.setVisible( false );
 			this.revalidate();
@@ -663,14 +685,14 @@ public class InspectionPanel extends JPanel implements ActionListener, ChangeLis
 			this.networkPanel.setVisible( true );
 		}
 		
-		this.recreateButton.setVisible( this.agents.isRandomNetwork() );
+		this.recreateButton.setVisible( this.agentNetwork.isRandomNetwork() );
 		
 		// remove network-visualization panel when already there
 		if ( null != this.networkVisPanel ) {
 			this.networkPanel.remove( this.networkVisPanel );
 		}
 		
-		this.networkVisPanel = InspectionPanel.this.agents.getNetworkRenderingPanel( layout, new INetworkSelectionObserver() {
+		this.networkVisPanel = InspectionPanel.this.agentNetwork.getNetworkRenderingPanel( layout, new INetworkSelectionObserver() {
 			@Override
 			public void agentSeleted( AgentSelectedEvent agentSelectedEvent ) {
 				// no simulation running yet, just highlight selected agent, its neighbours and their connections
@@ -680,12 +702,12 @@ public class InspectionPanel extends JPanel implements ActionListener, ChangeLis
 					Agent selectedAgent = agentSelectedEvent.getSelectedAgent();
 					selectedAgent.setHighlighted( true );
 					
-					Iterator<Agent> neighbourIter = InspectionPanel.this.agents.getNeighbors( selectedAgent );
+					Iterator<Agent> neighbourIter = InspectionPanel.this.agentNetwork.getNeighbors( selectedAgent );
 					while ( neighbourIter.hasNext() ) {
 						Agent neighbour = neighbourIter.next();
 						neighbour.setHighlighted( true );
 						
-						InspectionPanel.this.agents.getConnection( selectedAgent, neighbour ).setHighlighted( true );
+						InspectionPanel.this.agentNetwork.getConnection( selectedAgent, neighbour ).setHighlighted( true );
 					}
 					
 					if ( InspectionPanel.this.networkVisPanel.isVisible() ) {
@@ -708,7 +730,7 @@ public class InspectionPanel extends JPanel implements ActionListener, ChangeLis
 					InspectionPanel.this.selectedAgent.setHighlighted( true );
 					agentSelectedEvent.getSelectedAgent().setHighlighted( true );
 					
-					List<AgentConnection> path = InspectionPanel.this.agents.getPath( InspectionPanel.this.selectedAgent, agentSelectedEvent.getSelectedAgent() );
+					List<AgentConnection> path = InspectionPanel.this.agentNetwork.getPath( InspectionPanel.this.selectedAgent, agentSelectedEvent.getSelectedAgent() );
 					// returns null when there is no path of successful transactions
 					if ( null != path ) {
 						for ( AgentConnection c : path ) {
@@ -732,7 +754,7 @@ public class InspectionPanel extends JPanel implements ActionListener, ChangeLis
 						
 						if ( null != a2 ) {
 							InspectionPanel.this.txHistoryTable.addTx( tx );
-							InspectionPanel.this.agents.getConnection( a1, a2 ).setHighlighted( true );
+							InspectionPanel.this.agentNetwork.getConnection( a1, a2 ).setHighlighted( true );
 						}
 					}
 					
@@ -770,7 +792,7 @@ public class InspectionPanel extends JPanel implements ActionListener, ChangeLis
 		// no simulation already running...
 		if ( null == this.simulationThread ) {
 			// if there was a simulation-run before: reset the agents
-			this.agents.reset();
+			this.agentNetwork.reset();
 			
 			// sort TX-ID descending initially to show new TXs first. one call seems not to be enough => do 2 times :D
 			this.txHistoryTable.getRowSorter().toggleSortOrder( 0 );
@@ -808,7 +830,7 @@ public class InspectionPanel extends JPanel implements ActionListener, ChangeLis
 			this.pauseButton.setSelected( true );
 			this.pauseButton.setEnabled( true );
 			
-			Auction auction = new Auction( this.agents );
+			Auction auction = new Auction( this.agentNetwork );
 			
 			// let simulation run in a separate thread to prevent blocking of gui
 			this.simulationThread = new InspectionThread( auction, this );
@@ -858,7 +880,7 @@ public class InspectionPanel extends JPanel implements ActionListener, ChangeLis
 		Agent a1 = askOffering.getAgent();
 		Agent a2 = bidOffering.getAgent();
 		
-		AgentConnection conn = this.agents.getConnection( a1, a2 );
+		AgentConnection conn = this.agentNetwork.getConnection( a1, a2 );
 		if ( conn.getWeight() == Double.MAX_VALUE ) {
 			conn.setWeight( 1.0 );
 		}
@@ -871,12 +893,12 @@ public class InspectionPanel extends JPanel implements ActionListener, ChangeLis
 	}
 	
 	private void resetNetworkHighlights() {
-		Iterator<Agent> agentsIter = this.agents.iterator();
+		Iterator<Agent> agentsIter = this.agentNetwork.iterator();
 		while ( agentsIter.hasNext() ) {
 			agentsIter.next().setHighlighted( false );
 		}
 		
-		Iterator<AgentConnection> connIter = this.agents.connectionIterator();
+		Iterator<AgentConnection> connIter = this.agentNetwork.connectionIterator();
 		while ( connIter.hasNext() ) {
 			connIter.next().setHighlighted( false );
 		}
@@ -889,7 +911,7 @@ public class InspectionPanel extends JPanel implements ActionListener, ChangeLis
 			Agent a1 = tx.getMatch().getSellOffer().getAgent();
 			Agent a2 = tx.getMatch().getBuyOffer().getAgent();
 
-			if ( c == InspectionPanel.this.agents.getConnection( a1, a2 ) ) {
+			if ( c == InspectionPanel.this.agentNetwork.getConnection( a1, a2 ) ) {
 				a1.setHighlighted( true );
 				a2.setHighlighted( true );
 				

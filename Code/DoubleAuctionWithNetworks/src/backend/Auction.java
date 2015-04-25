@@ -1,5 +1,7 @@
 package backend;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
@@ -12,7 +14,8 @@ import backend.tx.Transaction;
 public class Auction {
 	private int numTrans;
 	
-	private AgentNetwork agents;
+	private AgentNetwork agentNetwork;
+	private List<Agent> tradingAgents;
 	
 	private final static int MAX_SWEEPS = 500;
 	
@@ -22,17 +25,28 @@ public class Auction {
 		RANDOM_NEIGHOUR;
 	}
 
-	public Auction( AgentNetwork agents ) {
-		this.agents = agents;
+	public Auction( AgentNetwork agentNetwork ) {
+		this.agentNetwork = agentNetwork;
+		this.tradingAgents = new ArrayList<>( this.agentNetwork.getOrderedList() );
 		
 		this.numTrans = 1;
 	}
 	
-	public Transaction executeSingleTransactionByType( MatchingType type, boolean keepAgentHistory )  {
+	public Transaction executeSingleTransaction( MatchingType type, boolean keepAgentHistory )  {
 		int sweep = 1;
 		Transaction transaction = new Transaction();
 		
+		// reset all best previous made offers
+		Iterator<Agent> agIt = this.tradingAgents.iterator();
+		while (agIt.hasNext())  {
+			Agent a = agIt.next();
+			a.clearBestOfferings();
+		}
+		
 		while ( sweep < Auction.MAX_SWEEPS )  {
+			// in each sweep shuffle order of agents
+			Collections.shuffle( this.tradingAgents );
+			
 			transaction.setSweepCount( sweep );
 
 			this.makeOfferings( sweep );
@@ -52,17 +66,11 @@ public class Auction {
 	}
 	
 	private void makeOfferings( int numRound ) {
-		Iterator<Agent> agIt = agents.randomIterator( true );
+		Iterator<Agent> agIt = this.tradingAgents.iterator();
 		
 		// first step: reset offerings of each agent when in first round and then calculate offerings for this round
 		while (agIt.hasNext())  {
 			Agent a = agIt.next();
-			
-			// need to reset the best offerings when in first round 
-			if ( 1 == numRound ) {
-				a.clearBestOfferings();
-			}
-			
 			// let current agent calculate its new offers for this round
 			a.calcNewOfferings();
 			// will add the previously calculated offerings to the agents best offerings
@@ -72,7 +80,7 @@ public class Auction {
 	
 	private boolean findMatch( Transaction transaction, MatchingType type, boolean keepAgentHistory ) {
 		// get same random-iterator (won't do a shuffle again)
-		Iterator<Agent> agIt = agents.randomIterator( false );
+		Iterator<Agent> agIt = this.tradingAgents.iterator();
 		
 		while (agIt.hasNext())  {
 			Agent a = agIt.next();
@@ -81,13 +89,13 @@ public class Auction {
 			// find match: must be neighbours, must be same market, bid (buy) must be larger than ask (sell)
 			
 			if ( MatchingType.RANDOM_NEIGHOUR == type ) {
-				match = transaction.findMatchesByRandomNeighborhood( a, agents );
+				match = transaction.findMatchesByRandomNeighborhood( a, this.agentNetwork );
 			
 			} else if ( MatchingType.BEST_NEIGHBOUR == type ) {
-				match = transaction.findMatchesByBestNeighborhood( a, agents );
+				match = transaction.findMatchesByBestNeighborhood( a, this.agentNetwork );
 				
 			} else if ( MatchingType.BEST_GLOBAL_OFFERS == type ) {
-				match = transaction.findMatchesByGlobalOffers( a, agents );
+				match = transaction.findMatchesByGlobalOffers( a, this.agentNetwork );
 			}
 
 			// transaction found a match
@@ -97,18 +105,22 @@ public class Auction {
 				// of change in wealth.
 				// won't calculate a new offering, this is only done once in each round
 				transaction.exec( match );
-				transaction.setTransNum(this.numTrans++);
+				transaction.setTransNum( this.numTrans++ );
 				
 				List<Agent> finalAgents = null;
 				
 				// WARNING: sucks up huge amount of memory if many TXs
 				if ( keepAgentHistory ) {
-					finalAgents = agents.cloneAgents();
+					finalAgents = this.agentNetwork.cloneAgents();
 				} else {
-					finalAgents = agents.getOrderedList();
+					finalAgents = this.agentNetwork.getOrderedList();
 				}
 
 				transaction.setFinalAgents( finalAgents );
+				
+				// re-set trading agents because after a match, 
+				// agents previously unable to trade could become able to trade again
+				this.tradingAgents = new ArrayList<>( this.agentNetwork.getOrderedList() );
 				
 				return true;
 			}
@@ -119,11 +131,11 @@ public class Auction {
 	
 	private boolean isTradingPossible() {
 		// check if trading is possible within neighborhood
-		Iterator<Agent> agentIter = this.agents.iterator();
+		Iterator<Agent> agentIter = this.tradingAgents.iterator();
 		while ( agentIter.hasNext() ) {
 			Agent a = agentIter.next();
 			
-			Iterator<Agent> neighbourIter = this.agents.getNeighbors( a );
+			Iterator<Agent> neighbourIter = this.agentNetwork.getNeighbors( a );
 			while ( neighbourIter.hasNext() ) {
 				Agent n = neighbourIter.next();
 				
@@ -131,6 +143,10 @@ public class Auction {
 					return true;
 				}
 			}
+			
+			agentIter.remove();
+			
+			//System.out.println( "Agent " + a.getH() + " cant trade no more! " + this.tradingAgents.size() + " left." );
 		}
 		
 		return false;

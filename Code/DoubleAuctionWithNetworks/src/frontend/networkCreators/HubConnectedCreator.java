@@ -36,7 +36,7 @@ public class HubConnectedCreator implements INetworkCreator {
 		return "N Hubs";
 	}
 	
-	public boolean createTradingLimits( AgentNetwork agents, Markets markets ) {
+	public boolean createImportanceSampling( AgentNetwork agents, Markets markets ) {
 		return false;
 	}
 }

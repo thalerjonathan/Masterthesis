@@ -37,7 +37,7 @@ public class AscendingRandomShortcutsCreator implements INetworkCreator {
 		return "Ascending Random Shortcuts";
 	}
 	
-	public boolean createTradingLimits( AgentNetwork agents, Markets markets ) {
+	public boolean createImportanceSampling( AgentNetwork agents, Markets markets ) {
 		return false;
 	}
 }

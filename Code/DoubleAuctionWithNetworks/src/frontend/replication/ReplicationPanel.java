@@ -8,6 +8,7 @@ import java.awt.event.ActionListener;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -520,15 +521,29 @@ public class ReplicationPanel extends JPanel {
 	}
 	
 	private synchronized void replicationFinished( ReplicationData data ) {
+		ReplicationPanel.this.replicationData.add( data );
+		ReplicationPanel.this.replicationTable.addReplication( data );
+		ReplicationPanel.this.agentWealthPanel.setAgents( data.getFinalAgents() );
+		ReplicationPanel.this.updateAgentInfoFrame( data.getFinalAgents() );
+		
 		SwingUtilities.invokeLater( new Runnable() {
 			@Override
 			public void run() {
-				ReplicationPanel.this.replicationData.add( data );
-				ReplicationPanel.this.replicationTable.addReplication( data );
-				ReplicationPanel.this.agentWealthPanel.setAgents( data.getFinalAgents() );
-				ReplicationPanel.this.updateAgentInfoFrame( data.getFinalAgents() );
+				
 			}
 		} );
+	}
+	
+	private void handleImportanceSampling() {
+		INetworkCreator creator = (INetworkCreator) this.topologySelection.getSelectedItem();
+		if ( this.importanceSamplingCheck.isSelected() ) {
+			creator.createImportanceSampling( this.agentNetworkTemplate, this.markets );
+		} else {
+			Iterator<Agent> iter = this.agentNetworkTemplate.iterator();
+			while ( iter.hasNext() ) {
+				iter.next().resetImportanceSamplingData();
+			}
+		}
 	}
 	
 	private void createAgents() {
@@ -545,9 +560,7 @@ public class ReplicationPanel extends JPanel {
 		INetworkCreator creator = ( INetworkCreator ) this.topologySelection.getSelectedItem();
 		this.agentNetworkTemplate = creator.createNetwork( new AgentFactoryImpl( agentCount, this.markets ) );
 		
-		if ( this.importanceSamplingCheck.isSelected() ) {
-			creator.createTradingLimits( this.agentNetworkTemplate, this.markets );
-		}
+		this.handleImportanceSampling();
 		
 		List<Agent> agents = this.agentNetworkTemplate.getOrderedList();
 		this.agentWealthPanel.setAgents( this.agentNetworkTemplate.getOrderedList() );
@@ -666,6 +679,8 @@ public class ReplicationPanel extends JPanel {
 				
 				ReplicationData data = this.calculateReplication( auction );
 				if ( null != data ) {
+					// setting final agents here, as tx.getFinalAgents could return null
+					data.setFinalAgents( this.currentAgents.getOrderedList() );
 					ReplicationPanel.this.replicationFinished( data );
 				}
 			}
@@ -679,7 +694,7 @@ public class ReplicationPanel extends JPanel {
 			this.failTxCount = 0;
 			
 			while ( true ) {
-				Transaction tx = auction.executeSingleTransactionByType( MatchingType.BEST_NEIGHBOUR, false );
+				Transaction tx = auction.executeSingleTransaction( MatchingType.BEST_NEIGHBOUR, false );
 				
 				this.totalTxCount++;
 				
@@ -714,8 +729,7 @@ public class ReplicationPanel extends JPanel {
 					data.setNumber( ( int ) ReplicationPanel.this.replicationCountSpinner.getValue() - this.currentReplication + 1 );
 					data.setTaskId( this.taskId );
 					data.setTxCount( this.totalTxCount );
-					data.setFinalAgents( tx.getFinalAgents() );
-
+					
 					this.nextTxFlag = false;
 					
 					return data;

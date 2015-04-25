@@ -8,7 +8,7 @@ public interface INetworkCreator {
 
 	public AgentNetwork createNetwork( IAgentFactory agentFactory );
 	
-	public boolean createTradingLimits( AgentNetwork agents, Markets markets ); 
+	public boolean createImportanceSampling( AgentNetwork agents, Markets markets ); 
 	
 	// return true if createNetwork shall be called by the client instantly, otherwise false
 	// when false is returned a call to deferCreation MUST follow

@@ -93,9 +93,13 @@ public class WealthVisualizer extends JPanel {
 		
 		( ( Graphics2D ) g ).setStroke( new BasicStroke( 2 ) );
 		
+		if ( null == this.orderedAgents ) {
+			System.out.println( "null" );
+		}
+		
 		// draw points and lines of agents
-		for ( int i = 0; i < orderedAgents.size(); ++i ) {
-			Agent a = orderedAgents.get( i );
+		for ( int i = 0; i < this.orderedAgents.size(); ++i ) {
+			Agent a = this.orderedAgents.get( i );
 			double optimism = a.getH();
 			double cash = a.getConumEndow();
 			double assets = a.getAssetEndow();

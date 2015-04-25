@@ -14,7 +14,7 @@ public class AscendingConnectedCreator extends ParameterlessCreator {
 		return "Ascending-Connected";
 	}
 	
-	public boolean createTradingLimits( AgentNetwork agents, Markets markets ) {
+	public boolean createImportanceSampling( AgentNetwork agents, Markets markets ) {
 		int agentCount = agents.size();
 		double[] ca = new double[ agentCount + 1 ];
 		double[] cl = new double[ agentCount + 1 ];
@@ -85,7 +85,7 @@ public class AscendingConnectedCreator extends ParameterlessCreator {
 				limitAssetLoans[0][1] = -1000000;
 			}
 			
-			agents.get(i - 1).setISData(limitAssets, limitLoans, limitAssetLoans);
+			agents.get(i - 1).setImportanceSamplingData(limitAssets, limitLoans, limitAssetLoans);
 		}
 		
 		return true;

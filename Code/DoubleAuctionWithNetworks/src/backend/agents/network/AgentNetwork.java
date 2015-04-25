@@ -472,13 +472,9 @@ public class AgentNetwork {
 		return this.orderedAgents.iterator();
 	}
 	
-	public Iterator<Agent> randomIterator(boolean reshuffle) {
+	public Iterator<Agent> randomIterator( boolean reshuffle ) {
 		if ( null == this.randomOrderAgents ) {
-			this.randomOrderAgents = new ArrayList<Agent>( this.orderedAgents.size() );
-			for (Agent a : this.orderedAgents ) {
-				this.randomOrderAgents.add( a );
-			}
-			
+			this.randomOrderAgents = new ArrayList<Agent>( this.orderedAgents );
 			Collections.shuffle( this.randomOrderAgents );
 			
 		} else {

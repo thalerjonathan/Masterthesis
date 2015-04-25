@@ -37,7 +37,7 @@ public class AscendingFullShortcutsCreator implements INetworkCreator {
 		return "Ascending Full Shortcuts";
 	}
 	
-	public boolean createTradingLimits( AgentNetwork agents, Markets markets ) {
+	public boolean createImportanceSampling( AgentNetwork agents, Markets markets ) {
 		return false;
 	}
 }

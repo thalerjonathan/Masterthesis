@@ -25,7 +25,7 @@ public class WattStrogatzCreator implements INetworkCreator {
 		return "Watts-Strogatz";
 	}
 	
-	public boolean createTradingLimits( AgentNetwork agents, Markets markets ) {
+	public boolean createImportanceSampling( AgentNetwork agents, Markets markets ) {
 		return false;
 	}
 }
