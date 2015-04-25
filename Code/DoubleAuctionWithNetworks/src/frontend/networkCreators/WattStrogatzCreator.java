@@ -2,6 +2,7 @@ package frontend.networkCreators;
 
 import backend.agents.IAgentFactory;
 import backend.agents.network.AgentNetwork;
+import backend.markets.Markets;
 
 public class WattStrogatzCreator implements INetworkCreator {
 	private int k = 2;
@@ -22,5 +23,9 @@ public class WattStrogatzCreator implements INetworkCreator {
 	
 	public String toString() {
 		return "Watts-Strogatz";
+	}
+	
+	public boolean createTradingLimits( AgentNetwork agents, Markets markets ) {
+		return false;
 	}
 }

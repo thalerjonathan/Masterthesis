@@ -23,14 +23,11 @@ import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 
 import backend.Auction;
 import backend.Auction.MatchingType;
@@ -89,6 +86,8 @@ public class ReplicationPanel extends JPanel {
 	
 	private JLabel runningTimeLabel;
 	
+	private ReplicationTable replicationTable;
+	
 	private AgentInfoFrame agentInfoFrame;
 	private ReplicationInfoFrame replicationInfoFrame;
 	
@@ -96,8 +95,6 @@ public class ReplicationPanel extends JPanel {
 	private NetworkVisualisationFrame netVisFrame;
 	
 	private Timer spinnerChangedTimer;
-	
-	private ReplicationTable replicationTable;
 	
 	private ExecutorService replicationTaskExecutor;
 	private List<ReplicationTask> replicationTasks;
@@ -140,40 +137,19 @@ public class ReplicationPanel extends JPanel {
 		this.topologySelection = new JComboBox<INetworkCreator>();
 		this.terminationSelection = new JComboBox<TerminationMode>( TerminationMode.values() );
 		
-		this.replicationButton = new JButton( "Start Replications" );
+		this.replicationButton = new JButton( "Start" );
 		this.showNetworkButton = new JButton( "Show Network" );
-		this.showAgentInfoButton = new JButton( "Show Agent-Info" );
-		this.showReplicationInfoButton = new JButton( "Show Replication-Info" );
+		this.showAgentInfoButton = new JButton( "Agent-Info" );
+		this.showReplicationInfoButton = new JButton( "Replication-Info" );
 		
 		this.agentCountSpinner = new JSpinner( new SpinnerNumberModel( 30, 10, 1000, 10 ) );
 		this.faceValueSpinner = new JSpinner( new SpinnerNumberModel( 0.5, 0.1, 1.0, 0.1 ) );
 		this.replicationCountSpinner = new JSpinner( new SpinnerNumberModel( 4, 1, 100, 1 ) );
-		this.maxTxSpinner = new JSpinner( new SpinnerNumberModel( 1_000_000, 1, 1_000_000_000, 100_000 ) );
+		this.maxTxSpinner = new JSpinner( new SpinnerNumberModel( 10_000, 1, 10_000_000, 10_000 ) );
 		
 		this.runningTimeLabel = new JLabel( "Running since: -" );
 		
 		this.replicationTable = new ReplicationTable();
-		JScrollPane txHistoryScrollPane = new JScrollPane( this.replicationTable );
-		txHistoryScrollPane.setVerticalScrollBarPolicy( JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED );
-		txHistoryScrollPane.setHorizontalScrollBarPolicy( JScrollPane.HORIZONTAL_SCROLLBAR_NEVER );
-		
-		// setting properties
-		this.replicationTable.getSelectionModel().addListSelectionListener( new ListSelectionListener() {
-			@Override
-			public void valueChanged( ListSelectionEvent e ) {
-				if (e.getValueIsAdjusting() == false) {
-					int rowIndex = ReplicationPanel.this.replicationTable.getSelectedRow();
-					if ( -1 == rowIndex ) {
-						return;
-					}
-					
-					int modelIndex = ReplicationPanel.this.replicationTable.getRowSorter().convertRowIndexToModel( rowIndex );
-					
-					ReplicationData data = ReplicationPanel.this.replicationData.get( modelIndex );
-					ReplicationPanel.this.agentWealthPanel.setAgents( data.getFinalAgents() );
-		        }
-			}
-		});
 		
 		this.topologySelection.addItem( new FullyConnectedCreator() );
 		this.topologySelection.addItem( new HalfFullyConnectedCreator() );
@@ -193,7 +169,7 @@ public class ReplicationPanel extends JPanel {
 		this.loanCashMarketCheck.setSelected( this.markets.isLoanMarket() );
 		this.bpMechanismCheck.setSelected( this.markets.isBP() );
 		
-		this.parallelEvaluationCheck.setSelected( true );
+		this.parallelEvaluationCheck.setSelected( false );
 		
 		ActionListener checkListener = new ActionListener() {
 			@Override
@@ -288,7 +264,6 @@ public class ReplicationPanel extends JPanel {
 			}
 		});
 		
-		showReplicationInfoButton.setEnabled( false );
 		this.showReplicationInfoButton.addActionListener( new ActionListener() {	
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -329,12 +304,15 @@ public class ReplicationPanel extends JPanel {
 
 		this.add( controlsPanel, BorderLayout.NORTH );
 		this.add( this.agentWealthPanel, BorderLayout.CENTER );
-		this.add( txHistoryScrollPane, BorderLayout.SOUTH );
 	}
 	
 	private void showReplicationInfo() {
+		if ( 0 == this.replicationData.size() && 0 == this.replicationTasks.size() ) {
+			return;
+		}
+		
 		if ( null == this.replicationInfoFrame ) {
-			this.replicationInfoFrame = new ReplicationInfoFrame();
+			this.replicationInfoFrame = new ReplicationInfoFrame( this.replicationTable );
 		}
 		
 		this.replicationInfoFrame.setTasks( this.replicationTasks );
@@ -373,7 +351,6 @@ public class ReplicationPanel extends JPanel {
 			this.topologySelection.setEnabled( false );
 			this.terminationSelection.setEnabled( false );
 			this.replicationCountSpinner.setEnabled( false );
-			this.showReplicationInfoButton.setEnabled( true );
 			
 			this.replicationTable.clearAll();
 			this.replicationData.clear();
@@ -516,7 +493,7 @@ public class ReplicationPanel extends JPanel {
 		this.replicationData.add( finalData );
 		this.replicationTable.addReplication( finalData );
 		
-		this.replicationButton.setText( "Start Replications" );
+		this.replicationButton.setText( "Start" );
 		this.abmMarketCheck.setEnabled( true );
 		this.loanCashMarketCheck.setEnabled( true );
 		this.bpMechanismCheck.setEnabled( true );
@@ -527,7 +504,6 @@ public class ReplicationPanel extends JPanel {
 		this.topologySelection.setEnabled( true );
 		this.terminationSelection.setEnabled( true );
 		this.replicationCountSpinner.setEnabled( true );
-		this.showReplicationInfoButton.setEnabled( false );
 		
 		this.awaitFinishThread = null;
 		this.replicationTasks.clear();
@@ -560,7 +536,8 @@ public class ReplicationPanel extends JPanel {
 
 		INetworkCreator creator = ( INetworkCreator ) this.topologySelection.getSelectedItem();
 		this.agentNetworkTemplate = creator.createNetwork( new AgentFactoryImpl( agentCount, this.markets ) );
-
+		creator.createTradingLimits( this.agentNetworkTemplate, this.markets );
+		
 		List<Agent> agents = this.agentNetworkTemplate.getOrderedList();
 		this.agentWealthPanel.setAgents( this.agentNetworkTemplate.getOrderedList() );
 		

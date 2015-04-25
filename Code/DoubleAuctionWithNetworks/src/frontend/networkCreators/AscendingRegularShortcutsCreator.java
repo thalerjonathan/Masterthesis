@@ -4,6 +4,7 @@ import javax.swing.JOptionPane;
 
 import backend.agents.IAgentFactory;
 import backend.agents.network.AgentNetwork;
+import backend.markets.Markets;
 
 public class AscendingRegularShortcutsCreator implements INetworkCreator {
 	private int n = 5;
@@ -34,5 +35,9 @@ public class AscendingRegularShortcutsCreator implements INetworkCreator {
 	
 	public String toString() {
 		return "Ascending Regular Shortcuts";
+	}
+	
+	public boolean createTradingLimits( AgentNetwork agents, Markets markets ) {
+		return false;
 	}
 }

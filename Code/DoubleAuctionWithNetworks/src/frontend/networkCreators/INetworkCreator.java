@@ -2,10 +2,13 @@ package frontend.networkCreators;
 
 import backend.agents.IAgentFactory;
 import backend.agents.network.AgentNetwork;
+import backend.markets.Markets;
 
 public interface INetworkCreator {
 
 	public AgentNetwork createNetwork( IAgentFactory agentFactory );
+	
+	public boolean createTradingLimits( AgentNetwork agents, Markets markets ); 
 	
 	// return true if createNetwork shall be called by the client instantly, otherwise false
 	// when false is returned a call to deferCreation MUST follow

@@ -4,6 +4,7 @@ import javax.swing.JOptionPane;
 
 import backend.agents.IAgentFactory;
 import backend.agents.network.AgentNetwork;
+import backend.markets.Markets;
 
 public class AscendingRandomShortcutsCreator implements INetworkCreator {
 	private double p = 1.0;
@@ -34,5 +35,9 @@ public class AscendingRandomShortcutsCreator implements INetworkCreator {
 	
 	public String toString() {
 		return "Ascending Random Shortcuts";
+	}
+	
+	public boolean createTradingLimits( AgentNetwork agents, Markets markets ) {
+		return false;
 	}
 }

@@ -122,12 +122,22 @@ Implementierung
 				-> Neue Samples müssen mit einer gewissen Wahrscheinlichkkeit hinzugefügt werden: welcher?
 					-> Integralfläche?
 					-> Wichtigkeit des Samples?
-				
-	-> TODO 	experimente definieren und beobachten
-				
+	
+	-> TODO		beim prüfen ob agenten noch handeln: wenn ein agent weg vom fenster ist: immer weg, nichtmehr notwendig neu zu checken
+				- einschränkung: das erstemal alle checken und alle entefernen die nicht handeln konnten,
+				dann nurmehr diese handeln lassen, wenn dann irgendwann wieder ein match passiert: reset
+					=> doppelter performance gewinn: beim handeln und beim schauen ob gleichgewicht erreicht
+		
+	-> TODO		alle zusätzlichen fenster in der titelleiste die aktuellen topologie und anzahl der agents mit eintragen damit unterscheidbarer
+		
 	-> TODO		Bugfixes
-					- wenn network hidden in inspection-mode und ein anderes network ausgewählt wird und dann wieder show network, dann ist noch das ursprüngliche angezeigt
-
+				- wenn network hidden in inspection-mode und ein anderes network ausgewählt wird und dann wieder show network, dann ist noch das ursprüngliche angezeigt
+				- markt-mechanismen checkboxen scheinen sich nicht wirklich auszuwirken
+						
+	-> TODO 	experimente definieren und beobachten
+				- so wie es aussieht sind die vermögensverteilungen von ASCENDING_CONNECTED MIT Importance Sampling anders als FULLY_CONNECTED
+					-> wie schaut es mit ASCENDING_CONNECTED OHNE Importance Sampling aus?
+					
 Schreiben
 	-> TODO		SCHREIBEN: Introduction 
 	-> TODO		SCHREIBEN: Implementation

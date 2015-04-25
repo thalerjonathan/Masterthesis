@@ -7,9 +7,6 @@ import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -45,39 +42,28 @@ public class OfferBookFrame extends JFrame {
 	
 	private AgentInfoPanel agentInfoPanel;
 	
-	private static List<Agent> agents;
-	private static List<OfferBookFrame> offerBookInstances = new ArrayList<>();
+	private OfferBook parent;
 	
-	public static void agentsChanged( List<Agent> agents ) {
-		OfferBookFrame.agents = agents;
+	// NOTE: used for cloning
+	public OfferBookFrame( OfferBook parent, int agentIndex, int tabIndex, WindowAdapter adapter ) {
+		super( "Offer-Book" );
+
+		this.parent = parent;
 		
-		for ( OfferBookFrame obf : OfferBookFrame.offerBookInstances ) {
-			obf.setVisible( false );
-			obf.dispose();
-		}
+		this.createControls( agentIndex, tabIndex );
 		
-		OfferBookFrame.offerBookInstances.clear();
-	}
-	
-	// NOTE: won't kill all offer-book instances but just updates them
-	public static void agentsUpdated( List<Agent> agents ) {
-		OfferBookFrame.agents = agents;
-		OfferBookFrame.offerBookChanged();
-	}
-	
-	public static void showOfferBook() {
-		OfferBookFrame.createAndShowInstance( 0, 0 );
+		this.setResizable(false);
+		this.setDefaultCloseOperation( JFrame.DISPOSE_ON_CLOSE );
+		this.addWindowListener( adapter );
+		
+		this.setPreferredSize( new Dimension( 550, 400 ) );
+		
+		this.pack();
 	}
 
-	public static void offerBookChanged() {
-		for ( OfferBookFrame obf : OfferBookFrame.offerBookInstances ) {
-			obf.refillTables();
-		}
-	}
-	
-	private void refillTables() {
+	public void refresh() {
 		int agentIndex = (int) this.agentIndexSpinner.getValue();
-		Agent a = OfferBookFrame.agents.get( agentIndex );
+		Agent a = this.parent.getAgents().get( agentIndex );
 		
 		this.agentInfoPanel.setAgent( a );
 		
@@ -96,26 +82,6 @@ public class OfferBookFrame extends JFrame {
 			this.askOffersBookTable[ i ].addOffering( askOfferings[ i ] );
 			this.bidOffersBookTable[ i ].addOffering( bidOfferings[ i ] );
 		}
-	}
-	
-	// NOTE: used for cloning
-	private OfferBookFrame( int agentIndex, int tabIndex ) {
-		super( "Offer-Book" );
-
-		this.createControls( agentIndex, tabIndex );
-		
-		this.setResizable(false);
-		this.setDefaultCloseOperation( JFrame.DISPOSE_ON_CLOSE );
-		this.addWindowListener( new WindowAdapter() {
-			@Override
-			public void windowClosed( WindowEvent e ) {
-				OfferBookFrame.offerBookInstances.remove( e.getComponent() );
-			}
-		});
-		
-		this.setPreferredSize( new Dimension( 550, 400 ) );
-		
-		this.pack();
 	}
 
 	private void createControls( int agentIndex, int tabIndex ) {
@@ -174,25 +140,27 @@ public class OfferBookFrame extends JFrame {
 		this.cloneButton = new JButton( "Clone" );
 		//this.visParetoFrontiersButton = new JButton( "Visualize Pareto-Frontiers" );
 
-		this.agentIndexSpinner = new JSpinner( new SpinnerNumberModel( agentIndex, 0, OfferBookFrame.agents.size() - 1, 1 ) );
+		this.agentIndexSpinner = new JSpinner( new SpinnerNumberModel( agentIndex, 0, 
+				this.parent.getAgents().size() - 1, 1 ) );
 		this.agentIndexSpinner.addChangeListener( new ChangeListener() {
 			@Override
 			public void stateChanged(ChangeEvent e) {
-				OfferBookFrame.this.refillTables();
+				OfferBookFrame.this.refresh();
 			}
 		});
 		
 		this.refreshButton.addActionListener( new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				OfferBookFrame.this.refillTables();
+				OfferBookFrame.this.refresh();
 			}
 		});
 		
 		this.cloneButton.addActionListener( new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				OfferBookFrame.createAndShowInstance( (int) OfferBookFrame.this.agentIndexSpinner.getValue(),
+				
+				parent.createAndShowInstance( (int) OfferBookFrame.this.agentIndexSpinner.getValue(),
 						OfferBookFrame.this.marketTabPane.getSelectedIndex() );
 			}
 		});
@@ -299,11 +267,4 @@ public class OfferBookFrame extends JFrame {
 		paretoFrontierFrame.setVisible( true );
 	}
 	*/
-	
-	private static void createAndShowInstance( int agentIndex, int tabIndex ) {
-		OfferBookFrame instance = new OfferBookFrame( agentIndex, tabIndex );
-		instance.refillTables();
-		instance.setVisible( true );
-		OfferBookFrame.offerBookInstances.add( instance );
-	}
 }

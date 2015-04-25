@@ -4,6 +4,7 @@ import javax.swing.JOptionPane;
 
 import backend.agents.IAgentFactory;
 import backend.agents.network.AgentNetwork;
+import backend.markets.Markets;
 
 public class HubConnectedCreator implements INetworkCreator {
 	private int n = 3;
@@ -33,5 +34,9 @@ public class HubConnectedCreator implements INetworkCreator {
 	
 	public String toString() {
 		return "N Hubs";
+	}
+	
+	public boolean createTradingLimits( AgentNetwork agents, Markets markets ) {
+		return false;
 	}
 }

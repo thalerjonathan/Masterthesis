@@ -2,6 +2,7 @@ package frontend.networkCreators;
 
 import backend.agents.IAgentFactory;
 import backend.agents.network.AgentNetwork;
+import backend.markets.Markets;
 
 public class BarbasiAlbertCreator implements INetworkCreator {
 	private int m0 = 3;
@@ -23,5 +24,9 @@ public class BarbasiAlbertCreator implements INetworkCreator {
 	
 	public String toString() {
 		return "Barbasi-Albert";
+	}
+	
+	public boolean createTradingLimits( AgentNetwork agents, Markets markets ) {
+		return false;
 	}
 }

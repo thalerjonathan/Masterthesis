@@ -4,6 +4,7 @@ import javax.swing.JOptionPane;
 
 import backend.agents.IAgentFactory;
 import backend.agents.network.AgentNetwork;
+import backend.markets.Markets;
 
 public class ErdosRenyiCreator implements INetworkCreator {
 	private double p = 0.2;
@@ -33,5 +34,9 @@ public class ErdosRenyiCreator implements INetworkCreator {
 	
 	public String toString() {
 		return "Erdos-Renyi";
+	}
+	
+	public boolean createTradingLimits( AgentNetwork agents, Markets markets ) {
+		return false;
 	}
 }

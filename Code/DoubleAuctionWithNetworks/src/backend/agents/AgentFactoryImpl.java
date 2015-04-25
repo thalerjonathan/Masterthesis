@@ -1,7 +1,5 @@
 package backend.agents;
 
-import java.util.List;
-
 import backend.markets.Markets;
 
 public class AgentFactoryImpl implements IAgentFactory {
