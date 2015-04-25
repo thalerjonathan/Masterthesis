@@ -28,17 +28,18 @@ public class MainWindow extends JFrame {
 	private void createPanels( int panelCount ) {
 		this.simulationModesTabPane = new JTabbedPane();
 
+		this.inspectionPanels = new InspectionPanel[ panelCount ];	
+		for ( int i = 0; i < panelCount; ++i ) {
+			this.inspectionPanels[ i ] = new InspectionPanel();
+			this.simulationModesTabPane.addTab( "Inspection " + ( i + 1 ), this.inspectionPanels[ i ] );			
+		}
+		
+		panelCount = 1;
+		
 		this.replicationPanels = new ReplicationPanel[ panelCount ];	
 		for ( int i = 0; i < panelCount; ++i ) {
 			this.replicationPanels[ i ] = new ReplicationPanel();
 			this.simulationModesTabPane.addTab( "Replications " + ( i + 1 ), this.replicationPanels[ i ] );
-		}
-		
-		this.inspectionPanels = new InspectionPanel[ panelCount ];	
-		for ( int i = 0; i < panelCount; ++i ) {
-			this.inspectionPanels[ i ] = new InspectionPanel();
-			this.simulationModesTabPane.addTab( "Inspection " + ( i + 1 ), this.inspectionPanels[ i ] );
-			
 		}
 		
 		this.simulationModesTabPane.setSelectedIndex( 0 );

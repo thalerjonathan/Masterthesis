@@ -44,12 +44,13 @@ public class OfferBook {
 	}
 	
 	public void createAndShowInstance( int agentIndex, int tabIndex ) {
-		OfferBookFrame instance = new OfferBookFrame( this, agentIndex, tabIndex, new WindowAdapter() {
+		OfferBookFrame instance = new OfferBookFrame( this, agentIndex, tabIndex );
+		instance.addWindowListener( new WindowAdapter() {
 			@Override
 			public void windowClosed( WindowEvent e ) {
 				OfferBook.this.offerBookInstances.remove( e.getComponent() );
 			}
-		} );
+		}  );
 		instance.refresh();
 		instance.setVisible( true );
 		this.offerBookInstances.add( instance );

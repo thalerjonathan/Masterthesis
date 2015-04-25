@@ -68,6 +68,7 @@ public class ReplicationPanel extends JPanel {
 	private JCheckBox abmMarketCheck;
 	private JCheckBox loanCashMarketCheck;
 	private JCheckBox bpMechanismCheck;
+	private JCheckBox importanceSamplingCheck;
 	
 	private JCheckBox parallelEvaluationCheck;
 	
@@ -133,6 +134,7 @@ public class ReplicationPanel extends JPanel {
 		this.bpMechanismCheck = new JCheckBox( "Bonds Pledgeability" );
 		
 		this.parallelEvaluationCheck = new JCheckBox( "Parallel Evaluation" );
+		this.importanceSamplingCheck = new JCheckBox( "Importance-Sampling" );
 		
 		this.topologySelection = new JComboBox<INetworkCreator>();
 		this.terminationSelection = new JComboBox<TerminationMode>( TerminationMode.values() );
@@ -170,6 +172,8 @@ public class ReplicationPanel extends JPanel {
 		this.bpMechanismCheck.setSelected( this.markets.isBP() );
 		
 		this.parallelEvaluationCheck.setSelected( false );
+		
+		this.showReplicationInfoButton.setEnabled( false );
 		
 		ActionListener checkListener = new ActionListener() {
 			@Override
@@ -282,7 +286,8 @@ public class ReplicationPanel extends JPanel {
 		agentsConfigPanel.add( this.abmMarketCheck );
 		agentsConfigPanel.add( this.loanCashMarketCheck );
 		agentsConfigPanel.add( this.bpMechanismCheck );	
-		agentsConfigPanel.add( this.parallelEvaluationCheck );	
+		agentsConfigPanel.add( this.parallelEvaluationCheck );
+		agentsConfigPanel.add( this.importanceSamplingCheck );
 		agentsConfigPanel.add( this.replicationButton );
 
 		replicationsConfigPanel.add( this.maxTxSpinner );
@@ -345,12 +350,14 @@ public class ReplicationPanel extends JPanel {
 			this.loanCashMarketCheck.setEnabled( false );
 			this.bpMechanismCheck.setEnabled( false );
 			this.parallelEvaluationCheck.setEnabled( false );
+			this.importanceSamplingCheck.setEnabled( false );
 			this.agentCountSpinner.setEnabled( false );
 			this.maxTxSpinner.setEnabled( false );
 			this.faceValueSpinner.setEnabled( false );
 			this.topologySelection.setEnabled( false );
 			this.terminationSelection.setEnabled( false );
 			this.replicationCountSpinner.setEnabled( false );
+			this.showReplicationInfoButton.setEnabled( true );
 			
 			this.replicationTable.clearAll();
 			this.replicationData.clear();
@@ -498,6 +505,7 @@ public class ReplicationPanel extends JPanel {
 		this.loanCashMarketCheck.setEnabled( true );
 		this.bpMechanismCheck.setEnabled( true );
 		this.parallelEvaluationCheck.setEnabled( true );
+		this.importanceSamplingCheck.setEnabled( true );
 		this.agentCountSpinner.setEnabled( true );
 		this.maxTxSpinner.setEnabled( true );
 		this.faceValueSpinner.setEnabled( true );
@@ -536,7 +544,10 @@ public class ReplicationPanel extends JPanel {
 
 		INetworkCreator creator = ( INetworkCreator ) this.topologySelection.getSelectedItem();
 		this.agentNetworkTemplate = creator.createNetwork( new AgentFactoryImpl( agentCount, this.markets ) );
-		creator.createTradingLimits( this.agentNetworkTemplate, this.markets );
+		
+		if ( this.importanceSamplingCheck.isSelected() ) {
+			creator.createTradingLimits( this.agentNetworkTemplate, this.markets );
+		}
 		
 		List<Agent> agents = this.agentNetworkTemplate.getOrderedList();
 		this.agentWealthPanel.setAgents( this.agentNetworkTemplate.getOrderedList() );

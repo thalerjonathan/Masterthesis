@@ -77,6 +77,7 @@ public class InspectionPanel extends JPanel implements ActionListener, ChangeLis
 	private JCheckBox abmMarketCheck;
 	private JCheckBox loanCashMarketCheck;
 	private JCheckBox bpMechanismCheck;
+	private JCheckBox importanceSamplingCheck;
 	
 	private JCheckBox keepAgentHistoryCheck;
 	
@@ -263,6 +264,8 @@ public class InspectionPanel extends JPanel implements ActionListener, ChangeLis
 		this.abmMarketCheck = new JCheckBox( "Asset/Loan Market" );
 		this.loanCashMarketCheck = new JCheckBox( "Loan/Cash Market" );
 		this.bpMechanismCheck = new JCheckBox( "Bonds Pledgeability" );
+		this.importanceSamplingCheck = new JCheckBox( "Importance-Sampling" );
+		
 		this.keepAgentHistoryCheck = new JCheckBox( "Keep Agent History" );
 
 		this.txHistoryTable = new TxHistoryTable();
@@ -421,7 +424,8 @@ public class InspectionPanel extends JPanel implements ActionListener, ChangeLis
 		controlsPanel.add( this.topologySelection );
 		controlsPanel.add( this.abmMarketCheck );
 		controlsPanel.add( this.loanCashMarketCheck );
-		controlsPanel.add( this.bpMechanismCheck );	
+		controlsPanel.add( this.bpMechanismCheck );
+		controlsPanel.add( this.importanceSamplingCheck );
 		controlsPanel.add( this.inspectionButton );
 		
 		networkVisControlsPanel.add( this.recreateButton );
@@ -600,7 +604,10 @@ public class InspectionPanel extends JPanel implements ActionListener, ChangeLis
 		
 		INetworkCreator creator = (INetworkCreator) this.topologySelection.getSelectedItem();
 		this.agents = creator.createNetwork( new AgentFactoryImpl( agentCount, this.markets ) );
-		creator.createTradingLimits( this.agents, this.markets );
+		
+		if ( this.importanceSamplingCheck.isSelected() ) {
+			creator.createTradingLimits( this.agents, this.markets );
+		}
 		
 		// if agent-wealth-visualisation panel is already there, remove it bevore adding a new instance
 		if ( null != this.agentWealthPanel ) {
@@ -781,6 +788,7 @@ public class InspectionPanel extends JPanel implements ActionListener, ChangeLis
 			this.abmMarketCheck.setEnabled( false );
 			this.loanCashMarketCheck.setEnabled( false );
 			this.bpMechanismCheck.setEnabled( false );
+			this.importanceSamplingCheck.setEnabled( false );
 			
 			// reset controls
 			this.inspectionButton.setText( "Stop Inspection" );
@@ -832,6 +840,7 @@ public class InspectionPanel extends JPanel implements ActionListener, ChangeLis
 			this.abmMarketCheck.setEnabled( true );
 			this.loanCashMarketCheck.setEnabled( true );
 			this.bpMechanismCheck.setEnabled( true );
+			this.importanceSamplingCheck.setEnabled( true );
 		}
 	}
 	

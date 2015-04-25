@@ -6,7 +6,6 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.WindowAdapter;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -45,7 +44,7 @@ public class OfferBookFrame extends JFrame {
 	private OfferBook parent;
 	
 	// NOTE: used for cloning
-	public OfferBookFrame( OfferBook parent, int agentIndex, int tabIndex, WindowAdapter adapter ) {
+	public OfferBookFrame( OfferBook parent, int agentIndex, int tabIndex ) {
 		super( "Offer-Book" );
 
 		this.parent = parent;
@@ -54,7 +53,6 @@ public class OfferBookFrame extends JFrame {
 		
 		this.setResizable(false);
 		this.setDefaultCloseOperation( JFrame.DISPOSE_ON_CLOSE );
-		this.addWindowListener( adapter );
 		
 		this.setPreferredSize( new Dimension( 550, 400 ) );
 		
