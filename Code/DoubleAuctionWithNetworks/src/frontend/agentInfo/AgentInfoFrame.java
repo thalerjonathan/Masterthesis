@@ -46,9 +46,21 @@ public class AgentInfoFrame extends JFrame {
 	}
 	
 	public void setAgents( List<Agent> agents ) {
-		this.agents = agents;
-		this.agentIndexSpinner.setModel( new SpinnerNumberModel( 0, 0, agents.size() - 1, 1 ) );
+		int agentIndex = 0;
 		
-		this.agentInfoPanel.setAgent( agents.get( 0 ) );
+		if ( null == this.agents ) {
+			this.agentIndexSpinner.setModel( new SpinnerNumberModel( 0, 0, agents.size() - 1, 1 ) );
+			
+		} else {
+			// if number of agents has changed, do a complete reset
+			if ( this.agents.size() == agents.size() ) {
+				 agentIndex = (int) AgentInfoFrame.this.agentIndexSpinner.getValue();
+			} else {
+				this.agentIndexSpinner.setModel( new SpinnerNumberModel( 0, 0, agents.size() - 1, 1 ) );
+			}
+		}
+	
+		this.agents = agents;
+		this.agentInfoPanel.setAgent( agents.get( agentIndex ) );
 	}
 }

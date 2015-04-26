@@ -89,6 +89,8 @@ public class ReplicationPanel extends JPanel {
 	private JLabel replicationsLeftLabel;
 	private JLabel runningTimeLabel;
 	
+	private List<Agent> currentMean;
+	
 	private ReplicationTable replicationTable;
 	
 	private AgentInfoFrame agentInfoFrame;
@@ -342,18 +344,8 @@ public class ReplicationPanel extends JPanel {
 			this.agentInfoFrame = new AgentInfoFrame();
 		}
 		
-		List<Agent> selectedAgents = null;
-		int selectedRow = this.replicationTable.getSelectedRow();
-		
-		if ( selectedRow >= 0 ) {
-			int modelIndex = ReplicationPanel.this.replicationTable.getRowSorter().convertRowIndexToModel( selectedRow );
-			selectedAgents = this.replicationData.get( modelIndex ).getFinalAgents();
-		} else {
-			selectedAgents = this.agentNetworkTemplate.getOrderedList();
-		}
-		
 		this.agentInfoFrame.setTitle( "Agent-Info (" + this.getTitleExtension() + ")" );
-		this.agentInfoFrame.setAgents( selectedAgents );
+		this.agentInfoFrame.setAgents( this.currentMean != null ? this.currentMean : this.agentNetworkTemplate.getOrderedList() );
 		this.agentInfoFrame.setVisible( true );
 	}
 	
@@ -539,7 +531,7 @@ public class ReplicationPanel extends JPanel {
 	
 	private synchronized void replicationFinished( ReplicationData data ) {
 		ReplicationPanel.this.replicationData.add( data );
-		List<Agent> currentMean = this.calculateCurrentMean();
+		this.currentMean = this.calculateCurrentMean();
 		int replicationsLeft = (int) ReplicationPanel.this.replicationCountSpinner.getValue() - ReplicationPanel.this.replicationData.size();
 		
 		SwingUtilities.invokeLater( new Runnable() {
@@ -547,8 +539,8 @@ public class ReplicationPanel extends JPanel {
 			public void run() {
 				ReplicationPanel.this.replicationTable.addReplication( data );
 				ReplicationPanel.this.replicationsLeftLabel.setText( "Replications Left: " + replicationsLeft );
-				ReplicationPanel.this.agentWealthPanel.setAgents( currentMean );
-				ReplicationPanel.this.updateAgentInfoFrame( currentMean );
+				ReplicationPanel.this.agentWealthPanel.setAgents( ReplicationPanel.this.currentMean );
+				ReplicationPanel.this.updateAgentInfoFrame( ReplicationPanel.this.currentMean );
 			}
 		} );
 	}

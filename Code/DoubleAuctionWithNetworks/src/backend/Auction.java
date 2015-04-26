@@ -109,9 +109,10 @@ public class Auction {
 				
 				List<Agent> finalAgents = null;
 				
-				// WARNING: sucks up huge amount of memory if many TXs
+				// WARNING: keeping history sucks up huge amount of memory if many TXs
 				if ( keepAgentHistory ) {
 					finalAgents = this.agentNetwork.cloneAgents();
+					
 				} else {
 					finalAgents = this.agentNetwork.getOrderedList();
 				}
@@ -128,7 +129,7 @@ public class Auction {
 		
 		return false;
 	}
-	
+
 	private boolean isTradingPossible() {
 		// check if trading is possible within neighborhood
 		Iterator<Agent> agentIter = this.tradingAgents.iterator();
@@ -144,6 +145,7 @@ public class Auction {
 				}
 			}
 			
+			// agent is not able to trade, remove from the trading-agents which are able to trade
 			agentIter.remove();
 			
 			//System.out.println( "Agent " + a.getH() + " cant trade no more! " + this.tradingAgents.size() + " left." );
