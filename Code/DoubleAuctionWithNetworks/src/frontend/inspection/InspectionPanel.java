@@ -134,7 +134,6 @@ public class InspectionPanel extends JPanel implements ActionListener, ChangeLis
 	
 	public InspectionPanel() {
 		this.markets = new Markets();
-
 		this.successfulTx = new ArrayList<Transaction>();
 		
         this.setLayout( new GridBagLayout() );
@@ -292,6 +291,7 @@ public class InspectionPanel extends JPanel implements ActionListener, ChangeLis
 				InspectionPanel.this.handleImportanceSampling();
 			}
 		});
+		
 		// setting up event-listeners of components ////////////////////////////////////
 		this.txHistoryTable.getSelectionModel().addListSelectionListener( new ListSelectionListener() {
 			@Override
@@ -621,6 +621,12 @@ public class InspectionPanel extends JPanel implements ActionListener, ChangeLis
 		}
 	}
 	
+	public String getTitleExtension() {
+		int agentCount = (int) this.agentCountSpinner.getValue();
+		INetworkCreator creator = (INetworkCreator) this.topologySelection.getSelectedItem();
+		return creator.toString() + ", " + agentCount + " Agents";
+	}
+	
 	private void createAgents() {
 		int agentCount = (int) this.agentCountSpinner.getValue();
 		this.markets = new Markets( (double) this.faceValueSpinner.getValue() );
@@ -658,7 +664,7 @@ public class InspectionPanel extends JPanel implements ActionListener, ChangeLis
 		this.txHistoryTable.clearAll();
 		
 		// close opened offer-books because agents changed (number of agents,...)
-		this.offerBook.agentsChanged( this.agentNetwork.getOrderedList() );
+		this.offerBook.agentsChanged( this.agentNetwork.getOrderedList(), this.getTitleExtension() );
 		
 		// need to create the layout too, will do the final pack-call on this frame
 		this.createLayout();

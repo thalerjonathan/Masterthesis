@@ -173,8 +173,14 @@ public class ReplicationPanel extends JPanel {
 		this.bpMechanismCheck.setSelected( this.markets.isBP() );
 		
 		this.parallelEvaluationCheck.setSelected( false );
-		
 		this.showReplicationInfoButton.setEnabled( false );
+		
+		this.importanceSamplingCheck.addActionListener( new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				ReplicationPanel.this.handleImportanceSampling();
+			}
+		});
 		
 		ActionListener checkListener = new ActionListener() {
 			@Override
@@ -321,6 +327,7 @@ public class ReplicationPanel extends JPanel {
 			this.replicationInfoFrame = new ReplicationInfoFrame( this.replicationTable );
 		}
 		
+		this.replicationInfoFrame.setTitle( "Replication-Info (" + this.getTitleExtension() + ")" );
 		this.replicationInfoFrame.setTasks( this.replicationTasks );
 		this.replicationInfoFrame.setVisible( true );
 	}
@@ -340,6 +347,7 @@ public class ReplicationPanel extends JPanel {
 			selectedAgents = this.agentNetworkTemplate.getOrderedList();
 		}
 		
+		this.agentInfoFrame.setTitle( "Agent-Info (" + this.getTitleExtension() + ")" );
 		this.agentInfoFrame.setAgents( selectedAgents );
 		this.agentInfoFrame.setVisible( true );
 	}
@@ -429,14 +437,31 @@ public class ReplicationPanel extends JPanel {
 	private void allReplicationsFinished() {
 		this.updateRunningTimeLabel( System.currentTimeMillis() );
 		
-		int agentCount = this.agentNetworkTemplate.size();
-		List<Agent> medianAgents = new ArrayList<>();
+		List<Agent> finalMean = this.calculateCurrentMean();
+		this.agentWealthPanel.setAgents( finalMean);
 		
-		ReplicationData finalData = new ReplicationData();
-		finalData.setNumber( -1 );
-		finalData.setTaskId( -1 );
-		finalData.setTxCount( 0 );
-		finalData.setFinalAgents( medianAgents );
+		this.replicationButton.setText( "Start" );
+		this.abmMarketCheck.setEnabled( true );
+		this.loanCashMarketCheck.setEnabled( true );
+		this.bpMechanismCheck.setEnabled( true );
+		this.parallelEvaluationCheck.setEnabled( true );
+		this.importanceSamplingCheck.setEnabled( true );
+		this.agentCountSpinner.setEnabled( true );
+		this.maxTxSpinner.setEnabled( true );
+		this.faceValueSpinner.setEnabled( true );
+		this.topologySelection.setEnabled( true );
+		this.terminationSelection.setEnabled( true );
+		this.replicationCountSpinner.setEnabled( true );
+		
+		this.awaitFinishThread = null;
+		this.replicationTasks.clear();
+		
+		this.replicationTaskExecutor.shutdown();
+	}
+	
+	private List<Agent> calculateCurrentMean() {
+		int agentCount = this.agentNetworkTemplate.size();
+		List<Agent> currentMeanAgents = new ArrayList<>( agentCount );
 
 		double[] medianConsumEndow = new double[ agentCount ];
 		double[] medianAssetEndow = new double[ agentCount ];
@@ -445,6 +470,11 @@ public class ReplicationPanel extends JPanel {
 		double[] medianLoanTakenEndow = new double[ agentCount ];
 		
 		for ( ReplicationData data : this.replicationData ) {
+			// ignore canceled data
+			if ( data.isWasCanceled() ) {
+				continue;
+			}
+			
 			List<Agent> finalAgents = data.getFinalAgents();
 			
 			for ( int i = 0; i < finalAgents.size(); ++i ) {
@@ -494,42 +524,22 @@ public class ReplicationPanel extends JPanel {
 				}
 			};
 			
-			medianAgents.add( medianAgent );
+			currentMeanAgents.add( medianAgent );
 		}
-		
-		this.agentWealthPanel.setAgents( medianAgents );
-		this.replicationData.add( finalData );
-		this.replicationTable.addReplication( finalData );
-		
-		this.replicationButton.setText( "Start" );
-		this.abmMarketCheck.setEnabled( true );
-		this.loanCashMarketCheck.setEnabled( true );
-		this.bpMechanismCheck.setEnabled( true );
-		this.parallelEvaluationCheck.setEnabled( true );
-		this.importanceSamplingCheck.setEnabled( true );
-		this.agentCountSpinner.setEnabled( true );
-		this.maxTxSpinner.setEnabled( true );
-		this.faceValueSpinner.setEnabled( true );
-		this.topologySelection.setEnabled( true );
-		this.terminationSelection.setEnabled( true );
-		this.replicationCountSpinner.setEnabled( true );
-		
-		this.awaitFinishThread = null;
-		this.replicationTasks.clear();
-		
-		this.replicationTaskExecutor.shutdown();
+	
+		return currentMeanAgents;
 	}
 	
 	private synchronized void replicationFinished( ReplicationData data ) {
-		ReplicationPanel.this.replicationData.add( data );
-		ReplicationPanel.this.replicationTable.addReplication( data );
-		ReplicationPanel.this.agentWealthPanel.setAgents( data.getFinalAgents() );
-		ReplicationPanel.this.updateAgentInfoFrame( data.getFinalAgents() );
+		List<Agent> currentMean = this.calculateCurrentMean();
 		
 		SwingUtilities.invokeLater( new Runnable() {
 			@Override
 			public void run() {
-				
+				ReplicationPanel.this.replicationData.add( data );
+				ReplicationPanel.this.replicationTable.addReplication( data );
+				ReplicationPanel.this.agentWealthPanel.setAgents( currentMean );
+				ReplicationPanel.this.updateAgentInfoFrame( currentMean );
 			}
 		} );
 	}
@@ -544,6 +554,12 @@ public class ReplicationPanel extends JPanel {
 				iter.next().resetImportanceSamplingData();
 			}
 		}
+	}
+	
+	public String getTitleExtension() {
+		int agentCount = (int) this.agentCountSpinner.getValue();
+		INetworkCreator creator = (INetworkCreator) this.topologySelection.getSelectedItem();
+		return creator.toString() + ", " + agentCount + " Agents";
 	}
 	
 	private void createAgents() {
@@ -572,6 +588,7 @@ public class ReplicationPanel extends JPanel {
 	private void updateAgentInfoFrame( List<Agent> agents ) {
 		if ( null != this.agentInfoFrame && this.agentInfoFrame.isVisible() ) {
 			this.agentInfoFrame.setAgents( agents );
+			this.agentInfoFrame.setTitle( "Agent-Info (" + this.getTitleExtension() + ")" );
 		}
 	}
 	
@@ -580,6 +597,7 @@ public class ReplicationPanel extends JPanel {
 		if ( null != this.netVisFrame && this.netVisFrame.isVisible() ) {
 			NetworkRenderPanel networkPanel = ReplicationPanel.this.agentNetworkTemplate.getNetworkRenderingPanel( (Class<? extends Layout<Agent, AgentConnection>>) CircleLayout.class, null );
 			this.netVisFrame.setNetworkRenderPanel( networkPanel );
+			this.netVisFrame.setTitle( "Agent Network (" + this.getTitleExtension() + ")" );
 		}
 	}
 	

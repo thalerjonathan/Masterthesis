@@ -9,6 +9,7 @@ import backend.agents.Agent;
 
 public class OfferBook {
 
+	private String titleExtension;
 	private List<Agent> agents;
 	private List<OfferBookFrame> offerBookInstances;
 	
@@ -16,8 +17,9 @@ public class OfferBook {
 		this.offerBookInstances = new ArrayList<>();
 	}
 	
-	public void agentsChanged( List<Agent> agents ) {
+	public void agentsChanged( List<Agent> agents, String titleExtension ) {
 		this.agents = agents;
+		this.titleExtension = titleExtension;
 		
 		for ( OfferBookFrame obf : this.offerBookInstances ) {
 			obf.setVisible( false );
@@ -53,11 +55,11 @@ public class OfferBook {
 		}  );
 		instance.refresh();
 		instance.setVisible( true );
+		instance.setTitle( "Offer-Book (" + this.titleExtension + ")" );
 		this.offerBookInstances.add( instance );
 	}
 	
 	public List<Agent> getAgents() {
 		return this.agents;
 	}
-	
 }
