@@ -228,7 +228,7 @@ public class InspectionThread implements Runnable {
 					}
 
 					if ( this.advanceTxCountCurrent >= this.advanceTxCountTarget ||
-							tx.isReachedEquilibrium() ) {
+							tx.hasTradingHalted() ) {
 						// advancetx can only happen in paused-state, switch back to paused when finished
 						this.state = SimulationState.PAUSED;
 						// signal the waiting GUI/next-TX-thread (if any)
@@ -236,7 +236,7 @@ public class InspectionThread implements Runnable {
 					}
 				} else {
 					// terminate simulation-thread when reached the equilibrium
-					if ( tx.isReachedEquilibrium() ) {
+					if ( tx.hasTradingHalted() ) {
 						this.state = SimulationState.EXIT;
 					}
 				}
@@ -251,7 +251,7 @@ public class InspectionThread implements Runnable {
 							InspectionThread.this.inspectorPanel.addSuccessfulTX( tx, SimulationState.RUNNING != stateBevoreTX );
 						
 						// 
-						} else if ( tx.isReachedEquilibrium() ) {
+						} else if ( tx.hasTradingHalted() ) {
 							InspectionThread.this.inspectorPanel.simulationTerminated();
 						}
 

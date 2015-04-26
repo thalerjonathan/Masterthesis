@@ -13,6 +13,8 @@ public class MainWindow extends JFrame {
 	private InspectionPanel[] inspectionPanels;
 	private JTabbedPane simulationModesTabPane;
 	
+	// TODO: add context-menu to add/remove tabs
+	
 	public MainWindow( int inspectionPanelCount, int replicationPanelCount ) {
 		super("Continuous Double-Auctions");
 		

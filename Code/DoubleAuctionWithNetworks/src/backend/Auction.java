@@ -59,7 +59,7 @@ public class Auction {
 		}
 		
 		if ( false == this.isTradingPossible() ) {
-			transaction.setReachedEquilibrium( true );
+			transaction.setTradingHalted( true );
 		}
 		
 		return transaction;

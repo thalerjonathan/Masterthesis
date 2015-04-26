@@ -18,7 +18,8 @@ public class Transaction  {
 	
 	private int transNum;
 	private int sweepCount;
-	private boolean reachedEquilibrium;
+	private boolean tradingHalted;
+	private boolean equilibrium;
 	
 	private Match match;
 	
@@ -273,12 +274,20 @@ public class Transaction  {
 		this.transNum = transNum;
 	}
 	
-	public boolean isReachedEquilibrium() {
-		return reachedEquilibrium;
+	public boolean hasTradingHalted() {
+		return tradingHalted;
 	}
 
-	public void setReachedEquilibrium(boolean reachedEquilibrium) {
-		this.reachedEquilibrium = reachedEquilibrium;
+	public void setTradingHalted( boolean tradingHalted ) {
+		this.tradingHalted = tradingHalted;
+	}
+
+	public boolean isEquilibrium() {
+		return equilibrium;
+	}
+
+	public void setEquilibrium(boolean equilibrium) {
+		this.equilibrium = equilibrium;
 	}
 
 	public List<Agent> getFinalAgents() {

@@ -86,6 +86,7 @@ public class ReplicationPanel extends JPanel {
 	private JButton showAgentInfoButton;
 	private JButton showReplicationInfoButton;
 	
+	private JLabel replicationsLeftLabel;
 	private JLabel runningTimeLabel;
 	
 	private ReplicationTable replicationTable;
@@ -109,8 +110,10 @@ public class ReplicationPanel extends JPanel {
 	public final static SimpleDateFormat DATE_FORMATTER = new SimpleDateFormat( "dd.MM HH:mm:ss" );
 	
 	public enum TerminationMode {
-		MAX_TOTAL_TX,
-		MAX_FAIL_TX,
+		TOTAL_TX,
+		FAIL_TOTAL_TX,
+		FAIL_SUCCESSIVE_TX,
+		TRADING_HALTED,
 		EQUILIBRIUM
 	}
 	
@@ -151,6 +154,7 @@ public class ReplicationPanel extends JPanel {
 		this.maxTxSpinner = new JSpinner( new SpinnerNumberModel( 10_000, 1, 10_000_000, 10_000 ) );
 		
 		this.runningTimeLabel = new JLabel( "Running since: -" );
+		this.replicationsLeftLabel = new JLabel( "Replications left: -" );
 		
 		this.replicationTable = new ReplicationTable();
 		
@@ -304,6 +308,7 @@ public class ReplicationPanel extends JPanel {
 		replicationsConfigPanel.add( this.showAgentInfoButton );
 		replicationsConfigPanel.add( this.showReplicationInfoButton );
 		replicationsConfigPanel.add( this.runningTimeLabel );
+		replicationsConfigPanel.add( this.replicationsLeftLabel );
 		
 		this.agentWealthPanel.setSize( this.getSize() );
 		
@@ -382,6 +387,8 @@ public class ReplicationPanel extends JPanel {
 			}
 			
 			replicationThreadCount = Math.min( replicationCount.get(), replicationThreadCount );
+			
+			this.replicationsLeftLabel.setText( "Replications Left: " + replicationCount.get() );
 			
 			this.replicationTaskExecutor = Executors.newFixedThreadPool( replicationThreadCount, new ThreadFactory() {
 				public Thread newThread( Runnable r ) {
@@ -531,13 +538,15 @@ public class ReplicationPanel extends JPanel {
 	}
 	
 	private synchronized void replicationFinished( ReplicationData data ) {
+		ReplicationPanel.this.replicationData.add( data );
 		List<Agent> currentMean = this.calculateCurrentMean();
+		int replicationsLeft = (int) ReplicationPanel.this.replicationCountSpinner.getValue() - ReplicationPanel.this.replicationData.size();
 		
 		SwingUtilities.invokeLater( new Runnable() {
 			@Override
 			public void run() {
-				ReplicationPanel.this.replicationData.add( data );
 				ReplicationPanel.this.replicationTable.addReplication( data );
+				ReplicationPanel.this.replicationsLeftLabel.setText( "Replications Left: " + replicationsLeft );
 				ReplicationPanel.this.agentWealthPanel.setAgents( currentMean );
 				ReplicationPanel.this.updateAgentInfoFrame( currentMean );
 			}
@@ -614,7 +623,8 @@ public class ReplicationPanel extends JPanel {
 		private boolean nextTxFlag;
 		
 		private int totalTxCount;
-		private int failTxCount;
+		private int failTxTotalCount;
+		private int failTxSuccessiveCount;
 		
 		private AtomicInteger replicationCount;
 
@@ -661,7 +671,7 @@ public class ReplicationPanel extends JPanel {
 		}
 
 		public int getFailTxCount() {
-			return failTxCount;
+			return failTxTotalCount;
 		}
 
 		public int getMaxTx() {
@@ -709,7 +719,8 @@ public class ReplicationPanel extends JPanel {
 			long lastRunningTimeUpdate = 0;
 			
 			this.totalTxCount = 0;
-			this.failTxCount = 0;
+			this.failTxTotalCount = 0;
+			this.failTxSuccessiveCount = 0;
 			
 			while ( true ) {
 				Transaction tx = auction.executeSingleTransaction( MatchingType.BEST_NEIGHBOUR, false );
@@ -717,16 +728,26 @@ public class ReplicationPanel extends JPanel {
 				this.totalTxCount++;
 				
 				if ( false == tx.wasSuccessful() ) {
-					this.failTxCount++;
+					this.failTxTotalCount++;
+					this.failTxSuccessiveCount++;
+					
+				} else {
+					this.failTxSuccessiveCount = 0;
 				}
 
-				if ( TerminationMode.MAX_TOTAL_TX == this.terminationMode ) {
+				if ( TerminationMode.TOTAL_TX == this.terminationMode ) {
 					terminated = this.totalTxCount >= this.maxTx;
 					
-				} else if ( TerminationMode.MAX_FAIL_TX == this.terminationMode ) {
-					terminated = this.failTxCount >= this.maxTx;
+				} else if ( TerminationMode.FAIL_TOTAL_TX == this.terminationMode ) {
+					terminated = this.failTxTotalCount >= this.maxTx;
+				
+				} else if ( TerminationMode.FAIL_SUCCESSIVE_TX == this.terminationMode ) {
+					terminated = this.failTxSuccessiveCount >= this.maxTx;
+				
+				} else if ( TerminationMode.EQUILIBRIUM == this.terminationMode && tx.isEquilibrium() ) {
+					terminated = true;
 				}
-			
+				
 				if ( this.nextTxFlag ) {
 					terminated = true;
 				}
@@ -735,14 +756,15 @@ public class ReplicationPanel extends JPanel {
 					terminated = true;
 				}
 				
-				if ( tx.isReachedEquilibrium() ) {
+				// if trading has halted terminate any way, makes no more sense to continue
+				if ( tx.hasTradingHalted() ) {
 					terminated = true;
 				}
 				
 				if ( terminated ) {
 					ReplicationData data = new ReplicationData();
 					data.setFinishTime( new Date() );
-					data.setReachedEquilibrium( tx.isReachedEquilibrium() );
+					data.setReachedEquilibrium( tx.hasTradingHalted() );
 					data.setWasCanceled( this.canceledFlag || this.nextTxFlag );
 					data.setNumber( ( int ) ReplicationPanel.this.replicationCountSpinner.getValue() - this.currentReplication + 1 );
 					data.setTaskId( this.taskId );
@@ -753,6 +775,7 @@ public class ReplicationPanel extends JPanel {
 					return data;
 				}
 				
+				// NOTE: if task 0 has finished, runningtime wont be updated anymore (maybe use TimerTask)
 				if ( 0 == this.taskId ) {
 					long currSysMillis = System.currentTimeMillis();
 					if ( currSysMillis - lastRunningTimeUpdate >= 1000 ) {

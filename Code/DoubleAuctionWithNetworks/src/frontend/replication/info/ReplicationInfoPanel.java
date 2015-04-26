@@ -153,10 +153,10 @@ public class ReplicationInfoPanel extends JPanel {
 		this.failedTxLabel.setText( TX_COUNT_FORMATTER.format( this.task.getFailTxCount() ) );
 		this.replicationNumberLabel.setText( "" + this.task.getCurrentReplication() );
 		
-		if ( TerminationMode.EQUILIBRIUM != task.getTerminationMode() ) {
+		if ( TerminationMode.TRADING_HALTED != task.getTerminationMode() ) {
 			this.progressBar.setMaximum( this.task.getMaxTx() );
 			
-			if ( TerminationMode.MAX_TOTAL_TX == task.getTerminationMode() ) {
+			if ( TerminationMode.TOTAL_TX == task.getTerminationMode() ) {
 				this.progressBar.setValue( this.task.getTotalTxCount() );
 			} else {
 				this.progressBar.setValue( this.task.getFailTxCount() );
