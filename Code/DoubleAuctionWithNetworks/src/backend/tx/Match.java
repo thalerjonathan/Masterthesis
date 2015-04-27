@@ -1,6 +1,12 @@
 package backend.tx;
 
+import java.util.concurrent.ThreadLocalRandom;
+
+import org.apache.commons.math3.random.RandomDataGenerator;
+
+import backend.agents.Agent;
 import backend.markets.MarketType;
+import backend.markets.Markets;
 import backend.offers.AskOffering;
 import backend.offers.BidOffering;
 
@@ -21,13 +27,59 @@ public class Match {
 	
 	// the market-type of this match
 	private MarketType market;
+
+	private final static RandomDataGenerator PERMUTATOR = new RandomDataGenerator();
 	
 	public enum MatchDirection {
 		SELL_MATCHES_BUY,
 		BUY_MATCHES_SELL
 	}
 	
-	public Match( BidOffering buyOffer, AskOffering sellOffer, MatchDirection direction ) {
+	public static Match matchOffers( AskOffering[] agentAskOfferings, BidOffering[] agentBidOfferings, 
+			AskOffering[] bestAsks, BidOffering[] bestBids) {
+		
+		// generate perumtation of the markets to randomly search for matches
+		int[] perm = Match.PERMUTATOR.nextPermutation( Markets.NUMMARKETS, Markets.NUMMARKETS );
+		
+		// check markets in random order - first match wins
+		for ( int i = 0; i < Markets.NUMMARKETS; ++i ) {
+			int marketIndex = perm[ i ];
+			
+			boolean checkAgentSellFirst = ThreadLocalRandom.current().nextDouble() >= 0.5;
+			
+			// check whether a sell matches or a buy matches in random order - first match wins
+			for ( int j = 0; j < 2; ++j ) {
+				if ( checkAgentSellFirst ) {
+					AskOffering agentSellOffering = agentAskOfferings[ marketIndex ];
+					BidOffering bestBuyOffering = bestBids[ marketIndex ];
+					
+					if ( null != agentSellOffering && null != bestBuyOffering ) {
+						if ( agentSellOffering.matches( bestBuyOffering ) ) {
+							return new Match( bestBuyOffering, agentSellOffering, MatchDirection.SELL_MATCHES_BUY );
+						}
+					}
+					
+					checkAgentSellFirst = false;
+					
+				} else {
+					BidOffering agentBuyOffering = agentBidOfferings[ marketIndex ];
+					AskOffering bestSellOffering = bestAsks[ marketIndex ];
+		
+					if ( null != agentBuyOffering && null != bestSellOffering ) {
+						if ( agentBuyOffering.matches( bestSellOffering ) ) {
+							return new Match( agentBuyOffering, bestSellOffering, MatchDirection.BUY_MATCHES_SELL );
+						}
+					}
+					
+					checkAgentSellFirst = true;
+				}
+			}
+		}
+		
+		return null;
+	}
+	
+	private Match( BidOffering buyOffer, AskOffering sellOffer, MatchDirection direction ) {
 		if ( sellOffer.getMarketType() != buyOffer.getMarketType() ) {
 			throw new RuntimeException( "ERROR: attempt of matching a buy- and sell-Offer on different markets!" );
 		}
@@ -57,7 +109,15 @@ public class Match {
 		// to get a "normalized" price
 		this.normalizedPrice = this.amount * this.price;
 	}
-
+	
+	public Agent getBuyer() {
+		return this.getBuyOffer().getAgent();
+	}
+	
+	public Agent getSeller() {
+		return this.getSellOffer().getAgent();
+	}
+	
 	public AskOffering getSellOffer() {
 		return sellOffer;
 	}

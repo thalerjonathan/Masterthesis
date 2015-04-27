@@ -4,17 +4,18 @@ import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
 import javax.swing.table.DefaultTableModel;
 
+import backend.Auction.EquilibriumStatistics;
+
 @SuppressWarnings("serial")
 public class ReplicationTable extends JTable {
 
 	private DefaultTableModel tableModel;
-	
-	@SuppressWarnings("rawtypes")
+
 	public ReplicationTable() {
-		Class[] columnClasses = new Class[]{ Integer.class, Integer.class, Integer.class, Boolean.class, Boolean.class, String.class };
-		
 		this.tableModel = new DefaultTableModel(
-				new Object[] { "Replication-Number", "Task-Id", "TX Count", "Equilibrium", "Canceled", "Finished at" }, 0 ) {
+				new Object[] { "Replication", "Task", 
+						"TXs", "p", "q", "pq", "i0", "i1", "i2", "P", "M", "O",
+						"Equilibrium", "Canceled", "Trading Halted", "Termination Mode", "Finished at" }, 0 ) {
 
 		    @Override
 		    public boolean isCellEditable(int row, int column) {
@@ -41,8 +42,23 @@ public class ReplicationTable extends JTable {
 	}
 	
 	public void addReplication( ReplicationData data ) {
+		// "Replication", "Task", 
+		// "TXs", "p", "q", "pq", "i0", "i1", "i2", "P", "M", "O",
+		// "Equilibrium", "Canceled", "Trading Halted", "Termination Mode", "Finished at"
+		EquilibriumStatistics stats = data.getStats();
+		
 		this.tableModel.addRow( new Object[] { data.getNumber(), data.getTaskId(), 
-				data.getTxCount(), data.isReachedEquilibrium(), 
-				data.isWasCanceled(), ReplicationPanel.DATE_FORMATTER.format( data.getFinishTime() ) } );
+				data.getTxCount(), 
+				ReplicationPanel.VALUES_FORMAT.format( stats.p ), 
+				ReplicationPanel.VALUES_FORMAT.format( stats.q ), 
+				ReplicationPanel.VALUES_FORMAT.format( stats.pq ),
+				ReplicationPanel.VALUES_FORMAT.format( stats.i0 ),
+				ReplicationPanel.VALUES_FORMAT.format( stats.i1 ),
+				ReplicationPanel.VALUES_FORMAT.format( stats.i2 ),
+				ReplicationPanel.VALUES_FORMAT.format( stats.P ),
+				ReplicationPanel.VALUES_FORMAT.format( stats.M ),
+				ReplicationPanel.VALUES_FORMAT.format( stats.O ),
+				data.isEquilibrium(), data.isCanceled(),  data.isTradingHalted(), data.getTermination(), 
+				ReplicationPanel.DATE_FORMATTER.format( data.getFinishTime() ) } );
 	}
 }

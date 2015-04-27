@@ -5,6 +5,7 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -31,6 +32,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import backend.Auction;
+import backend.Auction.EquilibriumStatistics;
 import backend.Auction.MatchingType;
 import backend.agents.Agent;
 import backend.agents.AgentFactoryImpl;
@@ -89,7 +91,9 @@ public class ReplicationPanel extends JPanel {
 	private JLabel replicationsLeftLabel;
 	private JLabel runningTimeLabel;
 	
-	private List<Agent> currentMean;
+	private EquilibriumInfoPanel equilibriumInfoPanel;
+
+	private ReplicationData currentStats;
 	
 	private ReplicationTable replicationTable;
 	
@@ -110,6 +114,7 @@ public class ReplicationPanel extends JPanel {
 	private Date startingTime;
 
 	public final static SimpleDateFormat DATE_FORMATTER = new SimpleDateFormat( "dd.MM HH:mm:ss" );
+	public static final DecimalFormat VALUES_FORMAT = new DecimalFormat("0.0000");
 	
 	public enum TerminationMode {
 		TOTAL_TX,
@@ -134,6 +139,7 @@ public class ReplicationPanel extends JPanel {
 	private void createControls() {
 		// creating controls
 		this.agentWealthPanel = new WealthVisualizer();
+		this.equilibriumInfoPanel = new EquilibriumInfoPanel();
 		
 		this.abmMarketCheck = new JCheckBox( "Asset/Loan Market" );
 		this.loanCashMarketCheck = new JCheckBox( "Loan/Cash Market" );
@@ -160,12 +166,12 @@ public class ReplicationPanel extends JPanel {
 		
 		this.replicationTable = new ReplicationTable();
 		
-		this.topologySelection.addItem( new FullyConnectedCreator() );
-		this.topologySelection.addItem( new HalfFullyConnectedCreator() );
 		this.topologySelection.addItem( new AscendingConnectedCreator() );
 		this.topologySelection.addItem( new AscendingFullShortcutsCreator() );
 		this.topologySelection.addItem( new AscendingRegularShortcutsCreator() );
 		this.topologySelection.addItem( new AscendingRandomShortcutsCreator() );
+		this.topologySelection.addItem( new FullyConnectedCreator() );
+		this.topologySelection.addItem( new HalfFullyConnectedCreator() );
 		this.topologySelection.addItem( new HubConnectedCreator() );
 		this.topologySelection.addItem( new MedianHubCreator() );
 		this.topologySelection.addItem( new MaximumHubCreator() );
@@ -323,6 +329,7 @@ public class ReplicationPanel extends JPanel {
 
 		this.add( controlsPanel, BorderLayout.NORTH );
 		this.add( this.agentWealthPanel, BorderLayout.CENTER );
+		this.add( this.equilibriumInfoPanel, BorderLayout.SOUTH );
 	}
 	
 	private void showReplicationInfo() {
@@ -345,7 +352,8 @@ public class ReplicationPanel extends JPanel {
 		}
 		
 		this.agentInfoFrame.setTitle( "Agent-Info (" + this.getTitleExtension() + ")" );
-		this.agentInfoFrame.setAgents( this.currentMean != null ? this.currentMean : this.agentNetworkTemplate.getOrderedList() );
+		this.agentInfoFrame.setAgents( this.currentStats != null ? 
+				this.currentStats.getFinalAgents() : this.agentNetworkTemplate.getOrderedList() );
 		this.agentInfoFrame.setVisible( true );
 	}
 	
@@ -436,9 +444,6 @@ public class ReplicationPanel extends JPanel {
 	private void allReplicationsFinished() {
 		this.updateRunningTimeLabel( System.currentTimeMillis() );
 		
-		List<Agent> finalMean = this.calculateCurrentMean();
-		this.agentWealthPanel.setAgents( finalMean);
-		
 		this.replicationButton.setText( "Start" );
 		this.abmMarketCheck.setEnabled( true );
 		this.loanCashMarketCheck.setEnabled( true );
@@ -457,11 +462,14 @@ public class ReplicationPanel extends JPanel {
 		
 		this.replicationTaskExecutor.shutdown();
 	}
-	
-	private List<Agent> calculateCurrentMean() {
-		int agentCount = this.agentNetworkTemplate.size();
-		List<Agent> currentMeanAgents = new ArrayList<>( agentCount );
 
+	private ReplicationData calculateAgentStatistics() {
+		int agentCount = this.agentNetworkTemplate.size();
+		
+		ReplicationData currentStats = new ReplicationData();
+		List<Agent> meanAgents = new ArrayList<>( agentCount );
+		EquilibriumStatistics meanStats = new EquilibriumStatistics();
+		
 		double[] medianConsumEndow = new double[ agentCount ];
 		double[] medianAssetEndow = new double[ agentCount ];
 		double[] medianLoanEndow = new double[ agentCount ];
@@ -469,11 +477,6 @@ public class ReplicationPanel extends JPanel {
 		double[] medianLoanTakenEndow = new double[ agentCount ];
 		
 		for ( ReplicationData data : this.replicationData ) {
-			// ignore canceled data
-			if ( data.isWasCanceled() ) {
-				continue;
-			}
-			
 			List<Agent> finalAgents = data.getFinalAgents();
 			
 			for ( int i = 0; i < finalAgents.size(); ++i ) {
@@ -485,6 +488,18 @@ public class ReplicationPanel extends JPanel {
 				medianLoanGivenEndow[ i ] += a.getLoanGiven();
 				medianLoanTakenEndow[ i ] += a.getLoanTaken();
 			}
+			
+			meanStats.p += data.getStats().p / this.replicationData.size();
+			meanStats.q += data.getStats().q / this.replicationData.size();
+			meanStats.pq += data.getStats().pq / this.replicationData.size();
+			
+			meanStats.i0 += data.getStats().i0 / this.replicationData.size();
+			meanStats.i1 += data.getStats().i1 / this.replicationData.size();
+			meanStats.i2 += data.getStats().i2 / this.replicationData.size();
+			
+			meanStats.P += data.getStats().P / this.replicationData.size();
+			meanStats.M += data.getStats().M / this.replicationData.size();
+			meanStats.O += data.getStats().O / this.replicationData.size();
 		}
 		
 		for ( int i = 0; i < agentCount; ++i ) {
@@ -523,24 +538,35 @@ public class ReplicationPanel extends JPanel {
 				}
 			};
 			
-			currentMeanAgents.add( medianAgent );
+			meanAgents.add( medianAgent );
 		}
-	
-		return currentMeanAgents;
+		
+		currentStats.setFinalAgents( meanAgents );
+		currentStats.setStats( meanStats );
+
+		return currentStats;
 	}
 	
 	private synchronized void replicationFinished( ReplicationData data ) {
-		ReplicationPanel.this.replicationData.add( data );
-		this.currentMean = this.calculateCurrentMean();
-		int replicationsLeft = (int) ReplicationPanel.this.replicationCountSpinner.getValue() - ReplicationPanel.this.replicationData.size();
+		// reject canceled data
+		if ( data.isCanceled() ) {
+			return;
+		}
+		
+		this.replicationData.add( data );
+		this.currentStats = this.calculateAgentStatistics();
+		int replicationsLeft = (int) ReplicationPanel.this.replicationCountSpinner.getValue() 
+				- ReplicationPanel.this.replicationData.size();
 		
 		SwingUtilities.invokeLater( new Runnable() {
 			@Override
 			public void run() {
 				ReplicationPanel.this.replicationTable.addReplication( data );
 				ReplicationPanel.this.replicationsLeftLabel.setText( "Replications Left: " + replicationsLeft );
-				ReplicationPanel.this.agentWealthPanel.setAgents( ReplicationPanel.this.currentMean );
-				ReplicationPanel.this.updateAgentInfoFrame( ReplicationPanel.this.currentMean );
+				
+				ReplicationPanel.this.equilibriumInfoPanel.setStats( ReplicationPanel.this.currentStats.getStats() );
+				ReplicationPanel.this.agentWealthPanel.setAgents( ReplicationPanel.this.currentStats.getFinalAgents() );
+				ReplicationPanel.this.updateAgentInfoFrame( ReplicationPanel.this.currentStats.getFinalAgents() );
 			}
 		} );
 	}
@@ -753,11 +779,13 @@ public class ReplicationPanel extends JPanel {
 					terminated = true;
 				}
 				
-				if ( terminated ) {
+				if ( terminated ) {  
 					ReplicationData data = new ReplicationData();
-					data.setFinishTime( new Date() );
-					data.setReachedEquilibrium( tx.hasTradingHalted() );
-					data.setWasCanceled( this.canceledFlag || this.nextTxFlag );
+					data.setStats( auction.calculateEquilibriumStats() );
+					data.setTermination(this.terminationMode);
+					data.setTradingHalted( tx.hasTradingHalted() );
+					data.setEquilibrium( tx.isEquilibrium() );
+					data.setCanceled( this.canceledFlag || this.nextTxFlag );
 					data.setNumber( ( int ) ReplicationPanel.this.replicationCountSpinner.getValue() - this.currentReplication + 1 );
 					data.setTaskId( this.taskId );
 					data.setTxCount( this.totalTxCount );

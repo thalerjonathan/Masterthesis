@@ -3,6 +3,7 @@ package frontend.replication.info;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -33,7 +34,8 @@ public class ReplicationInfoFrame extends JFrame {
 		this.createControls( replicationTable );
 		
 		this.getContentPane().setLayout( new BorderLayout() );
-		this.getContentPane().setPreferredSize( new Dimension( 900, 580 ) );
+		this.getContentPane().setPreferredSize( new Dimension( 
+				Toolkit.getDefaultToolkit().getScreenSize().width - 50, 580 ) );
 		
 		this.setDefaultCloseOperation( JFrame.HIDE_ON_CLOSE );
 		this.setResizable( false );

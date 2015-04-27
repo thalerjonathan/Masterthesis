@@ -3,7 +3,9 @@ package frontend.replication;
 import java.util.Date;
 import java.util.List;
 
+import backend.Auction.EquilibriumStatistics;
 import backend.agents.Agent;
+import frontend.replication.ReplicationPanel.TerminationMode;
 
 public class ReplicationData {
 
@@ -11,11 +13,17 @@ public class ReplicationData {
 	private int taskId;
 	private long txCount;
 	
-	private boolean wasCanceled;
-	private boolean reachedEquilibrium;
+	private boolean canceled;
+	private boolean equilibrium;
+	private boolean tradingHalted;
+	
+	private TerminationMode termination;
+	
 	private Date finishTime;
 	
 	private List<Agent> finalAgents;
+	
+	private EquilibriumStatistics stats;
 	
 	public ReplicationData() {
 		this.finishTime = new Date();
@@ -53,29 +61,47 @@ public class ReplicationData {
 		this.txCount = txCount;
 	}
 
-	public boolean isWasCanceled() {
-		return wasCanceled;
+	public boolean isCanceled() {
+		return canceled;
 	}
 
-	public void setWasCanceled(boolean wasCanceled) {
-		this.wasCanceled = wasCanceled;
+	public void setCanceled(boolean canceled) {
+		this.canceled = canceled;
 	}
 
-	public boolean isReachedEquilibrium() {
-		return reachedEquilibrium;
+	public boolean isEquilibrium() {
+		return equilibrium;
 	}
 
-	public void setReachedEquilibrium(boolean reachedEquilibrium) {
-		this.reachedEquilibrium = reachedEquilibrium;
+	public void setEquilibrium(boolean equilibrium) {
+		this.equilibrium = equilibrium;
+	}
+
+	public boolean isTradingHalted() {
+		return tradingHalted;
+	}
+
+	public void setTradingHalted(boolean tradingHalted) {
+		this.tradingHalted = tradingHalted;
+	}
+
+	public TerminationMode getTermination() {
+		return termination;
+	}
+
+	public void setTermination(TerminationMode termination) {
+		this.termination = termination;
 	}
 
 	public Date getFinishTime() {
 		return finishTime;
 	}
 
-	public void setFinishTime(Date finishTime) {
-		this.finishTime = finishTime;
+	public EquilibriumStatistics getStats() {
+		return stats;
 	}
-	
-	
+
+	public void setStats(EquilibriumStatistics stats) {
+		this.stats = stats;
+	}
 }

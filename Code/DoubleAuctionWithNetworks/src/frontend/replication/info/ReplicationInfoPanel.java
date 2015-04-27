@@ -148,12 +148,14 @@ public class ReplicationInfoPanel extends JPanel {
 
 	public void refreshInfo() {
 		this.terminationModeLabel.setText( this.task.getTerminationMode().name() );
-		this.maxTxLabel.setText( TX_COUNT_FORMATTER.format( this.task.getMaxTx() ) );
 		this.totalTxLabel.setText( TX_COUNT_FORMATTER.format( this.task.getTotalTxCount() ) );
 		this.failedTxLabel.setText( TX_COUNT_FORMATTER.format( this.task.getFailTxCount() ) );
 		this.replicationNumberLabel.setText( "" + this.task.getCurrentReplication() );
 		
-		if ( TerminationMode.TRADING_HALTED != task.getTerminationMode() ) {
+		if ( TerminationMode.TRADING_HALTED != task.getTerminationMode() && 
+				TerminationMode.EQUILIBRIUM != task.getTerminationMode() ) {
+			
+			this.maxTxLabel.setText( TX_COUNT_FORMATTER.format( this.task.getMaxTx() )  );
 			this.progressBar.setMaximum( this.task.getMaxTx() );
 			
 			if ( TerminationMode.TOTAL_TX == task.getTerminationMode() ) {
@@ -161,6 +163,9 @@ public class ReplicationInfoPanel extends JPanel {
 			} else {
 				this.progressBar.setValue( this.task.getFailTxCount() );
 			}
+			
+		} else {
+			this.maxTxLabel.setText( "-" );
 		}
 	}
 

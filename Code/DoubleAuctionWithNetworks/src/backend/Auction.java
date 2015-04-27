@@ -5,8 +5,11 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.commons.math3.stat.StatUtils;
+
 import backend.agents.Agent;
 import backend.agents.network.AgentNetwork;
+import backend.markets.MarketType;
 import backend.markets.Markets;
 import backend.tx.Match;
 import backend.tx.Transaction;
@@ -17,19 +20,104 @@ public class Auction {
 	private AgentNetwork agentNetwork;
 	private List<Agent> tradingAgents;
 	
-	private final static int MAX_SWEEPS = 500;
+	private double[] lastAssetPrices;
+	private double[] lastLoanPrices;
+	private double[] lastAssetLoanPrices;
+	private double[] lastAgents;
+
+	private final static int LAST_PRICES = 5;
+	private final static int ALL_PRICES = 10;
 	
+	private final static int MAX_SWEEPS = 500;
+
 	public enum MatchingType {
 		BEST_NEIGHBOUR,
 		BEST_GLOBAL_OFFERS,
 		RANDOM_NEIGHOUR;
 	}
 
+	// used purely as a data-structure
+	public static class EquilibriumStatistics {
+		public double p;
+		public double q;
+		public double pq;
+		public double i0;
+		public double i1;
+		public double i2;
+		public double P;
+		public double M;
+		public double O;
+	}
+	
 	public Auction( AgentNetwork agentNetwork ) {
 		this.agentNetwork = agentNetwork;
 		this.tradingAgents = new ArrayList<>( this.agentNetwork.getOrderedList() );
 		
 		this.numTrans = 1;
+		
+		this.lastAssetPrices = new double[ Auction.LAST_PRICES ];
+		this.lastLoanPrices = new double[ Auction.LAST_PRICES ];
+		this.lastAssetLoanPrices = new double[ Auction.LAST_PRICES ];
+		this.lastAgents = new double[ Auction.LAST_PRICES ];
+	}
+	
+	public EquilibriumStatistics calculateEquilibriumStats() {
+		int nM = 0;
+		int i0Index = -1;
+		int i1Index = -1;
+
+		EquilibriumStatistics stats = new EquilibriumStatistics();
+		stats.p = StatUtils.mean( this.lastAssetPrices );
+		stats.q = StatUtils.mean( this.lastLoanPrices );
+		stats.pq = StatUtils.mean( this.lastAssetLoanPrices );
+		stats.i2 = StatUtils.mean( this.lastAgents ); // assumes that the last agents which are trading are those around i2
+		
+		List<Agent> agents = this.agentNetwork.getOrderedList();
+		
+		for ( int i = 0; i < agents.size(); ++i ) {
+			Agent a = agents.get( i );
+			
+			if ( a.getAssetEndow() > ( Math.abs( a.getLoan() ) + Math.abs( a.getConumEndow() ) ) ) {
+				if ( i1Index == -1 ) {
+					i1Index = i;
+				}
+				
+				stats.O += a.getAssetEndow();
+			} else {
+				if ( a.getConumEndow() > ( Math.abs( a.getLoan() ) + Math.abs( a.getAssetEndow() ) ) ) {
+					i0Index = i;
+					
+					stats.P += a.getConumEndow();
+				} else {
+					stats.M += a.getLoan();
+					nM++;
+				}
+			}
+		}
+		
+		  // pessimists
+		  if(i0Index!=-1) {
+			  stats.i0= agents.get( i0Index ).getH();
+			  stats.P/=(i0Index+1);
+		  } else {
+			  stats.i0=-1;
+			  stats.P=-2;
+		  }
+		  // optimises
+		  if(i1Index!=-1) {
+			  stats.i1= agents.get( i1Index ).getH();
+			  stats.O/=(agents.size()-i1Index);
+		  } else {
+			  stats.i1=-1;
+			  stats.O=-2;
+		  }
+		  // M
+		  if(nM!=0)
+			  stats.M/=nM;
+		  else
+			  stats.M=-2;
+
+		return stats;
 	}
 	
 	public Transaction executeSingleTransaction( MatchingType type, boolean keepAgentHistory )  {
@@ -78,7 +166,7 @@ public class Auction {
 		}		
 	}
 	
-	private boolean findMatch( Transaction transaction, MatchingType type, boolean keepAgentHistory ) {
+	private boolean findMatch( Transaction tx, MatchingType type, boolean keepAgentHistory ) {
 		// get same random-iterator (won't do a shuffle again)
 		Iterator<Agent> agIt = this.tradingAgents.iterator();
 		
@@ -89,40 +177,16 @@ public class Auction {
 			// find match: must be neighbours, must be same market, bid (buy) must be larger than ask (sell)
 			
 			if ( MatchingType.RANDOM_NEIGHOUR == type ) {
-				match = transaction.findMatchesByRandomNeighborhood( a, this.agentNetwork );
+				match = tx.findMatchesByRandomNeighborhood( a, this.agentNetwork );
 			
 			} else if ( MatchingType.BEST_NEIGHBOUR == type ) {
-				match = transaction.findMatchesByBestNeighborhood( a, this.agentNetwork );
+				match = tx.findMatchesByBestNeighborhood( a, this.agentNetwork );
 				
 			} else if ( MatchingType.BEST_GLOBAL_OFFERS == type ) {
-				match = transaction.findMatchesByGlobalOffers( a, this.agentNetwork );
+				match = tx.findMatchesByGlobalOffers( a, this.agentNetwork );
 			}
 
-			// transaction found a match
-			if ( match != null ) {
-				// executes Transaction: sell and buy in the two agents will update new wealth
-				// and will lead to a reset of the best offerings as they are invalidated because
-				// of change in wealth.
-				// won't calculate a new offering, this is only done once in each round
-				transaction.exec( match );
-				transaction.setTransNum( this.numTrans++ );
-				
-				List<Agent> finalAgents = null;
-				
-				// WARNING: keeping history sucks up huge amount of memory if many TXs
-				if ( keepAgentHistory ) {
-					finalAgents = this.agentNetwork.cloneAgents();
-					
-				} else {
-					finalAgents = this.agentNetwork.getOrderedList();
-				}
-
-				transaction.setFinalAgents( finalAgents );
-				
-				// re-set trading agents because after a match, 
-				// agents previously unable to trade could become able to trade again
-				this.tradingAgents = new ArrayList<>( this.agentNetwork.getOrderedList() );
-				
+			if ( this.handleMatch( match, tx, keepAgentHistory ) ) {
 				return true;
 			}
 		}
@@ -130,6 +194,53 @@ public class Auction {
 		return false;
 	}
 
+	private boolean handleMatch( Match match, Transaction tx, boolean keepAgentHistory ) {
+		// transaction found a match
+		if ( match == null ) {
+			return false;
+		}
+		
+		// executes Transaction: sell and buy in the two agents will update new wealth
+		// and will lead to a reset of the best offerings as they are invalidated because
+		// of change in wealth.
+		// won't calculate a new offering, this is only done once in each round
+		tx.exec( match );
+		tx.setTransNum( this.numTrans++ );
+		
+		List<Agent> finalAgents = null;
+		
+		// WARNING: keeping history sucks up huge amount of memory if many TXs
+		if ( keepAgentHistory ) {
+			finalAgents = this.agentNetwork.cloneAgents();
+			
+		} else {
+			finalAgents = this.agentNetwork.getOrderedList();
+		}
+
+		tx.setFinalAgents( finalAgents );
+		
+		// re-set trading agents because after a match, 
+		// agents previously unable to trade could become able to trade again
+		this.tradingAgents = new ArrayList<>( this.agentNetwork.getOrderedList() );
+		
+		if ( MarketType.ASSET_CASH == match.getMarket() ) {
+			this.lastAssetPrices[ this.numTrans % Auction.LAST_PRICES ] = match.getPrice();
+			
+		} else if ( MarketType.LOAN_CASH == match.getMarket() ) {
+			this.lastLoanPrices[ this.numTrans % Auction.LAST_PRICES ] = match.getPrice();
+			
+		} else if ( MarketType.ASSET_LOAN == match.getMarket() ) {
+			this.lastAssetLoanPrices[ this.numTrans % Auction.LAST_PRICES ] = match.getPrice();
+			
+		}
+		
+		// assumes that the last agents which are trading are those around i2
+		this.lastAgents[ this.numTrans % Auction.LAST_PRICES ] = 
+				( match.getBuyer().getH() + match.getSeller().getH() ) / 2.0;
+		
+		return true;
+	}
+	
 	private boolean isTradingPossible() {
 		// check if trading is possible within neighborhood
 		Iterator<Agent> agentIter = this.tradingAgents.iterator();
