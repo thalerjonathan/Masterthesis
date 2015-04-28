@@ -1,0 +1,46 @@
+<experiments>
+	<experiment>
+		<name>Ascending-Connected 1000/50</name>
+		<agentCount>1000</agentCount>
+		<faceValue>0.5</faceValue>
+		<topology>ASCENDING_CONNECTED</topology>
+		<assetLoanMarket>true</assetLoanMarket>
+		<loanCashMarket>true</loanCashMarket>
+		<bondsPledgeability>true</bondsPledgeability>
+		<parallelEvaluation>true</parallelEvaluation>
+		<importanceSampling>false</importanceSampling>
+		<terminationMode>FAIL_TOTAL_TX</terminationMode>
+		<maxTx>100</maxTx>
+		<replications>50</replications>
+	</experiment>
+	
+	<experiment>
+		<name>Ascending-Connected 1000/50 IS Enabled</name>
+		<agentCount>1000</agentCount>
+		<faceValue>0.5</faceValue>
+		<topology>ASCENDING_CONNECTED</topology>
+		<assetLoanMarket>true</assetLoanMarket>
+		<loanCashMarket>true</loanCashMarket>
+		<bondsPledgeability>true</bondsPledgeability>
+		<parallelEvaluation>true</parallelEvaluation>
+		<importanceSampling>true</importanceSampling>
+		<terminationMode>TRADING_HALTED</terminationMode>
+		<maxTx>0</maxTx>
+		<replications>50</replications>
+	</experiment>
+	
+	<experiment>
+		<name>Fully-Connected 1000/50</name>
+		<agentCount>1000</agentCount>
+		<faceValue>0.5</faceValue>
+		<topology>FULLY_CONNECTED</topology>
+		<assetLoanMarket>true</assetLoanMarket>
+		<loanCashMarket>true</loanCashMarket>
+		<bondsPledgeability>true</bondsPledgeability>
+		<parallelEvaluation>true</parallelEvaluation>
+		<importanceSampling>false</importanceSampling>
+		<terminationMode>FAIL_TOTAL_TX</terminationMode>
+		<maxTx>100</maxTx>
+		<replications>50</replications>
+	</experiment>
+</experiments>

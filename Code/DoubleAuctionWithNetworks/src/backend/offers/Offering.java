@@ -4,13 +4,13 @@ import backend.markets.MarketType;
 
 public abstract class Offering {
 	
-	protected Agent agent;
-	protected MarketType marketType;
+	private Agent agent;
+	private MarketType marketType;
 	
-	protected double finalAssetPrice;
+	private double finalAssetPrice;
 	
-	protected double price;
-	protected double amount;
+	private double price;
+	private double amount;
 
 	public Offering( double price, double amount, Agent agent, MarketType marketType ) {
 		this.price = price;

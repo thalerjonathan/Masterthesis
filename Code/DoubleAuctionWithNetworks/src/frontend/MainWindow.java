@@ -3,6 +3,7 @@ package frontend;
 import javax.swing.JFrame;
 import javax.swing.JTabbedPane;
 
+import frontend.experimenter.ExperimenterPanel;
 import frontend.inspection.InspectionPanel;
 import frontend.replication.ReplicationPanel;
 
@@ -12,6 +13,8 @@ public class MainWindow extends JFrame {
 	private ReplicationPanel[] replicationPanels;
 	private InspectionPanel[] inspectionPanels;
 	private JTabbedPane simulationModesTabPane;
+	
+	private ExperimenterPanel experimenterPanel;
 	
 	// TODO: add context-menu to add/remove tabs
 	
@@ -30,6 +33,10 @@ public class MainWindow extends JFrame {
 	private void createPanels( int inspectionPanelCount, int replicationPanelCount ) {
 		this.simulationModesTabPane = new JTabbedPane();
 
+		this.experimenterPanel = new ExperimenterPanel();
+		
+		this.simulationModesTabPane.addTab( "Experimenter", this.experimenterPanel );
+		
 		this.inspectionPanels = new InspectionPanel[ inspectionPanelCount ];
 		this.replicationPanels = new ReplicationPanel[ replicationPanelCount ];	
 		

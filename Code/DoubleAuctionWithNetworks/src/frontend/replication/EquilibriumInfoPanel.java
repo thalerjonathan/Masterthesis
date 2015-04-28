@@ -8,6 +8,7 @@ import javax.swing.JPanel;
 
 import backend.Auction.EquilibriumStatistics;
 
+@SuppressWarnings("serial")
 public class EquilibriumInfoPanel extends JPanel {
 
 	private JLabel assetPriceMeanLabel;

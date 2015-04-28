@@ -15,7 +15,7 @@ public class BidOffering extends Offering {
 		
 		// this buy-offer (bid) matches the sell-offer (ask) when the buyer (this bid-offer) bids more or equal than the seller wants for the good (asset)
 		// also trading with one self is restricted by ensuring the offers are not from the same agent
-		return (offer.getPrice() <= price && agent != offer.getAgent());
+		return (offer.getPrice() <= getPrice() && getAgent() != offer.getAgent());
 	}
 	
 	public boolean dominates(BidOffering offer)  {
@@ -23,6 +23,6 @@ public class BidOffering extends Offering {
 		
 		// this buy-offer is better/dominates another buy-offer when it has a lower price than the other buy-offer
 		// vice versa: the other offer dominates when it has a lower price than this one
-		return (offer.getPrice() <= price);
+		return (offer.getPrice() <= getPrice() );
 	}
 }

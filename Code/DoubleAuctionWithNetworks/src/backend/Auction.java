@@ -26,7 +26,6 @@ public class Auction {
 	private double[] lastAgents;
 
 	private final static int LAST_PRICES = 5;
-	private final static int ALL_PRICES = 10;
 	
 	private final static int MAX_SWEEPS = 500;
 
@@ -221,7 +220,7 @@ public class Auction {
 		
 		// re-set trading agents because after a match, 
 		// agents previously unable to trade could become able to trade again
-		this.tradingAgents = new ArrayList<>( this.agentNetwork.getOrderedList() );
+		//this.tradingAgents = new ArrayList<>( this.agentNetwork.getOrderedList() );
 		
 		if ( MarketType.ASSET_CASH == match.getMarket() ) {
 			this.lastAssetPrices[ this.numTrans % Auction.LAST_PRICES ] = match.getPrice();
@@ -237,6 +236,8 @@ public class Auction {
 		// assumes that the last agents which are trading are those around i2
 		this.lastAgents[ this.numTrans % Auction.LAST_PRICES ] = 
 				( match.getBuyer().getH() + match.getSeller().getH() ) / 2.0;
+		
+		this.isTradingPossible();
 		
 		return true;
 	}
