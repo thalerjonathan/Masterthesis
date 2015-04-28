@@ -5,6 +5,7 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -30,6 +31,9 @@ import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
 
 import backend.Auction;
 import backend.Auction.EquilibriumStatistics;
@@ -43,6 +47,10 @@ import backend.tx.Transaction;
 import edu.uci.ics.jung.algorithms.layout.CircleLayout;
 import edu.uci.ics.jung.algorithms.layout.Layout;
 import frontend.agentInfo.AgentInfoFrame;
+import frontend.experimenter.xml.experiment.ExperimentBean;
+import frontend.experimenter.xml.result.AgentBean;
+import frontend.experimenter.xml.result.EquilibriumBean;
+import frontend.experimenter.xml.result.ResultBean;
 import frontend.inspection.NetworkVisualisationFrame;
 import frontend.networkCreators.AscendingConnectedCreator;
 import frontend.networkCreators.AscendingFullShortcutsCreator;
@@ -441,6 +449,71 @@ public class ReplicationPanel extends JPanel {
 		}
 	}
 	
+	private void writeResults() {
+		ResultBean resultBean = new ResultBean();
+		ExperimentBean experimentBean = new ExperimentBean();
+		EquilibriumBean equilibriumBean = new EquilibriumBean();
+		
+		experimentBean.setName( "Current Replications" );
+		experimentBean.setAgentCount( this.currentStats.getFinalAgents().size() );
+		experimentBean.setFaceValue( (double) this.faceValueSpinner.getValue() );
+		experimentBean.setTopology( ( (INetworkCreator) this.topologySelection.getSelectedItem() ).toString() );
+		experimentBean.setAssetLoanMarket( this.abmMarketCheck.isSelected() );
+		experimentBean.setLoanCashMarket( this.loanCashMarketCheck.isSelected() );
+		experimentBean.setBondsPledgeability( this.bpMechanismCheck.isSelected() );
+		experimentBean.setParallelEvaluation( this.parallelEvaluationCheck.isSelected() );
+		experimentBean.setImportanceSampling( this.importanceSamplingCheck.isSelected() );
+		experimentBean.setTerminationMode( (TerminationMode) this.terminationSelection.getSelectedItem() );
+		experimentBean.setMaxTx( (int) this.maxTxSpinner.getValue() );
+		experimentBean.setReplications( (int) this.replicationCountSpinner.getValue() );
+		
+		equilibriumBean.setAssetPrice( this.currentStats.getStats().p );
+		equilibriumBean.setLoanPrice( this.currentStats.getStats().q );
+		equilibriumBean.setAssetLoanPrice( this.currentStats.getStats().pq );
+		equilibriumBean.setI0( this.currentStats.getStats().i0 );
+		equilibriumBean.setI1( this.currentStats.getStats().i1 );
+		equilibriumBean.setI2( this.currentStats.getStats().i2 );
+		equilibriumBean.setP( this.currentStats.getStats().P );
+		equilibriumBean.setM( this.currentStats.getStats().M );
+		equilibriumBean.setO( this.currentStats.getStats().O );
+		
+		List<AgentBean> resultAgents = new ArrayList<AgentBean>();
+		Iterator<Agent> agentIter = this.currentStats.getFinalAgents().iterator();
+		while ( agentIter.hasNext() ) {
+			Agent a = agentIter.next();
+			
+			AgentBean agentBean = new AgentBean();
+			agentBean.setH( a.getH() );
+			agentBean.setAssets( a.getAssetEndow() );
+			agentBean.setCash( a.getConumEndow() );
+			agentBean.setLoan( a.getLoan() );
+			agentBean.setLoanGiven( a.getLoanGiven() );
+			agentBean.setLoanTaken( a.getLoanTaken() );
+			
+			resultAgents.add( agentBean );
+		}
+		
+		resultBean.setAgents( resultAgents );
+		resultBean.setEquilibrium( equilibriumBean );
+		resultBean.setExperiment( experimentBean );
+		
+		try {
+			JAXBContext jaxbContext = JAXBContext.newInstance( ResultBean.class );
+			Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
+			 
+		    jaxbMarshaller.setProperty( Marshaller.JAXB_FORMATTED_OUTPUT, true );
+		     
+		    //Marshal the employees list in console
+		    jaxbMarshaller.marshal(resultBean, System.out);
+		     
+		    //Marshal the employees list in file
+		    jaxbMarshaller.marshal(resultBean, new File("currentReplication.xml"));
+		    
+		} catch (JAXBException e) {
+			e.printStackTrace();
+		}
+	}
+	
 	private void allReplicationsFinished() {
 		this.updateRunningTimeLabel( System.currentTimeMillis() );
 		
@@ -461,6 +534,8 @@ public class ReplicationPanel extends JPanel {
 		this.replicationTasks.clear();
 		
 		this.replicationTaskExecutor.shutdown();
+		
+		this.writeResults();
 	}
 
 	private ReplicationData calculateAgentStatistics() {

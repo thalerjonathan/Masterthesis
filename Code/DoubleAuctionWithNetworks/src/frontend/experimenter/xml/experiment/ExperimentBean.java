@@ -1,4 +1,4 @@
-package frontend.experimenter.xml;
+package frontend.experimenter.xml.experiment;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -10,7 +10,7 @@ public class ExperimentBean {
 
 	private String name;
 	private int agentCount;
-	private float faceValue;
+	private double faceValue;
 	private String topology;
 	private boolean assetLoanMarket;
 	private boolean loanCashMarket;
@@ -43,12 +43,12 @@ public class ExperimentBean {
 		this.agentCount = agentCount;
 	}
 	
-	public float getFaceValue() {
+	public double getFaceValue() {
 		return faceValue;
 	}
 	
 	@XmlElement
-	public void setFaceValue(float faceValue) {
+	public void setFaceValue(double faceValue) {
 		this.faceValue = faceValue;
 	}
 	

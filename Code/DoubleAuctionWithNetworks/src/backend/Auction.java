@@ -237,7 +237,7 @@ public class Auction {
 		this.lastAgents[ this.numTrans % Auction.LAST_PRICES ] = 
 				( match.getBuyer().getH() + match.getSeller().getH() ) / 2.0;
 		
-		this.isTradingPossible();
+		//this.isTradingPossible();
 		
 		return true;
 	}

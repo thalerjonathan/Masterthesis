@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
+import frontend.experimenter.xml.result.AgentBean;
 import backend.markets.MarketType;
 import backend.markets.Markets;
 import backend.offers.AskOffering;
@@ -64,7 +65,17 @@ public class Agent {
 	
 	private final static int MAX_SAMPLES = 1000;
 	
-	public Agent(int id, double h, Markets markets ) {
+	// NOTE: use only for visualization purposes!!
+	public Agent( AgentBean bean ) {
+		this.h = bean.getH();
+		this.cashEndow = bean.getCash();
+		this.loan = bean.getLoan();
+		this.assetEndow = bean.getAssets();
+		this.loanGiven = bean.getLoanGiven();
+		this.loanTaken = bean.getLoanTaken();
+	}
+	
+	public Agent( int id, double h, Markets markets ) {
 		this.id = id;
 		this.h = h;
 		this.markets = markets;

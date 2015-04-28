@@ -20,8 +20,10 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 
-import frontend.experimenter.xml.ExperimentBean;
-import frontend.experimenter.xml.ExperimentListBean;
+import frontend.MainWindow;
+import frontend.experimenter.xml.experiment.ExperimentBean;
+import frontend.experimenter.xml.experiment.ExperimentListBean;
+import frontend.experimenter.xml.result.ResultBean;
 
 @SuppressWarnings("serial")
 public class ExperimenterPanel extends JPanel {
@@ -37,7 +39,11 @@ public class ExperimenterPanel extends JPanel {
 	
 	private JPanel experimentsPanel;
 	
-	public ExperimenterPanel() {
+	private MainWindow mainWindow;
+	
+	public ExperimenterPanel( MainWindow mainWindow ) {
+		this.mainWindow = mainWindow;
+		
 		this.setLayout( new BorderLayout() );
 		
 		this.createControls();
@@ -131,7 +137,7 @@ public class ExperimenterPanel extends JPanel {
 			c.gridy = 0;
 			
 			for ( ExperimentBean e : experimentList.getExperiments() ) {
-				ExperimentPanel panel = new ExperimentPanel( e, this );
+				ExperimentPanel panel = new ExperimentPanel( e, false );
 				panel.setBorder( BorderFactory.createTitledBorder( BorderFactory.createLineBorder( Color.black ), e.getName() ) );
 				
 				this.experimentsPanel.add( panel, c );
@@ -146,7 +152,17 @@ public class ExperimenterPanel extends JPanel {
 		}
 	}
 	
-	private void openResult( File f ) {
-		
+	private void openResult( File file ) {
+		try {
+			JAXBContext jaxbContext = JAXBContext.newInstance( ResultBean.class );
+			Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
+			ResultBean resultBean = ( ResultBean ) jaxbUnmarshaller.unmarshal( file );
+			
+			ExperimentResultPanel resultPanel = new ExperimentResultPanel( resultBean );
+			this.mainWindow.addPanel( resultPanel, resultBean.getExperiment().getName() );
+
+		} catch (JAXBException e) {
+			JOptionPane.showMessageDialog( this, "An Error occured parsing XML-File \"" + file.getName() + "\"" );
+		}
 	}
 }

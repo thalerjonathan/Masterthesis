@@ -9,7 +9,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 
-import frontend.experimenter.xml.ExperimentBean;
+import frontend.experimenter.xml.experiment.ExperimentBean;
 
 @SuppressWarnings("serial")
 public class ExperimentPanel extends JPanel {
@@ -29,14 +29,14 @@ public class ExperimentPanel extends JPanel {
 	private JProgressBar progressBar;
 	private JButton cancelButton;
 	
-	public ExperimentPanel( ExperimentBean bean, JPanel parent ) {
+	public ExperimentPanel( ExperimentBean bean, boolean isResult ) {
 		this.setLayout( new GridBagLayout() );
 		this.setPreferredSize( new Dimension( 1024, 100 ) );
 		
-		this.createControls( bean );
+		this.createControls( bean, isResult );
 	}
 
-	private void createControls( ExperimentBean bean ) {
+	private void createControls( ExperimentBean bean, boolean isResult ) {
 		JLabel agentCountInfoLabel = new JLabel( "Agents: ");
 		JLabel faceValueInfoLabel = new JLabel( "Face-Value: ");
 		JLabel topologyInfoLabel = new JLabel( "Topology: ");
@@ -64,13 +64,14 @@ public class ExperimentPanel extends JPanel {
 		this.maxTxLabel = new JLabel( "" + bean.getMaxTx() );
 		this.replicationsLabel = new JLabel( "" + bean.getReplications() );
 		
-		this.progressBar = new JProgressBar();
-		
-		this.cancelButton = new JButton( "Cancel" );
-		
-		this.progressBar.setMinimum( 0 );
-		this.progressBar.setMaximum( bean.getReplications() );
-		this.progressBar.setStringPainted( true );
+		if ( false == isResult ) {
+			this.progressBar = new JProgressBar();
+			this.cancelButton = new JButton( "Cancel" );
+			
+			this.progressBar.setMinimum( 0 );
+			this.progressBar.setMaximum( bean.getReplications() );
+			this.progressBar.setStringPainted( true );
+		}
 		
 		GridBagConstraints c = new GridBagConstraints();
 		c.fill = GridBagConstraints.BOTH;
@@ -138,16 +139,18 @@ public class ExperimentPanel extends JPanel {
 		c.gridx = 7;
 		this.add( this.replicationsLabel, c );
 		
-		c.gridy = 0;
-		c.gridx = 8;
-		c.gridwidth = 20;
-		c.gridheight = 3;
-		this.add( this.progressBar, c );
-		
-		c.gridy = 0;
-		c.gridx = 28;
-		c.gridwidth = 2;
-		c.gridheight = 3;
-		this.add( this.cancelButton, c );
+		if ( false == isResult ) {
+			c.gridy = 0;
+			c.gridx = 8;
+			c.gridwidth = 20;
+			c.gridheight = 3;
+			this.add( this.progressBar, c );
+			
+			c.gridy = 0;
+			c.gridx = 28;
+			c.gridwidth = 2;
+			c.gridheight = 3;
+			this.add( this.cancelButton, c );
+		}
 	}
 }
