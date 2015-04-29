@@ -43,6 +43,9 @@ import backend.agents.AgentFactoryImpl;
 import backend.agents.network.AgentConnection;
 import backend.agents.network.AgentNetwork;
 import backend.markets.Markets;
+import backend.parallel.ReplicationsRunner;
+import backend.parallel.ReplicationsRunner.ReplicationsListener;
+import backend.parallel.ReplicationsRunner.TerminationMode;
 import backend.tx.Transaction;
 import edu.uci.ics.jung.algorithms.layout.CircleLayout;
 import edu.uci.ics.jung.algorithms.layout.Layout;
@@ -101,9 +104,6 @@ public class ReplicationPanel extends JPanel {
 	private JLabel runningTimeLabel;
 	
 	private EquilibriumInfoPanel equilibriumInfoPanel;
-
-	private ReplicationData currentStats;
-	
 	private ReplicationTable replicationTable;
 	
 	private AgentInfoFrame agentInfoFrame;
@@ -113,36 +113,14 @@ public class ReplicationPanel extends JPanel {
 	private NetworkVisualisationFrame netVisFrame;
 	
 	private Timer spinnerChangedTimer;
-	
-	private ExecutorService replicationTaskExecutor;
-	private List<ReplicationTask> replicationTasks;
-	private Thread awaitFinishThread;
-	
-	private List<ReplicationData> replicationData;
-	
-	private Date startingTime;
-
-	private boolean canceled;
+	private ReplicationsRunner replications;
 	
 	public final static SimpleDateFormat DATE_FORMATTER = new SimpleDateFormat( "dd.MM HH:mm:ss" );
 	public static final DecimalFormat VALUES_FORMAT = new DecimalFormat("0.0000");
 	
-	private final static SimpleDateFormat FILENAME_DATE_FORMATTER = new SimpleDateFormat( "yyyyMMdd_HHmmss" );
-	
-	public enum TerminationMode {
-		TOTAL_TX,
-		FAIL_TOTAL_TX,
-		FAIL_SUCCESSIVE_TX,
-		TRADING_HALTED,
-		EQUILIBRIUM
-	}
-	
 	public ReplicationPanel() {
 		this.markets = new Markets();
 
-		this.replicationTasks = new ArrayList<>();
-		this.replicationData = new ArrayList<>();
-		
 		this.setLayout( new BorderLayout() );
 		
 		this.createControls();
@@ -371,9 +349,7 @@ public class ReplicationPanel extends JPanel {
 	}
 	
 	private void toggleReplication() {
-		if ( null == this.awaitFinishThread ) {
-			this.canceled = false;
-			
+		if ( null == this.replications ) {
 			this.replicationButton.setText( "Terminate" );
 			this.abmMarketCheck.setEnabled( false );
 			this.loanCashMarketCheck.setEnabled( false );
@@ -389,130 +365,56 @@ public class ReplicationPanel extends JPanel {
 			this.showReplicationInfoButton.setEnabled( true );
 			
 			this.replicationTable.clearAll();
-			this.replicationData.clear();
 			
 			this.agentWealthPanel.setAgents( this.agentNetworkTemplate.getOrderedList() );
 			
 			int replicationThreadCount = 1;
-			AtomicInteger replicationCount = new AtomicInteger( (int) this.replicationCountSpinner.getValue() );
+			int replicationCount = (int) this.replicationCountSpinner.getValue();
+			TerminationMode terminationMode = (TerminationMode) this.terminationSelection.getSelectedItem();
+			int maxTx = (int) this.maxTxSpinner.getValue();
 			
 			if ( this.parallelEvaluationCheck.isSelected() ) {
 				replicationThreadCount = Runtime.getRuntime().availableProcessors();
 				//replicationThreadCount = Runtime.getRuntime().availableProcessors() - 1; // leave one free for other tasks
 			}
 			
-			replicationThreadCount = Math.min( replicationCount.get(), replicationThreadCount );
+			replicationThreadCount = Math.min( replicationCount, replicationThreadCount );
 			
-			this.replicationsLeftLabel.setText( "Replications Left: " + replicationCount.get() );
-			
-			this.replicationTaskExecutor = Executors.newFixedThreadPool( replicationThreadCount, new ThreadFactory() {
-				public Thread newThread( Runnable r ) {
-					return new Thread( r, "Replication-Thread" );
-				}
-			});
-	
-			
-			this.startingTime = new Date();
-			
-			for ( int i = 0; i < replicationThreadCount; ++i ) {
-				ReplicationTask task = new ReplicationTask( i, replicationCount, 
-						( TerminationMode ) this.terminationSelection.getSelectedItem(), 
-						( int ) this.maxTxSpinner.getValue() );
-				
-				Future future = this.replicationTaskExecutor.submit( task );
-				task.setFuture( future );
+			this.replicationsLeftLabel.setText( "Replications Left: " + replicationCount );
 
-				this.replicationTasks.add( task );
-			}
-			
-			this.awaitFinishThread = new Thread( new Runnable() {
+			this.replications = new ReplicationsRunner( replicationThreadCount, this.agentNetworkTemplate, this.markets );
+			this.replications.start( replicationCount, terminationMode, maxTx, new ReplicationsListener() {
+				
 				@Override
-				public void run() {
-					for ( ReplicationTask task : replicationTasks ) {
-						try {
-							task.getFuture().get();
-						} catch (InterruptedException | ExecutionException e) {
-							e.printStackTrace();
+				public void replicationFinished(ReplicationData data, ReplicationData averageData ) {
+					SwingUtilities.invokeLater( new Runnable() {
+						@Override
+						public void run() {
+							ReplicationPanel.this.replicationTable.addReplication( data );
+							ReplicationPanel.this.replicationsLeftLabel.setText( "Replications Left: " + ReplicationPanel.this.replications.getReplicationsLeft() );
+							
+							if ( null != averageData ) {
+								ReplicationPanel.this.equilibriumInfoPanel.setStats( averageData.getStats() );
+								ReplicationPanel.this.agentWealthPanel.setAgents( averageData.getFinalAgents() );
+								ReplicationPanel.this.updateAgentInfoFrame( averageData.getFinalAgents() );
+							}
 						}
-					}
-					
-					// do calculations also only when replications were canceled
-					ReplicationPanel.this.allReplicationsFinished();
+					} );
+				}
+				
+				@Override
+				public void allReplicationsFinished() {
+					ReplicationPanel.this.resetControls();
 				}
 			} );
 			
-			this.awaitFinishThread.setName( "Replications finished wait-thread" );
-			this.awaitFinishThread.start();
-			
 		} else {
-			this.canceled = true;
-			for ( ReplicationTask task : this.replicationTasks ) {
-				task.cancel();
-			}
-			
-			try {
-				this.awaitFinishThread.join();
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
+			this.replications.stop();
+			this.resetControls();
 		}
 	}
 	
-	private void writeResults() {
-		if ( null == this.currentStats || this.canceled ||  0 == this.replicationData.size()  ) {
-			return;
-		}
-		
-		String name = FILENAME_DATE_FORMATTER.format( new Date() );
-		ResultBean resultBean = new ResultBean();
-		ExperimentBean experimentBean = new ExperimentBean();
-		EquilibriumBean equilibriumBean = new EquilibriumBean( this.currentStats.getStats() );
-		
-		experimentBean.setName( name );
-		experimentBean.setAgentCount( this.currentStats.getFinalAgents().size() );
-		experimentBean.setFaceValue( (double) this.faceValueSpinner.getValue() );
-		experimentBean.setTopology( ( (INetworkCreator) this.topologySelection.getSelectedItem() ).toString() );
-		experimentBean.setAssetLoanMarket( this.abmMarketCheck.isSelected() );
-		experimentBean.setLoanCashMarket( this.loanCashMarketCheck.isSelected() );
-		experimentBean.setBondsPledgeability( this.bpMechanismCheck.isSelected() );
-		experimentBean.setParallelEvaluation( this.parallelEvaluationCheck.isSelected() );
-		experimentBean.setImportanceSampling( this.importanceSamplingCheck.isSelected() );
-		experimentBean.setTerminationMode( (TerminationMode) this.terminationSelection.getSelectedItem() );
-		experimentBean.setMaxTx( (int) this.maxTxSpinner.getValue() );
-		experimentBean.setReplications( (int) this.replicationCountSpinner.getValue() );
-		
-		List<AgentBean> resultAgents = new ArrayList<AgentBean>();
-		Iterator<Agent> agentIter = this.currentStats.getFinalAgents().iterator();
-		while ( agentIter.hasNext() ) {
-			Agent a = agentIter.next();
-			resultAgents.add( new AgentBean( a ) );
-		}
-		
-		List<ReplicationBean> replications = new ArrayList<ReplicationBean>();
-		for ( ReplicationData data : this.replicationData ) {
-			replications.add( new ReplicationBean( data ) );
-		}
-		
-		resultBean.setAgents( resultAgents );
-		resultBean.setEquilibrium( equilibriumBean );
-		resultBean.setExperiment( experimentBean );
-		resultBean.setReplications( replications );
-		
-		try {
-			JAXBContext jaxbContext = JAXBContext.newInstance( ResultBean.class );
-			Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
-			 
-		    jaxbMarshaller.setProperty( Marshaller.JAXB_FORMATTED_OUTPUT, true );
-
-		    //Marshal the employees list in file
-		    jaxbMarshaller.marshal( resultBean, new File( "replications/" + name + ".xml"  ) );
-		    
-		} catch (JAXBException e) {
-			e.printStackTrace();
-		}
-	}
-	
-	private void allReplicationsFinished() {
+	private void resetControls() {
 		this.updateRunningTimeLabel( System.currentTimeMillis() );
 		
 		this.replicationButton.setText( "Start" );
@@ -527,148 +429,13 @@ public class ReplicationPanel extends JPanel {
 		this.topologySelection.setEnabled( true );
 		this.terminationSelection.setEnabled( true );
 		this.replicationCountSpinner.setEnabled( true );
-		
-		this.awaitFinishThread = null;
-		this.replicationTasks.clear();
-		
-		this.replicationTaskExecutor.shutdown();
-		
-		this.writeResults();
-	}
-
-	private ReplicationData calculateAgentStatistics() {
-		int agentCount = this.agentNetworkTemplate.size();
-		
-		ReplicationData currentStats = new ReplicationData();
-		List<Agent> meanAgents = new ArrayList<>( agentCount );
-		EquilibriumStatistics meanStats = new EquilibriumStatistics();
-		
-		int validReplications = 0;
-		double[] medianConsumEndow = new double[ agentCount ];
-		double[] medianAssetEndow = new double[ agentCount ];
-		double[] medianLoanEndow = new double[ agentCount ];
-		double[] medianLoanGivenEndow = new double[ agentCount ];
-		double[] medianLoanTakenEndow = new double[ agentCount ];
-		
-		for ( ReplicationData data : this.replicationData ) {
-			if ( data.isCanceled() ) {
-				continue;
-			}
-			
-			List<Agent> finalAgents = data.getFinalAgents();
-			
-			for ( int i = 0; i < finalAgents.size(); ++i ) {
-				Agent a = finalAgents.get( i );
-				
-				medianConsumEndow[ i ] += a.getConumEndow();
-				medianAssetEndow[ i ] += a.getAssetEndow();
-				medianLoanEndow[ i ] += a.getLoan();
-				medianLoanGivenEndow[ i ] += a.getLoanGiven();
-				medianLoanTakenEndow[ i ] += a.getLoanTaken();
-			}
-			
-			meanStats.p += data.getStats().p;
-			meanStats.q += data.getStats().q;
-			meanStats.pq += data.getStats().pq;
-			
-			meanStats.i0 += data.getStats().i0;
-			meanStats.i1 += data.getStats().i1;
-			meanStats.i2 += data.getStats().i2;
-			
-			meanStats.P += data.getStats().P;
-			meanStats.M += data.getStats().M;
-			meanStats.O += data.getStats().O;
-			
-			validReplications++;
-		}
-		
-		// no valid replications so far: no current data
-		if ( 0 == validReplications ) {
-			return null;
-		}
-		
-		meanStats.p /= validReplications;
-		meanStats.q /= validReplications;
-		meanStats.pq /= validReplications;
-		
-		meanStats.i0 /= validReplications;
-		meanStats.i1 /= validReplications;
-		meanStats.i2 /= validReplications;
-		
-		meanStats.P /= validReplications;
-		meanStats.M /= validReplications;
-		meanStats.O /= validReplications;
-		
-		for ( int i = 0; i < agentCount; ++i ) {
-			Agent templateAgent = this.agentNetworkTemplate.get( i );
-			
-			double agentMCE = medianConsumEndow[ i ] / validReplications;
-			double agentMAE = medianAssetEndow[ i ] / validReplications;
-			double agentMLE = medianLoanEndow[ i ] / validReplications;
-			double agentMLG = medianLoanGivenEndow[ i ] / validReplications;
-			double agentMLT = medianLoanTakenEndow[ i ] / validReplications;
-			
-			Agent medianAgent = new Agent( templateAgent.getId(), templateAgent.getH(), this.markets ) {
-				@Override
-				public double getConumEndow() {
-					return agentMCE;
-				}
-				
-				@Override
-				public double getAssetEndow() {
-					return agentMAE;
-				}
-				
-				@Override
-				public double getLoan() {
-					return agentMLE;
-				}
-				
-				@Override
-				public double getLoanGiven() {
-					return agentMLG;
-				}
-				
-				@Override
-				public double getLoanTaken() {
-					return agentMLT;
-				}
-			};
-			
-			meanAgents.add( medianAgent );
-		}
-		
-		currentStats.setFinalAgents( meanAgents );
-		currentStats.setStats( meanStats );
-
-		return currentStats;
-	}
-	
-	private synchronized void replicationFinished( ReplicationData data ) {
-		this.replicationData.add( data );
-		this.currentStats = this.calculateAgentStatistics();
-		int replicationsLeft = (int) ReplicationPanel.this.replicationCountSpinner.getValue() 
-				- ReplicationPanel.this.replicationData.size();
-		
-		SwingUtilities.invokeLater( new Runnable() {
-			@Override
-			public void run() {
-				ReplicationPanel.this.replicationTable.addReplication( data );
-				ReplicationPanel.this.replicationsLeftLabel.setText( "Replications Left: " + replicationsLeft );
-				
-				if ( null != ReplicationPanel.this.currentStats ) {
-					ReplicationPanel.this.equilibriumInfoPanel.setStats( ReplicationPanel.this.currentStats.getStats() );
-					ReplicationPanel.this.agentWealthPanel.setAgents( ReplicationPanel.this.currentStats.getFinalAgents() );
-					ReplicationPanel.this.updateAgentInfoFrame( ReplicationPanel.this.currentStats.getFinalAgents() );
-				}
-			}
-		} );
 	}
 	
 	private void handleImportanceSampling() {
 		INetworkCreator creator = (INetworkCreator) this.topologySelection.getSelectedItem();
 		if ( this.importanceSamplingCheck.isSelected() ) {
 			creator.createImportanceSampling( this.agentNetworkTemplate, this.markets );
+			
 		} else {
 			Iterator<Agent> iter = this.agentNetworkTemplate.iterator();
 			while ( iter.hasNext() ) {
@@ -690,8 +457,7 @@ public class ReplicationPanel extends JPanel {
 		this.markets.setABM( ReplicationPanel.this.abmMarketCheck.isSelected() );
 		this.markets.setLoanMarket( ReplicationPanel.this.loanCashMarketCheck.isSelected() );
 		this.markets.setBP( ReplicationPanel.this.bpMechanismCheck.isSelected() );
-		
-		this.replicationData.clear();
+
 		this.replicationTable.clearAll();
 
 		INetworkCreator creator = ( INetworkCreator ) this.topologySelection.getSelectedItem();
@@ -725,178 +491,5 @@ public class ReplicationPanel extends JPanel {
 	private void updateRunningTimeLabel( long currSysMillis ) {
 		long duration = currSysMillis - this.startingTime.getTime();
 		this.runningTimeLabel.setText( "Running since " + DATE_FORMATTER.format( this.startingTime ) + ", " + ( duration / 1000 ) + " sec." );
-	}
-	
-	public class ReplicationTask implements Runnable {
-		private int taskId;
-		
-		private int currentReplication;
-		private boolean canceledFlag;
-		private boolean nextTxFlag;
-		
-		private int totalTxCount;
-		private int failTxTotalCount;
-		private int failTxSuccessiveCount;
-		
-		private AtomicInteger replicationCount;
-
-		private Future future;
-		
-		private TerminationMode terminationMode;
-		private int maxTx;
-		
-		private AgentNetwork currentAgents;
-		
-		public ReplicationTask( int taskId, AtomicInteger replicationCount, 
-				TerminationMode terminationMode, int maxTx ) {
-			this.taskId = taskId;
-			this.canceledFlag = false;
-			this.nextTxFlag = false;
-			this.replicationCount = replicationCount;
-			
-			this.terminationMode = terminationMode;
-			this.maxTx = maxTx;
-		}
-		
-		public int getTaskId() {
-			return taskId;
-		}
-
-		public Future getFuture() {
-			return future;
-		}
-
-		public void setFuture( Future future) {
-			this.future = future;
-		}
-
-		public int getCurrentReplication() {
-			return currentReplication;
-		}
-
-		public TerminationMode getTerminationMode() {
-			return terminationMode;
-		}
-		
-		public int getTotalTxCount() {
-			return totalTxCount;
-		}
-
-		public int getFailTxCount() {
-			return failTxTotalCount;
-		}
-
-		public int getMaxTx() {
-			return maxTx;
-		}
-
-		public List<Agent> getAgents() {
-			return this.currentAgents.getOrderedList();
-		}
-		
-		public void cancel() {
-			this.canceledFlag = true;
-		}
-		
-		public void nextReplication() {
-			this.nextTxFlag = true;
-		}
-		
-		@Override
-		public void run() {
-			while ( true ) {
-				if ( this.canceledFlag ) {
-					break;
-				}
-				
-				if (  ( this.currentReplication = this.replicationCount.getAndDecrement() ) <= 0 ) {
-					break;
-				}
-				
-				// creates a deep copy of the network, need for parallel execution
-				this.currentAgents = new AgentNetwork( ReplicationPanel.this.agentNetworkTemplate );
-				Auction auction = new Auction( this.currentAgents );
-				
-				ReplicationData data = this.calculateReplication( auction );
-				if ( null != data ) {
-					// setting final agents here, as tx.getFinalAgents could return null
-					data.setFinalAgents( this.currentAgents.getOrderedList() );
-					ReplicationPanel.this.replicationFinished( data );
-				}
-			}
-		}
-		
-		private ReplicationData calculateReplication( Auction auction ) {
-			boolean terminated = false;
-			long lastRunningTimeUpdate = 0;
-			
-			this.totalTxCount = 0;
-			this.failTxTotalCount = 0;
-			this.failTxSuccessiveCount = 0;
-			
-			while ( true ) {
-				Transaction tx = auction.executeSingleTransaction( MatchingType.BEST_NEIGHBOUR, false );
-				
-				this.totalTxCount++;
-				
-				if ( false == tx.wasSuccessful() ) {
-					this.failTxTotalCount++;
-					this.failTxSuccessiveCount++;
-					
-				} else {
-					this.failTxSuccessiveCount = 0;
-				}
-
-				if ( TerminationMode.TOTAL_TX == this.terminationMode ) {
-					terminated = this.totalTxCount >= this.maxTx;
-					
-				} else if ( TerminationMode.FAIL_TOTAL_TX == this.terminationMode ) {
-					terminated = this.failTxTotalCount >= this.maxTx;
-				
-				} else if ( TerminationMode.FAIL_SUCCESSIVE_TX == this.terminationMode ) {
-					terminated = this.failTxSuccessiveCount >= this.maxTx;
-				
-				} else if ( TerminationMode.EQUILIBRIUM == this.terminationMode && tx.isEquilibrium() ) {
-					terminated = true;
-				}
-				
-				if ( this.nextTxFlag ) {
-					terminated = true;
-				}
-				
-				if ( this.canceledFlag ) {
-					terminated = true;
-				}
-				
-				// if trading has halted terminate any way, makes no more sense to continue
-				if ( tx.hasTradingHalted() ) {
-					terminated = true;
-				}
-				
-				if ( terminated ) {  
-					ReplicationData data = new ReplicationData();
-					data.setStats( auction.calculateEquilibriumStats() );
-					data.setTradingHalted( tx.hasTradingHalted() );
-					data.setEquilibrium( tx.isEquilibrium() );
-					data.setCanceled( this.canceledFlag || this.nextTxFlag );
-					data.setNumber( ( int ) ReplicationPanel.this.replicationCountSpinner.getValue() - this.currentReplication + 1 );
-					data.setTaskId( this.taskId );
-					data.setTxCount( this.totalTxCount );
-					
-					this.nextTxFlag = false;
-					
-					return data;
-				}
-				
-				// NOTE: if task 0 has finished, runningtime wont be updated anymore (maybe use TimerTask)
-				if ( 0 == this.taskId ) {
-					long currSysMillis = System.currentTimeMillis();
-					if ( currSysMillis - lastRunningTimeUpdate >= 1000 ) {
-						lastRunningTimeUpdate = currSysMillis;
-						updateRunningTimeLabel( currSysMillis );
-					}
-				}
-			}
-		}
 	}
 }

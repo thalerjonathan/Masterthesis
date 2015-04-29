@@ -30,7 +30,7 @@ public class ExperimenterPanel extends JPanel {
 
 	private JButton openExperimentButton;
 	private JButton openResultButton;
-	private JButton runButton;
+	private JButton runAllButton;
 	
 	private JTextField experimentPathTextField;
 	private JTextField experimentResultPathTextField;
@@ -53,7 +53,7 @@ public class ExperimenterPanel extends JPanel {
 	private void createControls() {
 		this.openExperimentButton = new JButton( "Open Experiment" );
 		this.openResultButton = new JButton( "Open Result" );
-		this.runButton = new JButton( "Run" );
+		this.runAllButton = new JButton( "Run All" );
 		
 		this.experimentPathTextField = new JTextField();
 		this.experimentResultPathTextField = new JTextField();
@@ -65,7 +65,7 @@ public class ExperimenterPanel extends JPanel {
 		this.fileChooser.setFileFilter( new FileNameExtensionFilter( "XML-Files", "xml" ) );
 		this.fileChooser.setCurrentDirectory( new File( System.getProperty("user.dir") ) );
 		
-		this.runButton.setEnabled( false );
+		this.runAllButton.setEnabled( false );
 		
 		this.experimentsPanel = new JPanel( new GridBagLayout() );
 
@@ -147,6 +147,8 @@ public class ExperimenterPanel extends JPanel {
 				
 				c.gridy++;
 			}
+			
+			this.experimentsPanel.add( this.runAllButton, c );
 			
 			this.experimentPathTextField.setText( file.getAbsolutePath() );
 			this.revalidate();

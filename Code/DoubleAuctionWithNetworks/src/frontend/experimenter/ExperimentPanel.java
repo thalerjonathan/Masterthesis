@@ -3,6 +3,8 @@ package frontend.experimenter;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -27,7 +29,7 @@ public class ExperimentPanel extends JPanel {
 	private JLabel replicationsLabel;
 
 	private JProgressBar progressBar;
-	private JButton cancelButton;
+	private JButton toggleRunButton;
 	
 	public ExperimentPanel( ExperimentBean bean, boolean isResult ) {
 		this.setLayout( new GridBagLayout() );
@@ -66,7 +68,13 @@ public class ExperimentPanel extends JPanel {
 		
 		if ( false == isResult ) {
 			this.progressBar = new JProgressBar();
-			this.cancelButton = new JButton( "Cancel" );
+			this.toggleRunButton = new JButton( "Run" );
+			this.toggleRunButton.addActionListener( new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					
+				}
+			} );
 			
 			this.progressBar.setMinimum( 0 );
 			this.progressBar.setMaximum( bean.getReplications() );
@@ -150,7 +158,7 @@ public class ExperimentPanel extends JPanel {
 			c.gridx = 28;
 			c.gridwidth = 2;
 			c.gridheight = 3;
-			this.add( this.cancelButton, c );
+			this.add( this.toggleRunButton, c );
 		}
 	}
 }

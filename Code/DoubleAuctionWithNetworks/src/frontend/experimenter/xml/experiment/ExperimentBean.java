@@ -3,7 +3,7 @@ package frontend.experimenter.xml.experiment;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
-import frontend.replication.ReplicationPanel.TerminationMode;
+import backend.parallel.ReplicationsRunner.TerminationMode;
 
 @XmlRootElement( name = "experiment" )
 public class ExperimentBean {
