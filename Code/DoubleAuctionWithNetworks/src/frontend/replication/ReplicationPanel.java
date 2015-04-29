@@ -5,8 +5,11 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Timer;
@@ -15,13 +18,20 @@ import java.util.TimerTask;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
+import javax.swing.JFileChooser;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
+import javax.xml.bind.Unmarshaller;
 
 import backend.agents.Agent;
 import backend.agents.AgentFactoryImpl;
@@ -34,6 +44,9 @@ import backend.replications.ReplicationsRunner.TerminationMode;
 import edu.uci.ics.jung.algorithms.layout.CircleLayout;
 import edu.uci.ics.jung.algorithms.layout.Layout;
 import frontend.agentInfo.AgentInfoFrame;
+import frontend.experimenter.ExperimenterPanel;
+import frontend.experimenter.xml.experiment.ExperimentBean;
+import frontend.experimenter.xml.experiment.ExperimentListBean;
 import frontend.inspection.NetworkVisualisationFrame;
 import frontend.networkCreators.AscendingConnectedCreator;
 import frontend.networkCreators.AscendingFullShortcutsCreator;
@@ -72,13 +85,16 @@ public class ReplicationPanel extends JPanel {
 	private JSpinner replicationCountSpinner;
 	private JSpinner maxTxSpinner;
 	
-	private JButton replicationButton;
+	private JButton startButton;
+	private JButton saveButton;
 	private JButton showNetworkButton;
 	private JButton showAgentInfoButton;
 	private JButton showReplicationInfoButton;
 	
 	private JLabel replicationsLeftLabel;
 	private JLabel runningTimeLabel;
+	
+	private JFileChooser fileChooser;
 	
 	private EquilibriumInfoPanel equilibriumInfoPanel;
 	private ReplicationTable replicationTable;
@@ -118,7 +134,8 @@ public class ReplicationPanel extends JPanel {
 		this.topologySelection = new JComboBox<INetworkCreator>();
 		this.terminationSelection = new JComboBox<TerminationMode>( TerminationMode.values() );
 		
-		this.replicationButton = new JButton( "Start" );
+		this.startButton = new JButton( "Start" );
+		this.saveButton = new JButton( "Save as Experiment" );
 		this.showNetworkButton = new JButton( "Show Network" );
 		this.showAgentInfoButton = new JButton( "Agent-Info" );
 		this.showReplicationInfoButton = new JButton( "Replication-Info" );
@@ -130,6 +147,10 @@ public class ReplicationPanel extends JPanel {
 		
 		this.runningTimeLabel = new JLabel( "Running since: -" );
 		this.replicationsLeftLabel = new JLabel( "Replications left: -" );
+		
+		this.fileChooser = new JFileChooser();
+		this.fileChooser.setFileFilter( new FileNameExtensionFilter( "XML-Files", "xml" ) );
+		this.fileChooser.setCurrentDirectory( ExperimenterPanel.EXPERIMENTS_DIRECTORY );
 		
 		this.replicationTable = new ReplicationTable();
 		
@@ -174,10 +195,17 @@ public class ReplicationPanel extends JPanel {
 		this.abmMarketCheck.addActionListener( checkListener );
 		this.loanCashMarketCheck.addActionListener( checkListener );
 		
-		this.replicationButton.addActionListener( new ActionListener() {
+		this.startButton.addActionListener( new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				ReplicationPanel.this.toggleReplication();
+			}
+		});
+		
+		this.saveButton.addActionListener( new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				ReplicationPanel.this.saveAsExperiment();
 			}
 		});
 		
@@ -272,8 +300,9 @@ public class ReplicationPanel extends JPanel {
 		agentsConfigPanel.add( this.loanCashMarketCheck );
 		agentsConfigPanel.add( this.bpMechanismCheck );	
 		agentsConfigPanel.add( this.importanceSamplingCheck );
-		agentsConfigPanel.add( this.replicationButton );
-
+		agentsConfigPanel.add( this.startButton );
+		agentsConfigPanel.add( this.saveButton );
+		
 		replicationsConfigPanel.add( this.maxTxSpinner );
 		replicationsConfigPanel.add( this.terminationSelection );
 		replicationsConfigPanel.add( this.replicationCountSpinner );
@@ -297,6 +326,58 @@ public class ReplicationPanel extends JPanel {
 		this.add( this.equilibriumInfoPanel, BorderLayout.SOUTH );
 	}
 	
+	private void saveAsExperiment() {
+		int returnVal = this.fileChooser.showSaveDialog( this );
+        if (returnVal != JFileChooser.APPROVE_OPTION) {
+        	return;
+        }
+        
+        File file = this.fileChooser.getSelectedFile();
+
+        ExperimentListBean experimentList = null;
+        
+        if ( file.exists() ) {
+			try {
+				JAXBContext jaxbContext = JAXBContext.newInstance( ExperimentListBean.class );
+				Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
+				experimentList = ( ExperimentListBean ) jaxbUnmarshaller.unmarshal( file );
+			
+			} catch (JAXBException e) {
+				JOptionPane.showMessageDialog( this, "An Error occured parsing XML-File \"" + file.getAbsoluteFile() + "\"" );
+			}
+			
+        } else {
+        	experimentList = new ExperimentListBean();
+        	experimentList.setExperiments( new ArrayList<>() );
+        }
+        
+        ExperimentBean experimentBean = new ExperimentBean();
+        experimentBean.setAgentCount( (int) this.agentCountSpinner.getValue() );
+        experimentBean.setAssetLoanMarket( this.abmMarketCheck.isSelected() );
+        experimentBean.setBondsPledgeability( this.bpMechanismCheck.isSelected() );
+        experimentBean.setFaceValue( (double) this.faceValueSpinner.getValue() );
+        experimentBean.setImportanceSampling( this.importanceSamplingCheck.isSelected() );
+        experimentBean.setLoanCashMarket( this.loanCashMarketCheck.isSelected() );
+        experimentBean.setMaxTx( (int) this.maxTxSpinner.getValue() );
+        experimentBean.setName( new SimpleDateFormat( "yyyyMMdd_HHmmss" ).format( new Date() ) ); // TODO
+        experimentBean.setReplications( (int) this.replicationCountSpinner.getValue() );
+        experimentBean.setTerminationMode( (TerminationMode) this.terminationSelection.getSelectedItem() );
+        experimentBean.setTopology( ( (INetworkCreator) this.topologySelection.getSelectedItem() ).toString() );
+        
+        experimentList.getExperiments().add( experimentBean );
+        
+        try {
+			JAXBContext jaxbContext = JAXBContext.newInstance( ExperimentListBean.class );
+			Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
+			 
+		    jaxbMarshaller.setProperty( Marshaller.JAXB_FORMATTED_OUTPUT, true );
+
+		    jaxbMarshaller.marshal( experimentList, file );
+		} catch (JAXBException e) {
+			e.printStackTrace();
+		}
+	}
+
 	private void showReplicationInfo() {
 		if ( false == this.replications.hasFinishedReplications() ) {
 			return;
@@ -324,7 +405,7 @@ public class ReplicationPanel extends JPanel {
 	
 	private void toggleReplication() {
 		if ( null == this.replications ) {
-			this.replicationButton.setText( "Terminate" );
+			this.startButton.setText( "Terminate" );
 			this.abmMarketCheck.setEnabled( false );
 			this.loanCashMarketCheck.setEnabled( false );
 			this.bpMechanismCheck.setEnabled( false );
@@ -341,14 +422,13 @@ public class ReplicationPanel extends JPanel {
 			
 			this.agentWealthPanel.setAgents( this.agentNetworkTemplate.getOrderedList() );
 			
-			int replicationThreadCount = 1;
 			int replicationCount = (int) this.replicationCountSpinner.getValue();
 			TerminationMode terminationMode = (TerminationMode) this.terminationSelection.getSelectedItem();
 			int maxTx = (int) this.maxTxSpinner.getValue();
 
 			this.replicationsLeftLabel.setText( "Replications Left: " + replicationCount );
 
-			this.replications = new ReplicationsRunner( replicationThreadCount, this.agentNetworkTemplate, this.markets );
+			this.replications = new ReplicationsRunner( this.agentNetworkTemplate, this.markets );
 			this.replications.start( replicationCount, terminationMode, maxTx, new ReplicationsListener() {
 				
 				@Override
@@ -383,7 +463,7 @@ public class ReplicationPanel extends JPanel {
 	private void resetControls() {
 		this.updateRunningTimeLabel( System.currentTimeMillis() );
 		
-		this.replicationButton.setText( "Start" );
+		this.startButton.setText( "Start" );
 		this.abmMarketCheck.setEnabled( true );
 		this.loanCashMarketCheck.setEnabled( true );
 		this.bpMechanismCheck.setEnabled( true );

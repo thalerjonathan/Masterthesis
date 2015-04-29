@@ -348,7 +348,6 @@ public class ReplicationsRunner {
 			 
 		    jaxbMarshaller.setProperty( Marshaller.JAXB_FORMATTED_OUTPUT, true );
 
-		    //Marshal the employees list in file
 		    jaxbMarshaller.marshal( resultBean, new File( REPLICATIONS_DIR_NAME + name + ".xml"  ) );
 		    
 		} catch (JAXBException e) {

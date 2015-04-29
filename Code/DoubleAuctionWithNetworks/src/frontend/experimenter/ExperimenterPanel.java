@@ -52,7 +52,7 @@ public class ExperimenterPanel extends JPanel {
 	private HashMap<ExperimentBean, ExperimentPanel> scheduledExperiments;
 	private HashMap<ExperimentBean, ExperimentPanel> finishedExperiments;
 	
-	private final static File EXPERIMENTS_DIRECTORY = new File( System.getProperty( "user.dir" ) + File.separator + "experiments" );
+	public final static File EXPERIMENTS_DIRECTORY = new File( System.getProperty( "user.dir" ) + File.separator + "experiments" );
 	private final static File REPLICATIONS_DIRECTORY = new File( System.getProperty( "user.dir" ) + File.separator + "replications" );
 	
 	public ExperimenterPanel( MainWindow mainWindow ) {
@@ -64,7 +64,6 @@ public class ExperimenterPanel extends JPanel {
 		this.setLayout( new BorderLayout() );
 		
 		this.createControls();
-		this.openExperiment(new File( EXPERIMENTS_DIRECTORY.getAbsoluteFile() + "\\experiment1\\experiment1.xml" ) ) ;
 	}
 
 	private void runAllExperiments() {
@@ -75,8 +74,6 @@ public class ExperimenterPanel extends JPanel {
 			Entry<ExperimentBean, ExperimentPanel> entry = iter.next();
 			ExperimentBean experiment = entry.getKey();
 			ExperimentPanel panel = entry.getValue();
-			
-			
 		}
 	}
 	
@@ -126,7 +123,7 @@ public class ExperimenterPanel extends JPanel {
 	                	ExperimenterPanel.this.openResult( file );
 	                	
 	                }
-	            }	
+	            }
 			}
 		};
 			
@@ -204,6 +201,7 @@ public class ExperimenterPanel extends JPanel {
 	private void runExperiment( ExperimentBean e ) {
 		// TODO: need to create agents & markets
 		
+		/*
 		ReplicationsRunner replicationRunner = new ReplicationsRunner( this.agentNetworkTemplate, this.markets );
 		replicationRunner.start( e.getReplications(), e.getTerminationMode(), e.getMaxTx(), new ReplicationsListener() {
 			@Override
@@ -221,6 +219,7 @@ public class ExperimenterPanel extends JPanel {
 				// TODO: do next experiment
 			}
 		} );
+		*/
 	}
 	
 	private void openResult( File file ) {
