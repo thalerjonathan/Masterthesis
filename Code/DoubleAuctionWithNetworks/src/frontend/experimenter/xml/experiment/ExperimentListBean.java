@@ -18,6 +18,4 @@ public class ExperimentListBean {
 	public void setExperiments(List<ExperimentBean> experiments) {
 		this.experiments = experiments;
 	}
-	
-	
 }

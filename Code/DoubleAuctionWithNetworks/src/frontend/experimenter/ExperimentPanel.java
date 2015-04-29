@@ -22,7 +22,6 @@ public class ExperimentPanel extends JPanel {
 	private JLabel assetLoanMarketLabel;
 	private JLabel loanCashMarketLabel;
 	private JLabel bondsPledgeabilityLabel;
-	private JLabel parallelEvaluationLabel;
 	private JLabel importanceSamplingLabel;
 	private JLabel terminationModeLabel;
 	private JLabel maxTxLabel;
@@ -31,14 +30,18 @@ public class ExperimentPanel extends JPanel {
 	private JProgressBar progressBar;
 	private JButton toggleRunButton;
 	
-	public ExperimentPanel( ExperimentBean bean, boolean isResult ) {
+	public ExperimentPanel( ExperimentBean bean, ActionListener toggleButtonListener ) {
 		this.setLayout( new GridBagLayout() );
 		this.setPreferredSize( new Dimension( 1024, 100 ) );
 		
-		this.createControls( bean, isResult );
+		this.createControls( bean, toggleButtonListener );
 	}
 
-	private void createControls( ExperimentBean bean, boolean isResult ) {
+	public void setRunButtonEnabled( boolean flag ) {
+		this.toggleRunButton.setEnabled( flag );
+	}
+	
+	private void createControls( ExperimentBean bean, ActionListener toggleButtonListener ) {
 		JLabel agentCountInfoLabel = new JLabel( "Agents: ");
 		JLabel faceValueInfoLabel = new JLabel( "Face-Value: ");
 		JLabel topologyInfoLabel = new JLabel( "Topology: ");
@@ -47,7 +50,6 @@ public class ExperimentPanel extends JPanel {
 		JLabel loanCashMarketInfoLabel = new JLabel( "Loan/Cash: ");
 		JLabel bondsPledgeabilityInfoLabel = new JLabel( "BP: ");
 		
-		JLabel parallelEvaluationInfoLabel = new JLabel( "Parallel: ");
 		JLabel importanceSamplingInfoLabel = new JLabel( "Importance-Sampling: ");
 		JLabel terminationModeInfoLabel = new JLabel( "Termination: ");
 		
@@ -60,19 +62,19 @@ public class ExperimentPanel extends JPanel {
 		this.assetLoanMarketLabel = new JLabel( "" + bean.isAssetLoanMarket() );
 		this.loanCashMarketLabel = new JLabel( "" + bean.isLoanCashMarket() );
 		this.bondsPledgeabilityLabel = new JLabel( "" + bean.isBondsPledgeability() );
-		this.parallelEvaluationLabel = new JLabel( "" + bean.isParallelEvaluation() );
 		this.importanceSamplingLabel = new JLabel( "" + bean.isImportanceSampling() );
 		this.terminationModeLabel = new JLabel( bean.getTerminationMode().name() );
 		this.maxTxLabel = new JLabel( "" + bean.getMaxTx() );
 		this.replicationsLabel = new JLabel( "" + bean.getReplications() );
 		
-		if ( false == isResult ) {
+		if ( null != toggleButtonListener ) {
 			this.progressBar = new JProgressBar();
 			this.toggleRunButton = new JButton( "Run" );
 			this.toggleRunButton.addActionListener( new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					
+					toggleButtonListener.actionPerformed( e );
+					toggleRunButton.setText( "Cancel" );
 				}
 			} );
 			
@@ -120,11 +122,7 @@ public class ExperimentPanel extends JPanel {
 		c.gridx = 3;
 		this.add( this.bondsPledgeabilityLabel, c );
 		
-		c.gridy = 0;
-		c.gridx = 4;
-		this.add( parallelEvaluationInfoLabel, c );
-		c.gridx = 5;
-		this.add( this.parallelEvaluationLabel, c );
+
 		c.gridy = 1;
 		c.gridx = 4;
 		this.add( importanceSamplingInfoLabel, c );
@@ -147,7 +145,7 @@ public class ExperimentPanel extends JPanel {
 		c.gridx = 7;
 		this.add( this.replicationsLabel, c );
 		
-		if ( false == isResult ) {
+		if ( null != toggleButtonListener ) {
 			c.gridy = 0;
 			c.gridx = 8;
 			c.gridwidth = 20;

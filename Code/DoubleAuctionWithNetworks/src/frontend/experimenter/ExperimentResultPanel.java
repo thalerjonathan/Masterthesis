@@ -63,7 +63,7 @@ public class ExperimentResultPanel extends JPanel {
 			agents.add( a );
 		}
 		
-		this.experimentPanel = new ExperimentPanel( bean.getExperiment(), true );
+		this.experimentPanel = new ExperimentPanel( bean.getExperiment(), null );
 		
 		this.wealthvisualizer = new WealthVisualizer();
 		this.wealthvisualizer.setAgents( agents );

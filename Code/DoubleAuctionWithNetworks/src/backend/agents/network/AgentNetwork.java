@@ -460,6 +460,10 @@ public class AgentNetwork {
 		}
 	}
 	
+	public String getNetworkName() {
+		return networkName;
+	}
+
 	public Agent get( int i ) {
 		return this.orderedAgents.get( i );
 	}

@@ -12,8 +12,8 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 
-import backend.parallel.ReplicationsRunner.ReplicationTask;
-import backend.parallel.ReplicationsRunner.TerminationMode;
+import backend.replications.ReplicationsRunner.ReplicationTask;
+import backend.replications.ReplicationsRunner.TerminationMode;
 import frontend.visualisation.WealthVisualizer;
 
 @SuppressWarnings("serial")

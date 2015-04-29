@@ -5,21 +5,12 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.util.concurrent.ThreadFactory;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -31,30 +22,18 @@ import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
 
-import backend.Auction;
-import backend.Auction.EquilibriumStatistics;
-import backend.Auction.MatchingType;
 import backend.agents.Agent;
 import backend.agents.AgentFactoryImpl;
 import backend.agents.network.AgentConnection;
 import backend.agents.network.AgentNetwork;
 import backend.markets.Markets;
-import backend.parallel.ReplicationsRunner;
-import backend.parallel.ReplicationsRunner.ReplicationsListener;
-import backend.parallel.ReplicationsRunner.TerminationMode;
-import backend.tx.Transaction;
+import backend.replications.ReplicationsRunner;
+import backend.replications.ReplicationsRunner.ReplicationsListener;
+import backend.replications.ReplicationsRunner.TerminationMode;
 import edu.uci.ics.jung.algorithms.layout.CircleLayout;
 import edu.uci.ics.jung.algorithms.layout.Layout;
 import frontend.agentInfo.AgentInfoFrame;
-import frontend.experimenter.xml.experiment.ExperimentBean;
-import frontend.experimenter.xml.result.AgentBean;
-import frontend.experimenter.xml.result.EquilibriumBean;
-import frontend.experimenter.xml.result.ReplicationBean;
-import frontend.experimenter.xml.result.ResultBean;
 import frontend.inspection.NetworkVisualisationFrame;
 import frontend.networkCreators.AscendingConnectedCreator;
 import frontend.networkCreators.AscendingFullShortcutsCreator;
@@ -74,7 +53,7 @@ import frontend.networkVisualisation.NetworkRenderPanel;
 import frontend.replication.info.ReplicationInfoFrame;
 import frontend.visualisation.WealthVisualizer;
 
-@SuppressWarnings( value = {"serial", "rawtypes" } )
+@SuppressWarnings( value = {"serial" } )
 public class ReplicationPanel extends JPanel {
 
 	private Markets markets;
@@ -84,8 +63,6 @@ public class ReplicationPanel extends JPanel {
 	private JCheckBox loanCashMarketCheck;
 	private JCheckBox bpMechanismCheck;
 	private JCheckBox importanceSamplingCheck;
-	
-	private JCheckBox parallelEvaluationCheck;
 	
 	private JComboBox<INetworkCreator> topologySelection;
 	private JComboBox<TerminationMode> terminationSelection;
@@ -136,7 +113,6 @@ public class ReplicationPanel extends JPanel {
 		this.loanCashMarketCheck = new JCheckBox( "Loan/Cash Market" );
 		this.bpMechanismCheck = new JCheckBox( "Bonds Pledgeability" );
 		
-		this.parallelEvaluationCheck = new JCheckBox( "Parallel Evaluation" );
 		this.importanceSamplingCheck = new JCheckBox( "Importance-Sampling" );
 		
 		this.topologySelection = new JComboBox<INetworkCreator>();
@@ -175,7 +151,6 @@ public class ReplicationPanel extends JPanel {
 		this.loanCashMarketCheck.setSelected( this.markets.isLoanMarket() );
 		this.bpMechanismCheck.setSelected( this.markets.isBP() );
 		
-		this.parallelEvaluationCheck.setSelected( false );
 		this.showReplicationInfoButton.setEnabled( false );
 		
 		this.importanceSamplingCheck.addActionListener( new ActionListener() {
@@ -296,7 +271,6 @@ public class ReplicationPanel extends JPanel {
 		agentsConfigPanel.add( this.abmMarketCheck );
 		agentsConfigPanel.add( this.loanCashMarketCheck );
 		agentsConfigPanel.add( this.bpMechanismCheck );	
-		agentsConfigPanel.add( this.parallelEvaluationCheck );
 		agentsConfigPanel.add( this.importanceSamplingCheck );
 		agentsConfigPanel.add( this.replicationButton );
 
@@ -324,7 +298,7 @@ public class ReplicationPanel extends JPanel {
 	}
 	
 	private void showReplicationInfo() {
-		if ( 0 == this.replicationData.size() && 0 == this.replicationTasks.size() ) {
+		if ( false == this.replications.hasFinishedReplications() ) {
 			return;
 		}
 		
@@ -333,7 +307,7 @@ public class ReplicationPanel extends JPanel {
 		}
 		
 		this.replicationInfoFrame.setTitle( "Replication-Info (" + this.getTitleExtension() + ")" );
-		this.replicationInfoFrame.setTasks( this.replicationTasks );
+		this.replicationInfoFrame.setTasks( this.replications.getReplicationTasks() );
 		this.replicationInfoFrame.setVisible( true );
 	}
 
@@ -343,8 +317,8 @@ public class ReplicationPanel extends JPanel {
 		}
 		
 		this.agentInfoFrame.setTitle( "Agent-Info (" + this.getTitleExtension() + ")" );
-		this.agentInfoFrame.setAgents( this.currentStats != null ? 
-				this.currentStats.getFinalAgents() : this.agentNetworkTemplate.getOrderedList() );
+		this.agentInfoFrame.setAgents( this.replications.getCurrentStats() != null ? 
+				this.replications.getCurrentStats().getFinalAgents() : this.agentNetworkTemplate.getOrderedList() );
 		this.agentInfoFrame.setVisible( true );
 	}
 	
@@ -354,7 +328,6 @@ public class ReplicationPanel extends JPanel {
 			this.abmMarketCheck.setEnabled( false );
 			this.loanCashMarketCheck.setEnabled( false );
 			this.bpMechanismCheck.setEnabled( false );
-			this.parallelEvaluationCheck.setEnabled( false );
 			this.importanceSamplingCheck.setEnabled( false );
 			this.agentCountSpinner.setEnabled( false );
 			this.maxTxSpinner.setEnabled( false );
@@ -372,14 +345,7 @@ public class ReplicationPanel extends JPanel {
 			int replicationCount = (int) this.replicationCountSpinner.getValue();
 			TerminationMode terminationMode = (TerminationMode) this.terminationSelection.getSelectedItem();
 			int maxTx = (int) this.maxTxSpinner.getValue();
-			
-			if ( this.parallelEvaluationCheck.isSelected() ) {
-				replicationThreadCount = Runtime.getRuntime().availableProcessors();
-				//replicationThreadCount = Runtime.getRuntime().availableProcessors() - 1; // leave one free for other tasks
-			}
-			
-			replicationThreadCount = Math.min( replicationCount, replicationThreadCount );
-			
+
 			this.replicationsLeftLabel.setText( "Replications Left: " + replicationCount );
 
 			this.replications = new ReplicationsRunner( replicationThreadCount, this.agentNetworkTemplate, this.markets );
@@ -421,7 +387,6 @@ public class ReplicationPanel extends JPanel {
 		this.abmMarketCheck.setEnabled( true );
 		this.loanCashMarketCheck.setEnabled( true );
 		this.bpMechanismCheck.setEnabled( true );
-		this.parallelEvaluationCheck.setEnabled( true );
 		this.importanceSamplingCheck.setEnabled( true );
 		this.agentCountSpinner.setEnabled( true );
 		this.maxTxSpinner.setEnabled( true );
@@ -489,7 +454,8 @@ public class ReplicationPanel extends JPanel {
 	}
 	
 	private void updateRunningTimeLabel( long currSysMillis ) {
-		long duration = currSysMillis - this.startingTime.getTime();
-		this.runningTimeLabel.setText( "Running since " + DATE_FORMATTER.format( this.startingTime ) + ", " + ( duration / 1000 ) + " sec." );
+		long duration = currSysMillis - this.replications.getStartingTime().getTime();
+		this.runningTimeLabel.setText( "Running since " + DATE_FORMATTER.format( this.replications.getStartingTime() ) 
+				+ ", " + ( duration / 1000 ) + " sec." );
 	}
 }

@@ -1,4 +1,4 @@
-package backend.parallel;
+package backend.replications;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
@@ -13,7 +13,6 @@ import java.util.concurrent.Future;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import javax.swing.SwingUtilities;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
@@ -30,9 +29,7 @@ import frontend.experimenter.xml.result.AgentBean;
 import frontend.experimenter.xml.result.EquilibriumBean;
 import frontend.experimenter.xml.result.ReplicationBean;
 import frontend.experimenter.xml.result.ResultBean;
-import frontend.networkCreators.INetworkCreator;
 import frontend.replication.ReplicationData;
-import frontend.replication.ReplicationPanel;
 
 public class ReplicationsRunner {
 
@@ -49,7 +46,6 @@ public class ReplicationsRunner {
 	
 	private List<ReplicationData> replicationData;
 
-	private int threadCount;
 	private int replications;
 	private TerminationMode terminationMode;
 	private int maxTx;
@@ -58,7 +54,10 @@ public class ReplicationsRunner {
 	private Markets markets;
 	private ReplicationsListener listener;
 	
+	private AtomicInteger replicationsLeft;
+	
 	private final static SimpleDateFormat FILENAME_DATE_FORMATTER = new SimpleDateFormat( "yyyyMMdd_HHmmss" );
+	private final static String REPLICATIONS_DIR_NAME = "replications/";
 	
 	public interface ReplicationsListener {
 		public void replicationFinished( ReplicationData data, ReplicationData averageData );
@@ -78,33 +77,43 @@ public class ReplicationsRunner {
 		return this.replicationTasks;
 	}
 	
-	public ReplicationsRunner( int threadCount, AgentNetwork template, Markets markets ) {
+	public ReplicationsRunner( AgentNetwork template, Markets markets ) {
 		this.replicationTasks = new ArrayList<>();
 		this.replicationData = new ArrayList<>();
-		this.threadCount = threadCount;
+		
 		this.template = template;
 		this.markets = markets;
-
-		
-		this.replicationTaskExecutor = Executors.newFixedThreadPool( threadCount, new ThreadFactory() {
-			public Thread newThread( Runnable r ) {
-				return new Thread( r, "Replication-Thread" );
-			}
-		});
 	}
 	
+	@SuppressWarnings("rawtypes")
+	// TODO: refactoring: use ExperimentBean
 	public void start( int replications, TerminationMode terminationMode, int maxTx, ReplicationsListener listener ) {
+		// replications already running
+		if ( null != this.awaitFinishThread ) {
+			return;
+		}
+		
 		this.canceled = false;
 		this.startingTime = new Date();
 		this.replications = replications;
 		this.terminationMode = terminationMode;
 		this.maxTx = maxTx;
 		this.listener = listener;
+		this.replicationsLeft = new AtomicInteger( replications );
+		// always do parallel-processing
+		int threadCount = Math.max( 1, Runtime.getRuntime().availableProcessors() - 1 ); // leave one for GUI-purposes, otherwise would freeze
+		// if less replications than threads, then limit thread-count by replication-count
+		threadCount = Math.min( threadCount, replications );
 		
-		AtomicInteger replicationCount = new AtomicInteger( replications );
+
+		this.replicationTaskExecutor = Executors.newFixedThreadPool( threadCount, new ThreadFactory() {
+			public Thread newThread( Runnable r ) {
+				return new Thread( r, "Replication-Thread" );
+			}
+		});
 		
-		for ( int i = 0; i < this.threadCount; ++i ) {
-			ReplicationTask task = new ReplicationTask( i, replicationCount, terminationMode, maxTx, template );
+		for ( int i = 0; i < threadCount; ++i ) {
+			ReplicationTask task = new ReplicationTask( i );
 			
 			Future future = this.replicationTaskExecutor.submit( task );
 			task.setFuture( future );
@@ -126,6 +135,8 @@ public class ReplicationsRunner {
 				if ( false == canceled ) {
 					listener.allReplicationsFinished();
 				}
+				
+				ReplicationsRunner.this.cleanUp();
 			}
 		} );
 		
@@ -133,8 +144,21 @@ public class ReplicationsRunner {
 		this.awaitFinishThread.start();
 	}
 	
+	private void cleanUp() {
+		this.writeResults();
+		
+		this.replicationTaskExecutor.shutdown();
+		this.awaitFinishThread = null;
+	}
+	
 	public void stop() {
+		// no replications running
+		if ( null == this.awaitFinishThread ) {
+			return;
+		}
+		
 		this.canceled = true;
+		
 		for ( ReplicationTask task : this.replicationTasks ) {
 			task.cancel();
 		}
@@ -145,28 +169,33 @@ public class ReplicationsRunner {
 			e.printStackTrace();
 		}
 		
-		this.awaitFinishThread = null;
 		this.replicationTasks.clear();
-		
-		this.replicationTaskExecutor.shutdown();
-		
-		this.writeResults();
 	}
 
+	public Date getStartingTime() {
+		return this.startingTime;
+	}
+	
+	public boolean hasFinishedReplications() {
+		return this.replicationData.size() > 0;
+	}
+	
+	public ReplicationData getCurrentStats() {
+		return this.currentStats;
+	}
+	
 	public int getReplicationsLeft() {
 		return this.replications - this.replicationData.size();
 	}
 	
 	private void replicationFinished( ReplicationData data ) {
 		this.replicationData.add( data );
-		this.currentStats = this.calculateAgentStatistics();
+		this.currentStats = this.calculateStatistics();
 		
 		this.listener.replicationFinished( data, this.currentStats );
-
-		
 	}
 	
-	private ReplicationData calculateAgentStatistics() {
+	private ReplicationData calculateStatistics() {
 		int agentCount = this.template.size();
 		
 		ReplicationData currentStats = new ReplicationData();
@@ -287,12 +316,11 @@ public class ReplicationsRunner {
 		experimentBean.setName( name );
 		experimentBean.setAgentCount( this.currentStats.getFinalAgents().size() );
 		experimentBean.setFaceValue( this.markets.V() );
-		experimentBean.setTopology( ( (INetworkCreator) this.topologySelection.getSelectedItem() ).toString() );
+		experimentBean.setTopology( this.template.getNetworkName() );
 		experimentBean.setAssetLoanMarket( this.markets.isABM() );
 		experimentBean.setLoanCashMarket( this.markets.isLoanMarket() );
 		experimentBean.setBondsPledgeability( this.markets.isBP() );
-		experimentBean.setParallelEvaluation( this.threadCount > 1 );
-		experimentBean.setImportanceSampling( this.importanceSamplingCheck.isSelected() );
+		//experimentBean.setImportanceSampling( this.importanceSamplingCheck.isSelected() ); // TODO
 		experimentBean.setTerminationMode( this.terminationMode );
 		experimentBean.setMaxTx( this.maxTx );
 		experimentBean.setReplications( this.replications );
@@ -321,7 +349,7 @@ public class ReplicationsRunner {
 		    jaxbMarshaller.setProperty( Marshaller.JAXB_FORMATTED_OUTPUT, true );
 
 		    //Marshal the employees list in file
-		    jaxbMarshaller.marshal( resultBean, new File( "replications/" + name + ".xml"  ) );
+		    jaxbMarshaller.marshal( resultBean, new File( REPLICATIONS_DIR_NAME + name + ".xml"  ) );
 		    
 		} catch (JAXBException e) {
 			e.printStackTrace();
@@ -340,26 +368,14 @@ public class ReplicationsRunner {
 		private int failTxTotalCount;
 		private int failTxSuccessiveCount;
 		
-		private AtomicInteger replicationCount;
-
 		private Future future;
-		
-		private TerminationMode terminationMode;
-		private int maxTx;
-		
+
 		private AgentNetwork currentAgents;
-		private AgentNetwork agentNetworkTemplate;
 		
-		public ReplicationTask( int taskId, AtomicInteger replicationCount, 
-				TerminationMode terminationMode, int maxTx, AgentNetwork agentNetworkTemplate ) {
+		public ReplicationTask( int taskId ) {
 			this.taskId = taskId;
 			this.canceledFlag = false;
 			this.nextTxFlag = false;
-			this.replicationCount = replicationCount;
-			
-			this.terminationMode = terminationMode;
-			this.maxTx = maxTx;
-			this.agentNetworkTemplate = agentNetworkTemplate;
 		}
 		
 		public int getTaskId() {
@@ -413,12 +429,12 @@ public class ReplicationsRunner {
 					break;
 				}
 				
-				if ( ( this.currentReplication = this.replicationCount.getAndDecrement() ) <= 0 ) {
+				if ( ( this.currentReplication = ReplicationsRunner.this.replicationsLeft.getAndDecrement() ) <= 0 ) {
 					break;
 				}
 				
 				// creates a deep copy of the network, need for parallel execution
-				this.currentAgents = new AgentNetwork( this.agentNetworkTemplate );
+				this.currentAgents = new AgentNetwork( ReplicationsRunner.this.template );
 				Auction auction = new Auction( this.currentAgents );
 				
 				ReplicationData data = this.calculateReplication( auction );
@@ -450,16 +466,16 @@ public class ReplicationsRunner {
 					this.failTxSuccessiveCount = 0;
 				}
 
-				if ( TerminationMode.TOTAL_TX == this.terminationMode ) {
-					terminated = this.totalTxCount >= this.maxTx;
+				if ( TerminationMode.TOTAL_TX == ReplicationsRunner.this.terminationMode ) {
+					terminated = this.totalTxCount >= ReplicationsRunner.this.maxTx;
 					
-				} else if ( TerminationMode.FAIL_TOTAL_TX == this.terminationMode ) {
-					terminated = this.failTxTotalCount >= this.maxTx;
+				} else if ( TerminationMode.FAIL_TOTAL_TX == ReplicationsRunner.this.terminationMode ) {
+					terminated = this.failTxTotalCount >= ReplicationsRunner.this.maxTx;
 				
-				} else if ( TerminationMode.FAIL_SUCCESSIVE_TX == this.terminationMode ) {
-					terminated = this.failTxSuccessiveCount >= this.maxTx;
+				} else if ( TerminationMode.FAIL_SUCCESSIVE_TX == ReplicationsRunner.this.terminationMode ) {
+					terminated = this.failTxSuccessiveCount >= ReplicationsRunner.this.maxTx;
 				
-				} else if ( TerminationMode.EQUILIBRIUM == this.terminationMode && tx.isEquilibrium() ) {
+				} else if ( TerminationMode.EQUILIBRIUM == ReplicationsRunner.this.terminationMode && tx.isEquilibrium() ) {
 					terminated = true;
 				}
 				

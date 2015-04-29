@@ -3,7 +3,7 @@ package frontend.experimenter.xml.experiment;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
-import backend.parallel.ReplicationsRunner.TerminationMode;
+import backend.replications.ReplicationsRunner.TerminationMode;
 
 @XmlRootElement( name = "experiment" )
 public class ExperimentBean {
@@ -15,7 +15,6 @@ public class ExperimentBean {
 	private boolean assetLoanMarket;
 	private boolean loanCashMarket;
 	private boolean bondsPledgeability;
-	private boolean parallelEvaluation;
 	private boolean importanceSampling;
 	private TerminationMode terminationMode;
 	private int maxTx;
@@ -86,15 +85,6 @@ public class ExperimentBean {
 	@XmlElement
 	public void setBondsPledgeability(boolean bondsPledgeability) {
 		this.bondsPledgeability = bondsPledgeability;
-	}
-	
-	public boolean isParallelEvaluation() {
-		return parallelEvaluation;
-	}
-	
-	@XmlElement
-	public void setParallelEvaluation(boolean parallelEvaluation) {
-		this.parallelEvaluation = parallelEvaluation;
 	}
 	
 	public boolean isImportanceSampling() {
