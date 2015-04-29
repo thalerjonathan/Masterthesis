@@ -15,7 +15,7 @@ public class ReplicationTable extends JTable {
 		this.tableModel = new DefaultTableModel(
 				new Object[] { "Replication", "Task", 
 						"TXs", "p", "q", "pq", "i0", "i1", "i2", "P", "M", "O",
-						"Equilibrium", "Canceled", "Trading Halted", "Termination Mode", "Finished at" }, 0 ) {
+						"Equilibrium", "Canceled", "Trading Halted", "Finished at" }, 0 ) {
 
 		    @Override
 		    public boolean isCellEditable(int row, int column) {
@@ -44,7 +44,7 @@ public class ReplicationTable extends JTable {
 	public void addReplication( ReplicationData data ) {
 		// "Replication", "Task", 
 		// "TXs", "p", "q", "pq", "i0", "i1", "i2", "P", "M", "O",
-		// "Equilibrium", "Canceled", "Trading Halted", "Termination Mode", "Finished at"
+		// "Equilibrium", "Canceled", "Trading Halted", "Finished at"
 		EquilibriumStatistics stats = data.getStats();
 		
 		this.tableModel.addRow( new Object[] { data.getNumber(), data.getTaskId(), 
@@ -58,7 +58,7 @@ public class ReplicationTable extends JTable {
 				ReplicationPanel.VALUES_FORMAT.format( stats.P ),
 				ReplicationPanel.VALUES_FORMAT.format( stats.M ),
 				ReplicationPanel.VALUES_FORMAT.format( stats.O ),
-				data.isEquilibrium(), data.isCanceled(),  data.isTradingHalted(), data.getTermination(), 
+				data.isEquilibrium(), data.isCanceled(),  data.isTradingHalted(),
 				ReplicationPanel.DATE_FORMATTER.format( data.getFinishTime() ) } );
 	}
 }

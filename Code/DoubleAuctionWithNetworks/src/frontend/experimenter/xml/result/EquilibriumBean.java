@@ -3,6 +3,8 @@ package frontend.experimenter.xml.result;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import backend.Auction.EquilibriumStatistics;
+
 @XmlRootElement( name = "equilibrium" )
 public class EquilibriumBean {
 
@@ -17,7 +19,19 @@ public class EquilibriumBean {
 	private double O;
 	
 	public EquilibriumBean() {
-		
+	}
+	
+	
+	public EquilibriumBean( EquilibriumStatistics stats ) {
+		this.setAssetPrice( stats.p );
+		this.setLoanPrice( stats.q );
+		this.setAssetLoanPrice( stats.pq );
+		this.setI0( stats.i0 );
+		this.setI1( stats.i1 );
+		this.setI2( stats.i2 );
+		this.setP( stats.P );
+		this.setM( stats.M );
+		this.setO( stats.O );
 	}
 	
 	public double getAssetPrice() {

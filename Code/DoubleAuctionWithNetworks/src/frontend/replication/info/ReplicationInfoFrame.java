@@ -3,7 +3,8 @@ package frontend.replication.info;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Toolkit;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -25,6 +26,7 @@ public class ReplicationInfoFrame extends JFrame {
 	private JButton refreshButton;
 	private JScrollPane txHistoryScrollPane;
 	private List<ReplicationInfoPanel> infoPanels;
+	private JScrollPane scroll;
 	
 	public ReplicationInfoFrame( ReplicationTable replicationTable ) {
 		super( "Replication-Info" );
@@ -34,8 +36,7 @@ public class ReplicationInfoFrame extends JFrame {
 		this.createControls( replicationTable );
 		
 		this.getContentPane().setLayout( new BorderLayout() );
-		this.getContentPane().setPreferredSize( new Dimension( 
-				Toolkit.getDefaultToolkit().getScreenSize().width - 50, 580 ) );
+		this.getContentPane().setPreferredSize( new Dimension( 1300, 580 ) );
 		
 		this.setDefaultCloseOperation( JFrame.HIDE_ON_CLOSE );
 		this.setResizable( false );
@@ -43,7 +44,12 @@ public class ReplicationInfoFrame extends JFrame {
 	}
 	
 	private void createControls( ReplicationTable replicationTable ) {
-		this.tasksPanel = new JPanel();
+		this.tasksPanel = new JPanel( new GridBagLayout() );
+		
+		this.scroll = new JScrollPane( this.tasksPanel );
+		this.scroll.setVerticalScrollBarPolicy( JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED );
+		this.scroll.setHorizontalScrollBarPolicy( JScrollPane.HORIZONTAL_SCROLLBAR_NEVER );
+		this.scroll.setBorder( BorderFactory.createTitledBorder( BorderFactory.createLineBorder( Color.black ), "Running Tasks" ) );
 		
 		this.refreshButton = new JButton( "Refresh" );
 		this.refreshButton.addActionListener( new ActionListener() {
@@ -60,52 +66,41 @@ public class ReplicationInfoFrame extends JFrame {
 		this.txHistoryScrollPane.setHorizontalScrollBarPolicy( JScrollPane.HORIZONTAL_SCROLLBAR_NEVER );
 		this.txHistoryScrollPane.setBorder( BorderFactory.createTitledBorder( BorderFactory.createLineBorder( Color.black ), "Finished Replications" ) );
 		this.txHistoryScrollPane.setPreferredSize( new Dimension( 880, 150 ) );
-		/*
-		// setting properties
-		this.replicationTable.getSelectionModel().addListSelectionListener( new ListSelectionListener() {
-			@Override
-			public void valueChanged( ListSelectionEvent e ) {
-				if (e.getValueIsAdjusting() == false) {
-					int rowIndex = ReplicationPanel.this.replicationTable.getSelectedRow();
-					if ( -1 == rowIndex ) {
-						return;
-					}
-					
-					int modelIndex = ReplicationPanel.this.replicationTable.getRowSorter().convertRowIndexToModel( rowIndex );
-					
-					ReplicationData data = ReplicationPanel.this.replicationData.get( modelIndex );
-					ReplicationPanel.this.agentWealthPanel.setAgents( data.getFinalAgents() );
-		        }
-			}
-		});
-		*/
+		
+		this.getContentPane().add( this.txHistoryScrollPane );
 	}
 
 	public void setTasks( List<ReplicationTask> tasks ) {
 		this.infoPanels.clear();
-		
-		this.remove( this.tasksPanel );
-		this.remove( this.txHistoryScrollPane );
+		this.tasksPanel.removeAll();
+		this.getContentPane().remove( this.scroll );
 		
 		if ( tasks.size() > 0 ) {
-			this.tasksPanel = new JPanel();
-			this.tasksPanel.setBorder( BorderFactory.createTitledBorder( BorderFactory.createLineBorder( Color.black ), "Running Tasks " ) );
-			this.tasksPanel.add( this.refreshButton );
+			GridBagConstraints c = new GridBagConstraints();
+			c.gridwidth = 1;
+			c.gridheight = 1;
+			c.gridx = 0;
+			c.gridy = 0;
+			c.fill = GridBagConstraints.BOTH;
+
+			this.tasksPanel.add( this.refreshButton, c );
+			
+			c.gridy++;
 			
 			for ( ReplicationTask t : tasks ) {
 				ReplicationInfoPanel ip = new ReplicationInfoPanel( t );
 				ip.setBorder( BorderFactory.createTitledBorder( BorderFactory.createLineBorder( Color.black ), "Task " + t.getTaskId() ) );
 				
-				this.tasksPanel.add( ip );
+				this.tasksPanel.add( ip, c );
 				this.infoPanels.add( ip );
+				
+				c.gridy++;
 			}
 			
-			this.add( this.tasksPanel, BorderLayout.CENTER );
-			this.add( this.txHistoryScrollPane, BorderLayout.SOUTH );
-		} else {
-			this.add( this.txHistoryScrollPane, BorderLayout.CENTER );
+			this.getContentPane().add( this.scroll, BorderLayout.CENTER );
 		}
 		
 		this.revalidate();
+		this.pack();
 	}
 }

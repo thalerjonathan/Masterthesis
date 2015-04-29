@@ -50,6 +50,7 @@ import frontend.agentInfo.AgentInfoFrame;
 import frontend.experimenter.xml.experiment.ExperimentBean;
 import frontend.experimenter.xml.result.AgentBean;
 import frontend.experimenter.xml.result.EquilibriumBean;
+import frontend.experimenter.xml.result.ReplicationBean;
 import frontend.experimenter.xml.result.ResultBean;
 import frontend.inspection.NetworkVisualisationFrame;
 import frontend.networkCreators.AscendingConnectedCreator;
@@ -121,8 +122,12 @@ public class ReplicationPanel extends JPanel {
 	
 	private Date startingTime;
 
+	private boolean canceled;
+	
 	public final static SimpleDateFormat DATE_FORMATTER = new SimpleDateFormat( "dd.MM HH:mm:ss" );
 	public static final DecimalFormat VALUES_FORMAT = new DecimalFormat("0.0000");
+	
+	private final static SimpleDateFormat FILENAME_DATE_FORMATTER = new SimpleDateFormat( "yyyyMMdd_HHmmss" );
 	
 	public enum TerminationMode {
 		TOTAL_TX,
@@ -367,6 +372,8 @@ public class ReplicationPanel extends JPanel {
 	
 	private void toggleReplication() {
 		if ( null == this.awaitFinishThread ) {
+			this.canceled = false;
+			
 			this.replicationButton.setText( "Terminate" );
 			this.abmMarketCheck.setEnabled( false );
 			this.loanCashMarketCheck.setEnabled( false );
@@ -433,10 +440,12 @@ public class ReplicationPanel extends JPanel {
 					ReplicationPanel.this.allReplicationsFinished();
 				}
 			} );
+			
 			this.awaitFinishThread.setName( "Replications finished wait-thread" );
 			this.awaitFinishThread.start();
 			
 		} else {
+			this.canceled = true;
 			for ( ReplicationTask task : this.replicationTasks ) {
 				task.cancel();
 			}
@@ -450,11 +459,16 @@ public class ReplicationPanel extends JPanel {
 	}
 	
 	private void writeResults() {
+		if ( null == this.currentStats || this.canceled ||  0 == this.replicationData.size()  ) {
+			return;
+		}
+		
+		String name = FILENAME_DATE_FORMATTER.format( new Date() );
 		ResultBean resultBean = new ResultBean();
 		ExperimentBean experimentBean = new ExperimentBean();
-		EquilibriumBean equilibriumBean = new EquilibriumBean();
+		EquilibriumBean equilibriumBean = new EquilibriumBean( this.currentStats.getStats() );
 		
-		experimentBean.setName( "Current Replications" );
+		experimentBean.setName( name );
 		experimentBean.setAgentCount( this.currentStats.getFinalAgents().size() );
 		experimentBean.setFaceValue( (double) this.faceValueSpinner.getValue() );
 		experimentBean.setTopology( ( (INetworkCreator) this.topologySelection.getSelectedItem() ).toString() );
@@ -467,47 +481,31 @@ public class ReplicationPanel extends JPanel {
 		experimentBean.setMaxTx( (int) this.maxTxSpinner.getValue() );
 		experimentBean.setReplications( (int) this.replicationCountSpinner.getValue() );
 		
-		equilibriumBean.setAssetPrice( this.currentStats.getStats().p );
-		equilibriumBean.setLoanPrice( this.currentStats.getStats().q );
-		equilibriumBean.setAssetLoanPrice( this.currentStats.getStats().pq );
-		equilibriumBean.setI0( this.currentStats.getStats().i0 );
-		equilibriumBean.setI1( this.currentStats.getStats().i1 );
-		equilibriumBean.setI2( this.currentStats.getStats().i2 );
-		equilibriumBean.setP( this.currentStats.getStats().P );
-		equilibriumBean.setM( this.currentStats.getStats().M );
-		equilibriumBean.setO( this.currentStats.getStats().O );
-		
 		List<AgentBean> resultAgents = new ArrayList<AgentBean>();
 		Iterator<Agent> agentIter = this.currentStats.getFinalAgents().iterator();
 		while ( agentIter.hasNext() ) {
 			Agent a = agentIter.next();
-			
-			AgentBean agentBean = new AgentBean();
-			agentBean.setH( a.getH() );
-			agentBean.setAssets( a.getAssetEndow() );
-			agentBean.setCash( a.getConumEndow() );
-			agentBean.setLoan( a.getLoan() );
-			agentBean.setLoanGiven( a.getLoanGiven() );
-			agentBean.setLoanTaken( a.getLoanTaken() );
-			
-			resultAgents.add( agentBean );
+			resultAgents.add( new AgentBean( a ) );
+		}
+		
+		List<ReplicationBean> replications = new ArrayList<ReplicationBean>();
+		for ( ReplicationData data : this.replicationData ) {
+			replications.add( new ReplicationBean( data ) );
 		}
 		
 		resultBean.setAgents( resultAgents );
 		resultBean.setEquilibrium( equilibriumBean );
 		resultBean.setExperiment( experimentBean );
+		resultBean.setReplications( replications );
 		
 		try {
 			JAXBContext jaxbContext = JAXBContext.newInstance( ResultBean.class );
 			Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
 			 
 		    jaxbMarshaller.setProperty( Marshaller.JAXB_FORMATTED_OUTPUT, true );
-		     
-		    //Marshal the employees list in console
-		    jaxbMarshaller.marshal(resultBean, System.out);
-		     
+
 		    //Marshal the employees list in file
-		    jaxbMarshaller.marshal(resultBean, new File("currentReplication.xml"));
+		    jaxbMarshaller.marshal( resultBean, new File( "replications/" + name + ".xml"  ) );
 		    
 		} catch (JAXBException e) {
 			e.printStackTrace();
@@ -545,6 +543,7 @@ public class ReplicationPanel extends JPanel {
 		List<Agent> meanAgents = new ArrayList<>( agentCount );
 		EquilibriumStatistics meanStats = new EquilibriumStatistics();
 		
+		int validReplications = 0;
 		double[] medianConsumEndow = new double[ agentCount ];
 		double[] medianAssetEndow = new double[ agentCount ];
 		double[] medianLoanEndow = new double[ agentCount ];
@@ -552,6 +551,10 @@ public class ReplicationPanel extends JPanel {
 		double[] medianLoanTakenEndow = new double[ agentCount ];
 		
 		for ( ReplicationData data : this.replicationData ) {
+			if ( data.isCanceled() ) {
+				continue;
+			}
+			
 			List<Agent> finalAgents = data.getFinalAgents();
 			
 			for ( int i = 0; i < finalAgents.size(); ++i ) {
@@ -564,27 +567,46 @@ public class ReplicationPanel extends JPanel {
 				medianLoanTakenEndow[ i ] += a.getLoanTaken();
 			}
 			
-			meanStats.p += data.getStats().p / this.replicationData.size();
-			meanStats.q += data.getStats().q / this.replicationData.size();
-			meanStats.pq += data.getStats().pq / this.replicationData.size();
+			meanStats.p += data.getStats().p;
+			meanStats.q += data.getStats().q;
+			meanStats.pq += data.getStats().pq;
 			
-			meanStats.i0 += data.getStats().i0 / this.replicationData.size();
-			meanStats.i1 += data.getStats().i1 / this.replicationData.size();
-			meanStats.i2 += data.getStats().i2 / this.replicationData.size();
+			meanStats.i0 += data.getStats().i0;
+			meanStats.i1 += data.getStats().i1;
+			meanStats.i2 += data.getStats().i2;
 			
-			meanStats.P += data.getStats().P / this.replicationData.size();
-			meanStats.M += data.getStats().M / this.replicationData.size();
-			meanStats.O += data.getStats().O / this.replicationData.size();
+			meanStats.P += data.getStats().P;
+			meanStats.M += data.getStats().M;
+			meanStats.O += data.getStats().O;
+			
+			validReplications++;
 		}
+		
+		// no valid replications so far: no current data
+		if ( 0 == validReplications ) {
+			return null;
+		}
+		
+		meanStats.p /= validReplications;
+		meanStats.q /= validReplications;
+		meanStats.pq /= validReplications;
+		
+		meanStats.i0 /= validReplications;
+		meanStats.i1 /= validReplications;
+		meanStats.i2 /= validReplications;
+		
+		meanStats.P /= validReplications;
+		meanStats.M /= validReplications;
+		meanStats.O /= validReplications;
 		
 		for ( int i = 0; i < agentCount; ++i ) {
 			Agent templateAgent = this.agentNetworkTemplate.get( i );
 			
-			double agentMCE = medianConsumEndow[ i ] / this.replicationData.size();
-			double agentMAE = medianAssetEndow[ i ] / this.replicationData.size();
-			double agentMLE = medianLoanEndow[ i ] / this.replicationData.size();
-			double agentMLG = medianLoanGivenEndow[ i ] / this.replicationData.size();
-			double agentMLT = medianLoanTakenEndow[ i ] / this.replicationData.size();
+			double agentMCE = medianConsumEndow[ i ] / validReplications;
+			double agentMAE = medianAssetEndow[ i ] / validReplications;
+			double agentMLE = medianLoanEndow[ i ] / validReplications;
+			double agentMLG = medianLoanGivenEndow[ i ] / validReplications;
+			double agentMLT = medianLoanTakenEndow[ i ] / validReplications;
 			
 			Agent medianAgent = new Agent( templateAgent.getId(), templateAgent.getH(), this.markets ) {
 				@Override
@@ -623,11 +645,6 @@ public class ReplicationPanel extends JPanel {
 	}
 	
 	private synchronized void replicationFinished( ReplicationData data ) {
-		// reject canceled data
-		if ( data.isCanceled() ) {
-			return;
-		}
-		
 		this.replicationData.add( data );
 		this.currentStats = this.calculateAgentStatistics();
 		int replicationsLeft = (int) ReplicationPanel.this.replicationCountSpinner.getValue() 
@@ -639,9 +656,11 @@ public class ReplicationPanel extends JPanel {
 				ReplicationPanel.this.replicationTable.addReplication( data );
 				ReplicationPanel.this.replicationsLeftLabel.setText( "Replications Left: " + replicationsLeft );
 				
-				ReplicationPanel.this.equilibriumInfoPanel.setStats( ReplicationPanel.this.currentStats.getStats() );
-				ReplicationPanel.this.agentWealthPanel.setAgents( ReplicationPanel.this.currentStats.getFinalAgents() );
-				ReplicationPanel.this.updateAgentInfoFrame( ReplicationPanel.this.currentStats.getFinalAgents() );
+				if ( null != ReplicationPanel.this.currentStats ) {
+					ReplicationPanel.this.equilibriumInfoPanel.setStats( ReplicationPanel.this.currentStats.getStats() );
+					ReplicationPanel.this.agentWealthPanel.setAgents( ReplicationPanel.this.currentStats.getFinalAgents() );
+					ReplicationPanel.this.updateAgentInfoFrame( ReplicationPanel.this.currentStats.getFinalAgents() );
+				}
 			}
 		} );
 	}
@@ -857,7 +876,6 @@ public class ReplicationPanel extends JPanel {
 				if ( terminated ) {  
 					ReplicationData data = new ReplicationData();
 					data.setStats( auction.calculateEquilibriumStats() );
-					data.setTermination(this.terminationMode);
 					data.setTradingHalted( tx.hasTradingHalted() );
 					data.setEquilibrium( tx.isEquilibrium() );
 					data.setCanceled( this.canceledFlag || this.nextTxFlag );

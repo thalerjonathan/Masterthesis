@@ -3,6 +3,8 @@ package frontend.experimenter.xml.result;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import backend.agents.Agent;
+
 @XmlRootElement( name = "agent" )
 public class AgentBean {
 
@@ -15,6 +17,15 @@ public class AgentBean {
 	
 	public AgentBean() {
 		
+	}
+	
+	public AgentBean( Agent a ) {
+		this.setH( a.getH() );
+		this.setAssets( a.getAssetEndow() );
+		this.setCash( a.getConumEndow() );
+		this.setLoan( a.getLoan() );
+		this.setLoanGiven( a.getLoanGiven() );
+		this.setLoanTaken( a.getLoanTaken() );
 	}
 	
 	public double getH() {

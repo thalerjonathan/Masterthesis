@@ -5,19 +5,17 @@ import java.util.List;
 
 import backend.Auction.EquilibriumStatistics;
 import backend.agents.Agent;
-import frontend.replication.ReplicationPanel.TerminationMode;
+import frontend.experimenter.xml.result.ReplicationBean;
 
 public class ReplicationData {
 
 	private int number;
 	private int taskId;
-	private long txCount;
+	private int txCount;
 	
 	private boolean canceled;
 	private boolean equilibrium;
 	private boolean tradingHalted;
-	
-	private TerminationMode termination;
 	
 	private Date finishTime;
 	
@@ -27,6 +25,17 @@ public class ReplicationData {
 	
 	public ReplicationData() {
 		this.finishTime = new Date();
+	}
+
+	public ReplicationData( ReplicationBean bean ) {
+		this.setCanceled( bean.isCanceled() );
+		this.setEquilibrium( bean.isReachedEquilibrium() );
+		this.setNumber( bean.getReplication() );
+		this.setTaskId( bean.getTask() );
+		this.setTradingHalted( bean.isTradingHalted() );
+		this.setTxCount( bean.getTransactions() );
+		this.finishTime = bean.getFinishedAt();
+		this.setStats( new EquilibriumStatistics( bean.getEquilibrium() ) );
 	}
 
 	public List<Agent> getFinalAgents() {
@@ -53,11 +62,11 @@ public class ReplicationData {
 		this.taskId = taskId;
 	}
 
-	public long getTxCount() {
+	public int getTxCount() {
 		return txCount;
 	}
 
-	public void setTxCount(long txCount) {
+	public void setTxCount(int txCount) {
 		this.txCount = txCount;
 	}
 
@@ -83,14 +92,6 @@ public class ReplicationData {
 
 	public void setTradingHalted(boolean tradingHalted) {
 		this.tradingHalted = tradingHalted;
-	}
-
-	public TerminationMode getTermination() {
-		return termination;
-	}
-
-	public void setTermination(TerminationMode termination) {
-		this.termination = termination;
 	}
 
 	public Date getFinishTime() {

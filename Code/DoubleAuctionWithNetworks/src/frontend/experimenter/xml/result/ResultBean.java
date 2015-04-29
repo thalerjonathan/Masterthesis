@@ -13,7 +13,17 @@ public class ResultBean {
 	private ExperimentBean experiment;
 	private EquilibriumBean equilibrium;
 	private List<AgentBean> agents;
+	private List<ReplicationBean> replications;
 	
+	public List<ReplicationBean> getReplications() {
+		return replications;
+	}
+
+	@XmlElement( name = "replications" )
+	public void setReplications(List<ReplicationBean> replications) {
+		this.replications = replications;
+	}
+
 	public ExperimentBean getExperiment() {
 		return experiment;
 	}

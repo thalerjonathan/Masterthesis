@@ -58,6 +58,9 @@ public class ExperimenterPanel extends JPanel {
 		this.experimentPathTextField = new JTextField();
 		this.experimentResultPathTextField = new JTextField();
 		
+		this.experimentPathTextField.setEditable( false );
+		this.experimentResultPathTextField.setEditable( false );
+		
 		this.fileChooser = new JFileChooser();
 		this.fileChooser.setFileFilter( new FileNameExtensionFilter( "XML-Files", "xml" ) );
 		this.fileChooser.setCurrentDirectory( new File( System.getProperty("user.dir") ) );
@@ -145,6 +148,7 @@ public class ExperimenterPanel extends JPanel {
 				c.gridy++;
 			}
 			
+			this.experimentPathTextField.setText( file.getAbsolutePath() );
 			this.revalidate();
 			
 		} catch (JAXBException e) {

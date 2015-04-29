@@ -112,6 +112,18 @@ public class EquilibriumInfoPanel extends JPanel {
 		this.add( optimistLabel, c );
 	}
 	
+	public void clearStats() {
+		this.assetPriceMeanLabel.setText("");
+		this.loanPriceMeanLabel.setText("");
+		this.assetLoanPriceMeanLabel.setText("");
+		this.i0Label.setText("");
+		this.i1Label.setText("");
+		this.i2Label.setText("");
+		this.pessimistLabel.setText("");
+		this.mediumLabel.setText("");
+		this.optimistLabel.setText("");
+	}
+	
 	public void setStats( EquilibriumStatistics stats ) {
 		this.setAssetPrice( stats.p );
 		this.setLoanPrice( stats.q );
