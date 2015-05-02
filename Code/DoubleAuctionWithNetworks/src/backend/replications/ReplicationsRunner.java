@@ -170,12 +170,13 @@ public class ReplicationsRunner {
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
-		
-		this.replicationTasks.clear();
 	}
 
 	private void cleanUp() {
 		this.writeResults();
+		
+		this.replicationData.clear();
+		this.replicationTasks.clear();
 		
 		this.replicationTaskExecutor.shutdown();
 		this.awaitFinishThread = null;

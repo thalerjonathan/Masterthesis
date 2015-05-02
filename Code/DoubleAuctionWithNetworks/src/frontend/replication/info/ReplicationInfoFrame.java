@@ -33,11 +33,11 @@ public class ReplicationInfoFrame extends JFrame {
 
 		this.infoPanels = new ArrayList<>();
 
-		this.createControls( replicationTable );
-		
 		this.getContentPane().setLayout( new BorderLayout() );
 		this.getContentPane().setPreferredSize( new Dimension( 1300, 580 ) );
 		
+		this.createControls( replicationTable );
+
 		this.setDefaultCloseOperation( JFrame.HIDE_ON_CLOSE );
 		this.setResizable( false );
 		this.pack();
@@ -67,13 +67,13 @@ public class ReplicationInfoFrame extends JFrame {
 		this.txHistoryScrollPane.setBorder( BorderFactory.createTitledBorder( BorderFactory.createLineBorder( Color.black ), "Finished Replications" ) );
 		this.txHistoryScrollPane.setPreferredSize( new Dimension( 880, 150 ) );
 		
-		this.getContentPane().add( this.txHistoryScrollPane );
+		this.getContentPane().add( this.scroll, BorderLayout.CENTER );
+		this.getContentPane().add( this.txHistoryScrollPane, BorderLayout.SOUTH );
 	}
 
 	public void setTasks( List<ReplicationTask> tasks ) {
 		this.infoPanels.clear();
 		this.tasksPanel.removeAll();
-		//this.getContentPane().remove( this.scroll );
 		
 		if ( tasks.size() > 0 ) {
 			GridBagConstraints c = new GridBagConstraints();
@@ -96,11 +96,8 @@ public class ReplicationInfoFrame extends JFrame {
 				
 				c.gridy++;
 			}
-			
-			this.getContentPane().add( this.scroll, BorderLayout.CENTER );
 		}
 		
-		this.revalidate();
-		this.pack();
+		this.getContentPane().revalidate();
 	}
 }
