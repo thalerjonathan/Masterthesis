@@ -41,8 +41,6 @@ public class AgentInfoPanel extends JPanel {
 		this.collateralLabel.setText( InspectionPanel.TRADING_VALUES_FORMAT.format( a.getCollateral() ) );
 		this.loansGivenLabel.setText( InspectionPanel.TRADING_VALUES_FORMAT.format( a.getLoanGiven() ) );
 		this.loansTakenLabel.setText( InspectionPanel.TRADING_VALUES_FORMAT.format( a.getLoanTaken() ) );
-		
-		//a.printSamples();
 	}
 	
 	private void createControls() {

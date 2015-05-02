@@ -1,0 +1,47 @@
+Implementierung		
+	-> TODO 	experimente durchführen
+				-> macht es unterschied ob es N + 1 agents sind?
+				
+				100 Agenten (500 sind zuviel, aufwand scheint exponentiell zu wachsen)
+				50 Replikationen
+				-> 1. ASCENDING_CONNECTED MIT Importance Sampling
+					-> termination mode: TRADING_HALT
+				-> 2. ASCENDING_CONNECTED OHNE Importance Sampling
+					-> termination mode: 1000 FAILED SUCCESSIVE TX - pro Replikation ca 130sec. auf laptop ohne parallelität
+				-> 3. FULLY_CONNECTED
+					-> termination mode: 1000 FAILED SUCCESSIVE TX - pro Replikation ca 650sec. auf laptop ohne parallelität
+				
+Schreiben
+	-> TODO		wieso wird gleichgewicht DOCHT NICHT erreicht?
+				-> bei welcher vernetzungsdichte wird das globale gleichgewicht erreicht?
+				-> ASCNEDING_FULL_SHORTCUTS mit steigenden n
+				-> ASCENDING_REGULAR_SHORTCUTS  mit steigenden n
+				
+	-> TODO		SCHREIBEN: Introduction 
+	-> TODO		SCHREIBEN: Implementation
+	-> TODO		SCHREIBEN: Paper berschreiben
+	-> TODO		SCHREIBEN: implementierung beschreiben und unterschiede zum paper
+		
+	-> TODO		SCHREIBEN: Theorie Dieser erst ganz zum schluss, damit der theorieteil einen sinnvollen kontext bekommt und nicht bloß als trockener nackter theorieteil daherkommt, 
+				den man vor jede andere x-beliebige masterthesis setzen kann die sich auch mit komplexeren netzwerken auseinandersetzt.
+	-> TODO		SCHREIBEN: "Conclusions and Perspectives" schreiben.
+
+
+Wenn noch zeit:
+	-> TODO		memory-managemnt optimieren
+	-> TODO		Optimieren von Matchingwahrscheinlichkeiten bzw. Importance Sampling
+				anpassung an die nachbar limitprices, aber nicht deterministisch sondern auch zufällig ( mit 1/10 diese optimierung machen und dann untersuchen). 
+				somit kommt es mit höherer wahrscheinlichkeit zu matches zwischen ascending-nachbaren. ABER: dann keine reinen zero-intelligence agents.
+				-> IMPORTANCE-SAMPLING
+				-> upper/lower limit immer auf nachbar käufer/verkäufer limitprice setzen funktioniert bei ascending_connected nicht - wieso eigentlich nicht? wahrscheinlich reduziert es die wahrscheinlichkeit noch mehr
+				-> ober/unter grenze währenddessen erlernen d.h. bei erfolgreichen transaktionen nach oben bzw. unten verschieben und dann mit einer 50% wahrscheinlichkeit daraus ziehen funktioniert auch nicht
+	
+				-> Initiale Sampleanzahl von Anzahl der Agenten und Topologie abhängig: wie berechnen
+					-> Variante mit Sampling muss mindestens gleich gut funktionieren wie die mit uniform random 
+				-> Neue Samples müssen mit einer gewissen Wahrscheinlichkkeit hinzugefügt werden: welcher?
+					-> Integralfläche?
+					-> Wichtigkeit des Samples?
+	
+	-> TODO		wieder mehere bond-typen zurückeinbauen, da ein wesentlicher punkt im paper ist, dass wenn mehrere loans zur verfügung stehen, die riskioreichen NICHT gehandelt werden
+
+	-> TODO		Refatorings
