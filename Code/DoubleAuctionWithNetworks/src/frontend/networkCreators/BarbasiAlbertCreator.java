@@ -4,7 +4,7 @@ import backend.agents.IAgentFactory;
 import backend.agents.network.AgentNetwork;
 import backend.markets.Markets;
 
-public class BarbasiAlbertCreator implements INetworkCreator {
+public class BarbasiAlbertCreator extends NetworkCreator {
 	private int m0 = 3;
 	private int m = 1;
 	
@@ -22,7 +22,7 @@ public class BarbasiAlbertCreator implements INetworkCreator {
 		okCallback.run();
 	}
 	
-	public String toString() {
+	public String name() {
 		return "Barbasi-Albert";
 	}
 	

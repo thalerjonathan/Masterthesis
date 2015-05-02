@@ -113,3 +113,15 @@ Zeitpunkte
 					OK zeigt die momentan laufenden replikationen inklusive fortschritt an (nur bei MAX TOTAL TX)
 					OK erlaubt eine einzelne replikation zu canceln
 					OK erlaubt die vermögensverteilung einer einzelne replikation hineinzuschauen:
+					
+						-> OK		nach 500 sweeps wird geprüft welcher agent noch handeln kann. kann einer nichtmehr handeln wird er ausgeschieden
+				und wird nichtmehr betrachtet. kommt es aber wieder zu einem match, so wird wieder mit allen ursprünglichen agenten gehandelt
+
+		-> OK		alle zusätzlichen fenster in der titelleiste die aktuellen topologie und anzahl der agents mit eintragen damit unterscheidbarer	
+		
+		-> OK		experimente über XML-serialisierung rausschreiben
+					-> braucht einen experiment-viewer um die vermögensverteilung & agents am ende anzusehen
+		-> OK		Replication kann als Experiment abgespeichert werden. wird eine existierende gültige experiment-datei ausgewählt, so wird es hinzugefügt
+		
+		-> OK		experimenter implementieren: vordefinierte experimentbeschreibungen über XML einlesen, diese können dann als zusätzlicher replication-tab geöffnet werden	
+	

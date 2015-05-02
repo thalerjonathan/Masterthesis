@@ -14,8 +14,8 @@ public class ReplicationTable extends JTable {
 	public ReplicationTable() {
 		this.tableModel = new DefaultTableModel(
 				new Object[] { "Replication", "Task", 
-						"TXs", "p", "q", "pq", "i0", "i1", "i2", "P", "M", "O",
-						"Equilibrium", "Canceled", "Trading Halted", "Finished at" }, 0 ) {
+						"Total TXs", "Failed TXs", "p", "q", "pq", "i0", "i1", "i2", "P", "M", "O",
+						"Canceled", "Trading Halted", "Duration" }, 0 ) {
 
 		    @Override
 		    public boolean isCellEditable(int row, int column) {
@@ -43,12 +43,15 @@ public class ReplicationTable extends JTable {
 	
 	public void addReplication( ReplicationData data ) {
 		// "Replication", "Task", 
-		// "TXs", "p", "q", "pq", "i0", "i1", "i2", "P", "M", "O",
-		// "Equilibrium", "Canceled", "Trading Halted", "Finished at"
+		// "Total TXs", "Failed TXs", "p", "q", "pq", "i0", "i1", "i2", "P", "M", "O",
+		// "Canceled", "Trading Halted", "Duration"
 		EquilibriumStatistics stats = data.getStats();
 		
+		long durationSec = ( data.getFinishTime().getTime() - data.getStartTime().getTime() ) / 1000;
+		
 		this.tableModel.addRow( new Object[] { data.getNumber(), data.getTaskId(), 
-				data.getTxCount(), 
+				data.getTotalTxCount(),
+				data.getFailedTxCount(),
 				ReplicationPanel.VALUES_FORMAT.format( stats.p ), 
 				ReplicationPanel.VALUES_FORMAT.format( stats.q ), 
 				ReplicationPanel.VALUES_FORMAT.format( stats.pq ),
@@ -58,7 +61,6 @@ public class ReplicationTable extends JTable {
 				ReplicationPanel.VALUES_FORMAT.format( stats.P ),
 				ReplicationPanel.VALUES_FORMAT.format( stats.M ),
 				ReplicationPanel.VALUES_FORMAT.format( stats.O ),
-				data.isEquilibrium(), data.isCanceled(),  data.isTradingHalted(),
-				ReplicationPanel.DATE_FORMATTER.format( data.getFinishTime() ) } );
+				data.isCanceled(),  data.isTradingHalted(), durationSec } );
 	}
 }

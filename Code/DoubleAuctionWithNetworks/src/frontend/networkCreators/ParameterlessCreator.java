@@ -4,7 +4,7 @@ import backend.agents.network.AgentNetwork;
 import backend.markets.Markets;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
-public abstract class ParameterlessCreator implements INetworkCreator {
+public abstract class ParameterlessCreator extends NetworkCreator {
 
 	public boolean createInstant() {
 		return true;

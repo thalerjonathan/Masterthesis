@@ -4,7 +4,7 @@ import backend.agents.IAgentFactory;
 import backend.agents.network.AgentNetwork;
 import backend.markets.Markets;
 
-public class WattStrogatzCreator implements INetworkCreator {
+public class WattStrogatzCreator extends NetworkCreator {
 	private int k = 2;
 	private double b = 0.2;
 	
@@ -21,7 +21,7 @@ public class WattStrogatzCreator implements INetworkCreator {
 		okCallback.run();
 	}
 	
-	public String toString() {
+	public String name() {
 		return "Watts-Strogatz";
 	}
 	

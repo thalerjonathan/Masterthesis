@@ -6,7 +6,7 @@ import backend.agents.IAgentFactory;
 import backend.agents.network.AgentNetwork;
 import backend.markets.Markets;
 
-public class AscendingRegularShortcutsCreator implements INetworkCreator {
+public class AscendingRegularShortcutsCreator extends NetworkCreator {
 	private int n = 5;
 	
 	public AgentNetwork createNetwork( IAgentFactory agentFactory ) {
@@ -33,7 +33,7 @@ public class AscendingRegularShortcutsCreator implements INetworkCreator {
 		return false;
 	}
 	
-	public String toString() {
+	public String name() {
 		return "Ascending Regular Shortcuts";
 	}
 	

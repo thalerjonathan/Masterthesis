@@ -9,9 +9,10 @@ import java.awt.event.ActionListener;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JProgressBar;
 
+import frontend.MainWindow;
 import frontend.experimenter.xml.experiment.ExperimentBean;
+import frontend.replication.ReplicationPanel;
 
 @SuppressWarnings("serial")
 public class ExperimentPanel extends JPanel {
@@ -27,21 +28,16 @@ public class ExperimentPanel extends JPanel {
 	private JLabel maxTxLabel;
 	private JLabel replicationsLabel;
 
-	private JProgressBar progressBar;
-	private JButton toggleRunButton;
+	private JButton openAsReplicationButton;
 	
-	public ExperimentPanel( ExperimentBean bean, ActionListener toggleButtonListener ) {
+	public ExperimentPanel( ExperimentBean bean, boolean isResult ) {
 		this.setLayout( new GridBagLayout() );
 		this.setPreferredSize( new Dimension( 1024, 100 ) );
 		
-		this.createControls( bean, toggleButtonListener );
+		this.createControls( bean, isResult );
 	}
 
-	public void setRunButtonEnabled( boolean flag ) {
-		this.toggleRunButton.setEnabled( flag );
-	}
-	
-	private void createControls( ExperimentBean bean, ActionListener toggleButtonListener ) {
+	private void createControls( ExperimentBean bean, boolean isResult ) {
 		JLabel agentCountInfoLabel = new JLabel( "Agents: ");
 		JLabel faceValueInfoLabel = new JLabel( "Face-Value: ");
 		JLabel topologyInfoLabel = new JLabel( "Topology: ");
@@ -67,20 +63,15 @@ public class ExperimentPanel extends JPanel {
 		this.maxTxLabel = new JLabel( "" + bean.getMaxTx() );
 		this.replicationsLabel = new JLabel( "" + bean.getReplications() );
 		
-		if ( null != toggleButtonListener ) {
-			this.progressBar = new JProgressBar();
-			this.toggleRunButton = new JButton( "Run" );
-			this.toggleRunButton.addActionListener( new ActionListener() {
+		if ( false == isResult ) {
+			this.openAsReplicationButton = new JButton( "Open As Replication" );
+			this.openAsReplicationButton.addActionListener( new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					toggleButtonListener.actionPerformed( e );
-					toggleRunButton.setText( "Cancel" );
+					ReplicationPanel replicationPanel = new ReplicationPanel( bean );
+					MainWindow.getInstance().addPanel( replicationPanel, bean.getName() );
 				}
 			} );
-			
-			this.progressBar.setMinimum( 0 );
-			this.progressBar.setMaximum( bean.getReplications() );
-			this.progressBar.setStringPainted( true );
 		}
 		
 		GridBagConstraints c = new GridBagConstraints();
@@ -121,7 +112,6 @@ public class ExperimentPanel extends JPanel {
 		this.add( bondsPledgeabilityInfoLabel, c );
 		c.gridx = 3;
 		this.add( this.bondsPledgeabilityLabel, c );
-		
 
 		c.gridy = 1;
 		c.gridx = 4;
@@ -145,18 +135,12 @@ public class ExperimentPanel extends JPanel {
 		c.gridx = 7;
 		this.add( this.replicationsLabel, c );
 		
-		if ( null != toggleButtonListener ) {
-			c.gridy = 0;
-			c.gridx = 8;
-			c.gridwidth = 20;
-			c.gridheight = 3;
-			this.add( this.progressBar, c );
-			
+		if ( false == isResult ) {
 			c.gridy = 0;
 			c.gridx = 28;
 			c.gridwidth = 2;
 			c.gridheight = 3;
-			this.add( this.toggleRunButton, c );
+			this.add( this.openAsReplicationButton, c );
 		}
 	}
 }

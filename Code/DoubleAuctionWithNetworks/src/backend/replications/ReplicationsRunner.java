@@ -46,15 +46,13 @@ public class ReplicationsRunner {
 	
 	private List<ReplicationData> replicationData;
 
-	private int replications;
-	private TerminationMode terminationMode;
-	private int maxTx;
-	
 	private AgentNetwork template;
 	private Markets markets;
 	private ReplicationsListener listener;
 	
-	private AtomicInteger replicationsLeft;
+	private AtomicInteger replications;
+	
+	private ExperimentBean experiment;
 	
 	private final static SimpleDateFormat FILENAME_DATE_FORMATTER = new SimpleDateFormat( "yyyyMMdd_HHmmss" );
 	private final static String REPLICATIONS_DIR_NAME = "replications/";
@@ -68,15 +66,9 @@ public class ReplicationsRunner {
 		TOTAL_TX,
 		FAIL_TOTAL_TX,
 		FAIL_SUCCESSIVE_TX,
-		TRADING_HALTED,
-		EQUILIBRIUM
+		TRADING_HALTED
 	}
-	
-	public List<ReplicationTask> getReplicationTasks() {
-		// TODO: sync?
-		return this.replicationTasks;
-	}
-	
+
 	public ReplicationsRunner( AgentNetwork template, Markets markets ) {
 		this.replicationTasks = new ArrayList<>();
 		this.replicationData = new ArrayList<>();
@@ -85,26 +77,43 @@ public class ReplicationsRunner {
 		this.markets = markets;
 	}
 	
+	public boolean isRunning() {
+		return this.awaitFinishThread != null;
+	}
+	
+	public Date getStartingTime() {
+		return this.startingTime;
+	}
+
+	public ReplicationData getCurrentStats() {
+		return this.currentStats;
+	}
+	
+	public int getReplicationsLeft() {
+		return this.experiment.getReplications() - this.replicationData.size();
+	}
+	
+	public List<ReplicationTask> getReplicationTasks() {
+		return this.replicationTasks;
+	}
+	
 	@SuppressWarnings("rawtypes")
-	// TODO: refactoring: use ExperimentBean
-	public void start( int replications, TerminationMode terminationMode, int maxTx, ReplicationsListener listener ) {
+	public void start( ExperimentBean experiment, ReplicationsListener listener ) {
 		// replications already running
-		if ( null != this.awaitFinishThread ) {
+		if ( this.isRunning() ) {
 			return;
 		}
 		
 		this.canceled = false;
 		this.startingTime = new Date();
-		this.replications = replications;
-		this.terminationMode = terminationMode;
-		this.maxTx = maxTx;
+		this.experiment = experiment;
+		
 		this.listener = listener;
-		this.replicationsLeft = new AtomicInteger( replications );
+		this.replications = new AtomicInteger( experiment.getReplications() );
 		// always do parallel-processing
 		int threadCount = Math.max( 1, Runtime.getRuntime().availableProcessors() - 1 ); // leave one for GUI-purposes, otherwise would freeze
 		// if less replications than threads, then limit thread-count by replication-count
-		threadCount = Math.min( threadCount, replications );
-		
+		threadCount = Math.min( threadCount, experiment.getReplications() );
 
 		this.replicationTaskExecutor = Executors.newFixedThreadPool( threadCount, new ThreadFactory() {
 			public Thread newThread( Runnable r ) {
@@ -144,16 +153,9 @@ public class ReplicationsRunner {
 		this.awaitFinishThread.start();
 	}
 	
-	private void cleanUp() {
-		this.writeResults();
-		
-		this.replicationTaskExecutor.shutdown();
-		this.awaitFinishThread = null;
-	}
-	
 	public void stop() {
 		// no replications running
-		if ( null == this.awaitFinishThread ) {
+		if ( false == this.isRunning() ) {
 			return;
 		}
 		
@@ -172,23 +174,14 @@ public class ReplicationsRunner {
 		this.replicationTasks.clear();
 	}
 
-	public Date getStartingTime() {
-		return this.startingTime;
+	private void cleanUp() {
+		this.writeResults();
+		
+		this.replicationTaskExecutor.shutdown();
+		this.awaitFinishThread = null;
 	}
 	
-	public boolean hasFinishedReplications() {
-		return this.replicationData.size() > 0;
-	}
-	
-	public ReplicationData getCurrentStats() {
-		return this.currentStats;
-	}
-	
-	public int getReplicationsLeft() {
-		return this.replications - this.replicationData.size();
-	}
-	
-	private void replicationFinished( ReplicationData data ) {
+	private synchronized void replicationFinished( ReplicationData data ) {
 		this.replicationData.add( data );
 		this.currentStats = this.calculateStatistics();
 		
@@ -299,7 +292,9 @@ public class ReplicationsRunner {
 		
 		currentStats.setFinalAgents( meanAgents );
 		currentStats.setStats( meanStats );
-
+		currentStats.setStartTime( this.startingTime );
+		currentStats.setFinishTime( new Date() );
+		
 		return currentStats;
 	}
 	
@@ -308,22 +303,14 @@ public class ReplicationsRunner {
 			return;
 		}
 		
-		String name = FILENAME_DATE_FORMATTER.format( new Date() );
-		ResultBean resultBean = new ResultBean();
-		ExperimentBean experimentBean = new ExperimentBean();
-		EquilibriumBean equilibriumBean = new EquilibriumBean( this.currentStats.getStats() );
+		Date endingTime = new Date();
+		String name = FILENAME_DATE_FORMATTER.format( endingTime );
+		if ( null == this.experiment.getName() ) {
+			this.experiment.setName( name );
+		}
 		
-		experimentBean.setName( name );
-		experimentBean.setAgentCount( this.currentStats.getFinalAgents().size() );
-		experimentBean.setFaceValue( this.markets.V() );
-		experimentBean.setTopology( this.template.getNetworkName() );
-		experimentBean.setAssetLoanMarket( this.markets.isABM() );
-		experimentBean.setLoanCashMarket( this.markets.isLoanMarket() );
-		experimentBean.setBondsPledgeability( this.markets.isBP() );
-		//experimentBean.setImportanceSampling( this.importanceSamplingCheck.isSelected() ); // TODO
-		experimentBean.setTerminationMode( this.terminationMode );
-		experimentBean.setMaxTx( this.maxTx );
-		experimentBean.setReplications( this.replications );
+		ResultBean resultBean = new ResultBean();
+		EquilibriumBean equilibriumBean = new EquilibriumBean( this.currentStats.getStats() );
 		
 		List<AgentBean> resultAgents = new ArrayList<AgentBean>();
 		Iterator<Agent> agentIter = this.currentStats.getFinalAgents().iterator();
@@ -332,15 +319,33 @@ public class ReplicationsRunner {
 			resultAgents.add( new AgentBean( a ) );
 		}
 		
+		double meanTotalTx = 0.0;
+		double meanFailedTx = 0.0;
+		int validReplications = 0;
+		
 		List<ReplicationBean> replications = new ArrayList<ReplicationBean>();
 		for ( ReplicationData data : this.replicationData ) {
+			if ( false == data.isCanceled() ) {
+				meanTotalTx += data.getTotalTxCount();
+				meanFailedTx += data.getFailedTxCount();
+				validReplications++;
+			}
+			
 			replications.add( new ReplicationBean( data ) );
 		}
 		
+		meanTotalTx /= validReplications;
+		meanFailedTx /= validReplications;
+		
 		resultBean.setAgents( resultAgents );
 		resultBean.setEquilibrium( equilibriumBean );
-		resultBean.setExperiment( experimentBean );
+		resultBean.setExperiment( this.experiment );
 		resultBean.setReplications( replications );
+		resultBean.setDurationSeconds( (int) (( endingTime.getTime() - this.startingTime.getTime() ) / 1000) );
+		resultBean.setMeanTotalTransactions( meanTotalTx );
+		resultBean.setMeanFailedTransactions( meanFailedTx );
+		resultBean.setStartingTime( this.startingTime );
+		resultBean.setEndingTime( endingTime );
 		
 		try {
 			JAXBContext jaxbContext = JAXBContext.newInstance( ResultBean.class );
@@ -366,6 +371,8 @@ public class ReplicationsRunner {
 		private int totalTxCount;
 		private int failTxTotalCount;
 		private int failTxSuccessiveCount;
+		
+		private Date replicationStartingTime;
 		
 		private Future future;
 
@@ -394,7 +401,7 @@ public class ReplicationsRunner {
 		}
 
 		public TerminationMode getTerminationMode() {
-			return terminationMode;
+			return ReplicationsRunner.this.experiment.getTerminationMode();
 		}
 		
 		public int getTotalTxCount() {
@@ -406,7 +413,7 @@ public class ReplicationsRunner {
 		}
 
 		public int getMaxTx() {
-			return maxTx;
+			return ReplicationsRunner.this.experiment.getMaxTx();
 		}
 
 		public List<Agent> getAgents() {
@@ -428,13 +435,17 @@ public class ReplicationsRunner {
 					break;
 				}
 				
-				if ( ( this.currentReplication = ReplicationsRunner.this.replicationsLeft.getAndDecrement() ) <= 0 ) {
+				int nextReplication = ReplicationsRunner.this.replications.getAndDecrement();
+				if ( nextReplication <= 0 ) {
 					break;
 				}
 				
+				this.currentReplication = nextReplication;
 				// creates a deep copy of the network, need for parallel execution
 				this.currentAgents = new AgentNetwork( ReplicationsRunner.this.template );
 				Auction auction = new Auction( this.currentAgents );
+				
+				this.replicationStartingTime = new Date();
 				
 				ReplicationData data = this.calculateReplication( auction );
 				if ( null != data ) {
@@ -465,17 +476,15 @@ public class ReplicationsRunner {
 					this.failTxSuccessiveCount = 0;
 				}
 
-				if ( TerminationMode.TOTAL_TX == ReplicationsRunner.this.terminationMode ) {
-					terminated = this.totalTxCount >= ReplicationsRunner.this.maxTx;
+				if ( TerminationMode.TOTAL_TX == ReplicationsRunner.this.experiment.getTerminationMode() ) {
+					terminated = this.totalTxCount >= ReplicationsRunner.this.experiment.getMaxTx();
 					
-				} else if ( TerminationMode.FAIL_TOTAL_TX == ReplicationsRunner.this.terminationMode ) {
-					terminated = this.failTxTotalCount >= ReplicationsRunner.this.maxTx;
+				} else if ( TerminationMode.FAIL_TOTAL_TX == ReplicationsRunner.this.experiment.getTerminationMode() ) {
+					terminated = this.failTxTotalCount >= ReplicationsRunner.this.experiment.getMaxTx();
 				
-				} else if ( TerminationMode.FAIL_SUCCESSIVE_TX == ReplicationsRunner.this.terminationMode ) {
-					terminated = this.failTxSuccessiveCount >= ReplicationsRunner.this.maxTx;
+				} else if ( TerminationMode.FAIL_SUCCESSIVE_TX == ReplicationsRunner.this.experiment.getTerminationMode() ) {
+					terminated = this.failTxSuccessiveCount >= ReplicationsRunner.this.experiment.getMaxTx();
 				
-				} else if ( TerminationMode.EQUILIBRIUM == ReplicationsRunner.this.terminationMode && tx.isEquilibrium() ) {
-					terminated = true;
 				}
 				
 				if ( this.nextTxFlag ) {
@@ -493,13 +502,15 @@ public class ReplicationsRunner {
 				
 				if ( terminated ) {  
 					ReplicationData data = new ReplicationData();
+					data.setFinishTime( new Date() );
+					data.setStartTime( this.replicationStartingTime );
 					data.setStats( auction.calculateEquilibriumStats() );
 					data.setTradingHalted( tx.hasTradingHalted() );
-					data.setEquilibrium( tx.isEquilibrium() );
 					data.setCanceled( this.canceledFlag || this.nextTxFlag );
-					data.setNumber( ReplicationsRunner.this.replications - this.currentReplication + 1 );
+					data.setNumber( ReplicationsRunner.this.experiment.getReplications() - this.currentReplication + 1 );
 					data.setTaskId( this.taskId );
-					data.setTxCount( this.totalTxCount );
+					data.setTotalTxCount( this.totalTxCount );
+					data.setFailedTxCount( this.failTxTotalCount );
 					
 					this.nextTxFlag = false;
 					

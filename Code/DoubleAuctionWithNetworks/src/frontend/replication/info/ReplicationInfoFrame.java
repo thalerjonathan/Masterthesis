@@ -73,7 +73,7 @@ public class ReplicationInfoFrame extends JFrame {
 	public void setTasks( List<ReplicationTask> tasks ) {
 		this.infoPanels.clear();
 		this.tasksPanel.removeAll();
-		this.getContentPane().remove( this.scroll );
+		//this.getContentPane().remove( this.scroll );
 		
 		if ( tasks.size() > 0 ) {
 			GridBagConstraints c = new GridBagConstraints();

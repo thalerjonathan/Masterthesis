@@ -152,9 +152,7 @@ public class ReplicationInfoPanel extends JPanel {
 		this.failedTxLabel.setText( TX_COUNT_FORMATTER.format( this.task.getFailTxCount() ) );
 		this.replicationNumberLabel.setText( "" + this.task.getCurrentReplication() );
 		
-		if ( TerminationMode.TRADING_HALTED != task.getTerminationMode() && 
-				TerminationMode.EQUILIBRIUM != task.getTerminationMode() ) {
-			
+		if ( TerminationMode.TRADING_HALTED != task.getTerminationMode()) {
 			this.maxTxLabel.setText( TX_COUNT_FORMATTER.format( this.task.getMaxTx() )  );
 			this.progressBar.setMaximum( this.task.getMaxTx() );
 			

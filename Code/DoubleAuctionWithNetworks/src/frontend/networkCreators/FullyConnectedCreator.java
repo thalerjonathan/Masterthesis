@@ -9,7 +9,7 @@ public class FullyConnectedCreator extends ParameterlessCreator {
 		return AgentNetwork.createFullyConnected( agentFactory );
 	}
 	
-	public String toString() {
+	public String name() {
 		return "Fully Connected";
 	}
 }

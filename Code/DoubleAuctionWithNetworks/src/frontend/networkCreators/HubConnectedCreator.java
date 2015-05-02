@@ -6,7 +6,7 @@ import backend.agents.IAgentFactory;
 import backend.agents.network.AgentNetwork;
 import backend.markets.Markets;
 
-public class HubConnectedCreator implements INetworkCreator {
+public class HubConnectedCreator extends NetworkCreator {
 	private int n = 3;
 	
 	public AgentNetwork createNetwork( IAgentFactory agentFactory ) {
@@ -32,7 +32,7 @@ public class HubConnectedCreator implements INetworkCreator {
 		return false;
 	}
 	
-	public String toString() {
+	public String name() {
 		return "N Hubs";
 	}
 	

@@ -55,9 +55,9 @@ import frontend.networkCreators.ErdosRenyiCreator;
 import frontend.networkCreators.FullyConnectedCreator;
 import frontend.networkCreators.HalfFullyConnectedCreator;
 import frontend.networkCreators.HubConnectedCreator;
-import frontend.networkCreators.INetworkCreator;
 import frontend.networkCreators.MaximumHubCreator;
 import frontend.networkCreators.MedianHubCreator;
+import frontend.networkCreators.NetworkCreator;
 import frontend.networkCreators.ThreeMedianHubsCreator;
 import frontend.networkCreators.WattStrogatzCreator;
 import frontend.networkVisualisation.AgentSelectedEvent;
@@ -97,7 +97,7 @@ public class InspectionPanel extends JPanel implements ActionListener, ChangeLis
 	
 	private OfferBook offerBook;
 	
-	private JComboBox<INetworkCreator> topologySelection;
+	private JComboBox<NetworkCreator> topologySelection;
 	private JComboBox<String> layoutSelection;
 	private JComboBox<String> optimismSelection;
 	private JComboBox<MatchingType> matchingTypeSelection;
@@ -206,7 +206,7 @@ public class InspectionPanel extends JPanel implements ActionListener, ChangeLis
 		JPanel txInfoPanel = new JPanel( new GridBagLayout() );
 		JPanel networkVisControlsPanel = new JPanel();
 		
-		this.topologySelection = new JComboBox<INetworkCreator>();
+		this.topologySelection = new JComboBox<NetworkCreator>();
 		this.topologySelection.addItem( new AscendingConnectedCreator() );
 		this.topologySelection.addItem( new AscendingFullShortcutsCreator() );
 		this.topologySelection.addItem( new AscendingRegularShortcutsCreator() );
@@ -353,6 +353,7 @@ public class InspectionPanel extends JPanel implements ActionListener, ChangeLis
 				} else {
 					InspectionPanel.this.toggleNetworkPanelButton.setText( "Hide Network" );
 					InspectionPanel.this.networkPanel.setVisible( true );
+					InspectionPanel.this.createLayout();
 				}
 			}
 		});
@@ -371,7 +372,7 @@ public class InspectionPanel extends JPanel implements ActionListener, ChangeLis
 		this.topologySelection.addActionListener( new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				INetworkCreator newSelected = (INetworkCreator) InspectionPanel.this.topologySelection.getSelectedItem();
+				NetworkCreator newSelected = (NetworkCreator) InspectionPanel.this.topologySelection.getSelectedItem();
 
 				// creator signals to be created immediately
 				if ( newSelected.createInstant() ) {
@@ -610,7 +611,7 @@ public class InspectionPanel extends JPanel implements ActionListener, ChangeLis
 	}
 	
 	private void handleImportanceSampling() {
-		INetworkCreator creator = (INetworkCreator) this.topologySelection.getSelectedItem();
+		NetworkCreator creator = (NetworkCreator) this.topologySelection.getSelectedItem();
 		if ( this.importanceSamplingCheck.isSelected() ) {
 			creator.createImportanceSampling( this.agentNetwork, this.markets );
 		} else {
@@ -623,8 +624,8 @@ public class InspectionPanel extends JPanel implements ActionListener, ChangeLis
 	
 	public String getTitleExtension() {
 		int agentCount = (int) this.agentCountSpinner.getValue();
-		INetworkCreator creator = (INetworkCreator) this.topologySelection.getSelectedItem();
-		return creator.toString() + ", " + agentCount + " Agents";
+		NetworkCreator creator = (NetworkCreator) this.topologySelection.getSelectedItem();
+		return creator.name() + ", " + agentCount + " Agents";
 	}
 	
 	private void createAgents() {
@@ -632,7 +633,7 @@ public class InspectionPanel extends JPanel implements ActionListener, ChangeLis
 		this.markets = new Markets( (double) this.faceValueSpinner.getValue() );
 		this.setMarketMechanisms();
 		
-		INetworkCreator creator = (INetworkCreator) this.topologySelection.getSelectedItem();
+		NetworkCreator creator = (NetworkCreator) this.topologySelection.getSelectedItem();
 		this.agentNetwork = creator.createNetwork( new AgentFactoryImpl( agentCount, this.markets ) );
 		
 		this.handleImportanceSampling();

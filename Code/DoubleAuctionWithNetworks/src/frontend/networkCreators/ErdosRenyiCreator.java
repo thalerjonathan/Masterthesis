@@ -6,7 +6,7 @@ import backend.agents.IAgentFactory;
 import backend.agents.network.AgentNetwork;
 import backend.markets.Markets;
 
-public class ErdosRenyiCreator implements INetworkCreator {
+public class ErdosRenyiCreator extends NetworkCreator {
 	private double p = 0.2;
 	
 	public AgentNetwork createNetwork( IAgentFactory agentFactory ) {
@@ -32,7 +32,7 @@ public class ErdosRenyiCreator implements INetworkCreator {
 		return false;
 	}
 	
-	public String toString() {
+	public String name() {
 		return "Erdos-Renyi";
 	}
 	

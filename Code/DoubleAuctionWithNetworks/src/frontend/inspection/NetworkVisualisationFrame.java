@@ -27,6 +27,7 @@ public class NetworkVisualisationFrame extends JFrame {
 		// TODO: check if layout matches
 		
 		this.getContentPane().add( p );
+		this.revalidate();
 		this.pack();
 		
 		this.networkRenderPanel = p;

@@ -11,12 +11,13 @@ public class ReplicationData {
 
 	private int number;
 	private int taskId;
-	private int txCount;
+	private int totalTxCount;
+	private int failedTxCount;
 	
 	private boolean canceled;
-	private boolean equilibrium;
 	private boolean tradingHalted;
 	
+	private Date startTime;
 	private Date finishTime;
 	
 	private List<Agent> finalAgents;
@@ -24,18 +25,30 @@ public class ReplicationData {
 	private EquilibriumStatistics stats;
 	
 	public ReplicationData() {
-		this.finishTime = new Date();
 	}
 
 	public ReplicationData( ReplicationBean bean ) {
 		this.setCanceled( bean.isCanceled() );
-		this.setEquilibrium( bean.isReachedEquilibrium() );
 		this.setNumber( bean.getReplication() );
 		this.setTaskId( bean.getTask() );
 		this.setTradingHalted( bean.isTradingHalted() );
-		this.setTxCount( bean.getTransactions() );
-		this.finishTime = bean.getFinishedAt();
+		this.setTotalTxCount( bean.getTotalTransactions() );
+		this.setFailedTxCount( bean.getFailedTransactions() );
+		this.setFinishTime( bean.getFinishedAt() );
+		this.setStartTime( bean.getStartedAt() );
 		this.setStats( new EquilibriumStatistics( bean.getEquilibrium() ) );
+	}
+
+	public Date getStartTime() {
+		return startTime;
+	}
+
+	public void setStartTime(Date startTime) {
+		this.startTime = startTime;
+	}
+
+	public void setFinishTime(Date finishTime) {
+		this.finishTime = finishTime;
 	}
 
 	public List<Agent> getFinalAgents() {
@@ -62,12 +75,20 @@ public class ReplicationData {
 		this.taskId = taskId;
 	}
 
-	public int getTxCount() {
-		return txCount;
+	public int getTotalTxCount() {
+		return totalTxCount;
 	}
 
-	public void setTxCount(int txCount) {
-		this.txCount = txCount;
+	public void setTotalTxCount(int totalTxCount) {
+		this.totalTxCount = totalTxCount;
+	}
+
+	public int getFailedTxCount() {
+		return failedTxCount;
+	}
+
+	public void setFailedTxCount(int failedTxCount) {
+		this.failedTxCount = failedTxCount;
 	}
 
 	public boolean isCanceled() {
@@ -76,14 +97,6 @@ public class ReplicationData {
 
 	public void setCanceled(boolean canceled) {
 		this.canceled = canceled;
-	}
-
-	public boolean isEquilibrium() {
-		return equilibrium;
-	}
-
-	public void setEquilibrium(boolean equilibrium) {
-		this.equilibrium = equilibrium;
 	}
 
 	public boolean isTradingHalted() {

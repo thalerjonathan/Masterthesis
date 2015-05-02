@@ -9,7 +9,7 @@ public class MaximumHubCreator extends ParameterlessCreator {
 		return AgentNetwork.createWithMaximumHub( agentFactory );
 	}
 	
-	public String toString() {
+	public String name() {
 		return "Maximum Hub";
 	}
 }

@@ -2,14 +2,18 @@ package frontend.experimenter;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
@@ -26,13 +30,11 @@ import frontend.visualisation.WealthVisualizer;
 @SuppressWarnings("serial")
 public class ExperimentResultPanel extends JPanel {
 
-	private ExperimentPanel experimentPanel;
-	private EquilibriumInfoPanel equilibriumInfoPanel;
-	private WealthVisualizer wealthvisualizer;
-	
 	private JFrame replicationInfoFrame;
 	
 	private ResultBean bean;
+	
+	private final static SimpleDateFormat DATE_FORMATTER = new SimpleDateFormat( "dd.MM.yyyy HH:mm:ss" );
 	
 	public ExperimentResultPanel( ResultBean bean ) {
 		this.bean = bean;
@@ -63,13 +65,12 @@ public class ExperimentResultPanel extends JPanel {
 			agents.add( a );
 		}
 		
-		this.experimentPanel = new ExperimentPanel( bean.getExperiment(), null );
-		
-		this.wealthvisualizer = new WealthVisualizer();
-		this.wealthvisualizer.setAgents( agents );
-		
-		this.equilibriumInfoPanel = new EquilibriumInfoPanel();
-		this.equilibriumInfoPanel.setStats( stats );
+		ExperimentPanel experimentPanel = new ExperimentPanel( bean.getExperiment(), true );
+		EquilibriumInfoPanel equilibriumInfoPanel = new EquilibriumInfoPanel();
+		WealthVisualizer wealthvisualizer = new WealthVisualizer();
+
+		wealthvisualizer.setAgents( agents );
+		equilibriumInfoPanel.setStats( stats );
 
 		JButton showReplicationInfoButton = new JButton( "Replication-Info" );
 		showReplicationInfoButton.addActionListener( new ActionListener() {
@@ -78,13 +79,70 @@ public class ExperimentResultPanel extends JPanel {
 				ExperimentResultPanel.this.showReplicationInfo();
 			}
 		});
+		
+		JPanel resultInfoPanel = new JPanel( new GridBagLayout() );
+		JLabel startingTimeInfoLabel = new JLabel( "Starting Time:" );
+		JLabel startingTimeLabel = new JLabel( DATE_FORMATTER.format( bean.getStartingTime() ) );
+		JLabel endingTimeInfoLabel = new JLabel( "Ending Time:" );
+		JLabel endingTimeLabel = new JLabel( DATE_FORMATTER.format( bean.getEndingTime() ) );
+		JLabel durationInfoLabel = new JLabel( "Duration:" );
+		JLabel durationLabel = new JLabel( "" + bean.getDurationSeconds() + " sec");
+		JLabel meanTotalTxInfoLabel = new JLabel( "Mean Total TX:" );
+		JLabel meanTotalTxLabel = new JLabel( "" + bean.getMeanTotalTransactions() );
+		JLabel meanFailedTxInfoLabel = new JLabel( "Mean Failed TX:" );
+		JLabel meanFailedTxLabel = new JLabel( "" + bean.getMeanFailedTransactions() );
+		
+		GridBagConstraints c = new GridBagConstraints();
+		c.fill = GridBagConstraints.BOTH;
+		c.gridheight = 1;
+		c.gridwidth = 1;
+		c.gridy = 0;
+		c.ipadx = 10;
+		
+		c.gridx = 0;
+		c.gridy = 0;
+		resultInfoPanel.add( startingTimeInfoLabel, c );
+		c.gridx = 1;
+		c.gridy = 0;
+		resultInfoPanel.add( startingTimeLabel, c );
+		
+		c.gridx = 0;
+		c.gridy = 1;
+		resultInfoPanel.add( endingTimeInfoLabel, c );
+		c.gridx = 1;
+		c.gridy = 1;
+		resultInfoPanel.add( endingTimeLabel, c );
+		
+		c.gridx = 0;
+		c.gridy = 2;
+		resultInfoPanel.add( durationInfoLabel, c );
+		c.gridx = 1;
+		c.gridy = 2;
+		resultInfoPanel.add( durationLabel, c );
+		
+		c.gridx = 0;
+		c.gridy = 3;
+		resultInfoPanel.add( meanTotalTxInfoLabel, c );
+		c.gridx = 1;
+		c.gridy = 3;
+		resultInfoPanel.add( meanTotalTxLabel, c );
+		
+		c.gridx = 0;
+		c.gridy = 4;
+		resultInfoPanel.add( meanFailedTxInfoLabel, c );
+		c.gridx = 1;
+		c.gridy = 4;
+		resultInfoPanel.add( meanFailedTxLabel, c );
+		
+		
 		JPanel northPanel = new JPanel( new BorderLayout() );
-		northPanel.add( showReplicationInfoButton, BorderLayout.CENTER );
-		northPanel.add( this.experimentPanel, BorderLayout.NORTH );
+		northPanel.add( showReplicationInfoButton, BorderLayout.SOUTH );
+		northPanel.add( resultInfoPanel, BorderLayout.WEST );
+		northPanel.add( experimentPanel, BorderLayout.EAST );
 		
 		this.add( northPanel, BorderLayout.NORTH );
-		this.add( this.wealthvisualizer, BorderLayout.CENTER );
-		this.add( this.equilibriumInfoPanel, BorderLayout.SOUTH );
+		this.add( wealthvisualizer, BorderLayout.CENTER );
+		this.add( equilibriumInfoPanel, BorderLayout.SOUTH );
 	}
 	
 	private void showReplicationInfo() {

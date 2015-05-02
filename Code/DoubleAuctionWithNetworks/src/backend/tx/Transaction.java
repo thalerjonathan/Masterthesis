@@ -15,7 +15,6 @@ public class Transaction  {
 	private int transNum;
 	private int sweepCount;
 	private boolean tradingHalted;
-	private boolean equilibrium;
 	
 	private Match match;
 	
@@ -230,14 +229,6 @@ public class Transaction  {
 
 	public void setTradingHalted( boolean tradingHalted ) {
 		this.tradingHalted = tradingHalted;
-	}
-
-	public boolean isEquilibrium() {
-		return equilibrium;
-	}
-
-	public void setEquilibrium(boolean equilibrium) {
-		this.equilibrium = equilibrium;
 	}
 
 	public List<Agent> getFinalAgents() {

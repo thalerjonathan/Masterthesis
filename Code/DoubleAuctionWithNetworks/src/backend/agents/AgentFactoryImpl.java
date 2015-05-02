@@ -19,7 +19,7 @@ public class AgentFactoryImpl implements IAgentFactory {
 	public Agent createAgent() {
 		Agent a = null;
 		
-		if ( i < agentCount ) {
+		if ( i <= agentCount ) {
 			// linear
 			double optimism = ( double ) i  / ( double ) agentCount;
 			

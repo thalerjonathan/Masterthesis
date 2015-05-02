@@ -1,5 +1,6 @@
 package frontend.experimenter.xml.result;
 
+import java.util.Date;
 import java.util.List;
 
 import javax.xml.bind.annotation.XmlElement;
@@ -14,6 +15,13 @@ public class ResultBean {
 	private EquilibriumBean equilibrium;
 	private List<AgentBean> agents;
 	private List<ReplicationBean> replications;
+	
+	private Date startingTime;
+	private Date endingTime;
+	private int durationSeconds;
+	
+	private double meanTotalTransactions;
+	private double meanFailedTransactions;
 	
 	public List<ReplicationBean> getReplications() {
 		return replications;
@@ -49,5 +57,45 @@ public class ResultBean {
 	@XmlElement( name = "agents" )
 	public void setAgents(List<AgentBean> agents) {
 		this.agents = agents;
+	}
+
+	public int getDurationSeconds() {
+		return durationSeconds;
+	}
+
+	public void setDurationSeconds(int durationSeconds) {
+		this.durationSeconds = durationSeconds;
+	}
+
+	public double getMeanTotalTransactions() {
+		return meanTotalTransactions;
+	}
+
+	public void setMeanTotalTransactions(double meanTotalTransactions) {
+		this.meanTotalTransactions = meanTotalTransactions;
+	}
+
+	public double getMeanFailedTransactions() {
+		return meanFailedTransactions;
+	}
+
+	public void setMeanFailedTransactions(double meanFailedTransactions) {
+		this.meanFailedTransactions = meanFailedTransactions;
+	}
+
+	public Date getStartingTime() {
+		return startingTime;
+	}
+
+	public void setStartingTime(Date startingTime) {
+		this.startingTime = startingTime;
+	}
+
+	public Date getEndingTime() {
+		return endingTime;
+	}
+
+	public void setEndingTime(Date endingTime) {
+		this.endingTime = endingTime;
 	}
 }

@@ -10,7 +10,7 @@ public class AscendingConnectedCreator extends ParameterlessCreator {
 		return AgentNetwork.createAscendingConnected( agentFactory );
 	}
 	
-	public String toString() {
+	public String name() {
 		return "Ascending-Connected";
 	}
 	

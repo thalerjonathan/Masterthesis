@@ -12,11 +12,12 @@ public class ReplicationBean {
 	private EquilibriumBean equilibrium;
 	private int replication;
 	private int task;
-	private int transactions;
-	private boolean reachedEquilibrium;
+	private int totalTransactions;
+	private int failedTransactions;
 	private boolean canceled;
 	private boolean tradingHalted;
 	private Date finishedAt;
+	private Date startedAt;
 	
 	public ReplicationBean() {
 	}
@@ -25,16 +26,25 @@ public class ReplicationBean {
 		EquilibriumBean replicationEquilibriumBean = new EquilibriumBean( data.getStats() );
 		
 		this.setCanceled( data.isCanceled() );
+		this.setStartedAt( data.getStartTime() );
 		this.setFinishedAt( data.getFinishTime() );
-		this.setReachedEquilibrium( data.isEquilibrium() );
 		this.setReplication( data.getNumber() );
 		this.setTask( data.getTaskId() );
 		this.setTradingHalted( data.isTradingHalted() );
-		this.setTransactions( data.getTxCount() );
+		this.setTotalTransactions( data.getTotalTxCount() );
+		this.setFailedTransactions( data.getFailedTxCount() );
 		
 		this.setEquilibrium( replicationEquilibriumBean );
 	}
 	
+	public Date getStartedAt() {
+		return startedAt;
+	}
+
+	public void setStartedAt(Date startedAt) {
+		this.startedAt = startedAt;
+	}
+
 	public EquilibriumBean getEquilibrium() {
 		return equilibrium;
 	}
@@ -59,20 +69,20 @@ public class ReplicationBean {
 		this.task = task;
 	}
 
-	public int getTransactions() {
-		return transactions;
+	public int getTotalTransactions() {
+		return totalTransactions;
 	}
 
-	public void setTransactions(int transactions) {
-		this.transactions = transactions;
+	public void setTotalTransactions(int transactions) {
+		this.totalTransactions = transactions;
 	}
 
-	public boolean isReachedEquilibrium() {
-		return reachedEquilibrium;
+	public int getFailedTransactions() {
+		return failedTransactions;
 	}
 
-	public void setReachedEquilibrium(boolean reachedEquilibrium) {
-		this.reachedEquilibrium = reachedEquilibrium;
+	public void setFailedTransactions(int failedTransactions) {
+		this.failedTransactions = failedTransactions;
 	}
 
 	public boolean isCanceled() {

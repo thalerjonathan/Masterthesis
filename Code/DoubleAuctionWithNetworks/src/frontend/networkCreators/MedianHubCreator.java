@@ -9,7 +9,7 @@ public class MedianHubCreator extends ParameterlessCreator {
 		return AgentNetwork.createWithMedianHub( agentFactory );
 	}
 	
-	public String toString() {
+	public String name() {
 		return "Median Hub";
 	}
 }
