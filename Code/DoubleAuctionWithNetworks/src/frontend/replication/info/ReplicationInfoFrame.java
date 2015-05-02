@@ -24,9 +24,7 @@ public class ReplicationInfoFrame extends JFrame {
 
 	private JPanel tasksPanel;
 	private JButton refreshButton;
-	private JScrollPane txHistoryScrollPane;
 	private List<ReplicationInfoPanel> infoPanels;
-	private JScrollPane scroll;
 	
 	public ReplicationInfoFrame( ReplicationTable replicationTable ) {
 		super( "Replication-Info" );
@@ -34,7 +32,7 @@ public class ReplicationInfoFrame extends JFrame {
 		this.infoPanels = new ArrayList<>();
 
 		this.getContentPane().setLayout( new BorderLayout() );
-		this.getContentPane().setPreferredSize( new Dimension( 1300, 580 ) );
+		this.getContentPane().setPreferredSize( new Dimension( 1300, 600 ) );
 		
 		this.createControls( replicationTable );
 
@@ -46,10 +44,10 @@ public class ReplicationInfoFrame extends JFrame {
 	private void createControls( ReplicationTable replicationTable ) {
 		this.tasksPanel = new JPanel( new GridBagLayout() );
 		
-		this.scroll = new JScrollPane( this.tasksPanel );
-		this.scroll.setVerticalScrollBarPolicy( JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED );
-		this.scroll.setHorizontalScrollBarPolicy( JScrollPane.HORIZONTAL_SCROLLBAR_NEVER );
-		this.scroll.setBorder( BorderFactory.createTitledBorder( BorderFactory.createLineBorder( Color.black ), "Running Tasks" ) );
+		JScrollPane scroll = new JScrollPane( this.tasksPanel );
+		scroll.setVerticalScrollBarPolicy( JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED );
+		scroll.setHorizontalScrollBarPolicy( JScrollPane.HORIZONTAL_SCROLLBAR_NEVER );
+		scroll.setBorder( BorderFactory.createTitledBorder( BorderFactory.createLineBorder( Color.black ), "Running Tasks" ) );
 		
 		this.refreshButton = new JButton( "Refresh" );
 		this.refreshButton.addActionListener( new ActionListener() {
@@ -61,14 +59,14 @@ public class ReplicationInfoFrame extends JFrame {
 			}
 		});
 		
-		this.txHistoryScrollPane = new JScrollPane( replicationTable );
-		this.txHistoryScrollPane.setVerticalScrollBarPolicy( JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED );
-		this.txHistoryScrollPane.setHorizontalScrollBarPolicy( JScrollPane.HORIZONTAL_SCROLLBAR_NEVER );
-		this.txHistoryScrollPane.setBorder( BorderFactory.createTitledBorder( BorderFactory.createLineBorder( Color.black ), "Finished Replications" ) );
-		this.txHistoryScrollPane.setPreferredSize( new Dimension( 880, 150 ) );
+		JScrollPane txHistoryScrollPane = new JScrollPane( replicationTable );
+		txHistoryScrollPane.setVerticalScrollBarPolicy( JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED );
+		txHistoryScrollPane.setHorizontalScrollBarPolicy( JScrollPane.HORIZONTAL_SCROLLBAR_NEVER );
+		txHistoryScrollPane.setBorder( BorderFactory.createTitledBorder( BorderFactory.createLineBorder( Color.black ), "Finished Replications" ) );
+		txHistoryScrollPane.setPreferredSize( new Dimension( 880, 150 ) );
 		
-		this.getContentPane().add( this.scroll, BorderLayout.CENTER );
-		this.getContentPane().add( this.txHistoryScrollPane, BorderLayout.SOUTH );
+		this.getContentPane().add( scroll, BorderLayout.CENTER );
+		this.getContentPane().add( txHistoryScrollPane, BorderLayout.SOUTH );
 	}
 
 	public void setTasks( List<ReplicationTask> tasks ) {

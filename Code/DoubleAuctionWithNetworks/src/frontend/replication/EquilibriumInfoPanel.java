@@ -55,13 +55,14 @@ public class EquilibriumInfoPanel extends JPanel {
 		this.optimistLabel = new JLabel();
 		
 		GridBagConstraints c = new GridBagConstraints();
-		c.fill = GridBagConstraints.BOTH;
+		c.fill = GridBagConstraints.VERTICAL;
+		c.ipadx = 10;
 		c.gridx = 0;
 		c.gridy = 0;
 		c.gridwidth = 1;
 		c.gridheight = 1;
-		c.weightx = 1.0;
-		c.weighty = 1.0;
+		//c.weightx = 1.0;
+		//c.weighty = 1.0;
 		
 		c.gridy = 0;
 		c.gridx = 0;

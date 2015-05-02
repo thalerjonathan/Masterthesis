@@ -47,7 +47,7 @@ public class ReplicationTable extends JTable {
 		// "Canceled", "Trading Halted", "Duration"
 		EquilibriumStatistics stats = data.getStats();
 		
-		long durationSec = ( data.getFinishTime().getTime() - data.getStartTime().getTime() ) / 1000;
+		long durationSec = ( data.getEndingTime().getTime() - data.getStartingTime().getTime() ) / 1000;
 		
 		this.tableModel.addRow( new Object[] { data.getNumber(), data.getTaskId(), 
 				data.getTotalTxCount(),

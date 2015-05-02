@@ -293,8 +293,8 @@ public class ReplicationsRunner {
 		
 		currentStats.setFinalAgents( meanAgents );
 		currentStats.setStats( meanStats );
-		currentStats.setStartTime( this.startingTime );
-		currentStats.setFinishTime( new Date() );
+		currentStats.setStartingTime( this.startingTime );
+		currentStats.setEndingTime( new Date() );
 		
 		return currentStats;
 	}
@@ -322,6 +322,7 @@ public class ReplicationsRunner {
 		
 		double meanTotalTx = 0.0;
 		double meanFailedTx = 0.0;
+		double meanDuration = 0.0;
 		int validReplications = 0;
 		
 		List<ReplicationBean> replications = new ArrayList<ReplicationBean>();
@@ -329,6 +330,7 @@ public class ReplicationsRunner {
 			if ( false == data.isCanceled() ) {
 				meanTotalTx += data.getTotalTxCount();
 				meanFailedTx += data.getFailedTxCount();
+				meanDuration += ( data.getEndingTime().getTime() - data.getStartingTime().getTime() );
 				validReplications++;
 			}
 			
@@ -337,16 +339,18 @@ public class ReplicationsRunner {
 		
 		meanTotalTx /= validReplications;
 		meanFailedTx /= validReplications;
+		meanDuration /= ( validReplications * 1000 );
 		
 		resultBean.setAgents( resultAgents );
 		resultBean.setEquilibrium( equilibriumBean );
 		resultBean.setExperiment( this.experiment );
 		resultBean.setReplications( replications );
-		resultBean.setDurationSeconds( (int) (( endingTime.getTime() - this.startingTime.getTime() ) / 1000) );
+		resultBean.setDuration( (int) (( endingTime.getTime() - this.startingTime.getTime() ) / 1000) );
 		resultBean.setMeanTotalTransactions( meanTotalTx );
 		resultBean.setMeanFailedTransactions( meanFailedTx );
 		resultBean.setStartingTime( this.startingTime );
 		resultBean.setEndingTime( endingTime );
+		resultBean.setMeanDuration( meanDuration );
 		
 		try {
 			JAXBContext jaxbContext = JAXBContext.newInstance( ResultBean.class );
@@ -503,8 +507,8 @@ public class ReplicationsRunner {
 				
 				if ( terminated ) {  
 					ReplicationData data = new ReplicationData();
-					data.setFinishTime( new Date() );
-					data.setStartTime( this.replicationStartingTime );
+					data.setEndingTime( new Date() );
+					data.setStartingTime( this.replicationStartingTime );
 					data.setStats( auction.calculateEquilibriumStats() );
 					data.setTradingHalted( tx.hasTradingHalted() );
 					data.setCanceled( this.canceledFlag || this.nextTxFlag );

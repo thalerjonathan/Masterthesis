@@ -18,10 +18,11 @@ public class ResultBean {
 	
 	private Date startingTime;
 	private Date endingTime;
-	private int durationSeconds;
+	private int duration;
 	
 	private double meanTotalTransactions;
 	private double meanFailedTransactions;
+	private double meanDuration;
 	
 	public List<ReplicationBean> getReplications() {
 		return replications;
@@ -58,15 +59,7 @@ public class ResultBean {
 	public void setAgents(List<AgentBean> agents) {
 		this.agents = agents;
 	}
-
-	public int getDurationSeconds() {
-		return durationSeconds;
-	}
-
-	public void setDurationSeconds(int durationSeconds) {
-		this.durationSeconds = durationSeconds;
-	}
-
+	
 	public double getMeanTotalTransactions() {
 		return meanTotalTransactions;
 	}
@@ -97,5 +90,21 @@ public class ResultBean {
 
 	public void setEndingTime(Date endingTime) {
 		this.endingTime = endingTime;
+	}
+
+	public int getDuration() {
+		return duration;
+	}
+
+	public void setDuration(int duration) {
+		this.duration = duration;
+	}
+
+	public double getMeanDuration() {
+		return meanDuration;
+	}
+
+	public void setMeanDuration(double meanDuration) {
+		this.meanDuration = meanDuration;
 	}
 }

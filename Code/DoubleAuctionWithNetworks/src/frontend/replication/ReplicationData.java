@@ -17,8 +17,8 @@ public class ReplicationData {
 	private boolean canceled;
 	private boolean tradingHalted;
 	
-	private Date startTime;
-	private Date finishTime;
+	private Date startingTime;
+	private Date endingTime;
 	
 	private List<Agent> finalAgents;
 	
@@ -34,23 +34,11 @@ public class ReplicationData {
 		this.setTradingHalted( bean.isTradingHalted() );
 		this.setTotalTxCount( bean.getTotalTransactions() );
 		this.setFailedTxCount( bean.getFailedTransactions() );
-		this.setFinishTime( bean.getFinishedAt() );
-		this.setStartTime( bean.getStartedAt() );
+		this.setStartingTime( bean.getStartingTime() );
+		this.setEndingTime( bean.getEndingTime() );
 		this.setStats( new EquilibriumStatistics( bean.getEquilibrium() ) );
 	}
-
-	public Date getStartTime() {
-		return startTime;
-	}
-
-	public void setStartTime(Date startTime) {
-		this.startTime = startTime;
-	}
-
-	public void setFinishTime(Date finishTime) {
-		this.finishTime = finishTime;
-	}
-
+	
 	public List<Agent> getFinalAgents() {
 		return finalAgents;
 	}
@@ -107,15 +95,27 @@ public class ReplicationData {
 		this.tradingHalted = tradingHalted;
 	}
 
-	public Date getFinishTime() {
-		return finishTime;
-	}
-
 	public EquilibriumStatistics getStats() {
 		return stats;
 	}
 
 	public void setStats(EquilibriumStatistics stats) {
 		this.stats = stats;
+	}
+
+	public Date getStartingTime() {
+		return startingTime;
+	}
+
+	public void setStartingTime(Date startingTime) {
+		this.startingTime = startingTime;
+	}
+
+	public Date getEndingTime() {
+		return endingTime;
+	}
+
+	public void setEndingTime(Date endingTime) {
+		this.endingTime = endingTime;
 	}
 }

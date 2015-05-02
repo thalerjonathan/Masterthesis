@@ -9,15 +9,19 @@ import frontend.replication.ReplicationData;
 @XmlRootElement( name = "replication" )
 public class ReplicationBean {
 
-	private EquilibriumBean equilibrium;
 	private int replication;
 	private int task;
+	
 	private int totalTransactions;
 	private int failedTransactions;
+	
 	private boolean canceled;
 	private boolean tradingHalted;
-	private Date finishedAt;
-	private Date startedAt;
+	
+	private Date endingTime;
+	private Date startingTime;
+	
+	private EquilibriumBean equilibrium;
 	
 	public ReplicationBean() {
 	}
@@ -26,8 +30,8 @@ public class ReplicationBean {
 		EquilibriumBean replicationEquilibriumBean = new EquilibriumBean( data.getStats() );
 		
 		this.setCanceled( data.isCanceled() );
-		this.setStartedAt( data.getStartTime() );
-		this.setFinishedAt( data.getFinishTime() );
+		this.setStartingTime( data.getStartingTime() );
+		this.setEndingTime( data.getEndingTime() );
 		this.setReplication( data.getNumber() );
 		this.setTask( data.getTaskId() );
 		this.setTradingHalted( data.isTradingHalted() );
@@ -37,14 +41,6 @@ public class ReplicationBean {
 		this.setEquilibrium( replicationEquilibriumBean );
 	}
 	
-	public Date getStartedAt() {
-		return startedAt;
-	}
-
-	public void setStartedAt(Date startedAt) {
-		this.startedAt = startedAt;
-	}
-
 	public EquilibriumBean getEquilibrium() {
 		return equilibrium;
 	}
@@ -101,11 +97,19 @@ public class ReplicationBean {
 		this.tradingHalted = tradingHalted;
 	}
 
-	public Date getFinishedAt() {
-		return finishedAt;
+	public Date getEndingTime() {
+		return endingTime;
 	}
 
-	public void setFinishedAt(Date finishedAt) {
-		this.finishedAt = finishedAt;
+	public void setEndingTime(Date endingTime) {
+		this.endingTime = endingTime;
+	}
+
+	public Date getStartingTime() {
+		return startingTime;
+	}
+
+	public void setStartingTime(Date startingTime) {
+		this.startingTime = startingTime;
 	}
 }

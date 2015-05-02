@@ -86,10 +86,13 @@ public class ExperimentResultPanel extends JPanel {
 		JLabel endingTimeInfoLabel = new JLabel( "Ending Time:" );
 		JLabel endingTimeLabel = new JLabel( DATE_FORMATTER.format( bean.getEndingTime() ) );
 		JLabel durationInfoLabel = new JLabel( "Duration:" );
-		JLabel durationLabel = new JLabel( "" + bean.getDurationSeconds() + " sec");
-		JLabel meanTotalTxInfoLabel = new JLabel( "Mean Total TX:" );
+		JLabel durationLabel = new JLabel( "" + bean.getDuration() + " sec");
+	
+		JLabel meanDurationInfoLabel = new JLabel( "Mean Replication Duration:" );
+		JLabel meanDurationLabel = new JLabel( "" + bean.getMeanDuration() + " sec");
+		JLabel meanTotalTxInfoLabel = new JLabel( "Mean Replication Total TX:" );
 		JLabel meanTotalTxLabel = new JLabel( "" + bean.getMeanTotalTransactions() );
-		JLabel meanFailedTxInfoLabel = new JLabel( "Mean Failed TX:" );
+		JLabel meanFailedTxInfoLabel = new JLabel( "Mean Replication Failed TX:" );
 		JLabel meanFailedTxLabel = new JLabel( "" + bean.getMeanFailedTransactions() );
 		
 		GridBagConstraints c = new GridBagConstraints();
@@ -105,14 +108,12 @@ public class ExperimentResultPanel extends JPanel {
 		c.gridx = 1;
 		c.gridy = 0;
 		resultInfoPanel.add( startingTimeLabel, c );
-		
 		c.gridx = 0;
 		c.gridy = 1;
 		resultInfoPanel.add( endingTimeInfoLabel, c );
 		c.gridx = 1;
 		c.gridy = 1;
 		resultInfoPanel.add( endingTimeLabel, c );
-		
 		c.gridx = 0;
 		c.gridy = 2;
 		resultInfoPanel.add( durationInfoLabel, c );
@@ -120,24 +121,28 @@ public class ExperimentResultPanel extends JPanel {
 		c.gridy = 2;
 		resultInfoPanel.add( durationLabel, c );
 		
-		c.gridx = 0;
-		c.gridy = 3;
+		c.gridx = 2;
+		c.gridy = 0;
+		resultInfoPanel.add( meanDurationInfoLabel, c );
+		c.gridx = 3;
+		c.gridy = 0;
+		resultInfoPanel.add( meanDurationLabel, c );
+		c.gridx = 2;
+		c.gridy = 1;
 		resultInfoPanel.add( meanTotalTxInfoLabel, c );
-		c.gridx = 1;
-		c.gridy = 3;
+		c.gridx = 3;
+		c.gridy = 1;
 		resultInfoPanel.add( meanTotalTxLabel, c );
-		
-		c.gridx = 0;
-		c.gridy = 4;
+		c.gridx = 2;
+		c.gridy = 2;
 		resultInfoPanel.add( meanFailedTxInfoLabel, c );
-		c.gridx = 1;
-		c.gridy = 4;
+		c.gridx = 3;
+		c.gridy = 2;
 		resultInfoPanel.add( meanFailedTxLabel, c );
-		
 		
 		JPanel northPanel = new JPanel( new BorderLayout() );
 		northPanel.add( showReplicationInfoButton, BorderLayout.SOUTH );
-		northPanel.add( resultInfoPanel, BorderLayout.WEST );
+		northPanel.add( resultInfoPanel, BorderLayout.CENTER );
 		northPanel.add( experimentPanel, BorderLayout.EAST );
 		
 		this.add( northPanel, BorderLayout.NORTH );
