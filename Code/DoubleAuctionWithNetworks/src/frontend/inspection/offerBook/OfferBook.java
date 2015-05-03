@@ -36,7 +36,7 @@ public class OfferBook {
 	}
 	
 	public void showOfferBook() {
-		this.createAndShowInstance( 0, 0 );
+		this.createAndShowInstance( 1, 0 );
 	}
 
 	public void offerBookChanged() {
@@ -45,8 +45,8 @@ public class OfferBook {
 		}
 	}
 	
-	public void createAndShowInstance( int agentIndex, int tabIndex ) {
-		OfferBookFrame instance = new OfferBookFrame( this, agentIndex, tabIndex );
+	public void createAndShowInstance( int agentId, int tabIndex ) {
+		OfferBookFrame instance = new OfferBookFrame( this, agentId, tabIndex );
 		instance.addWindowListener( new WindowAdapter() {
 			@Override
 			public void windowClosed( WindowEvent e ) {

@@ -13,6 +13,7 @@ public class AgentFactoryImpl implements IAgentFactory {
 	public AgentFactoryImpl( int agentCount, Markets markets ) {
 		this.agentCount = agentCount;
 		this.markets = markets;
+		this.i = 1;
 	}
 	
 	@Override
@@ -21,7 +22,7 @@ public class AgentFactoryImpl implements IAgentFactory {
 		
 		if ( i <= agentCount ) {
 			// linear
-			double optimism = ( double ) i  / ( double ) agentCount;
+			double optimism = ( double ) i  / ( double ) ( agentCount + 1 );
 			
 			// triangle
 			if ( triangleOptimismDistribution ) {

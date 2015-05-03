@@ -42,10 +42,12 @@ public class AgentNetwork {
 	private DijkstraShortestPath<Agent, AgentConnection> pathCalculator;
 	
 	private boolean randomNetworkFlag;
+	private boolean fullyConnectedFlag;
 	
 	// NOTE: SATISFIES HYPOTHESIS
 	public static AgentNetwork createFullyConnected( IAgentFactory agentFactory ) {
 		AgentNetwork network = new AgentNetwork( "FullyConnected", false );
+		network.fullyConnectedFlag = true;
 		network.populate( agentFactory );
 		network.connectCompleted( 0, network.orderedAgents.size() );
 		
@@ -434,6 +436,7 @@ public class AgentNetwork {
 	
 	public AgentNetwork( AgentNetwork parent ) {
 		this( parent.networkName, parent.randomNetworkFlag );
+		this.fullyConnectedFlag = parent.fullyConnectedFlag;
 		
 		// use a hashmap to reduce search overhead
 		HashMap<Integer, Agent> agentsById = new HashMap<Integer, Agent>();
@@ -758,5 +761,9 @@ public class AgentNetwork {
 		}
 		
 		return chart;
+	}
+
+	public boolean isFullyConnected() {
+		return this.fullyConnectedFlag;
 	}
 }

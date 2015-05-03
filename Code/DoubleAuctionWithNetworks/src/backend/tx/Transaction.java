@@ -116,37 +116,18 @@ public class Transaction  {
 		return Match.matchOffers( agentAsk, agentBid, bestLocalAskOfferings, bestLocalBidOfferings );
 	}
 	
+	// NOTE: assumes full connectivity between agents: each agent knows each other agent
 	public Match findMatchesByGlobalOffers( Agent a, AgentNetwork agents ) {
 		AskOffering[] askOfferings = a.getCurrentAskOfferings();
 		BidOffering[] bidOfferings = a.getCurrentBidOfferings();
-		
-		Arrays.fill( this.bestLocalAskOfferings, null );
-		Arrays.fill( this.bestLocalBidOfferings, null );
-		
-		for ( int i = 0; i < Markets.NUMMARKETS; ++i ) {
-			AskOffering ask = this.bestGlobalAskOfferings[ i ];
-			BidOffering bid = this.bestGlobalBidOfferings[ i ];
-			
-			if ( null != ask ) {
-				if ( agents.isNeighbor( a, ask.getAgent() ) ) {
-					this.bestLocalAskOfferings[ i ] = ask;
-				}
-			}
-
-			if ( null != bid ) {
-				if ( agents.isNeighbor( a, bid.getAgent() ) ) {
-					this.bestLocalBidOfferings[ i ] = bid;
-				}
-			}
-		}
-		
+	
 		// add offerings to the global offer-book
 		this.addOfferings( askOfferings, bidOfferings );
 		
-		return Match.matchOffers( askOfferings, bidOfferings, this.bestLocalAskOfferings, this.bestLocalBidOfferings );
+		return Match.matchOffers( askOfferings, bidOfferings, this.bestGlobalAskOfferings, this.bestGlobalBidOfferings );
 	}
 	
-	public void updateBestAskOfferings( AskOffering offer )   {
+	private void updateBestAskOfferings( AskOffering offer )   {
 		int mkt = offer.getMarketType().ordinal();
 		AskOffering bestAsk = bestGlobalAskOfferings[ mkt ];
 		
@@ -155,7 +136,7 @@ public class Transaction  {
 		}
 	}
 	
-	public void updateBestBidOfferings( BidOffering offer )   {
+	private void updateBestBidOfferings( BidOffering offer )   {
 		int mkt = offer.getMarketType().ordinal();
 		BidOffering bestBid = bestGlobalBidOfferings[ mkt ];
 		
@@ -164,7 +145,7 @@ public class Transaction  {
 		}
 	}
 	
-	public void addOfferings(AskOffering[] askoff, BidOffering[] bidoff)   {
+	private void addOfferings(AskOffering[] askoff, BidOffering[] bidoff)   {
 		//side effect: updates best offerings
 		for (int i=0;i<Markets.NUMMARKETS;i++)  {
 			if (askoff[i] != null)  {
@@ -176,35 +157,9 @@ public class Transaction  {
 		}
 	}
 
-	public void clearGlobalOfferings(Agent agent) {
+	public void clearGlobalOfferings() {
 		Arrays.fill( this.bestGlobalBidOfferings, null );
 		Arrays.fill( this.bestGlobalAskOfferings, null );	
-	}
-
-	public boolean removeAskOfferingsForMarket( Agent agent, int mkt ) {
-		for (int i=0; i<Markets.NUMMARKETS; ++i )  {
-			if ( null != bestGlobalAskOfferings[ i ] ) {
-				if ( bestGlobalAskOfferings[ i ].getAgent() == agent ) {
-					bestGlobalAskOfferings[ i ] = null;
-					return true;
-				}
-			}
-		}	
-		
-		return false;
-	}
-
-	public boolean removeBidOfferingsForMarket(Agent agent, int mkt) {
-		for (int i=0; i<Markets.NUMMARKETS; ++i )  {
-			if ( null != bestGlobalBidOfferings[ i ] ) {
-				if ( bestGlobalBidOfferings[ i ].getAgent() == agent ) {
-					bestGlobalBidOfferings[ i ] = null;
-					return true;
-				}
-			}
-		}	
-		
-		return false;
 	}
 
 	public Match getMatch() {

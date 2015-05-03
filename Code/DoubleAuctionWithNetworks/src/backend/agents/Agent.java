@@ -33,23 +33,19 @@ public class Agent {
 	private double loanGiven;
 	
 	//first index: 0: buy, 1: sell; second index: 0: lower 1: upper limit
-	double[][] assetLimits; 
-	double[][] loanLimits;
-	double[][] assetLoanLimits;
+	private double[][] assetLimits; 
+	private double[][] loanLimits;
+	private double[][] assetLoanLimits;
 	
-	double minAssetPriceInCash;
-	double minLoanPriceInCash;
-	double minAssetPriceInLoans;
+	private double minAssetPriceInCash;
+	private double minLoanPriceInCash;
+	private double minAssetPriceInLoans;
 	
-	double maxAssetPriceInCash;
-	double maxLoanPriceInCash;
-	double maxAssetPriceInLoans;
+	private double maxAssetPriceInCash;
+	private double maxLoanPriceInCash;
+	private double maxAssetPriceInLoans;
 	
-	double expectedAssetPriceInLoans;
-	
-	private Markets markets;
-	
-	private boolean highlighted;
+	private double expectedAssetPriceInLoans;
 	
 	// NOTE: holds the offerings of the current sweeping-round
 	private AskOffering[] currentAskOfferings;
@@ -58,7 +54,10 @@ public class Agent {
 	// NOTE: linear order on offerings on each market thus there can only be one BEST offering on each market for buy/sell
 	private AskOffering[] bestAskOfferings;
 	private BidOffering[] bestBidOfferings;
-	
+		
+	private Markets markets;
+	private boolean highlighted;
+
 	// NOTE: use only for visualization purposes!!
 	public Agent( AgentBean bean ) {
 		this.h = bean.getH();
@@ -73,7 +72,7 @@ public class Agent {
 		this.id = id;
 		this.h = h;
 		this.markets = markets;
-	
+
 		this.assetLimits = new double[2][2]; //first index: 0: buy, 1: sell; second index: 0: lower 1: upper limit
 		this.loanLimits = new double[2][2];
 		this.assetLoanLimits = new double[2][2];
@@ -85,36 +84,11 @@ public class Agent {
 		this.reset();
 	}
 	
-	private void calculateOfferingLimits() {
-		double pD = markets.pD();
-		double pU = markets.pU();
-		double V = markets.V();
-		
-		double minAssetPrice = pD;
-		double maxLoanPrice = Math.min( pU, V );
-		
-		double maxAssetPrice = pU;
-		double minLoanPrice = Math.min( pD, V );
-		
-		this.limitPriceAsset = markets.calculateLimitPriceAsset( h );
-		this.limitPriceLoan = markets.calculateLimitPriceLoan( h );
-		
-		this.minAssetPriceInCash = Math.min( pD, limitPriceAsset );
-		this.minLoanPriceInCash = Math.min( Math.min( pD, V ), limitPriceLoan );
-		this.minAssetPriceInLoans = minAssetPrice / maxLoanPrice;
-		
-		this.maxAssetPriceInCash = Math.max( pU, limitPriceAsset );
-		this.maxLoanPriceInCash = Math.max( Math.min( pU, V ), limitPriceLoan );
-		this.maxAssetPriceInLoans = maxAssetPrice / minLoanPrice;
-
-		this.expectedAssetPriceInLoans = limitPriceAsset / limitPriceLoan;
-	}
-	
 	public void reset() {
 		this.cashEndow = this.markets.getConsumEndow(); 
 		this.assetEndow = this.markets.getAssetEndow();
 		this.highlighted = false;
-
+		
 		this.loan = 0;
 		this.loanTaken = 0;
 		this.loanGiven = 0;
@@ -257,7 +231,7 @@ public class Agent {
 	}
 
 	public boolean isHighlighted() {
-		return highlighted;
+		return this.highlighted;
 	}
 
 	public void setHighlighted( boolean highlighted ) {
@@ -485,6 +459,31 @@ public class Agent {
 		} else {
 			offerings[ MarketType.ASSET_LOAN.ordinal() ] = null;
 		}
+	}
+
+	private void calculateOfferingLimits() {
+		double pD = markets.pD();
+		double pU = markets.pU();
+		double V = markets.V();
+		
+		double minAssetPrice = pD;
+		double maxLoanPrice = Math.min( pU, V );
+		
+		double maxAssetPrice = pU;
+		double minLoanPrice = Math.min( pD, V );
+		
+		this.limitPriceAsset = markets.calculateLimitPriceAsset( h );
+		this.limitPriceLoan = markets.calculateLimitPriceLoan( h );
+		
+		this.minAssetPriceInCash = Math.min( pD, limitPriceAsset );
+		this.minLoanPriceInCash = Math.min( Math.min( pD, V ), limitPriceLoan );
+		this.minAssetPriceInLoans = minAssetPrice / maxLoanPrice;
+		
+		this.maxAssetPriceInCash = Math.max( pU, limitPriceAsset );
+		this.maxLoanPriceInCash = Math.max( Math.min( pU, V ), limitPriceLoan );
+		this.maxAssetPriceInLoans = maxAssetPrice / minLoanPrice;
+
+		this.expectedAssetPriceInLoans = limitPriceAsset / limitPriceLoan;
 	}
 	
 	@SuppressWarnings("unused")

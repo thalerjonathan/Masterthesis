@@ -32,7 +32,6 @@ public class Auction {
 
 	public enum MatchingType {
 		BEST_NEIGHBOUR,
-		BEST_GLOBAL_OFFERS,
 		RANDOM_NEIGHOUR;
 	}
 
@@ -147,6 +146,8 @@ public class Auction {
 		}
 		
 		while ( sweep < Auction.MAX_SWEEPS )  {
+			transaction.clearGlobalOfferings();
+			
 			// in each sweep shuffle order of agents
 			Collections.shuffle( this.tradingAgents );
 			
@@ -195,10 +196,11 @@ public class Auction {
 				match = tx.findMatchesByRandomNeighborhood( a, this.agentNetwork );
 			
 			} else if ( MatchingType.BEST_NEIGHBOUR == type ) {
-				match = tx.findMatchesByBestNeighborhood( a, this.agentNetwork );
-				
-			} else if ( MatchingType.BEST_GLOBAL_OFFERS == type ) {
-				match = tx.findMatchesByGlobalOffers( a, this.agentNetwork );
+				if ( this.agentNetwork.isFullyConnected() ) {
+					match = tx.findMatchesByGlobalOffers( a, this.agentNetwork );
+				} else {
+					match = tx.findMatchesByBestNeighborhood( a, this.agentNetwork );
+				}
 			}
 
 			if ( this.handleMatch( match, tx, keepAgentHistory ) ) {

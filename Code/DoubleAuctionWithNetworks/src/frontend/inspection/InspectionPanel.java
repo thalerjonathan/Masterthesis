@@ -31,6 +31,7 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
 import backend.Auction;
+import backend.Auction.EquilibriumStatistics;
 import backend.Auction.MatchingType;
 import backend.agents.Agent;
 import backend.agents.AgentFactoryImpl;
@@ -64,6 +65,7 @@ import frontend.networkVisualisation.AgentSelectedEvent;
 import frontend.networkVisualisation.ConnectionSelectedEvent;
 import frontend.networkVisualisation.INetworkSelectionObserver;
 import frontend.networkVisualisation.NetworkRenderPanel;
+import frontend.replication.EquilibriumInfoPanel;
 import frontend.visualisation.WealthVisualizer;
 
 @SuppressWarnings("serial")
@@ -94,6 +96,7 @@ public class InspectionPanel extends JPanel implements ActionListener, ChangeLis
 	private JPanel networkPanel;
 	private WealthVisualizer agentWealthPanel;
 	private NetworkRenderPanel networkVisPanel;
+	private EquilibriumInfoPanel equilibriumInfoPanel;
 	
 	private OfferBook offerBook;
 	
@@ -201,6 +204,7 @@ public class InspectionPanel extends JPanel implements ActionListener, ChangeLis
 		this.visualizationPanel = new JPanel( new GridBagLayout() );
 		this.networkPanel = new JPanel( new BorderLayout() );
 		this.offerBook = new OfferBook();
+		this.equilibriumInfoPanel = new EquilibriumInfoPanel();
 		
 		JPanel controlsPanel = new JPanel();
 		JPanel txInfoPanel = new JPanel( new GridBagLayout() );
@@ -481,6 +485,11 @@ public class InspectionPanel extends JPanel implements ActionListener, ChangeLis
 	    c.gridy = 4;
 	    txLabelsPanel.add( this.totalTxCounterLabel, c );
 
+	    c.gridx = 0;
+	    c.gridy = 5;
+	    txLabelsPanel.add( this.equilibriumInfoPanel, c );
+		
+
 	    
 	    c.gridx = 0;
 		c.gridy = 0;
@@ -537,7 +546,6 @@ public class InspectionPanel extends JPanel implements ActionListener, ChangeLis
 		c.fill = GridBagConstraints.VERTICAL;
 		txInfoPanel.add( txLabelsPanel, c );
 		
-
 		c.weightx = 1.0;
 		c.weighty = 0.5;
 		c.gridx = 0;
@@ -583,6 +591,10 @@ public class InspectionPanel extends JPanel implements ActionListener, ChangeLis
 
 			this.highlightTx( tx );
 		}
+	}
+	
+	void updateEquilibriumStats( EquilibriumStatistics stats ) {
+		this.equilibriumInfoPanel.setStats( stats );
 	}
 	
 	void updateTXCounter( int succTx, int noSuccTX, int totalTX, int totalNotSuccTx, long calculationTime ) {

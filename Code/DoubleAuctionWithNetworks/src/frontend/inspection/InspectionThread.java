@@ -249,7 +249,7 @@ public class InspectionThread implements Runnable {
 						if ( tx.wasSuccessful() ) {
 							// force redraw when NEXT_TX-state to reflect change immediately
 							InspectionThread.this.inspectorPanel.addSuccessfulTX( tx, SimulationState.RUNNING != stateBevoreTX );
-						
+							InspectionThread.this.inspectorPanel.updateEquilibriumStats( auction.calculateEquilibriumStats() );
 						// 
 						} else if ( tx.hasTradingHalted() ) {
 							InspectionThread.this.inspectorPanel.simulationTerminated();

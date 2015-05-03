@@ -15,7 +15,7 @@ import backend.agents.Agent;
 @SuppressWarnings("serial")
 public class AgentInfoFrame extends JFrame {
 
-	private JSpinner agentIndexSpinner;
+	private JSpinner agentIdSpinner;
 	private AgentInfoPanel agentInfoPanel;
 	private List<Agent> agents;
 	
@@ -24,19 +24,19 @@ public class AgentInfoFrame extends JFrame {
 		
 		this.agentInfoPanel = new AgentInfoPanel();
 		
-		this.agentIndexSpinner = new JSpinner();
-		this.agentIndexSpinner.addChangeListener( new ChangeListener() {
+		this.agentIdSpinner = new JSpinner();
+		this.agentIdSpinner.addChangeListener( new ChangeListener() {
 			@Override
 			public void stateChanged(ChangeEvent e) {
-				int agentIndex = (int) AgentInfoFrame.this.agentIndexSpinner.getValue();
-				Agent a = agents.get( agentIndex );
+				int agentId = (int) AgentInfoFrame.this.agentIdSpinner.getValue();
+				Agent a = agents.get( agentId - 1 );
 				
 				AgentInfoFrame.this.agentInfoPanel.setAgent( a );
 			}
 		});
 		
 		this.getContentPane().setLayout( new BorderLayout() );
-		this.getContentPane().add( this.agentIndexSpinner, BorderLayout.NORTH );
+		this.getContentPane().add( this.agentIdSpinner, BorderLayout.NORTH );
 		this.getContentPane().add( this.agentInfoPanel, BorderLayout.CENTER );
 		this.getContentPane().setPreferredSize( new Dimension( 550, 100 ) );
 		
@@ -46,21 +46,21 @@ public class AgentInfoFrame extends JFrame {
 	}
 	
 	public void setAgents( List<Agent> agents ) {
-		int agentIndex = 0;
+		int agentId = 1;
 		
 		if ( null == this.agents ) {
-			this.agentIndexSpinner.setModel( new SpinnerNumberModel( 0, 0, agents.size() - 1, 1 ) );
+			this.agentIdSpinner.setModel( new SpinnerNumberModel( 1, 1, agents.size(), 1 ) );
 			
 		} else {
 			// if number of agents has changed, do a complete reset
 			if ( this.agents.size() == agents.size() ) {
-				 agentIndex = (int) AgentInfoFrame.this.agentIndexSpinner.getValue();
+				agentId = (int) AgentInfoFrame.this.agentIdSpinner.getValue();
 			} else {
-				this.agentIndexSpinner.setModel( new SpinnerNumberModel( 0, 0, agents.size() - 1, 1 ) );
+				this.agentIdSpinner.setModel( new SpinnerNumberModel( 1, 1, agents.size(), 1 ) );
 			}
 		}
 	
 		this.agents = agents;
-		this.agentInfoPanel.setAgent( agents.get( agentIndex ) );
+		this.agentInfoPanel.setAgent( agents.get( agentId - 1 ) );
 	}
 }

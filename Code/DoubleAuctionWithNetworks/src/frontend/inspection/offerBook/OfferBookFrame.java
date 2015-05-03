@@ -44,12 +44,12 @@ public class OfferBookFrame extends JFrame {
 	private OfferBook parent;
 	
 	// NOTE: used for cloning
-	public OfferBookFrame( OfferBook parent, int agentIndex, int tabIndex ) {
+	public OfferBookFrame( OfferBook parent, int agentId, int tabIndex ) {
 		super( "Offer-Book" );
 
 		this.parent = parent;
 		
-		this.createControls( agentIndex, tabIndex );
+		this.createControls( agentId, tabIndex );
 		
 		this.setResizable(false);
 		this.setDefaultCloseOperation( JFrame.DISPOSE_ON_CLOSE );
@@ -61,7 +61,7 @@ public class OfferBookFrame extends JFrame {
 
 	public void refresh() {
 		int agentIndex = (int) this.agentIndexSpinner.getValue();
-		Agent a = this.parent.getAgents().get( agentIndex );
+		Agent a = this.parent.getAgents().get( agentIndex - 1 );
 		
 		this.agentInfoPanel.setAgent( a );
 		
@@ -82,7 +82,7 @@ public class OfferBookFrame extends JFrame {
 		}
 	}
 
-	private void createControls( int agentIndex, int tabIndex ) {
+	private void createControls( int agentId, int tabIndex ) {
 		int numMarkets = 3;
 		
 		JPanel[] marketPanels = new JPanel[ numMarkets ];
@@ -138,8 +138,8 @@ public class OfferBookFrame extends JFrame {
 		this.cloneButton = new JButton( "Clone" );
 		//this.visParetoFrontiersButton = new JButton( "Visualize Pareto-Frontiers" );
 
-		this.agentIndexSpinner = new JSpinner( new SpinnerNumberModel( agentIndex, 0, 
-				this.parent.getAgents().size() - 1, 1 ) );
+		this.agentIndexSpinner = new JSpinner( new SpinnerNumberModel( agentId, 1, 
+				this.parent.getAgents().size(), 1 ) );
 		this.agentIndexSpinner.addChangeListener( new ChangeListener() {
 			@Override
 			public void stateChanged(ChangeEvent e) {

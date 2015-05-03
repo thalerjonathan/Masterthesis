@@ -147,9 +147,9 @@ public class ReplicationInfoPanel extends JPanel {
 	}
 
 	public void refreshInfo() {
+		long failedTxCount = this.task.getFailTxTotalCount();
 		this.terminationModeLabel.setText( this.task.getTerminationMode().name() );
 		this.totalTxLabel.setText( TX_COUNT_FORMATTER.format( this.task.getTotalTxCount() ) );
-		this.failedTxLabel.setText( TX_COUNT_FORMATTER.format( this.task.getFailTxCount() ) );
 		this.replicationNumberLabel.setText( "" + this.task.getCurrentReplication() );
 		
 		if ( TerminationMode.TRADING_HALTED != task.getTerminationMode()) {
@@ -158,13 +158,19 @@ public class ReplicationInfoPanel extends JPanel {
 			
 			if ( TerminationMode.TOTAL_TX == task.getTerminationMode() ) {
 				this.progressBar.setValue( this.task.getTotalTxCount() );
-			} else {
-				this.progressBar.setValue( this.task.getFailTxCount() );
+			} else if ( TerminationMode.FAIL_TOTAL_TX == task.getTerminationMode() ) {
+				this.progressBar.setValue( this.task.getFailTxTotalCount() );
+			} else if ( TerminationMode.FAIL_SUCCESSIVE_TX == task.getTerminationMode() ) {
+				this.progressBar.setValue( this.task.getFailTxSuccessiveCount() );
+				failedTxCount = this.task.getFailTxSuccessiveCount();
 			}
+			
 			
 		} else {
 			this.maxTxLabel.setText( "-" );
 		}
+		
+		this.failedTxLabel.setText( TX_COUNT_FORMATTER.format( failedTxCount ) );
 	}
 
 	private void showWealth() {

@@ -413,10 +413,14 @@ public class ReplicationsRunner {
 			return totalTxCount;
 		}
 
-		public int getFailTxCount() {
+		public int getFailTxTotalCount() {
 			return failTxTotalCount;
 		}
 
+		public int getFailTxSuccessiveCount() {
+			return failTxSuccessiveCount;
+		}
+		
 		public int getMaxTx() {
 			return ReplicationsRunner.this.experiment.getMaxTx();
 		}
@@ -445,7 +449,7 @@ public class ReplicationsRunner {
 					break;
 				}
 				
-				this.currentReplication = nextReplication;
+				this.currentReplication = experiment.getReplications() - nextReplication + 1;
 				// creates a deep copy of the network, need for parallel execution
 				this.currentAgents = new AgentNetwork( ReplicationsRunner.this.template );
 				Auction auction = new Auction( this.currentAgents );
@@ -512,7 +516,7 @@ public class ReplicationsRunner {
 					data.setStats( auction.calculateEquilibriumStats() );
 					data.setTradingHalted( tx.hasTradingHalted() );
 					data.setCanceled( this.canceledFlag || this.nextTxFlag );
-					data.setNumber( ReplicationsRunner.this.experiment.getReplications() - this.currentReplication + 1 );
+					data.setNumber( this.currentReplication );
 					data.setTaskId( this.taskId );
 					data.setTotalTxCount( this.totalTxCount );
 					data.setFailedTxCount( this.failTxTotalCount );
