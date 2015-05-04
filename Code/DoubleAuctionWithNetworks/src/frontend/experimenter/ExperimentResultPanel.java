@@ -6,9 +6,9 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import javax.swing.JButton;
@@ -35,6 +35,7 @@ public class ExperimentResultPanel extends JPanel {
 	private ResultBean bean;
 	
 	private final static SimpleDateFormat DATE_FORMATTER = new SimpleDateFormat( "dd.MM.yyyy HH:mm:ss" );
+	private static final DecimalFormat MEAN_VALUES_FORMATTER = new DecimalFormat( "0.00" );
 	
 	public ExperimentResultPanel( ResultBean bean ) {
 		this.bean = bean;
@@ -48,9 +49,17 @@ public class ExperimentResultPanel extends JPanel {
 		List<Agent> agents = new ArrayList<Agent>();
 		EquilibriumStatistics stats = new EquilibriumStatistics( bean.getEquilibrium() );
 		
-		Iterator<AgentBean> iter = bean.getAgents().iterator();
-		while ( iter.hasNext() ) {
-			AgentBean agentBean = iter.next();
+		for ( int i = 0; i < bean.getAgents().size(); ++i ) {
+			AgentBean agentBean = bean.getAgents().get( i );
+			
+			if ( agentBean.getH() < stats.i0 ) {
+				stats.i0Index = i;
+			}
+			
+			if ( agentBean.getH() < stats.i1 ) {
+				stats.i1Index = i;
+			}
+			
 			Agent a = new Agent( agentBean ) {
 				public double getCollateral() {
 					double collateral = this.getLoanTaken();
@@ -89,11 +98,11 @@ public class ExperimentResultPanel extends JPanel {
 		JLabel durationLabel = new JLabel( "" + bean.getDuration() + " sec");
 	
 		JLabel meanDurationInfoLabel = new JLabel( "Mean Replication Duration:" );
-		JLabel meanDurationLabel = new JLabel( "" + bean.getMeanDuration() + " sec");
+		JLabel meanDurationLabel = new JLabel( "" + MEAN_VALUES_FORMATTER.format( bean.getMeanDuration() ) + " sec");
 		JLabel meanTotalTxInfoLabel = new JLabel( "Mean Replication Total TX:" );
-		JLabel meanTotalTxLabel = new JLabel( "" + bean.getMeanTotalTransactions() );
+		JLabel meanTotalTxLabel = new JLabel( "" + MEAN_VALUES_FORMATTER.format( bean.getMeanTotalTransactions() ) );
 		JLabel meanFailedTxInfoLabel = new JLabel( "Mean Replication Failed TX:" );
-		JLabel meanFailedTxLabel = new JLabel( "" + bean.getMeanFailedTransactions() );
+		JLabel meanFailedTxLabel = new JLabel( "" + MEAN_VALUES_FORMATTER.format( bean.getMeanFailedTransactions() ) );
 		
 		GridBagConstraints c = new GridBagConstraints();
 		c.fill = GridBagConstraints.BOTH;

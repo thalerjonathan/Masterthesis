@@ -89,6 +89,7 @@ public class Match {
 		this.direction = direction;
 		this.market = buyOffer.getMarketType();
 		
+		/* WARNING: the prices of the equilibrium will differ this price-selection mechanism is used!
 		// choosing a matching price depending on whether seller matched buyer or vice versa
 		if ( MatchDirection.SELL_MATCHES_BUY == direction ) {
 			this.price = this.buyOffer.getPrice();
@@ -96,11 +97,11 @@ public class Match {
 		} else {
 			this.price = this.sellOffer.getPrice();
 		}
+		*/
 		
 		// NOTE: double-auction in theory matches with halfway-price between buyer and seller
-		// will just take longer to reach equilibrium but no fundamental difference if 
-		// one of the prices of the seller/buyer is chosen
-		// this.price = ( this.buyOffer.getPrice() + this.sellOffer.getPrice() ) / 2.0;
+		// WARNING: the prices of the equilibrium will differ if the upper price-selection mechanism is used
+		this.price = ( this.buyOffer.getPrice() + this.sellOffer.getPrice() ) / 2.0;
 		
 		// the amount is always the minimum of the amount offered by the buyer and the seller
 		this.amount = Math.min( this.buyOffer.getAmount(), this.sellOffer.getAmount() );

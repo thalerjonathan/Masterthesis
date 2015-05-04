@@ -255,6 +255,14 @@ public class ReplicationsRunner {
 		for ( int i = 0; i < agentCount; ++i ) {
 			Agent templateAgent = this.template.get( i );
 			
+			if ( templateAgent.getH() < meanStats.i0 ) {
+				meanStats.i0Index = i;
+			}
+			
+			if ( templateAgent.getH() < meanStats.i1 ) {
+				meanStats.i1Index = i;
+			}
+			
 			double agentMCE = medianConsumEndow[ i ] / validReplications;
 			double agentMAE = medianAssetEndow[ i ] / validReplications;
 			double agentMLE = medianLoanEndow[ i ] / validReplications;
@@ -300,7 +308,7 @@ public class ReplicationsRunner {
 	}
 	
 	private void writeResults() {
-		if ( null == this.currentStats || this.canceled ||  0 == this.replicationData.size()  ) {
+		if ( null == this.currentStats || 0 == this.replicationData.size()  ) {
 			return;
 		}
 		

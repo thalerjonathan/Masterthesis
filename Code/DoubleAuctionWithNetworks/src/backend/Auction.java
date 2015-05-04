@@ -42,12 +42,16 @@ public class Auction {
 		public double pq;
 		public double i0;
 		public double i1;
+		public int i0Index;
+		public int i1Index;
 		public double i2;
 		public double P;
 		public double M;
 		public double O;
 		
 		public EquilibriumStatistics() {
+			this.i0Index = -1;
+			this.i1Index = -1;
 		}
 		
 		public EquilibriumStatistics( EquilibriumBean bean ) {
@@ -77,8 +81,6 @@ public class Auction {
 	
 	public EquilibriumStatistics calculateEquilibriumStats() {
 		int nM = 0;
-		int i0Index = -1;
-		int i1Index = -1;
 
 		EquilibriumStatistics stats = new EquilibriumStatistics();
 		stats.p = StatUtils.mean( this.lastAssetPrices );
@@ -91,17 +93,23 @@ public class Auction {
 		for ( int i = 0; i < agents.size(); ++i ) {
 			Agent a = agents.get( i );
 			
+			// i1 is where the optimists begin: hold more assets than cash and loans
 			if ( a.getAssetEndow() > ( Math.abs( a.getLoan() ) + Math.abs( a.getConumEndow() ) ) ) {
-				if ( i1Index == -1 ) {
-					i1Index = i;
+				if ( -1 == stats.i1Index) {
+					stats.i1Index = i;
 				}
 				
 				stats.O += a.getAssetEndow();
+				
+			// left of i1 are pessimists and medium
 			} else {
+				// left of i0 are pessimists: have more cash than loan and assets
 				if ( a.getConumEndow() > ( Math.abs( a.getLoan() ) + Math.abs( a.getAssetEndow() ) ) ) {
-					i0Index = i;
+					stats.i0Index = i;
 					
 					stats.P += a.getConumEndow();
+				
+				// right of i0 are medium
 				} else {
 					stats.M += a.getLoan();
 					nM++;
@@ -109,28 +117,28 @@ public class Auction {
 			}
 		}
 		
-		  // pessimists
-		  if(i0Index!=-1) {
-			  stats.i0= agents.get( i0Index ).getH();
-			  stats.P/=(i0Index+1);
-		  } else {
-			  stats.i0=-1;
-			  stats.P=-2;
-		  }
-		  // optimises
-		  if(i1Index!=-1) {
-			  stats.i1= agents.get( i1Index ).getH();
-			  stats.O/=(agents.size()-i1Index);
-		  } else {
-			  stats.i1=-1;
-			  stats.O=-2;
-		  }
-		  // M
-		  if(nM!=0)
-			  stats.M/=nM;
-		  else
-			  stats.M=-2;
-
+		// found marginal buyer i0
+		// left of i0 are the pessimists
+		if( -1 != stats.i0Index ) {
+			stats.i0 = agents.get( stats.i0Index ).getH();
+			// calculate mean of pessimists wealth
+			stats.P /= ( stats.i0Index + 1 );
+		}
+  
+		// found marginal buyer i1
+		// right of i1 are the optimists
+		// between i0 and i1 are the medium
+		if( -1 != stats.i1Index ) {
+			stats.i1 = agents.get( stats.i1Index ).getH();
+			// calculate mean of optimists wealth
+			stats.O /= ( agents.size() - stats.i1Index );
+		}
+  
+		// found medium
+		if( 0 != nM ) {
+			stats.M /= nM;
+		}
+		
 		return stats;
 	}
 	

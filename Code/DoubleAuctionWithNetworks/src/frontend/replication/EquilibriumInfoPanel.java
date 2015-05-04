@@ -130,8 +130,8 @@ public class EquilibriumInfoPanel extends JPanel {
 		this.setLoanPrice( stats.q );
 		this.setAssetLoanPrice( stats.pq );
 		
-		this.setI0( stats.i0 );
-		this.setI1( stats.i1 );
+		this.setI0( stats.i0, stats.i0Index );
+		this.setI1( stats.i1, stats.i1Index );
 		this.setI2( stats.i2 );
 		
 		this.setPessimist( stats.P );
@@ -151,12 +151,12 @@ public class EquilibriumInfoPanel extends JPanel {
 		this.assetLoanPriceMeanLabel.setText( "" + ReplicationPanel.VALUES_FORMAT.format( v ) );
 	}
 	
-	public void setI0( double v ) {
-		this.i0Label.setText( "" + ReplicationPanel.VALUES_FORMAT.format( v ) );
+	public void setI0( double v, int i0Index ) {
+		this.i0Label.setText( "" + ReplicationPanel.VALUES_FORMAT.format( v ) + " (" + i0Index + ")" );
 	}
 	
-	public void setI1( double v ) {
-		this.i1Label.setText( "" + ReplicationPanel.VALUES_FORMAT.format( v ) );
+	public void setI1( double v, int i1Index ) {
+		this.i1Label.setText( "" + ReplicationPanel.VALUES_FORMAT.format( v ) + " (" + i1Index + ")" );
 	}
 	
 	public void setI2( double v ) {

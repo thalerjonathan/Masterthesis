@@ -1,16 +1,14 @@
 Implementierung		
+	-> OK		theoretisches gleichgewicht wird für fully connected noch nicht erreicht
+				-> !!!!!!!!!!!!! beim match evtl den preis anders: seller + buyer / 2 !!!!!!!!!!!!!
+				-> epsilon werte beim offering
+				-> ranges nochmal genau überprüfen
+				
+	-> TODO		theoretisches equilibrium berechnen und feststellen ob erreicht: nur bei fail
+				- in gewissen grenzen: z.b. auf 2 nachkommastellen genau
+						
 	-> TODO 	experimente durchführen
-				-> macht es unterschied ob es N + 1 agents sind?
-				
-				100 Agenten (500 sind zuviel, aufwand scheint exponentiell zu wachsen)
-				50 Replikationen
-				-> 1. ASCENDING_CONNECTED MIT Importance Sampling
-					-> termination mode: TRADING_HALT
-				-> 2. ASCENDING_CONNECTED OHNE Importance Sampling
-					-> termination mode: 1000 FAILED SUCCESSIVE TX - pro Replikation ca 130sec. auf laptop ohne parallelität
-				-> 3. FULLY_CONNECTED
-					-> termination mode: 1000 FAILED SUCCESSIVE TX - pro Replikation ca 650sec. auf laptop ohne parallelität
-				
+
 Schreiben
 	-> TODO		wieso wird gleichgewicht DOCHT NICHT erreicht?
 				-> bei welcher vernetzungsdichte wird das globale gleichgewicht erreicht?
@@ -28,7 +26,6 @@ Schreiben
 
 
 Wenn noch zeit:
-	-> TODO		memory-managemnt optimieren
 	-> TODO		Optimieren von Matchingwahrscheinlichkeiten bzw. Importance Sampling
 				anpassung an die nachbar limitprices, aber nicht deterministisch sondern auch zufällig ( mit 1/10 diese optimierung machen und dann untersuchen). 
 				somit kommt es mit höherer wahrscheinlichkeit zu matches zwischen ascending-nachbaren. ABER: dann keine reinen zero-intelligence agents.
