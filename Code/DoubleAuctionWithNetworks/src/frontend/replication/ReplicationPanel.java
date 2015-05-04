@@ -538,7 +538,7 @@ public class ReplicationPanel extends JPanel {
 		} else {
 			Iterator<Agent> iter = this.agentNetworkTemplate.iterator();
 			while ( iter.hasNext() ) {
-				iter.next().resetImportanceSamplingData();
+				iter.next().resetOfferingLimits();
 			}
 		}
 	}

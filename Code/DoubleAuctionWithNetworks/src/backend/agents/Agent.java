@@ -1,6 +1,6 @@
 package backend.agents;
 
-import java.util.List;
+import java.util.Arrays;
 import java.util.concurrent.ThreadLocalRandom;
 
 import backend.markets.MarketType;
@@ -73,14 +73,19 @@ public class Agent {
 		this.h = h;
 		this.markets = markets;
 
-		this.assetLimits = new double[2][2]; //first index: 0: buy, 1: sell; second index: 0: lower 1: upper limit
-		this.loanLimits = new double[2][2];
-		this.assetLoanLimits = new double[2][2];
+		//first index: 0: buy, 1: sell; second index: 0: lower 1: upper limit
+		this.assetLimits = new double[ 2 ][ 2 ]; 
+		this.loanLimits = new double[ 2 ][ 2 ];
+		this.assetLoanLimits = new double[ 2 ][ 2 ];
+	
+		this.currentAskOfferings = new AskOffering[ Markets.NUMMARKETS ];
+		this.currentBidOfferings = new BidOffering[ Markets.NUMMARKETS ];
+		
+		this.bestAskOfferings = new AskOffering[ Markets.NUMMARKETS ];
+		this.bestBidOfferings = new BidOffering[ Markets.NUMMARKETS ];
 		
 		this.calculateOfferingLimits();
-		
-		this.resetImportanceSamplingData();
-		 
+		this.resetOfferingLimits();
 		this.reset();
 	}
 	
@@ -93,11 +98,10 @@ public class Agent {
 		this.loanTaken = 0;
 		this.loanGiven = 0;
 		
-		this.currentAskOfferings = new AskOffering[ Markets.NUMMARKETS ];
-		this.currentBidOfferings = new BidOffering[ Markets.NUMMARKETS ];
+		Arrays.fill( this.currentAskOfferings, null );
+		Arrays.fill( this.currentBidOfferings, null );
 		
-		this.bestAskOfferings = new AskOffering[ Markets.NUMMARKETS ];
-		this.bestBidOfferings = new BidOffering[ Markets.NUMMARKETS ];
+		this.clearBestOfferings();
 	}
 	
 	public void calcNewOfferings() {
@@ -108,7 +112,6 @@ public class Agent {
 	public double getLoan() {
 		return this.loan;
 	}
-	
 	
 	public void execSellTransaction( Match match ) {
 		// NOTE: executing a sell-transaction on this agent which means this agent is SELLING
@@ -196,10 +199,8 @@ public class Agent {
 	}
 	
 	public void clearBestOfferings() {
-		for ( int i = 0; i < Markets.NUMMARKETS; ++i ) {
-			this.bestAskOfferings[ i ] = null;
-			this.bestBidOfferings[ i ] = null;
-		}
+		Arrays.fill( this.bestAskOfferings, null );
+		Arrays.fill( this.bestBidOfferings, null );
 	}
 	
 	public AskOffering[] getCurrentAskOfferings() {
@@ -306,7 +307,7 @@ public class Agent {
 		this.assetLoanLimits = limitAssetLoans;
 	}
 	
-	public void resetImportanceSamplingData() {
+	public void resetOfferingLimits() {
 		this.assetLimits[0][0] = minAssetPriceInCash; //buy lower
 		this.assetLimits[0][1] = limitPriceAsset; //buy upper
 		this.assetLimits[1][0] = limitPriceAsset; //sell lower
@@ -330,7 +331,6 @@ public class Agent {
 		// the price for 1.0 Units of asset - will be normalized during a Match
 		// to the given amount below - the unit of this variable is CASH
 		//double assetPriceInCash = randomRange( minAssetPriceInCash, limitPriceAsset );
-		//double assetPriceInCash = drawRandomFromRange( bidSampleRanges.get( 0 ) );
 		double assetPriceInCash = randomRange( assetLimits[ 0 ][ 0 ], assetLimits[ 0 ][ 1 ] );
 		
 		if ( this.cashEndow >= Markets.TRADING_UNIT_ASSET * assetPriceInCash ) {
@@ -344,11 +344,10 @@ public class Agent {
 		// => paying cash to seller
 		// => getting bond from seller
 		// => need to have positive amount of cash
-		if ( this.markets.isLoanMarket() && this.cashEndow > 0 ) {
+		if ( this.markets.isLoanMarket() && this.cashEndow > Markets.TRADING_EPSILON ) {
 			// the price for 1.0 Units of loans - will be normalized during a Match
 			// to the given amount below - the unit of this variable is CASH
 			//double loanPriceInCash = randomRange( minLoanPriceInCash, limitPriceLoan );
-			//double loanPriceInCash = drawRandomFromRange( bidSampleRanges.get( 1 ) );
 			double loanPriceInCash = randomRange( loanLimits[ 0 ][ 0 ], loanLimits[ 0 ][ 1 ] );
 			
 			// calculate which amount of loans we can buy MAX
@@ -370,7 +369,6 @@ public class Agent {
 		if ( this.markets.isABM() ) {
 			// the price for 1.0 unit of assets in loans => the unit of this variable is LOANS
 			//double assetPriceInLoans = randomRange( minAssetPriceInLoans, expectedAssetPriceInLoans );
-			//double assetPriceInLoans = drawRandomFromRange( bidSampleRanges.get( 2 ) );
 			double assetPriceInLoans = randomRange( assetLoanLimits[ 0 ][ 0 ], assetLoanLimits[ 0 ][ 1 ] );
 			
 			double tmp = 0.0;
@@ -462,9 +460,9 @@ public class Agent {
 	}
 
 	private void calculateOfferingLimits() {
-		double pD = markets.pD();
-		double pU = markets.pU();
-		double V = markets.V();
+		double pD = this.markets.pD();
+		double pU = this.markets.pU();
+		double V = this.markets.V();
 		
 		double minAssetPrice = pD;
 		double maxLoanPrice = Math.min( pU, V );
@@ -472,23 +470,18 @@ public class Agent {
 		double maxAssetPrice = pU;
 		double minLoanPrice = Math.min( pD, V );
 		
-		this.limitPriceAsset = markets.calculateLimitPriceAsset( h );
-		this.limitPriceLoan = markets.calculateLimitPriceLoan( h );
+		this.limitPriceAsset = markets.calculateLimitPriceAsset( this.h );
+		this.limitPriceLoan = markets.calculateLimitPriceLoan( this.h );
 		
-		this.minAssetPriceInCash = Math.min( pD, limitPriceAsset );
-		this.minLoanPriceInCash = Math.min( Math.min( pD, V ), limitPriceLoan );
+		this.minAssetPriceInCash = Math.min( pD, this.limitPriceAsset );
+		this.minLoanPriceInCash = Math.min( Math.min( pD, V ), this.limitPriceLoan );
 		this.minAssetPriceInLoans = minAssetPrice / maxLoanPrice;
 		
-		this.maxAssetPriceInCash = Math.max( pU, limitPriceAsset );
-		this.maxLoanPriceInCash = Math.max( Math.min( pU, V ), limitPriceLoan );
+		this.maxAssetPriceInCash = Math.max( pU, this.limitPriceAsset );
+		this.maxLoanPriceInCash = Math.max( Math.min( pU, V ), this.limitPriceLoan );
 		this.maxAssetPriceInLoans = maxAssetPrice / minLoanPrice;
 
-		this.expectedAssetPriceInLoans = limitPriceAsset / limitPriceLoan;
-	}
-	
-	@SuppressWarnings("unused")
-	private static double drawRandomFromRange( List<Double> range ) {
-		return range.get( (int) (range.size() * ThreadLocalRandom.current().nextDouble()) );
+		this.expectedAssetPriceInLoans = this.limitPriceAsset / this.limitPriceLoan;
 	}
 	
 	private static double randomRange( double min, double max ) {

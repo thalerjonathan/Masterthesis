@@ -629,7 +629,7 @@ public class InspectionPanel extends JPanel implements ActionListener, ChangeLis
 		} else {
 			Iterator<Agent> iter = this.agentNetwork.iterator();
 			while ( iter.hasNext() ) {
-				iter.next().resetImportanceSamplingData();
+				iter.next().resetOfferingLimits();
 			}
 		}
 	}

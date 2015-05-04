@@ -105,6 +105,7 @@ public class Match {
 		
 		// the amount is always the minimum of the amount offered by the buyer and the seller
 		this.amount = Math.min( this.buyOffer.getAmount(), this.sellOffer.getAmount() );
+		
 		// calculate the normalized price: price is always for 1.0 Unit of trading-good
 		// thus to get the according price for the trading amount we need to multiply both
 		// to get a "normalized" price
