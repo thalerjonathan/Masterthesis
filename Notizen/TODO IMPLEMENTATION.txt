@@ -1,4 +1,4 @@
-Implementierung		
+Erledigt
 	-> OK		theoretisches gleichgewicht wird für fully connected noch nicht erreicht
 				-> !!!!!!!!!!!!! beim match evtl den preis anders: seller + buyer / 2 !!!!!!!!!!!!!
 				-> !!!! epsilon werte beim offering !!! 
@@ -6,29 +6,13 @@ Implementierung
 						anstatt
 						if ( this.markets.isLoanMarket() && this.cashEndow > 0 )
 						macht extrem viel aus, sonst werden die theoretischen gleichgewichte nicht erreicht!
-
-	-> TODO		theoretisches equilibrium berechnen und feststellen ob erreicht: nur bei fail
-				- in gewissen grenzen: z.b. auf 2 nachkommastellen genau
-						
+			
 	-> TODO 	experimente durchführen
 
-Schreiben
-	-> TODO		wieso wird gleichgewicht DOCHT NICHT erreicht?
-				-> bei welcher vernetzungsdichte wird das globale gleichgewicht erreicht?
-				-> ASCNEDING_FULL_SHORTCUTS mit steigenden n
-				-> ASCENDING_REGULAR_SHORTCUTS  mit steigenden n
-				
-	-> TODO		SCHREIBEN: Introduction 
-	-> TODO		SCHREIBEN: Implementation
-	-> TODO		SCHREIBEN: Paper berschreiben
-	-> TODO		SCHREIBEN: implementierung beschreiben und unterschiede zum paper
-		
-	-> TODO		SCHREIBEN: Theorie Dieser erst ganz zum schluss, damit der theorieteil einen sinnvollen kontext bekommt und nicht bloß als trockener nackter theorieteil daherkommt, 
-				den man vor jede andere x-beliebige masterthesis setzen kann die sich auch mit komplexeren netzwerken auseinandersetzt.
-	-> TODO		SCHREIBEN: "Conclusions and Perspectives" schreiben.
-
-
 Wenn noch zeit:
+	-> TODO		theoretisches equilibrium berechnen und feststellen ob erreicht: nur bei fail
+				- in gewissen grenzen: z.b. auf 2 nachkommastellen genau
+	
 	-> TODO		Optimieren von Matchingwahrscheinlichkeiten bzw. Importance Sampling
 				anpassung an die nachbar limitprices, aber nicht deterministisch sondern auch zufällig ( mit 1/10 diese optimierung machen und dann untersuchen). 
 				somit kommt es mit höherer wahrscheinlichkeit zu matches zwischen ascending-nachbaren. ABER: dann keine reinen zero-intelligence agents.

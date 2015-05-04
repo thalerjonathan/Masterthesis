@@ -1,0 +1,39 @@
+Wieso kommt es zu trading-halt in ascending-connected?
+Aufgrund dessen kommt es nämlich zu einem qualitativ verschiedenen gleichgewicht, 
+Kann man Marktmechanismen einführen, die dieses aufheben?
+
+1. es können nur nachbaren handeln
+2. es wandert alles von niedriger optimisten zu höher optimisten
+3. beim fully-connected passiert der global beste offer
+4. bei ascending-connected passiert der local beste offer
+5. welcher davon genommen wird ist zufällig d.h. es kann zu einer inselbildung kommen, die führt dann dazu, dass agents "zwischendrinnen" mit unkollateralisierten assets übrigbleiben und nixmehr anbringen können
+	weil runterhum aufgetrocknet ist. 
+6. ist die lösung ein globales offerbook um auch optimalste trades zu machen?
+
+Introduction
+	- Motivation für solche experimente
+	- abgrenzung zur klassischen gleichgewichtstheorie
+
+	Von Geanakoplos zum "Breuer et al" Paper
+	
+	Was ist gleichgewicht?
+		theoretische gleichgewichtstheorie vs. simulation
+		
+	-> TODO		wieso wird gleichgewicht DOCHT NICHT erreicht?
+				-> bei welcher vernetzungsdichte wird das globale gleichgewicht erreicht?
+				-> ASCNEDING_FULL_SHORTCUTS mit steigenden n
+				-> ASCENDING_REGULAR_SHORTCUTS  mit steigenden n
+				
+	-> TODO		SCHREIBEN: Introduction 
+	-> TODO		SCHREIBEN: Implementation
+	-> TODO		SCHREIBEN: Paper berschreiben
+	-> TODO		SCHREIBEN: implementierung beschreiben und unterschiede zum paper
+		
+	-> TODO		SCHREIBEN: Theorie Dieser erst ganz zum schluss, damit der theorieteil einen sinnvollen kontext bekommt und nicht bloß als trockener nackter theorieteil daherkommt, 
+				den man vor jede andere x-beliebige masterthesis setzen kann die sich auch mit komplexeren netzwerken auseinandersetzt.
+	-> TODO		SCHREIBEN: "Conclusions and Perspectives" schreiben.
+
+
+Gleichgewicht definieren
+	-> theoretisches
+	-> in der simulation

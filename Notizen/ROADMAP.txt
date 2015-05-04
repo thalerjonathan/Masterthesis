@@ -125,3 +125,4 @@ Zeitpunkte
 		
 		-> OK		experimenter implementieren: vordefinierte experimentbeschreibungen über XML einlesen, diese können dann als zusätzlicher replication-tab geöffnet werden	
 	
+	Mai: Theoretische Arbeit & Schreiben

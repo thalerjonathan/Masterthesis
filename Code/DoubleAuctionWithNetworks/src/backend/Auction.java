@@ -244,10 +244,6 @@ public class Auction {
 
 		tx.setFinalAgents( finalAgents );
 		
-		// re-set trading agents because after a match, 
-		// agents previously unable to trade could become able to trade again
-		//this.tradingAgents = new ArrayList<>( this.agentNetwork.getOrderedList() );
-		
 		if ( MarketType.ASSET_CASH == match.getMarket() ) {
 			this.lastAssetPrices[ this.numTrans % Auction.LAST_PRICES ] = match.getPrice();
 			
@@ -262,8 +258,6 @@ public class Auction {
 		// assumes that the last agents which are trading are those around i2
 		this.lastAgents[ this.numTrans % Auction.LAST_PRICES ] = 
 				( match.getBuyer().getH() + match.getSeller().getH() ) / 2.0;
-		
-		//this.isTradingPossible();
 		
 		return true;
 	}
@@ -283,12 +277,9 @@ public class Auction {
 				}
 			}
 			
-			// agent is not able to trade, remove from the trading-agents which are able to trade
-			//agentIter.remove();
-			
 			//System.out.println( "Agent " + a.getH() + " cant trade no more! " + this.tradingAgents.size() + " left." );
 		}
-		
+
 		return false;
 	}
 	
