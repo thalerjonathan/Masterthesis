@@ -15,7 +15,7 @@ Fakten
 		relativ niedrig bzw. bei den meisten fast 0 ist, bis eben auf die "lokale" optimisten,
 		bei diesen überwiegt der loan taken anteil d.h. loans ist negativ
 		
-	-> Mit IS treten weniger auf, als ohne, begründung siehe unten
+	-> Mit IS treten weniger inseln auf als ohne, begründung siehe unten
 	
 	-> Die Inseln sind IMMER Agenten mit negativem loan d.h. sie haben mehr loans ausgegeben als bekommen
 		d.h. sie haben loans verkauft d.h. sie haben zwar assets, diese sind aber kollateralisiert
@@ -27,10 +27,12 @@ Fakten
 	
 	-> die inselbewohner handeln noch untereinander auf dem asset/loan markt, da die entsprechenden bedingungen
 		erfüllt sind (siehe oben) und können dadurch kollateralisierte assets freibekommen.
+		kollateralisierte assets frei zu bekommen wäre der mechanismus um die insel aufzulösen, leider funktioniert das nicht immer, siehe unten
 		
 	-> sobald wieder freie assets durch unkollateralisierung in einer insel auftreten, werden diese
 		sofort nach oben gehandelt d.h. verlassen die insel vom agent mit niedrigerem h zu einem
-		mit höherem h. so trocknet die insel mit der zeit aus
+		mit höherem h. so trocknet die insel mit der zeit aus d.h. sie verschwindet oder kapselt sich 
+		ab und wird zu einer toten insel d.h. sie bleib "über" und kann nichtmehr handeln
 		
 	-> die freien assets können entweder über asset-cash gehandelt aber wahrscheinlicher über 
 		loan/cash und asset/loan, da im asset-cash markt immer mindestens 0.1 einheiten gehandelt werden müssen
@@ -46,8 +48,8 @@ Fakten
 		nichtmehr handeln d.h. diese beiden umgebenden agenten haben assets und uncoll. assets = 0 und grenzen somit die insel ab
 
 	-> wieso kommt es zu diesen inaktiven insel-agenten?
-		dies ist ganz offensichtlich ein zufallsprozess, da es auch durchläufe gibt OHNE inselbildung
-		aufgrund der zufalls dynamik kommt es zufällig zu ausgeprägteren inseln bzw. zu wenigeren,
+		dies ist ganz offensichtlich ein zufallsprozess, da es auch durchläufe gibt OHNE inselbildung.
+		aufgrund der zufallsdynamik kommt es zufällig zu ausgeprägteren inseln bzw. zu wenigeren,
 		bilden sich kleine inseln heraus, so verläuft der prozess wie oben beschrieben bis zu 
 		den insel-agenten (eine insel kann auch nur aus einem einzigen agenten bestehen)
 		
@@ -60,19 +62,19 @@ Fakten
 		erlaubt, dass diese assets aus der insel hinauswandern, was durch wiederholung zu einer auflösung
 		der insel führt
 		
-	-> ist es möglich eine ausgetrocknete insel (in ascending-connected) wieder zu "befreien"?
-		ist dazu ein neuer marktmechanismus notwendig oder ist die topologie allein daran schuld?
-				
+	-> ist es möglich eine ausgetrocknete insel (in ascending-connected) wieder zu "befreien"? ist dazu ein neuer marktmechanismus notwendig oder ist die topologie allein daran schuld?
 		Ein Ascending Full Shortcuts mit 2er Connectivity scheint hier schon eine wesentliche verbesserung zu bringen
 		Einzelne Durchläufe mit 30, 100 und 200 Agenten waren in der Lage Inseln aufzulösen, jedoch gab es auch 
 		immer wieder Durchläufe wo dies nicht immer möglich war.
 		
 Neue Thesen
-	-> Ascending-Connected führt zu Inselbildungen, die durch Einfügen von zusätzlichen
-		Nachbarschaften, aufgelöst werden können. D.h. Agent i ist mit Agent i+1 UND i+2 verbunden, 
-		anstatt nur mit i+1 usw...
-		(Dies sagt noch nichts über die Laufzeit oder das Gleichgewicht aus)
+	-> Ascending-Connected führt zu Inselbildungen, die durch Einfügen von zusätzlichen regelmäßigen
+		Nachbarschaften nach vorne, aufgelöst werden können. D.h. Agent i ist mit Agent i+1, i+2, ... i+n verbunden, 
+		anstatt nur mit i+1 (Dies sagt noch nichts über die Laufzeit oder das Gleichgewicht aus)
 		
+	-> Noch offen: wie weit nach vorne muss vernetzt werden?
+		-> Abhängig von Anzahl Agenten?
+
 	-> grundsätzlich wird eine topologie, die nicht voll vernetzt ist, niemals das
 		Gleichgewicht von fully connected herankommen, da die handelsdynamiken anders verlaufen
 		und es somit auch notwendigerweise zu teilweise leicht, teilweise stark abweichenden 
@@ -82,7 +84,8 @@ Neue Thesen
 		
 	-> Ascending-Connected nähert sich nur dann dem theoretischen gleichgewicht an, wenn
 		die vernetzung eines agenten mit N folgenden Nachbarn gegen K/2 (K anzahl der Agenten)
-		geht d.h. wenn Ascending-Connected Vollvernetztheit erreicht.
+		geht d.h. wenn Ascending-Connected Vollvernetztheit erreicht, da so immer mehr global
+		optimaleres handeln erreicht wird anstatt lokal optimal (lokales offerbook vs. globales offerbook)
 		
 	-> Ist die Topologie zufällig z.b. Asceding-Connected Random Shortcuts, Erdos-Renyi, Barbasi-Albert 
 		und Watts Strogatz, so ist das Gleichgewicht und die Vermögensverteilung ebenfalls Zufällig
@@ -90,4 +93,11 @@ Neue Thesen
 	-> Wenn das theoretische Gleichgewicht erreicht werden soll, so müssen sich die Agenten alle
 		untereinander kennen oder über eine Zentrale Stelle (Global Offer Book) koordiniert werden
 		d.h. es darf nicht auf lokale Nachbarschaften eingeschränkt werden, da es sonst nur zu
-		lokalen verteilungen kommt.
+		lokalen verteilungen kommt, da die agenten nichtmehr in der lage sind kollateralisierte
+		assets wieder frei zu bekommen d.h. sie sind nichtmehr in der lage suboptimale trades aufzulösen, 
+		wobei suboptimal "lokal subotpimal" bedeutet und optimal "global optimal" wäre.
+		Der mechanismus der BondsPledgeability (BP) wurde genau deshalb eingeführt, da sonst
+		ohne diesem das thoeretische gleichgewicht in Fully-Connected NICHT erreicht werden kann.
+		Leider verhindert nun die einschränkung auf lokale nachbarschaft und zufallsprozesse im falle der inselbildung
+		dass dieser mechanismus auch wirklich angewendet werden kann, wenn er notwendig wäre.
+		-> irgendwo fehlt hier noch ein denkschritt... kann ein zusätzlicher marktmechanismus das beheben?

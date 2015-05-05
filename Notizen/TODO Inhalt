@@ -1,35 +1,28 @@
-Wieso kommt es zu trading-halt in ascending-connected?
-Aufgrund dessen kommt es nämlich zu einem qualitativ verschiedenen gleichgewicht, 
-Kann man Marktmechanismen einführen, die dieses aufheben?
-
-
 Introduction
-	- Motivation für solche experimente
-	- abgrenzung zur klassischen gleichgewichtstheorie
-
+	Motivation für solche experimente
 	Von Geanakoplos zum "Breuer et al" Paper
+
+Theorie
+	Continuous Double Auction
+	Networks
+	Gleichgewichtstheorie
+		theoretisches
+		in der simulation
+		theoretisches vs simulations
 	
-	Was ist gleichgewicht?
-		theoretische gleichgewichtstheorie vs. simulation
-		
-	-> TODO		wieso wird gleichgewicht DOCHT NICHT erreicht?
-				-> bei welcher vernetzungsdichte wird das globale gleichgewicht erreicht?
-				-> ASCNEDING_FULL_SHORTCUTS mit steigenden n
-				-> ASCENDING_REGULAR_SHORTCUTS  mit steigenden n
-				
-	-> TODO		SCHREIBEN: Introduction 
-	-> TODO		SCHREIBEN: Implementation
-	-> TODO		SCHREIBEN: Paper berschreiben
-	-> TODO		SCHREIBEN: implementierung beschreiben und unterschiede zum paper
-		
-	-> TODO		SCHREIBEN: Theorie Dieser erst ganz zum schluss, damit der theorieteil einen sinnvollen kontext bekommt und nicht bloß als trockener nackter theorieteil daherkommt, 
-				den man vor jede andere x-beliebige masterthesis setzen kann die sich auch mit komplexeren netzwerken auseinandersetzt.
-	-> TODO		SCHREIBEN: "Conclusions and Perspectives" schreiben.
+Hypothese
+	Wieso trifft die hypothese nicht zu? D.h. Ascending_connected hat ein anderes gleichgewicht als fully_connected.
+	Gibt es möglicherweise Marktmechanismen, die dies beheben können oder liegt es grundstäzlich in der natur der topologie?
+	Wieso kommt es zu trading-halt in ascending-connected?
+	Aufgrund dessen kommt es nämlich zu einem qualitativ verschiedenen gleichgewicht, 
+	Kann man Marktmechanismen einführen, die dieses aufheben?
 
+Implementierung
+	Utility-Funktionen
+	Implementierung der Märkte
+	Implementierung der Markt-Mechanismen ABM und BP
+	Sweeping & Matching 
+	Topologien
 
-Gleichgewicht definieren
-	-> theoretisches
-	-> in der simulation
-
-Wieso trifft die hypothese nicht zu? D.h. Ascending_connected hat ein anderes gleichgewicht als fully_connected.
-Gibt es möglicherweise Marktmechanismen, die dies beheben können oder liegt es grundstäzlich in der natur der topologie?
+Conclusions & Perspectives
+	? 
