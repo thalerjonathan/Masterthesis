@@ -93,7 +93,10 @@ public class MainWindow extends JFrame {
 		this.simulationModesTabPane.addTab( "Replications", rp );
 
 		InspectionPanel ip = new InspectionPanel();
-		this.simulationModesTabPane.addTab( "Inspection", ip );			
+		this.simulationModesTabPane.addTab( "Inspection 1", ip );			
+		
+		ip = new InspectionPanel();
+		this.simulationModesTabPane.addTab( "Inspection 2", ip );			
 		
 		this.simulationModesTabPane.setSelectedIndex( 0 );
 		

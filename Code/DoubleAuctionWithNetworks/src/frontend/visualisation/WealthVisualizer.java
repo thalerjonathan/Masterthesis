@@ -15,7 +15,7 @@ import backend.agents.Agent;
 @SuppressWarnings("serial")
 public class WealthVisualizer extends JPanel {
 	private final static int X_ACHSIS_GRID = 10;
-	private final static double Y_ACHSIS_RANGE = 10.0;
+	private final static double Y_ACHSIS_RANGE = 6.0;
 	
 	private final static int POINT_RADIUS = 3;
 	private final static int POINT_DIAMETER = POINT_RADIUS * 2;

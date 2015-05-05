@@ -18,6 +18,8 @@ public class Agent {
 	private double limitPriceAsset;
 	// Expected Value (E, Erwartungswert) of the loan
 	private double limitPriceLoan;
+	// expected value of asset/loan price
+	private double expectedAssetPriceInLoans;
 	
 	// amount of consumption-good endowment (cash) still available
 	private double cash;
@@ -40,8 +42,6 @@ public class Agent {
 	private double maxAssetPriceInCash;
 	private double maxLoanPriceInCash;
 	private double maxAssetPriceInLoans;
-	
-	private double expectedAssetPriceInLoans;
 	
 	// NOTE: holds the offerings of the current sweeping-round
 	private AskOffering[] currentAskOfferings;
@@ -276,6 +276,10 @@ public class Agent {
 	
 	public double getLimitPriceAsset() {
 		return limitPriceAsset;
+	}
+	
+	public double getLimitPriceAssetLoans() {
+		return expectedAssetPriceInLoans;
 	}
 
 	public void addCurrentOfferingsToBestOfferings() {

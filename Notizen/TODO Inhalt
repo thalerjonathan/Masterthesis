@@ -2,18 +2,6 @@ Wieso kommt es zu trading-halt in ascending-connected?
 Aufgrund dessen kommt es nämlich zu einem qualitativ verschiedenen gleichgewicht, 
 Kann man Marktmechanismen einführen, die dieses aufheben?
 
--> genau einen verlauf anschauen
--> unter welchen bedingungen kann ein agent nichtmehr handeln?
-	-> bids
-	-> asks
-
-1. es können nur nachbaren handeln
-2. es wandert alles von niedriger optimisten zu höher optimisten
-3. beim fully-connected passiert der global beste offer
-4. bei ascending-connected passiert der local beste offer
-5. welcher davon genommen wird ist zufällig d.h. es kann zu einer inselbildung kommen, die führt dann dazu, dass agents "zwischendrinnen" mit unkollateralisierten assets übrigbleiben und nixmehr anbringen können
-	weil runterhum aufgetrocknet ist. 
-6. ist die lösung ein globales offerbook um auch optimalste trades zu machen?
 
 Introduction
 	- Motivation für solche experimente
@@ -42,3 +30,6 @@ Introduction
 Gleichgewicht definieren
 	-> theoretisches
 	-> in der simulation
+
+Wieso trifft die hypothese nicht zu? D.h. Ascending_connected hat ein anderes gleichgewicht als fully_connected.
+Gibt es möglicherweise Marktmechanismen, die dies beheben können oder liegt es grundstäzlich in der natur der topologie?

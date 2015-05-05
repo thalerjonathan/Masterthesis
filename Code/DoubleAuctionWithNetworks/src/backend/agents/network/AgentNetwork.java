@@ -123,7 +123,7 @@ public class AgentNetwork {
 			n = network.orderedAgents.size() / 2;
 		}
 		
-		for ( int i = 0; i < network.orderedAgents.size() - 1; ++i ) {
+		for ( int i = 0; i < network.orderedAgents.size(); ++i ) {
 			Agent from = network.orderedAgents.get( i );
 
 			for ( int j = 0; j < n; ++j ) {

@@ -22,7 +22,8 @@ public class AgentInfoPanel extends JPanel {
 	
 	private JLabel expectedAssetPriceLabel;
 	private JLabel expectedLoansPriceLabel;
-
+	private JLabel expectedAssetLoansPriceLabel;
+	
 	public AgentInfoPanel() {
 		this.createControls();
 	}
@@ -41,6 +42,7 @@ public class AgentInfoPanel extends JPanel {
 		
 		this.expectedAssetPriceLabel.setText( InspectionPanel.TRADING_VALUES_FORMAT.format( a.getLimitPriceAsset() ) );
 		this.expectedLoansPriceLabel.setText( InspectionPanel.TRADING_VALUES_FORMAT.format( a.getLimitPriceLoans() ) );
+		this.expectedAssetLoansPriceLabel.setText( InspectionPanel.TRADING_VALUES_FORMAT.format( a.getLimitPriceAssetLoans() ) );
 	}
 	
 	private void createControls() {
@@ -53,8 +55,9 @@ public class AgentInfoPanel extends JPanel {
 		JLabel loansGivenInfoLabel = new JLabel( "Loans Given:" );
 		JLabel loansTakenInfoLabel = new JLabel( "Loans Taken:" );
 		
-		JLabel expectedLoansPriceInfoLabel = new JLabel( "Loans Limit-Price:" );
-		JLabel expectedAssetPriceInfoLabel = new JLabel( "Assets Limit-Price:" );
+		JLabel expectedLoansPriceInfoLabel = new JLabel( "Loans Limit:" );
+		JLabel expectedAssetPriceInfoLabel = new JLabel( "Assets Limit:" );
+		JLabel expectedAssetLoansPriceInfoLabel = new JLabel( "Assets/Loans Limit:" );
 		
 		this.idLabel = new JLabel();
 		this.hLabel = new JLabel();
@@ -69,7 +72,8 @@ public class AgentInfoPanel extends JPanel {
 		
 		this.expectedLoansPriceLabel = new JLabel();
 		this.expectedAssetPriceLabel = new JLabel();
-
+		this.expectedAssetLoansPriceLabel = new JLabel();
+		
 		this.setLayout( new GridBagLayout() );
 		
 		GridBagConstraints c = new GridBagConstraints();
@@ -109,6 +113,9 @@ public class AgentInfoPanel extends JPanel {
 		c.gridx = 2;
 		c.gridy = 3;
 		this.add( expectedLoansPriceInfoLabel, c );
+		c.gridx = 4;
+		c.gridy = 3;
+		this.add( expectedAssetLoansPriceInfoLabel, c );
 		
 		c.gridx = 1;
 		c.gridy = 0;
@@ -143,5 +150,8 @@ public class AgentInfoPanel extends JPanel {
 		c.gridx = 3;
 		c.gridy = 3;
 		this.add( this.expectedLoansPriceLabel, c );
+		c.gridx = 5;
+		c.gridy = 3;
+		this.add( this.expectedAssetLoansPriceLabel, c );
 	}
 }
