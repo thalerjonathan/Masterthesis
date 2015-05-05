@@ -48,6 +48,7 @@ public class NetworkRenderPanel extends JPanel {
 		this.layoutClazz = layoutClazz;
 		this.selectionObserver = selectionObserver;
 		this.keepTXHighlighted = false;
+
 		this.initVisualizationViewer();
 	}
 	
@@ -72,6 +73,9 @@ public class NetworkRenderPanel extends JPanel {
 		this.visualizationViewer.getRenderContext().setVertexFillPaintTransformer( new Transformer<Agent, Paint>() {
 			@Override
 			public Paint transform( Agent arg ) {
+				if ( arg.isCantTrade() ) 
+					return Color.BLACK;
+				
 				if ( arg.isHighlighted() )
 					return Color.BLUE;
 				

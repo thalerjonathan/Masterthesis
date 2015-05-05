@@ -47,7 +47,8 @@ public class InspectionThread implements Runnable {
 	public enum AdvanceMode {
 		ALL_TX,
 		SUCCESSFUL_TX,
-		SUCCESSFUL_LOAN_TX
+		SUCCESSFUL_LOAN_TX,
+		UNTRADER_FOUND
 	}
 	
 	public InspectionThread( Auction auction, InspectionPanel inspectorPanel ) {
@@ -225,6 +226,10 @@ public class InspectionThread implements Runnable {
 						if ( MarketType.ASSET_LOAN == tx.getMatch().getMarket() ) {
 							this.advanceTxCountCurrent++;
 						}
+						
+					} else if ( AdvanceMode.UNTRADER_FOUND == this.advanceMode &&
+							tx.isUntraderFound() ) {
+						this.advanceTxCountCurrent++;
 					}
 
 					if ( this.advanceTxCountCurrent >= this.advanceTxCountTarget ||

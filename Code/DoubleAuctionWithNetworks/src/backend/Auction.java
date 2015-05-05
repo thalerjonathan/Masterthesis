@@ -234,8 +234,11 @@ public class Auction {
 		
 		List<Agent> finalAgents = null;
 		
-		// WARNING: keeping history sucks up huge amount of memory if many TXs
+		// WARNING: keeping history sucks up huge amount of memory and CPU if many TXs
 		if ( keepAgentHistory ) {
+			if ( this.markUntraders() ) {
+				tx.setUntraderFound( true );
+			}
 			finalAgents = this.agentNetwork.cloneAgents();
 			
 		} else {
@@ -262,6 +265,33 @@ public class Auction {
 		return true;
 	}
 	
+	private boolean markUntraders() {
+		boolean foundUntrader = false;
+		
+		// check if trading is possible within neighborhood
+		Iterator<Agent> agentIter = this.tradingAgents.iterator();
+
+	outer_loop:
+		while ( agentIter.hasNext() ) {
+			Agent a = agentIter.next();
+			
+			Iterator<Agent> neighbourIter = this.agentNetwork.getNeighbors( a );
+			while ( neighbourIter.hasNext() ) {
+				Agent n = neighbourIter.next();
+				
+				if ( this.canTrade( a, n ) ) {
+					a.setCantTrade( false );
+					continue outer_loop;
+				}
+			}
+			
+			a.setCantTrade( true );
+			foundUntrader = true;
+		}
+
+		return foundUntrader;
+	}
+	
 	private boolean isTradingPossible() {
 		// check if trading is possible within neighborhood
 		Iterator<Agent> agentIter = this.tradingAgents.iterator();
@@ -276,8 +306,6 @@ public class Auction {
 					return true;
 				}
 			}
-			
-			//System.out.println( "Agent " + a.getH() + " cant trade no more! " + this.tradingAgents.size() + " left." );
 		}
 
 		return false;

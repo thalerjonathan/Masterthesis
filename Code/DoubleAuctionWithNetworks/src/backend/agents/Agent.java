@@ -53,7 +53,8 @@ public class Agent {
 		
 	private Markets markets;
 	private boolean highlighted;
-
+	private boolean cantTrade;
+	
 	// NOTE: use only for visualization purposes!!
 	public Agent( AgentBean bean ) {
 		this.h = bean.getH();
@@ -88,6 +89,7 @@ public class Agent {
 		this.cash = this.markets.getConsumEndow(); 
 		this.assets = this.markets.getAssetEndow();
 		this.highlighted = false;
+		this.cantTrade = false;
 		
 		this.loansTaken = 0;
 		this.loansGiven = 0;
@@ -247,7 +249,15 @@ public class Agent {
 	public void setHighlighted( boolean highlighted ) {
 		this.highlighted = highlighted;
 	}
-	
+
+	public boolean isCantTrade() {
+		return cantTrade;
+	}
+
+	public void setCantTrade(boolean cantTrade) {
+		this.cantTrade = cantTrade;
+	}
+
 	public int getId() {
 		return id;
 	}
@@ -304,6 +314,8 @@ public class Agent {
 			clone.bestAskOfferings[ i ] = this.bestAskOfferings[ i ];
 			clone.bestBidOfferings[ i ] = this.bestBidOfferings[ i ];
 		}
+		
+		clone.cantTrade = this.cantTrade;
 		
 		return clone;
 	}

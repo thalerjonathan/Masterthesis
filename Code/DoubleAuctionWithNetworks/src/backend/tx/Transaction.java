@@ -15,6 +15,7 @@ public class Transaction  {
 	private int transNum;
 	private int sweepCount;
 	private boolean tradingHalted;
+	private boolean untraderFound;
 	
 	private Match match;
 	
@@ -233,5 +234,13 @@ public class Transaction  {
 
 	public void setSweepCount(int sweepCount) {
 		this.sweepCount = sweepCount;
+	}
+
+	public void setUntraderFound(boolean flag) {
+		this.untraderFound = flag;
+	}
+	
+	public boolean isUntraderFound() {
+		return this.untraderFound;
 	}
 }

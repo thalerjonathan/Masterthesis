@@ -908,6 +908,13 @@ public class InspectionPanel extends JPanel implements ActionListener, ChangeLis
 		a1.setHighlighted( true );
 		a2.setHighlighted( true );
 
+		// both iterators have same order and same length
+		Iterator<Agent> agentsIter = this.agentNetwork.iterator();
+		Iterator<Agent> finalAgentsIter = tx.getFinalAgents().iterator();
+		while ( agentsIter.hasNext() && finalAgentsIter.hasNext() ) {
+			agentsIter.next().setCantTrade( finalAgentsIter.next().isCantTrade() );
+		}
+
 		this.networkVisPanel.repaint();
 	}
 	
