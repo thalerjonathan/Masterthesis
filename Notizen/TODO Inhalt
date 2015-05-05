@@ -2,6 +2,11 @@ Wieso kommt es zu trading-halt in ascending-connected?
 Aufgrund dessen kommt es nämlich zu einem qualitativ verschiedenen gleichgewicht, 
 Kann man Marktmechanismen einführen, die dieses aufheben?
 
+-> genau einen verlauf anschauen
+-> unter welchen bedingungen kann ein agent nichtmehr handeln?
+	-> bids
+	-> asks
+
 1. es können nur nachbaren handeln
 2. es wandert alles von niedriger optimisten zu höher optimisten
 3. beim fully-connected passiert der global beste offer

@@ -199,7 +199,6 @@ public class ReplicationsRunner {
 		int validReplications = 0;
 		double[] medianConsumEndow = new double[ agentCount ];
 		double[] medianAssetEndow = new double[ agentCount ];
-		double[] medianLoanEndow = new double[ agentCount ];
 		double[] medianLoanGivenEndow = new double[ agentCount ];
 		double[] medianLoanTakenEndow = new double[ agentCount ];
 		
@@ -213,11 +212,10 @@ public class ReplicationsRunner {
 			for ( int i = 0; i < finalAgents.size(); ++i ) {
 				Agent a = finalAgents.get( i );
 				
-				medianConsumEndow[ i ] += a.getConumEndow();
-				medianAssetEndow[ i ] += a.getAssetEndow();
-				medianLoanEndow[ i ] += a.getLoan();
-				medianLoanGivenEndow[ i ] += a.getLoanGiven();
-				medianLoanTakenEndow[ i ] += a.getLoanTaken();
+				medianConsumEndow[ i ] += a.getCash();
+				medianAssetEndow[ i ] += a.getAssets();
+				medianLoanGivenEndow[ i ] += a.getLoansGiven();
+				medianLoanTakenEndow[ i ] += a.getLoansTaken();
 			}
 			
 			meanStats.p += data.getStats().p;
@@ -265,33 +263,27 @@ public class ReplicationsRunner {
 			
 			double agentMCE = medianConsumEndow[ i ] / validReplications;
 			double agentMAE = medianAssetEndow[ i ] / validReplications;
-			double agentMLE = medianLoanEndow[ i ] / validReplications;
 			double agentMLG = medianLoanGivenEndow[ i ] / validReplications;
 			double agentMLT = medianLoanTakenEndow[ i ] / validReplications;
 			
 			Agent medianAgent = new Agent( templateAgent.getId(), templateAgent.getH(), this.markets ) {
 				@Override
-				public double getConumEndow() {
+				public double getCash() {
 					return agentMCE;
 				}
 				
 				@Override
-				public double getAssetEndow() {
+				public double getAssets() {
 					return agentMAE;
 				}
 				
 				@Override
-				public double getLoan() {
-					return agentMLE;
-				}
-				
-				@Override
-				public double getLoanGiven() {
+				public double getLoansGiven() {
 					return agentMLG;
 				}
 				
 				@Override
-				public double getLoanTaken() {
+				public double getLoansTaken() {
 					return agentMLT;
 				}
 			};

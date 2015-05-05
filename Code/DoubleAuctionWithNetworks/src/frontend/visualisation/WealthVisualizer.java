@@ -64,7 +64,10 @@ public class WealthVisualizer extends JPanel {
 		double yHalf = d.height / 2.0;
 
 		// draw grid
+		( ( Graphics2D ) g ).setStroke( new BasicStroke( 2 ) );
 		g.drawLine( SCALA_WIDTH, ( int ) yHalf, d.width, ( int ) yHalf );
+		( ( Graphics2D ) g ).setStroke( new BasicStroke( 1 ) );
+		
 		for ( int i = 0; i < X_ACHSIS_GRID; i++ ) {
 			double h = i / ( double ) X_ACHSIS_GRID;
 			int x = ( int ) ( width * h ) + SCALA_WIDTH;
@@ -101,9 +104,9 @@ public class WealthVisualizer extends JPanel {
 		for ( int i = 0; i < this.orderedAgents.size(); ++i ) {
 			Agent a = this.orderedAgents.get( i );
 			double optimism = a.getH();
-			double cash = a.getConumEndow();
-			double assets = a.getAssetEndow();
-			double bonds = a.getLoan();
+			double cash = a.getCash();
+			double assets = a.getAssets();
+			double bonds = a.getLoans();
 			double unpledgedAssets = a.getUncollateralizedAssets();
 			
 			int x = ( int ) ( width * optimism ) + SCALA_WIDTH;
@@ -159,7 +162,7 @@ public class WealthVisualizer extends JPanel {
 		g.setColor( Color.RED );
 		g.drawLine( LEGEND_BOX_X + 5, d.height - LEGEND_BOX_Y + 53, LEGEND_BOX_X + 50, d.height - LEGEND_BOX_Y + 53 );
 		g.setColor( Color.BLACK );
-		g.drawChars( "Bonds".toCharArray(), 0, "Bonds".length(), LEGEND_BOX_X + 60, d.height - LEGEND_BOX_Y + 58 );
+		g.drawChars( "Loans".toCharArray(), 0, "Loans".length(), LEGEND_BOX_X + 60, d.height - LEGEND_BOX_Y + 58 );
 
 		g.setColor( Color.CYAN );
 		g.drawLine( LEGEND_BOX_X + 5, d.height - LEGEND_BOX_Y + 73, LEGEND_BOX_X + 50, d.height - LEGEND_BOX_Y + 73 );

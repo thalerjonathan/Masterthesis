@@ -15,8 +15,8 @@ public class AgentInfoPanel extends JPanel {
 	private JLabel hLabel;
 	private JLabel consumEndowLabel;
 	private JLabel assetEndowLabel;
-	private JLabel uncollAssetEndowLabel;
-	private JLabel collateralLabel;
+	private JLabel freeAssetEndowLabel;
+	private JLabel loansLabel;
 	private JLabel loansGivenLabel;
 	private JLabel loansTakenLabel;
 	
@@ -31,16 +31,16 @@ public class AgentInfoPanel extends JPanel {
 		this.idLabel.setText( "" + a.getId() );
 		this.hLabel.setText( InspectionPanel.AGENT_H_FORMAT.format( a.getH() ) );
 		
-		this.consumEndowLabel.setText( InspectionPanel.TRADING_VALUES_FORMAT.format( a.getConumEndow() ) );
-		this.assetEndowLabel.setText( InspectionPanel.TRADING_VALUES_FORMAT.format( a.getAssetEndow() ) );
-		this.uncollAssetEndowLabel.setText( InspectionPanel.TRADING_VALUES_FORMAT.format( a.getUncollateralizedAssets() ) );
+		this.consumEndowLabel.setText( InspectionPanel.TRADING_VALUES_FORMAT.format( a.getCash() ) );
+		this.assetEndowLabel.setText( InspectionPanel.TRADING_VALUES_FORMAT.format( a.getAssets() ) );
+		this.loansLabel.setText( InspectionPanel.TRADING_VALUES_FORMAT.format( a.getLoans() ) );
+		
+		this.freeAssetEndowLabel.setText( InspectionPanel.TRADING_VALUES_FORMAT.format( a.getUncollateralizedAssets() ) );
+		this.loansGivenLabel.setText( InspectionPanel.TRADING_VALUES_FORMAT.format( a.getLoansGiven() ) );
+		this.loansTakenLabel.setText( InspectionPanel.TRADING_VALUES_FORMAT.format( a.getLoansTaken() ) );
 		
 		this.expectedAssetPriceLabel.setText( InspectionPanel.TRADING_VALUES_FORMAT.format( a.getLimitPriceAsset() ) );
 		this.expectedLoansPriceLabel.setText( InspectionPanel.TRADING_VALUES_FORMAT.format( a.getLimitPriceLoans() ) );
-		
-		this.collateralLabel.setText( InspectionPanel.TRADING_VALUES_FORMAT.format( a.getCollateral() ) );
-		this.loansGivenLabel.setText( InspectionPanel.TRADING_VALUES_FORMAT.format( a.getLoanGiven() ) );
-		this.loansTakenLabel.setText( InspectionPanel.TRADING_VALUES_FORMAT.format( a.getLoanTaken() ) );
 	}
 	
 	private void createControls() {
@@ -48,8 +48,8 @@ public class AgentInfoPanel extends JPanel {
 		JLabel hInfoLabel = new JLabel( "Optimism (h):" );
 		JLabel consumEndowInfoLabel = new JLabel( "Cash:" );
 		JLabel assetEndowInfoLabel = new JLabel( "Assets:" );
+		JLabel loansInfoLabel = new JLabel( "Loans:" );
 		JLabel freeAssetEndowInfoLabel = new JLabel( "Uncoll. Assets:" );
-		JLabel collateralInfoLabel = new JLabel( "Collateral:" );
 		JLabel loansGivenInfoLabel = new JLabel( "Loans Given:" );
 		JLabel loansTakenInfoLabel = new JLabel( "Loans Taken:" );
 		
@@ -61,9 +61,9 @@ public class AgentInfoPanel extends JPanel {
 		
 		this.consumEndowLabel = new JLabel();
 		this.assetEndowLabel = new JLabel();
-		this.uncollAssetEndowLabel = new JLabel();
+		this.freeAssetEndowLabel = new JLabel();
 
-		this.collateralLabel = new JLabel();
+		this.loansLabel = new JLabel();
 		this.loansGivenLabel = new JLabel();
 		this.loansTakenLabel = new JLabel();
 		
@@ -91,17 +91,17 @@ public class AgentInfoPanel extends JPanel {
 		this.add( assetEndowInfoLabel, c );
 		c.gridx = 4;
 		c.gridy = 1;
-		this.add( freeAssetEndowInfoLabel, c );
+		this.add( loansInfoLabel, c );
 		
 		c.gridx = 0;
 		c.gridy = 2;
-		this.add( collateralInfoLabel, c );
+		this.add( loansGivenInfoLabel, c );
 		c.gridx = 2;
 		c.gridy = 2;
-		this.add( loansGivenInfoLabel, c );
+		this.add( loansTakenInfoLabel, c );
 		c.gridx = 4;
 		c.gridy = 2;
-		this.add( loansTakenInfoLabel, c );
+		this.add( freeAssetEndowInfoLabel, c );
 		
 		c.gridx = 0;
 		c.gridy = 3;
@@ -125,17 +125,17 @@ public class AgentInfoPanel extends JPanel {
 		this.add( this.assetEndowLabel, c );
 		c.gridx = 5;
 		c.gridy = 1;
-		this.add( this.uncollAssetEndowLabel, c );
+		this.add( this.loansLabel, c );
 		
 		c.gridx = 1;
 		c.gridy = 2;
-		this.add( this.collateralLabel, c );
+		this.add( this.loansGivenLabel , c );
 		c.gridx = 3;
 		c.gridy = 2;
-		this.add( this.loansGivenLabel, c );
+		this.add( this.loansTakenLabel, c );
 		c.gridx = 5;
 		c.gridy = 2;
-		this.add( this.loansTakenLabel, c );
+		this.add( this.freeAssetEndowLabel, c );
 		
 		c.gridx = 1;
 		c.gridy = 3;

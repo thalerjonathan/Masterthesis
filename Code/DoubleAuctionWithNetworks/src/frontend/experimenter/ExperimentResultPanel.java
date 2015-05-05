@@ -61,10 +61,10 @@ public class ExperimentResultPanel extends JPanel {
 			}
 			
 			Agent a = new Agent( agentBean ) {
-				public double getCollateral() {
-					double collateral = this.getLoanTaken();
+				public double getCollateralObligations() {
+					double collateral = this.getLoansTaken();
 					if ( bean.getExperiment().isBondsPledgeability() ) {
-						collateral -= this.getLoanGiven();
+						collateral -= this.getLoansGiven();
 					}
 					
 					return collateral;

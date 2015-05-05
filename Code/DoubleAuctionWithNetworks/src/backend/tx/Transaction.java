@@ -116,6 +116,7 @@ public class Transaction  {
 		return Match.matchOffers( agentAsk, agentBid, bestLocalAskOfferings, bestLocalBidOfferings );
 	}
 	
+	
 	// NOTE: assumes full connectivity between agents: each agent knows each other agent
 	public Match findMatchesByGlobalOffers( Agent a, AgentNetwork agents ) {
 		AskOffering[] askOfferings = a.getCurrentAskOfferings();
@@ -127,6 +128,38 @@ public class Transaction  {
 		return Match.matchOffers( askOfferings, bidOfferings, this.bestGlobalAskOfferings, this.bestGlobalBidOfferings );
 	}
 	
+	/*
+	public Match findMatchesByGlobalOffers( Agent a, AgentNetwork agents ) {
+ 		AskOffering[] askOfferings = a.getCurrentAskOfferings();
+ 		BidOffering[] bidOfferings = a.getCurrentBidOfferings();
+	
+		Arrays.fill( this.bestLocalAskOfferings, null );
+		Arrays.fill( this.bestLocalBidOfferings, null );
+		
+		for ( int i = 0; i < Markets.NUMMARKETS; ++i ) {
+			AskOffering ask = this.bestGlobalAskOfferings[ i ];
+			BidOffering bid = this.bestGlobalBidOfferings[ i ];
+			
+			if ( null != ask ) {
+				if ( agents.isNeighbor( a, ask.getAgent() ) ) {
+					this.bestLocalAskOfferings[ i ] = ask;
+				}
+			}
+
+			if ( null != bid ) {
+				if ( agents.isNeighbor( a, bid.getAgent() ) ) {
+					this.bestLocalBidOfferings[ i ] = bid;
+				}
+			}
+		}
+		
+	
+ 		// add offerings to the global offer-book
+ 		this.addOfferings( askOfferings, bidOfferings );
+ 		
+		return Match.matchOffers( askOfferings, bidOfferings, this.bestLocalAskOfferings, this.bestLocalBidOfferings );
+ 	}
+	*/
 	private void updateBestAskOfferings( AskOffering offer )   {
 		int mkt = offer.getMarketType().ordinal();
 		AskOffering bestAsk = bestGlobalAskOfferings[ mkt ];

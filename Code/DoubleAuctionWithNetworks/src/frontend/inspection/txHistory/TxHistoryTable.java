@@ -109,8 +109,13 @@ public class TxHistoryTable extends JTable {
 			loanAskPrice = InspectionPanel.TRADING_VALUES_FORMAT.format( match.getSellOffer().getPrice() );
 			loanBidPrice = InspectionPanel.TRADING_VALUES_FORMAT.format( match.getBuyOffer().getPrice() );
 			
-		} else if ( MarketType.LOAN_CASH == match.getMarket() ) {
-			// TODO:
+		} else if ( MarketType.ASSET_LOAN == match.getMarket() ) {
+			assetAmount = InspectionPanel.TRADING_VALUES_FORMAT.format( match.getAmount() );
+			assetPrice = InspectionPanel.TRADING_VALUES_FORMAT.format( match.getPrice()  );
+			assetAskPrice = InspectionPanel.TRADING_VALUES_FORMAT.format( match.getSellOffer().getPrice() );
+			assetBidPrice = InspectionPanel.TRADING_VALUES_FORMAT.format( match.getBuyOffer().getPrice() );
+			
+			loanAmount = InspectionPanel.TRADING_VALUES_FORMAT.format( match.getPrice() );
 		}
 		
 		this.tableModel.addRow( new Object[] {

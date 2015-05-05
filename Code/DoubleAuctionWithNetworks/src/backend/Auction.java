@@ -94,24 +94,24 @@ public class Auction {
 			Agent a = agents.get( i );
 			
 			// i1 is where the optimists begin: hold more assets than cash and loans
-			if ( a.getAssetEndow() > ( Math.abs( a.getLoan() ) + Math.abs( a.getConumEndow() ) ) ) {
+			if ( a.getAssets() > ( Math.abs( a.getLoans() ) + Math.abs( a.getCash() ) ) ) {
 				if ( -1 == stats.i1Index) {
 					stats.i1Index = i;
 				}
 				
-				stats.O += a.getAssetEndow();
+				stats.O += a.getAssets();
 				
 			// left of i1 are pessimists and medium
 			} else {
 				// left of i0 are pessimists: have more cash than loan and assets
-				if ( a.getConumEndow() > ( Math.abs( a.getLoan() ) + Math.abs( a.getAssetEndow() ) ) ) {
+				if ( a.getCash() > ( Math.abs( a.getLoans() ) + Math.abs( a.getAssets() ) ) ) {
 					stats.i0Index = i;
 					
-					stats.P += a.getConumEndow();
+					stats.P += a.getCash();
 				
 				// right of i0 are medium
 				} else {
-					stats.M += a.getLoan();
+					stats.M += a.getLoans();
 					nM++;
 				}
 			}

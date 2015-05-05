@@ -21,11 +21,11 @@ public class AgentBean {
 	
 	public AgentBean( Agent a ) {
 		this.setH( a.getH() );
-		this.setAssets( a.getAssetEndow() );
-		this.setCash( a.getConumEndow() );
-		this.setLoan( a.getLoan() );
-		this.setLoanGiven( a.getLoanGiven() );
-		this.setLoanTaken( a.getLoanTaken() );
+		this.setAssets( a.getAssets() );
+		this.setCash( a.getCash() );
+		this.setLoan( a.getLoans() );
+		this.setLoanGiven( a.getLoansGiven() );
+		this.setLoanTaken( a.getLoansTaken() );
 	}
 	
 	public double getH() {
