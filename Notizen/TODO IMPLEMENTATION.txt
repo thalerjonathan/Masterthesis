@@ -7,7 +7,7 @@ Erledigt
 						if ( this.markets.isLoanMarket() && this.cashEndow > 0 )
 						macht extrem viel aus, sonst werden die theoretischen gleichgewichte nicht erreicht!
 			
-	-> TODO 	experimente durchführen
+	-> TODO 	neuen Markt einführen: Collateralized Assets gegen Cash
 
 Wenn noch zeit:
 	-> TODO		theoretisches equilibrium berechnen und feststellen ob erreicht: nur bei fail
