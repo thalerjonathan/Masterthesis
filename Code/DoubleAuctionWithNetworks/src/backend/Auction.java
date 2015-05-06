@@ -171,6 +171,9 @@ public class Auction {
 		}
 		
 		if ( false == this.isTradingPossible() ) {
+			//agentNetwork.addFullConnection();
+			//agentNetwork.addFullShortCuts();
+			
 			transaction.setTradingHalted( true );
 		}
 		

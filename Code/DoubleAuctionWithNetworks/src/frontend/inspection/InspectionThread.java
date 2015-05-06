@@ -46,6 +46,7 @@ public class InspectionThread implements Runnable {
 	
 	public enum AdvanceMode {
 		ALL_TX,
+		FAILED_TX,
 		SUCCESSFUL_TX,
 		SUCCESSFUL_LOAN_TX,
 		UNTRADER_FOUND
@@ -229,6 +230,10 @@ public class InspectionThread implements Runnable {
 						
 					} else if ( AdvanceMode.UNTRADER_FOUND == this.advanceMode &&
 							tx.isUntraderFound() ) {
+						this.advanceTxCountCurrent++;
+					
+					} else if ( AdvanceMode.FAILED_TX == this.advanceMode &&
+							false == tx.wasSuccessful() ) {
 						this.advanceTxCountCurrent++;
 					}
 

@@ -63,10 +63,15 @@ Fakten
 		der insel führt
 		
 	-> ist es möglich eine ausgetrocknete insel (in ascending-connected) wieder zu "befreien"? ist dazu ein neuer marktmechanismus notwendig oder ist die topologie allein daran schuld?
-		Ein Ascending Full Shortcuts mit 2er Connectivity scheint hier schon eine wesentliche verbesserung zu bringen
-		Einzelne Durchläufe mit 30, 100 und 200 Agenten waren in der Lage Inseln aufzulösen, jedoch gab es auch 
-		immer wieder Durchläufe wo dies nicht immer möglich war.
-		
+		- Ein Ascending Full Shortcuts mit 2er Connectivity scheint hier schon eine wesentliche verbesserung zu bringen
+			Einzelne Durchläufe mit 30, 100 und 200 Agenten waren in der Lage Inseln aufzulösen, jedoch gab es auch 
+			immer wieder Durchläufe wo dies nicht immer möglich war.
+		- nachträglich connectivity erhöhen
+			sobald stillstand eintritt d.h. trading halt (oder viele failed TX) kann man nachträglich die
+			topologie verändern d.h. mehr verbindungen einbauen.
+			Fully-Connected löst die inseln immer auf,
+			AC mit Full Shortcuts schafft es zwar die insel(n) zu reduzieren aber kann sie auch nicht immer auflösen
+			
 Neue Thesen
 	-> Ascending-Connected führt zu Inselbildungen, die durch Einfügen von zusätzlichen regelmäßigen
 		Nachbarschaften nach vorne, aufgelöst werden können. D.h. Agent i ist mit Agent i+1, i+2, ... i+n verbunden, 

@@ -479,6 +479,21 @@ public class AgentNetwork {
 		return this.orderedAgents.iterator();
 	}
 	
+	public void addFullShortCuts() {
+		for ( int i = 0; i < this.orderedAgents.size(); ++i ) {
+			Agent from = this.orderedAgents.get( i );
+
+			for ( int j = 0; j < 1; ++j ) {
+				Agent to = this.orderedAgents.get( ( i + 2 + j ) % this.orderedAgents.size() );
+				this.graph.addEdge( new AgentConnection(), from, to );
+			}
+		}
+	}
+	
+	public void addFullConnection() {
+		this.connectCompleted( 0, this.orderedAgents.size() );
+	}
+	
 	public Iterator<Agent> randomIterator( boolean reshuffle ) {
 		if ( null == this.randomOrderAgents ) {
 			this.randomOrderAgents = new ArrayList<Agent>( this.orderedAgents );

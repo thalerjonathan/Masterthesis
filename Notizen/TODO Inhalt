@@ -11,11 +11,11 @@ Theorie
 		theoretisches vs simulations
 	
 Hypothese
-	Wieso trifft die hypothese nicht zu? D.h. Ascending_connected hat ein anderes gleichgewicht als fully_connected.
+	Wieso trifft die hypothese nicht zu? 
+	Ascending_connected hat ein qualitativ anderes gleichgewicht als fully_connected.
 	Gibt es möglicherweise Marktmechanismen, die dies beheben können oder liegt es grundstäzlich in der natur der topologie?
-	Wieso kommt es zu trading-halt in ascending-connected?
-	Aufgrund dessen kommt es nämlich zu einem qualitativ verschiedenen gleichgewicht, 
-	Kann man Marktmechanismen einführen, die dieses aufheben?
+	Vollvernetzung notwendig für theoretisches gleichgewicht
+	Globale Institution notwendig um Inseln (lokale optima) aufzulösen
 
 Implementierung
 	Utility-Funktionen
@@ -23,6 +23,10 @@ Implementierung
 	Implementierung der Markt-Mechanismen ABM und BP
 	Sweeping & Matching 
 	Topologien
-
+	Performance:
+		Matching Wahrscheinlichkeiten
+		Importance Sampling
+		Lokales vs. Globales Offerbook
+		
 Conclusions & Perspectives
 	? 
