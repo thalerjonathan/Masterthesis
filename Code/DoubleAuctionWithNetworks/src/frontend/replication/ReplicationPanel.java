@@ -74,6 +74,7 @@ public class ReplicationPanel extends JPanel {
 	
 	private JCheckBox abmMarketCheck;
 	private JCheckBox loanCashMarketCheck;
+	private JCheckBox collateralMarketCheck;
 	private JCheckBox bpMechanismCheck;
 	private JCheckBox importanceSamplingCheck;
 	
@@ -161,6 +162,7 @@ public class ReplicationPanel extends JPanel {
 		
 		this.abmMarketCheck = new JCheckBox( "Asset/Loan Market" );
 		this.loanCashMarketCheck = new JCheckBox( "Loan/Cash Market" );
+		this.collateralMarketCheck = new JCheckBox( "Collateral/Cash Market" );
 		this.bpMechanismCheck = new JCheckBox( "Bonds Pledgeability" );
 		
 		this.importanceSamplingCheck = new JCheckBox( "Importance-Sampling" );
@@ -206,6 +208,7 @@ public class ReplicationPanel extends JPanel {
 		
 		this.abmMarketCheck.setSelected( this.markets.isABM() );
 		this.loanCashMarketCheck.setSelected( this.markets.isLoanMarket() );
+		this.collateralMarketCheck.setSelected( this.markets.isCollateralMarket() );
 		this.bpMechanismCheck.setSelected( this.markets.isBP() );
 		
 		this.showReplicationInfoButton.setEnabled( false );
@@ -223,6 +226,7 @@ public class ReplicationPanel extends JPanel {
 				if ( false == ReplicationPanel.this.abmMarketCheck.isSelected() ) {
 					ReplicationPanel.this.loanCashMarketCheck.setSelected( false );
 					ReplicationPanel.this.bpMechanismCheck.setSelected( false );
+					ReplicationPanel.this.collateralMarketCheck.setSelected( false );
 				}
 			}
 		};
@@ -230,6 +234,7 @@ public class ReplicationPanel extends JPanel {
 		this.bpMechanismCheck.addActionListener( checkListener );
 		this.abmMarketCheck.addActionListener( checkListener );
 		this.loanCashMarketCheck.addActionListener( checkListener );
+		this.collateralMarketCheck.addActionListener( checkListener );
 		
 		this.startButton.addActionListener( new ActionListener() {
 			@Override
@@ -339,6 +344,7 @@ public class ReplicationPanel extends JPanel {
 		agentsConfigPanel.add( this.topologySelection );
 		agentsConfigPanel.add( this.abmMarketCheck );
 		agentsConfigPanel.add( this.loanCashMarketCheck );
+		agentsConfigPanel.add( this.collateralMarketCheck );
 		agentsConfigPanel.add( this.bpMechanismCheck );	
 		agentsConfigPanel.add( this.importanceSamplingCheck );
 		agentsConfigPanel.add( this.startButton );
@@ -400,6 +406,7 @@ public class ReplicationPanel extends JPanel {
         experimentBean.setLoanType( (LoanType) this.loanTypeSelection.getSelectedItem() );
         experimentBean.setImportanceSampling( this.importanceSamplingCheck.isSelected() );
         experimentBean.setLoanCashMarket( this.loanCashMarketCheck.isSelected() );
+        experimentBean.setCollateralCashMarket( this.collateralMarketCheck.isSelected() );
         experimentBean.setMaxTx( (int) this.maxTxSpinner.getValue() );
         experimentBean.setName( name );
         experimentBean.setReplications( (int) this.replicationCountSpinner.getValue() );
@@ -450,6 +457,7 @@ public class ReplicationPanel extends JPanel {
 			this.startButton.setText( "Terminate" );
 			this.abmMarketCheck.setEnabled( false );
 			this.loanCashMarketCheck.setEnabled( false );
+			this.collateralMarketCheck.setEnabled( false );
 			this.bpMechanismCheck.setEnabled( false );
 			this.importanceSamplingCheck.setEnabled( false );
 			this.agentCountSpinner.setEnabled( false );
@@ -474,6 +482,7 @@ public class ReplicationPanel extends JPanel {
 			bean.setLoanType( (LoanType) this.loanTypeSelection.getSelectedItem() );
 			bean.setImportanceSampling( this.importanceSamplingCheck.isSelected() );
 			bean.setLoanCashMarket( this.loanCashMarketCheck.isSelected() );
+			bean.setCollateralCashMarket( this.collateralMarketCheck.isSelected() );
 			bean.setMaxTx( (int) this.maxTxSpinner.getValue() );
 			bean.setReplications( (int) this.replicationCountSpinner.getValue() );
 			bean.setTerminationMode( this.terminationSelection.getItemAt( this.terminationSelection.getSelectedIndex() ) );
@@ -528,6 +537,7 @@ public class ReplicationPanel extends JPanel {
 		this.startButton.setText( "Start" );
 		this.abmMarketCheck.setEnabled( true );
 		this.loanCashMarketCheck.setEnabled( true );
+		this.collateralMarketCheck.setEnabled( true );
 		this.bpMechanismCheck.setEnabled( true );
 		this.importanceSamplingCheck.setEnabled( true );
 		this.agentCountSpinner.setEnabled( true );
@@ -561,9 +571,10 @@ public class ReplicationPanel extends JPanel {
 		int agentCount = (int) this.agentCountSpinner.getValue();
 		
 		this.markets = new Markets( (LoanType) this.loanTypeSelection.getSelectedItem() );
-		this.markets.setABM( ReplicationPanel.this.abmMarketCheck.isSelected() );
-		this.markets.setLoanMarket( ReplicationPanel.this.loanCashMarketCheck.isSelected() );
-		this.markets.setBP( ReplicationPanel.this.bpMechanismCheck.isSelected() );
+		this.markets.setABM( this.abmMarketCheck.isSelected() );
+		this.markets.setLoanMarket( this.loanCashMarketCheck.isSelected() );
+		this.markets.setCollateralMarket( this.collateralMarketCheck.isSelected() );
+		this.markets.setBP( this.bpMechanismCheck.isSelected() );
 
 		this.replicationTable.clearAll();
 

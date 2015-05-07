@@ -11,6 +11,7 @@ public class Markets {
 	private boolean abm;
 	private boolean bp;
 	private boolean loanMarket;
+	private boolean collateralMarket;
 	
 	private double consumEndow = 1.0;
 	private double assetEndow = 1.0;
@@ -32,6 +33,7 @@ public class Markets {
 		this.abm = true;
 		this.bp = true;
 		this.loanMarket = true;
+		this.collateralMarket = true;
 	}
 	
 	public Markets( LoanType loantype ) {
@@ -66,6 +68,10 @@ public class Markets {
 		this.loanMarket = loanMarket;
 	}
 
+	public void setCollateralMarket( boolean collateralMarket ) {
+		this.collateralMarket = collateralMarket;
+	}
+	
 	public boolean isABM() {
 		return abm;
 	}
@@ -76,6 +82,10 @@ public class Markets {
 	
 	public boolean isLoanMarket() {
 		return loanMarket;
+	}
+	
+	public boolean isCollateralMarket() {
+		return collateralMarket;
 	}
 	
 	public double pU() {

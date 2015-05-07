@@ -79,6 +79,7 @@ public class InspectionPanel extends JPanel implements ActionListener, ChangeLis
 	
 	private JCheckBox abmMarketCheck;
 	private JCheckBox loanCashMarketCheck;
+	private JCheckBox collateralMarketCheck;
 	private JCheckBox bpMechanismCheck;
 	private JCheckBox importanceSamplingCheck;
 	
@@ -267,6 +268,7 @@ public class InspectionPanel extends JPanel implements ActionListener, ChangeLis
 		
 		this.abmMarketCheck = new JCheckBox( "Asset/Loan Market" );
 		this.loanCashMarketCheck = new JCheckBox( "Loan/Cash Market" );
+		this.collateralMarketCheck = new JCheckBox( "Collateral/Cash Market" );
 		this.bpMechanismCheck = new JCheckBox( "Bonds Pledgeability" );
 		this.importanceSamplingCheck = new JCheckBox( "Importance-Sampling" );
 		
@@ -282,6 +284,7 @@ public class InspectionPanel extends JPanel implements ActionListener, ChangeLis
 		
 		this.abmMarketCheck.setSelected( this.markets.isABM() );
 		this.loanCashMarketCheck.setSelected( this.markets.isLoanMarket() );
+		this.collateralMarketCheck.setSelected( this.markets.isCollateralMarket() );
 		this.bpMechanismCheck.setSelected( this.markets.isBP() );
 		this.keepAgentHistoryCheck.setSelected( false );
 		
@@ -417,6 +420,7 @@ public class InspectionPanel extends JPanel implements ActionListener, ChangeLis
 			public void actionPerformed(ActionEvent e) {
 				if ( false == InspectionPanel.this.abmMarketCheck.isSelected() ) {
 					InspectionPanel.this.loanCashMarketCheck.setSelected( false );
+					InspectionPanel.this.collateralMarketCheck.setSelected( false );
 					InspectionPanel.this.bpMechanismCheck.setSelected( false );
 				}
 				
@@ -426,6 +430,7 @@ public class InspectionPanel extends JPanel implements ActionListener, ChangeLis
 		
 		this.bpMechanismCheck.addActionListener( checkListener );
 		this.abmMarketCheck.addActionListener( checkListener );
+		this.collateralMarketCheck.addActionListener( checkListener );
 		this.loanCashMarketCheck.addActionListener( checkListener );
 
 		// adding components ////////////////////////////////////
@@ -441,6 +446,7 @@ public class InspectionPanel extends JPanel implements ActionListener, ChangeLis
 		controlsPanel.add( this.topologySelection );
 		controlsPanel.add( this.abmMarketCheck );
 		controlsPanel.add( this.loanCashMarketCheck );
+		controlsPanel.add( this.collateralMarketCheck );
 		controlsPanel.add( this.bpMechanismCheck );
 		controlsPanel.add( this.importanceSamplingCheck );
 		controlsPanel.add( this.inspectionButton );
@@ -623,6 +629,7 @@ public class InspectionPanel extends JPanel implements ActionListener, ChangeLis
 	private void setMarketMechanisms() {
 		this.markets.setABM( InspectionPanel.this.abmMarketCheck.isSelected() );
 		this.markets.setLoanMarket( InspectionPanel.this.loanCashMarketCheck.isSelected() );
+		this.markets.setLoanMarket( InspectionPanel.this.collateralMarketCheck.isSelected() );
 		this.markets.setBP( InspectionPanel.this.bpMechanismCheck.isSelected() );
 	}
 	
@@ -832,6 +839,7 @@ public class InspectionPanel extends JPanel implements ActionListener, ChangeLis
 			this.recreateButton.setEnabled( false );
 			this.abmMarketCheck.setEnabled( false );
 			this.loanCashMarketCheck.setEnabled( false );
+			this.collateralMarketCheck.setEnabled( false );
 			this.bpMechanismCheck.setEnabled( false );
 			this.importanceSamplingCheck.setEnabled( false );
 			
@@ -884,6 +892,7 @@ public class InspectionPanel extends JPanel implements ActionListener, ChangeLis
 			this.recreateButton.setEnabled( true );
 			this.abmMarketCheck.setEnabled( true );
 			this.loanCashMarketCheck.setEnabled( true );
+			this.collateralMarketCheck.setEnabled( true );
 			this.bpMechanismCheck.setEnabled( true );
 			this.importanceSamplingCheck.setEnabled( true );
 		}

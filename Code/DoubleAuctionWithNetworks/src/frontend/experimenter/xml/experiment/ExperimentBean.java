@@ -15,6 +15,7 @@ public class ExperimentBean {
 	private String topology;
 	private boolean assetLoanMarket;
 	private boolean loanCashMarket;
+	private boolean collateralCashMarket;
 	private boolean bondsPledgeability;
 	private boolean importanceSampling;
 	private TerminationMode terminationMode;
@@ -121,5 +122,13 @@ public class ExperimentBean {
 	@XmlElement
 	public void setReplications(int replications) {
 		this.replications = replications;
+	}
+
+	public boolean isCollateralCashMarket() {
+		return collateralCashMarket;
+	}
+
+	public void setCollateralCashMarket(boolean collateralCashMarket) {
+		this.collateralCashMarket = collateralCashMarket;
 	}
 }
