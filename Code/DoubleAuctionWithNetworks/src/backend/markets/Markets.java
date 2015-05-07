@@ -2,11 +2,11 @@ package backend.markets;
 
 public class Markets {
 	// price when market moves UP
-	private double pU = 1.0;
+	private double pU = Markets.UP_STATE_DEFAULT;
 	// price when market moves DOWN
-	private double pD = 0.2;
-	// the face-value of the loan
-	private double V = 0.5;
+	private double pD = Markets.DOWN_STATE_DEFAULT;
+	// the type of the loan
+	private LoanType loanType = LoanType.LOAN_05;
 	
 	private boolean abm;
 	private boolean bp;
@@ -25,21 +25,24 @@ public class Markets {
 	public final static boolean TRADE_ONLY_FULL_UNITS = true;
 	public final static double TRADING_EPSILON = 0.0000001;
 
+	private final static double UP_STATE_DEFAULT = 1.0;
+	private final static double DOWN_STATE_DEFAULT = 0.2;
+	
 	public Markets() {
 		this.abm = true;
 		this.bp = true;
 		this.loanMarket = true;
 	}
 	
-	public Markets( double V ) {
-		this( 0.2, 1.0, V );
+	public Markets( LoanType loantype ) {
+		this( Markets.DOWN_STATE_DEFAULT, Markets.UP_STATE_DEFAULT, loantype );
 	}
 	
-	public Markets( double pD, double pU, double V ) {
+	private Markets( double pD, double pU, LoanType loantype ) {
 		this();
 		this.pD = pD;
 		this.pU = pU;		
-		this.V = V;
+		this.loanType = loantype;
 	}
 
 	public double calculateLimitPriceAsset( double h ) {
@@ -47,8 +50,8 @@ public class Markets {
 	}
 	
 	public double calculateLimitPriceLoan( double h ) {
-		return h * Math.min( this.pU, this.V ) + 
-				( 1.0 - h ) * Math.min( this.pD, this.V );
+		return h * Math.min( this.pU, this.V() ) + 
+				( 1.0 - h ) * Math.min( this.pD, this.V() );
 	}
 	
 	public void setABM(boolean abm) {
@@ -84,11 +87,11 @@ public class Markets {
 	}
 	
 	public double V() {
-		return this.V;
+		return this.loanType.V();
 	}
 
-	public void setV( double v ) {
-		this.V = v;
+	public void setLoanType( LoanType loanType ) {
+		this.loanType = loanType;
 	}
 	
 	public double getConsumEndow() {

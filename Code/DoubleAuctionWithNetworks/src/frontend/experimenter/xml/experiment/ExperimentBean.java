@@ -3,6 +3,7 @@ package frontend.experimenter.xml.experiment;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import backend.markets.LoanType;
 import backend.replications.ReplicationsRunner.TerminationMode;
 
 @XmlRootElement( name = "experiment" )
@@ -10,7 +11,7 @@ public class ExperimentBean {
 
 	private String name;
 	private int agentCount;
-	private double faceValue;
+	private LoanType loanType;
 	private String topology;
 	private boolean assetLoanMarket;
 	private boolean loanCashMarket;
@@ -42,15 +43,14 @@ public class ExperimentBean {
 		this.agentCount = agentCount;
 	}
 	
-	public double getFaceValue() {
-		return faceValue;
+	public LoanType getLoanType() {
+		return loanType;
 	}
-	
-	@XmlElement
-	public void setFaceValue(double faceValue) {
-		this.faceValue = faceValue;
+
+	public void setLoanType(LoanType loanType) {
+		this.loanType = loanType;
 	}
-	
+
 	public String getTopology() {
 		return topology;
 	}

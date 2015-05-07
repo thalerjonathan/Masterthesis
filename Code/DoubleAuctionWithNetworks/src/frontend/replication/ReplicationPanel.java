@@ -36,6 +36,7 @@ import backend.agents.Agent;
 import backend.agents.AgentFactoryImpl;
 import backend.agents.network.AgentConnection;
 import backend.agents.network.AgentNetwork;
+import backend.markets.LoanType;
 import backend.markets.Markets;
 import backend.replications.ReplicationsRunner;
 import backend.replications.ReplicationsRunner.ReplicationsListener;
@@ -78,9 +79,9 @@ public class ReplicationPanel extends JPanel {
 	
 	private JComboBox<NetworkCreator> topologySelection;
 	private JComboBox<TerminationMode> terminationSelection;
+	private JComboBox<LoanType> loanTypeSelection;
 	
 	private JSpinner agentCountSpinner;
-	private JSpinner faceValueSpinner;
 	private JSpinner replicationCountSpinner;
 	private JSpinner maxTxSpinner;
 	
@@ -128,7 +129,7 @@ public class ReplicationPanel extends JPanel {
 		this.markets.setABM( bean.isAssetLoanMarket() );
 		this.markets.setLoanMarket( bean.isLoanCashMarket() );
 		this.markets.setBP( bean.isBondsPledgeability() );
-		this.markets.setV( bean.getFaceValue() );
+		this.markets.setLoanType( bean.getLoanType() );
 		
 		this.setLayout( new BorderLayout() );
 		
@@ -136,7 +137,7 @@ public class ReplicationPanel extends JPanel {
 		
 		this.name = bean.getName();
 		this.agentCountSpinner.setValue( bean.getAgentCount() );
-		this.faceValueSpinner.setValue( bean.getFaceValue() );
+		this.loanTypeSelection.setSelectedItem( bean.getLoanType() );
 		this.maxTxSpinner.setValue( bean.getMaxTx() );
 		this.replicationCountSpinner.setValue( bean.getReplications() );
 		this.terminationSelection.setSelectedItem( bean.getTerminationMode() );
@@ -166,6 +167,7 @@ public class ReplicationPanel extends JPanel {
 		
 		this.topologySelection = new JComboBox<NetworkCreator>();
 		this.terminationSelection = new JComboBox<TerminationMode>( TerminationMode.values() );
+		this.loanTypeSelection = new JComboBox<LoanType>( LoanType.values() );
 		
 		this.startButton = new JButton( "Start" );
 		this.saveButton = new JButton( "Save as Experiment" );
@@ -174,8 +176,7 @@ public class ReplicationPanel extends JPanel {
 		this.showReplicationInfoButton = new JButton( "Replication-Info" );
 		
 		this.agentCountSpinner = new JSpinner( new SpinnerNumberModel( 30, 10, 1000, 10 ) );
-		this.faceValueSpinner = new JSpinner( new SpinnerNumberModel( 0.5, 0.1, 1.0, 0.1 ) );
-		this.replicationCountSpinner = new JSpinner( new SpinnerNumberModel( 4, 1, 100, 1 ) );
+		this.replicationCountSpinner = new JSpinner( new SpinnerNumberModel( 4, 1, 1000, 1 ) );
 		this.maxTxSpinner = new JSpinner( new SpinnerNumberModel( 1_000, 1, 1_000_000, 100 ) );
 		
 		this.runningTimeLabel = new JLabel( "Running since: -" );
@@ -186,6 +187,8 @@ public class ReplicationPanel extends JPanel {
 		this.fileChooser.setCurrentDirectory( ExperimenterPanel.EXPERIMENTS_DIRECTORY );
 		
 		this.replicationTable = new ReplicationTable();
+		
+		this.loanTypeSelection.setSelectedItem( LoanType.LOAN_05 );
 		
 		this.topologySelection.addItem( new AscendingConnectedCreator() );
 		this.topologySelection.addItem( new AscendingFullShortcutsCreator() );
@@ -293,7 +296,12 @@ public class ReplicationPanel extends JPanel {
 		};
 		
 		this.agentCountSpinner.addChangeListener( spinnerChanged );
-		this.faceValueSpinner.addChangeListener( spinnerChanged );
+		this.loanTypeSelection.addActionListener( new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				ReplicationPanel.this.createAgents();
+			}
+		} );
 		
 		this.showNetworkButton.addActionListener( new ActionListener() {
 			@Override
@@ -326,7 +334,7 @@ public class ReplicationPanel extends JPanel {
 		JPanel agentsConfigPanel = new JPanel();
 		JPanel replicationsConfigPanel = new JPanel();
 		
-		agentsConfigPanel.add( this.faceValueSpinner );
+		agentsConfigPanel.add( this.loanTypeSelection );
 		agentsConfigPanel.add( this.agentCountSpinner );
 		agentsConfigPanel.add( this.topologySelection );
 		agentsConfigPanel.add( this.abmMarketCheck );
@@ -389,7 +397,7 @@ public class ReplicationPanel extends JPanel {
         experimentBean.setAgentCount( (int) this.agentCountSpinner.getValue() );
         experimentBean.setAssetLoanMarket( this.abmMarketCheck.isSelected() );
         experimentBean.setBondsPledgeability( this.bpMechanismCheck.isSelected() );
-        experimentBean.setFaceValue( (double) this.faceValueSpinner.getValue() );
+        experimentBean.setLoanType( (LoanType) this.loanTypeSelection.getSelectedItem() );
         experimentBean.setImportanceSampling( this.importanceSamplingCheck.isSelected() );
         experimentBean.setLoanCashMarket( this.loanCashMarketCheck.isSelected() );
         experimentBean.setMaxTx( (int) this.maxTxSpinner.getValue() );
@@ -446,7 +454,7 @@ public class ReplicationPanel extends JPanel {
 			this.importanceSamplingCheck.setEnabled( false );
 			this.agentCountSpinner.setEnabled( false );
 			this.maxTxSpinner.setEnabled( false );
-			this.faceValueSpinner.setEnabled( false );
+			this.loanTypeSelection.setEnabled( false );
 			this.topologySelection.setEnabled( false );
 			this.terminationSelection.setEnabled( false );
 			this.replicationCountSpinner.setEnabled( false );
@@ -463,7 +471,7 @@ public class ReplicationPanel extends JPanel {
 			bean.setAgentCount( (int) this.agentCountSpinner.getValue() );
 			bean.setAssetLoanMarket( this.abmMarketCheck.isSelected() );
 			bean.setBondsPledgeability( this.bpMechanismCheck.isSelected() );
-			bean.setFaceValue( (double) this.faceValueSpinner.getValue() );
+			bean.setLoanType( (LoanType) this.loanTypeSelection.getSelectedItem() );
 			bean.setImportanceSampling( this.importanceSamplingCheck.isSelected() );
 			bean.setLoanCashMarket( this.loanCashMarketCheck.isSelected() );
 			bean.setMaxTx( (int) this.maxTxSpinner.getValue() );
@@ -524,7 +532,7 @@ public class ReplicationPanel extends JPanel {
 		this.importanceSamplingCheck.setEnabled( true );
 		this.agentCountSpinner.setEnabled( true );
 		this.maxTxSpinner.setEnabled( true );
-		this.faceValueSpinner.setEnabled( true );
+		this.loanTypeSelection.setEnabled( true );
 		this.topologySelection.setEnabled( true );
 		this.terminationSelection.setEnabled( true );
 		this.replicationCountSpinner.setEnabled( true );
@@ -552,7 +560,7 @@ public class ReplicationPanel extends JPanel {
 	private void createAgents() {
 		int agentCount = (int) this.agentCountSpinner.getValue();
 		
-		this.markets = new Markets( (double) this.faceValueSpinner.getValue() );
+		this.markets = new Markets( (LoanType) this.loanTypeSelection.getSelectedItem() );
 		this.markets.setABM( ReplicationPanel.this.abmMarketCheck.isSelected() );
 		this.markets.setLoanMarket( ReplicationPanel.this.loanCashMarketCheck.isSelected() );
 		this.markets.setBP( ReplicationPanel.this.bpMechanismCheck.isSelected() );

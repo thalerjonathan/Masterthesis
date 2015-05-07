@@ -37,6 +37,7 @@ import backend.agents.Agent;
 import backend.agents.AgentFactoryImpl;
 import backend.agents.network.AgentConnection;
 import backend.agents.network.AgentNetwork;
+import backend.markets.LoanType;
 import backend.markets.Markets;
 import backend.offers.AskOffering;
 import backend.offers.BidOffering;
@@ -105,9 +106,9 @@ public class InspectionPanel extends JPanel implements ActionListener, ChangeLis
 	private JComboBox<String> optimismSelection;
 	private JComboBox<MatchingType> matchingTypeSelection;
 	private JComboBox<InspectionThread.AdvanceMode> advcanceModeSelection;
+	private JComboBox<LoanType> loanTypeSelection;
 	
 	private JSpinner agentCountSpinner;
-	private JSpinner faceValueSpinner;
 	
 	private JLabel computationTimeLabel;
 	
@@ -229,9 +230,9 @@ public class InspectionPanel extends JPanel implements ActionListener, ChangeLis
 		this.optimismSelection = new JComboBox<String>( new String[] { "Linear", "Triangle"  } );
 		this.matchingTypeSelection = new JComboBox<MatchingType>( MatchingType.values() );
 		this.advcanceModeSelection = new JComboBox<InspectionThread.AdvanceMode>( InspectionThread.AdvanceMode.values() );
+		this.loanTypeSelection = new JComboBox<LoanType>( LoanType.values() );
 		
 		this.agentCountSpinner = new JSpinner( new SpinnerNumberModel( 30, 10, 1000, 10 ) );
-		this.faceValueSpinner = new JSpinner( new SpinnerNumberModel( this.markets.V(), 0.1, 1.0, 0.1 ) );
 		
 		this.computationTimeLabel = new JLabel( "0,00 sec" );
 		this.succTxCounterLabel = new JLabel( "0" );
@@ -277,6 +278,8 @@ public class InspectionPanel extends JPanel implements ActionListener, ChangeLis
 		txHistoryScrollPane.setHorizontalScrollBarPolicy( JScrollPane.HORIZONTAL_SCROLLBAR_NEVER );
 		
 		// setting properties of components ////////////////////////////////////
+		this.loanTypeSelection.setSelectedItem( LoanType.LOAN_05 );
+		
 		this.abmMarketCheck.setSelected( this.markets.isABM() );
 		this.loanCashMarketCheck.setSelected( this.markets.isLoanMarket() );
 		this.bpMechanismCheck.setSelected( this.markets.isBP() );
@@ -405,8 +408,9 @@ public class InspectionPanel extends JPanel implements ActionListener, ChangeLis
 		
 		this.recreateButton.addActionListener( this );
 		this.optimismSelection.addActionListener( this );
+		this.loanTypeSelection.addActionListener( this );
+		
 		this.agentCountSpinner.addChangeListener( this );
-		this.faceValueSpinner.addChangeListener( this );
 		
 		ActionListener checkListener = new ActionListener() {
 			@Override
@@ -432,7 +436,7 @@ public class InspectionPanel extends JPanel implements ActionListener, ChangeLis
 		JLabel totalfailedTxCounterInfoLabel = new JLabel( "Total failed TX: " );
 		JLabel computationTimeInfoLabel = new JLabel( "Computation Time: " );
 
-		controlsPanel.add( this.faceValueSpinner );
+		controlsPanel.add( this.loanTypeSelection );
 		controlsPanel.add( this.agentCountSpinner );
 		controlsPanel.add( this.topologySelection );
 		controlsPanel.add( this.abmMarketCheck );
@@ -642,7 +646,7 @@ public class InspectionPanel extends JPanel implements ActionListener, ChangeLis
 	
 	private void createAgents() {
 		int agentCount = (int) this.agentCountSpinner.getValue();
-		this.markets = new Markets( (double) this.faceValueSpinner.getValue() );
+		this.markets = new Markets( this.loanTypeSelection.getItemAt( this.loanTypeSelection.getSelectedIndex() ) );
 		this.setMarketMechanisms();
 		
 		NetworkCreator creator = (NetworkCreator) this.topologySelection.getSelectedItem();
@@ -822,7 +826,7 @@ public class InspectionPanel extends JPanel implements ActionListener, ChangeLis
 	
 			// disable controls, to prevent changes by user
 			this.agentCountSpinner.setEnabled( false );
-			this.faceValueSpinner.setEnabled( false );
+			this.loanTypeSelection.setEnabled( false );
 			this.topologySelection.setEnabled( false );
 			this.optimismSelection.setEnabled( false );
 			this.recreateButton.setEnabled( false );
@@ -874,7 +878,7 @@ public class InspectionPanel extends JPanel implements ActionListener, ChangeLis
 			this.pauseButton.setEnabled( false );
 			
 			this.agentCountSpinner.setEnabled( true );
-			this.faceValueSpinner.setEnabled( true );
+			this.loanTypeSelection.setEnabled( true );
 			this.topologySelection.setEnabled( true );
 			this.optimismSelection.setEnabled( true );
 			this.recreateButton.setEnabled( true );

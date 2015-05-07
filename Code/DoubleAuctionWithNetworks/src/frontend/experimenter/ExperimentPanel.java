@@ -39,7 +39,7 @@ public class ExperimentPanel extends JPanel {
 
 	private void createControls( ExperimentBean bean, boolean isResult ) {
 		JLabel agentCountInfoLabel = new JLabel( "Agents: ");
-		JLabel faceValueInfoLabel = new JLabel( "Face-Value: ");
+		JLabel faceValueInfoLabel = new JLabel( "Loan-Type: ");
 		JLabel topologyInfoLabel = new JLabel( "Topology: ");
 		
 		JLabel assetLoanMarketInfoLabel = new JLabel( "Asset/Loan: ");
@@ -53,7 +53,7 @@ public class ExperimentPanel extends JPanel {
 		JLabel replicationsInfoLabel = new JLabel( "Replications: ");
 		
 		this.agentCountLabel = new JLabel( "" + bean.getAgentCount() );
-		this.faceValueLabel = new JLabel( "" + bean.getFaceValue() );
+		this.faceValueLabel = new JLabel( bean.getLoanType().name() );
 		this.topologyLabel = new JLabel( bean.getTopology() );
 		this.assetLoanMarketLabel = new JLabel( "" + bean.isAssetLoanMarket() );
 		this.loanCashMarketLabel = new JLabel( "" + bean.isLoanCashMarket() );
