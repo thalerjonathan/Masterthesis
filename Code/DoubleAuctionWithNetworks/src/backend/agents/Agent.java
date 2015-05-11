@@ -193,8 +193,8 @@ public class Agent {
 	}
 	
 	/* is the same as getUncollateralizedAssets but allows to pass an additional
-	 * collateralizingAssetAmount: if its positive, collateral will increase,
-	 * if its negative, collateral will be freed.
+	 * collateralizingAssetAmount: if its positive, collateral will increase (increase of loanTaken)
+	 * if its negative, collateral will be freed (increase of loanGiven)
 	 * Is used to calculate the uncollateralized assets AFTER a trade where the amount
 	 * of assets traded is given in collateralizingAssetAmount
 	 */
@@ -438,15 +438,20 @@ public class Agent {
 		
 		// collateral-cash market is open, check if agent can place a buy offer
 		if ( this.markets.isCollateralMarket() ) {
-			// the price for 1.0 unit of assets in loans => the unit of this variable is LOANS
-			//double assetPriceInLoans = randomRange( minAssetPriceInLoans, expectedAssetPriceInLoans );
-			double assetPriceInLoans = randomRange( assetLoanLimits[ 0 ][ 0 ], assetLoanLimits[ 0 ][ 1 ] );
-			// calculate how much assets will be collateralized (because selling a loan)
-			double collateralizingAssetAmount = Markets.TRADING_UNIT_ASSET * assetPriceInLoans;
+			// NOTE: the amount of assets traded will be Markets.TRADING_UNIT_ASSET !!
 			
-			// must be able to give away an asset because of collateral obligations
-			if ( this.cash > collateralizingAssetAmount ) {
-				offerings[ MarketType.COLLATERAL_CASH.ordinal() ] = new BidOffering( assetPriceInLoans, Markets.TRADING_UNIT_ASSET, this, MarketType.COLLATERAL_CASH );
+			// collateralized assets have their value measured in loans (leverage)
+			// this is the value of 1.0 asset in loans
+			double assetValueInLoans = randomRange( assetLoanLimits[ 0 ][ 0 ], assetLoanLimits[ 0 ][ 1 ] );
+			// is the amount of loans for the amount of assets traded (Markets.TRADING_UNIT_ASSET)
+			double loanAmountForTradingAssets = Markets.TRADING_UNIT_ASSET * assetValueInLoans;
+			// calculate the cash-value of the amount of loans to determine the final trading price
+			double cashValueOfTradingLoans = loanAmountForTradingAssets * this.limitPriceLoan;
+
+			// must have enough cash to pay for the value of the asset
+			if ( this.cash >= cashValueOfTradingLoans ) {
+				offerings[ MarketType.COLLATERAL_CASH.ordinal() ] = 
+						new BidOffering( cashValueOfTradingLoans, loanAmountForTradingAssets, this, MarketType.COLLATERAL_CASH );
 				
 			} else {
 				offerings[ MarketType.COLLATERAL_CASH.ordinal() ] = null;
@@ -538,29 +543,29 @@ public class Agent {
 		
 		// collateral-cash market is open, check if agent can place a sell offer
 		if ( this.markets.isCollateralMarket() ) {
-			/* TODO: implement
-			 * selling: giving COLLATERALIZED asset AND giving loan, getting cash
-			 * 		amount of asset:
-			 * 		amount of loan:
-			 * 		amount of cash: 
-			 * 
-			 * - limitPrice and min/max range
-			 * - which constraints need to be considered
-			 * */
+			// NOTE: the amount of assets traded will be Markets.TRADING_UNIT_ASSET !!
+
+			// collateralized assets have their value measured in loans (leverage)
+			// this is the value of 1.0 asset in loans
+			double assetValueInLoans = randomRange( assetLoanLimits[ 1 ][ 0 ], assetLoanLimits[ 1 ][ 1 ] );
+			// is the amount of loans for the amount of assets traded (Markets.TRADING_UNIT_ASSET)
+			double loanAmountForTradingAssets = Markets.TRADING_UNIT_ASSET * assetValueInLoans;
+			// calculate the cash-value of the amount of loans to determine the final trading price
+			double cashValueOfTradingLoans = loanAmountForTradingAssets * this.limitPriceLoan;
+
+			double assets = this.getAssets();
+			double collOblig = this.getCollateralObligations();
 			
-			// the price for 1.0 unit of assets in loans => the unit of this variable is LOANS
-			//double assetPriceInLoans = randomRange( expectedAssetPriceInLoans, maxAssetPriceInLoans );
-			double assetPriceInLoans = randomRange( assetLoanLimits[ 1 ][ 0 ], assetLoanLimits[ 1 ][ 1 ] );
-			// calculating the amount of assets which will be freed/"un"-collaterlized
-			double uncollateralizingAssetAmount = Markets.TRADING_UNIT_ASSET * assetPriceInLoans;
+			double assetsAfterTrade = assets - Markets.TRADING_UNIT_ASSET;
+			double collObligationsAfterTrade = Math.max( 0, collOblig - loanAmountForTradingAssets );
 			
-			// in this case: collateral will be freed, thus reducing collateral obligations
-			// need to pass the negative value to signal the function that assets are UN-collateralized
-			double uncollAssetsAfterTrade = this.getUncollateralizedAssetsAfterTrade( -uncollateralizingAssetAmount );
-			
-			// can do trade only if there are still trading units left after the trade - no short-selling of assets
-			if ( uncollAssetsAfterTrade >= Markets.TRADING_UNIT_ASSET ) {
-				offerings[ MarketType.COLLATERAL_CASH.ordinal() ] = new AskOffering( assetPriceInLoans, Markets.TRADING_UNIT_ASSET, this, MarketType.COLLATERAL_CASH );
+			double uncollAssetsAfterCollateralTrade = assetsAfterTrade - collObligationsAfterTrade;
+	
+			// can trade only in this market if we have any collateral obligations
+			// collateral obligations are positive if we have collateralized assets
+			if ( uncollAssetsAfterCollateralTrade >= Markets.TRADING_EPSILON ) {
+				offerings[ MarketType.COLLATERAL_CASH.ordinal() ] = 
+						new AskOffering( cashValueOfTradingLoans, loanAmountForTradingAssets, this, MarketType.COLLATERAL_CASH );
 				
 			} else {
 				offerings[ MarketType.COLLATERAL_CASH.ordinal() ] = null;

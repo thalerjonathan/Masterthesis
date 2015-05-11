@@ -17,6 +17,7 @@ public enum MarketType {
 	ASSET_LOAN,
 	
 	// Trading COLLATERALIZED ASSETS against CASH
-	// TODO
+	// ASKER sells an amount of COLLATERLIZED assets by giving asset AND loan to buyer
+	// BIDER buys an amount of COLLATERALZED assets by giving cash to buyer
 	COLLATERAL_CASH
 }

@@ -5,6 +5,7 @@ import javax.swing.ListSelectionModel;
 import javax.swing.table.DefaultTableModel;
 
 import backend.markets.MarketType;
+import backend.markets.Markets;
 import backend.offers.Offering;
 import frontend.inspection.InspectionPanel;
 
@@ -16,7 +17,7 @@ public class OffersTable extends JTable {
 	private final static Object[] COLUMN_LABELS_ASSETCASH = new Object[] { "Asset Amount", "Asset Price" };
 	private final static Object[] COLUMN_LABELS_LOANS = new Object[] { "Loan Amount", "Loan Price" };
 	private final static Object[] COLUMN_LABELS_ASSETLOANS = new Object[] { "Asset Amount", "Loan Amount (Asset Price in Loans)" };
-	private final static Object[] COLUMN_LABELS_COLLATERALCASH = new Object[] { "Asset Amount", "Loan Amount" };
+	private final static Object[] COLUMN_LABELS_COLLATERALCASH = new Object[] { "Asset Price", "Loan Amount", "Asset Amount" };
 	
 	public OffersTable( MarketType marketType ) {
 		Object[] columns = COLUMN_LABELS_ASSETCASH;
@@ -57,9 +58,18 @@ public class OffersTable extends JTable {
 			return;
 		}
 		
-		this.model.addRow( new Object[] {
-				InspectionPanel.TRADING_VALUES_FORMAT.format( ask.getAmount() ),
-				InspectionPanel.TRADING_VALUES_FORMAT.format( ask.getPrice() )
-		});
+		if ( MarketType.COLLATERAL_CASH == ask.getMarketType() ) {
+			this.model.addRow( new Object[] {
+					InspectionPanel.TRADING_VALUES_FORMAT.format( ask.getPrice() ),
+					InspectionPanel.TRADING_VALUES_FORMAT.format( ask.getAmount() ),
+					InspectionPanel.TRADING_VALUES_FORMAT.format( Markets.TRADING_UNIT_ASSET ),
+			});
+			
+		} else {
+			this.model.addRow( new Object[] {
+					InspectionPanel.TRADING_VALUES_FORMAT.format( ask.getAmount() ),
+					InspectionPanel.TRADING_VALUES_FORMAT.format( ask.getPrice() )
+			});
+		}
 	}
 }
