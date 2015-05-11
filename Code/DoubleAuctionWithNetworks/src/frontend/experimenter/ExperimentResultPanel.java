@@ -19,6 +19,7 @@ import javax.swing.JScrollPane;
 
 import backend.Auction.EquilibriumStatistics;
 import backend.agents.Agent;
+import backend.markets.Markets;
 import frontend.experimenter.xml.result.AgentBean;
 import frontend.experimenter.xml.result.ReplicationBean;
 import frontend.experimenter.xml.result.ResultBean;
@@ -48,6 +49,11 @@ public class ExperimentResultPanel extends JPanel {
 	private void createControls( ResultBean bean ) {
 		List<Agent> agents = new ArrayList<Agent>();
 		EquilibriumStatistics stats = new EquilibriumStatistics( bean.getEquilibrium() );
+		Markets markets = new Markets();
+		markets.setABM( bean.getExperiment().isAssetLoanMarket() );
+		markets.setBP( bean.getExperiment().isBondsPledgeability() );
+		markets.setCollateralMarket( bean.getExperiment().isCollateralCashMarket() );
+		markets.setLoanMarket( bean.getExperiment().isLoanCashMarket() );
 		
 		for ( int i = 0; i < bean.getAgents().size(); ++i ) {
 			AgentBean agentBean = bean.getAgents().get( i );
@@ -60,18 +66,7 @@ public class ExperimentResultPanel extends JPanel {
 				stats.i1Index = i;
 			}
 			
-			Agent a = new Agent( agentBean ) {
-				public double getCollateralObligations() {
-					double collateral = this.getLoansTaken();
-					if ( bean.getExperiment().isBondsPledgeability() ) {
-						collateral -= this.getLoansGiven();
-					}
-					
-					return collateral;
-				}
-			};
-			
-			agents.add( a );
+			agents.add( new Agent( agentBean, markets ) );
 		}
 		
 		ExperimentPanel experimentPanel = new ExperimentPanel( bean.getExperiment(), true );
