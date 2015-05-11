@@ -42,13 +42,14 @@ public class Match {
 		int[] perm = Match.PERMUTATOR.nextPermutation( Markets.NUMMARKETS, Markets.NUMMARKETS );
 		
 		// check markets in random order - first match wins
+		// TODO: ignoring COLLATERAL_CASH Market for now
 		for ( int i = 0; i < Markets.NUMMARKETS; ++i ) {
 			int marketIndex = perm[ i ];
 			
 			boolean checkAgentSellFirst = ThreadLocalRandom.current().nextDouble() >= 0.5;
 			
 			// check whether a sell matches or a buy matches in random order - first match wins
-			for ( int j = 0; j < 2; ++j ) {
+			for ( int marketPermutate = 0; marketPermutate < 2; ++marketPermutate ) {
 				if ( checkAgentSellFirst ) {
 					AskOffering agentSellOffering = agentAskOfferings[ marketIndex ];
 					BidOffering bestBuyOffering = bestBids[ marketIndex ];
@@ -89,18 +90,7 @@ public class Match {
 		this.direction = direction;
 		this.market = buyOffer.getMarketType();
 		
-		/* WARNING: the prices of the equilibrium will differ this price-selection mechanism is used!
-		// choosing a matching price depending on whether seller matched buyer or vice versa
-		if ( MatchDirection.SELL_MATCHES_BUY == direction ) {
-			this.price = this.buyOffer.getPrice();
-			
-		} else {
-			this.price = this.sellOffer.getPrice();
-		}
-		*/
-		
 		// NOTE: double-auction in theory matches with halfway-price between buyer and seller
-		// WARNING: the prices of the equilibrium will differ if the upper price-selection mechanism is used
 		this.price = ( this.buyOffer.getPrice() + this.sellOffer.getPrice() ) / 2.0;
 		
 		// the amount is always the minimum of the amount offered by the buyer and the seller

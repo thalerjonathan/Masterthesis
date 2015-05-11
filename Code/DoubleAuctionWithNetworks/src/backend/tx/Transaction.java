@@ -117,7 +117,6 @@ public class Transaction  {
 		return Match.matchOffers( agentAsk, agentBid, bestLocalAskOfferings, bestLocalBidOfferings );
 	}
 	
-	
 	// NOTE: assumes full connectivity between agents: each agent knows each other agent
 	public Match findMatchesByGlobalOffers( Agent a, AgentNetwork agents ) {
 		AskOffering[] askOfferings = a.getCurrentAskOfferings();

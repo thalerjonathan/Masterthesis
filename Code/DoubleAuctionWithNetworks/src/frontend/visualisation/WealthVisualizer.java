@@ -26,6 +26,7 @@ public class WealthVisualizer extends JPanel {
 	private final static int SCALA_WIDTH = 30;
 	
 	private final static Color DARK_GREEN = new Color( 0, 150, 0 );
+	private final static Color DARK_CYAN = new Color(0, 180, 180);
 	
 	private List<Agent> orderedAgents;
 	
@@ -131,7 +132,7 @@ public class WealthVisualizer extends JPanel {
 				g.drawLine( lastX, lastYBonds, x, yBonds );
 			g.fillOval( x - POINT_RADIUS, yBonds - POINT_RADIUS, POINT_DIAMETER, POINT_DIAMETER );
 
-			g.setColor( Color.CYAN );
+			g.setColor( DARK_CYAN );
 			if ( i > 0 )
 				g.drawLine( lastX, lastYUnpledged, x, yUnpledged );
 			g.fillOval( x - POINT_RADIUS, yUnpledged - POINT_RADIUS, POINT_DIAMETER, POINT_DIAMETER );
@@ -164,7 +165,7 @@ public class WealthVisualizer extends JPanel {
 		g.setColor( Color.BLACK );
 		g.drawChars( "Loans".toCharArray(), 0, "Loans".length(), LEGEND_BOX_X + 60, d.height - LEGEND_BOX_Y + 58 );
 
-		g.setColor( Color.CYAN );
+		g.setColor( DARK_CYAN );
 		g.drawLine( LEGEND_BOX_X + 5, d.height - LEGEND_BOX_Y + 73, LEGEND_BOX_X + 50, d.height - LEGEND_BOX_Y + 73 );
 		g.setColor( Color.BLACK );
 		g.drawChars( "uncoll. Assets".toCharArray(), 0, "uncoll. Assets".length(), LEGEND_BOX_X + 60, d.height - LEGEND_BOX_Y + 78 );

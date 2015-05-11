@@ -30,8 +30,7 @@ import frontend.agentInfo.AgentInfoPanel;
 public class OfferBookFrame extends JFrame {
 	private JButton refreshButton;
 	private JButton cloneButton;
-	//private JButton visParetoFrontiersButton;
-	
+
 	private JSpinner agentIndexSpinner;
 
 	private JTabbedPane marketTabPane;
@@ -68,10 +67,8 @@ public class OfferBookFrame extends JFrame {
 		AskOffering[] askOfferings = a.getBestAskOfferings();
 		BidOffering[] bidOfferings = a.getBestBidOfferings();
 		
-		int numMarkets = 3;
-		
 		// clear previously set data
-		for ( int i = 0; i < numMarkets; ++i ) {
+		for ( int i = 0; i < Markets.NUMMARKETS; ++i ) {
 			this.askOffersBookTable[ i ].clearAll();
 			this.bidOffersBookTable[ i ].clearAll();
 		}
@@ -83,14 +80,12 @@ public class OfferBookFrame extends JFrame {
 	}
 
 	private void createControls( int agentId, int tabIndex ) {
-		int numMarkets = 3;
+		JPanel[] marketPanels = new JPanel[ Markets.NUMMARKETS ];
 		
-		JPanel[] marketPanels = new JPanel[ numMarkets ];
+		this.askOffersBookTable = new OffersTable[ Markets.NUMMARKETS ];
+		this.bidOffersBookTable = new OffersTable[ Markets.NUMMARKETS ];
 		
-		this.askOffersBookTable = new OffersTable[ numMarkets ];
-		this.bidOffersBookTable = new OffersTable[ numMarkets ];
-		
-		for ( int i = 0; i < numMarkets; ++i ) {
+		for ( int i = 0; i < Markets.NUMMARKETS; ++i ) {
 			this.askOffersBookTable[ i ] = new OffersTable( MarketType.values()[ i ] );
 			this.bidOffersBookTable[ i ] = new OffersTable( MarketType.values()[ i ] );
 			
@@ -136,7 +131,6 @@ public class OfferBookFrame extends JFrame {
 		
 		this.refreshButton = new JButton( "Refresh" );
 		this.cloneButton = new JButton( "Clone" );
-		//this.visParetoFrontiersButton = new JButton( "Visualize Pareto-Frontiers" );
 
 		this.agentIndexSpinner = new JSpinner( new SpinnerNumberModel( agentId, 1, 
 				this.parent.getAgents().size(), 1 ) );
@@ -163,25 +157,16 @@ public class OfferBookFrame extends JFrame {
 			}
 		});
 		
-		/*
-		this.visParetoFrontiersButton.addActionListener( new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				visualizeParetoFrontiers();
-			}
-		});
-		*/
-		
 		JPanel controlsPanel = new JPanel();
 		controlsPanel.add( this.refreshButton );
 		controlsPanel.add( this.cloneButton );
-		//controlsPanel.add( this.visParetoFrontiersButton );
 		controlsPanel.add( this.agentIndexSpinner );
 
 		this.marketTabPane = new JTabbedPane();
 		this.marketTabPane.addTab( "Cash / Asset", marketPanels[ 0 ] );
 		this.marketTabPane.addTab( "Cash / Loan", marketPanels[ 1 ] );
 		this.marketTabPane.addTab( "Asset / Loan", marketPanels[ 2 ] );
+		this.marketTabPane.addTab( "Collateral / Cash", marketPanels[ 3 ] );
 
 		this.marketTabPane.setSelectedIndex( tabIndex );
 		
@@ -210,59 +195,4 @@ public class OfferBookFrame extends JFrame {
 		c.weightx = 1.0;
 		this.getContentPane().add( this.marketTabPane, c );
 	}
-	
-	/*
-	private void visualizeParetoFrontiers() {
-		int agentIndex = (int) this.agentIndexSpinner.getValue();
-		Agent a = OfferBookFrame.agents.get( agentIndex );
-		
-		List<List<AskOffering>> askOfferings = a.getBestAskOfferings();
-		List<List<BidOffering>> bidOfferings = a.getBestBidOfferings();
-		
-		if ( null == askOfferings || askOfferings.size() < 1 ) {
-			return;
-		}
-		
-		List<AskOffering> askOfferingsMarket = askOfferings.get( 1 );
-		List<BidOffering> bidOfferingsMarket = bidOfferings.get( 1 );
-		
-		if ( askOfferingsMarket.size() == 0 ) {
-			return;
-		}
-		
-		XYSeries askOffersSeries = new XYSeries("Ask-Offers");
-		XYSeries bidOffersSeries = new XYSeries("Bid-Offers");
-		
-		XYSeriesCollection askParetoFrontier = new XYSeriesCollection();
-		XYSeriesCollection bidParetoFrontier = new XYSeriesCollection();
-		
-		for ( int i = 0; i < askOfferingsMarket.size(); ++i ) {
-			AskOfferingWithLoans ask = ( AskOfferingWithLoans ) askOfferingsMarket.get( i );
-			
-			askOffersSeries.add( ask.getPrice(), ask.getLoanPrice() );
-		}
-
-		for ( int i = 0; i < bidOfferingsMarket.size(); ++i ) {
-			BidOfferingWithLoans bid = ( BidOfferingWithLoans ) bidOfferingsMarket.get( i );
-
-			bidOffersSeries.add( bid.getPrice(), bid.getLoanPrice() );
-		}
-
-		askParetoFrontier.addSeries(askOffersSeries);
-		bidParetoFrontier.addSeries(bidOffersSeries);
-		
-		JFrame paretoFrontierFrame = new JFrame( "Agent " + MainWindow.AGENT_H_FORMAT.format( a.getH() ) + " Offer Pareto-Frontiers" );
-		paretoFrontierFrame.getContentPane().setLayout( new BorderLayout() );
-		
-		String xaxis = "Asset-Price";
-		String yaxis = "Loan-Price";
-		JFreeChart askOffersParetoChart = ChartFactory.createXYLineChart( "Ask-Offers", xaxis, yaxis, askParetoFrontier );
-		JFreeChart bidOffersParetoChart = ChartFactory.createXYLineChart( "Bid-Offers", xaxis, yaxis, bidParetoFrontier );
-
-		paretoFrontierFrame.getContentPane().add( new ChartPanel( askOffersParetoChart ), BorderLayout.NORTH );
-		paretoFrontierFrame.getContentPane().add( new ChartPanel( bidOffersParetoChart ), BorderLayout.SOUTH );
-		paretoFrontierFrame.pack();
-		paretoFrontierFrame.setVisible( true );
-	}
-	*/
 }

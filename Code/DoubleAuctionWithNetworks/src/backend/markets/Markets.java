@@ -13,17 +13,14 @@ public class Markets {
 	private boolean loanMarket;
 	private boolean collateralMarket;
 	
-	private double consumEndow = 1.0;
+	private double cashEndow = 1.0;
 	private double assetEndow = 1.0;
+	
+	public final static int NUMMARKETS = 4;
 	
 	public final static double TRADING_UNIT_ASSET = 0.1;
 	public final static double TRADING_UNIT_LOAN = 0.2;
-	
-	public final static int NUMMARKETS = 3;
-	public final static int NUMLOANS = 1;
-	public final static int NUMMARKETTYPES = 3;
-	
-	public final static boolean TRADE_ONLY_FULL_UNITS = true;
+
 	public final static double TRADING_EPSILON = 0.0000001;
 
 	private final static double UP_STATE_DEFAULT = 1.0;
@@ -104,11 +101,11 @@ public class Markets {
 		this.loanType = loanType;
 	}
 	
-	public double getConsumEndow() {
-		return consumEndow;
+	public double getCashEndowment() {
+		return cashEndow;
 	}
 
-	public double getAssetEndow() {
+	public double getAssetEndowment() {
 		return assetEndow;
 	}
 }

@@ -86,8 +86,8 @@ public class Agent {
 	}
 	
 	public void reset() {
-		this.cash = this.markets.getConsumEndow(); 
-		this.assets = this.markets.getAssetEndow();
+		this.cash = this.markets.getCashEndowment(); 
+		this.assets = this.markets.getAssetEndowment();
 		this.highlighted = false;
 		this.cantTrade = false;
 		
@@ -124,17 +124,25 @@ public class Agent {
 		// => getting money from buyer
 		} else if ( MarketType.LOAN_CASH == match.getMarket() ) {
 			this.loansTaken += match.getAmount();			// collateralize assets
-			this.cash += match.getNormalizedPrice();	// getting money from buyer
+			this.cash += match.getNormalizedPrice();		// getting money from buyer
 			
 		// SELLING asset for loan
 		// => giving asset to buyer
-		// => giving loan to buyer - "un"-collateralizes the amount of assets which corresponds to the sold amount of loans
+		// => giving loan to buyer (buyer takes a loan)
 		} else if ( MarketType.ASSET_LOAN == match.getMarket() ) {
 			// price is in this case the asset-price in LOANS: amount of loans for 1.0 unit of assets
 			// amount is in this case the asset-amount traded
 			// getNormalizedPrice returns in this case the amount of loans needed for the given asset-amount
-			this.loansGiven += match.getNormalizedPrice();	// "un"-collateralize assets
-			this.assets -= match.getAmount();			// giving asset to buyer
+			this.loansGiven += match.getNormalizedPrice();	// giving loan to buyer
+			this.assets -= match.getAmount();				// giving asset to buyer
+			
+		// SELLING collateral for cash
+		// => giving COLLATERALIZED asset to buyer (is asset + the amount of loan)
+		// => getting cash from buyer
+		} else if ( MarketType.COLLATERAL_CASH == match.getMarket() ) {
+			this.loansGiven += match.getAmount();
+			this.assets -= Markets.TRADING_UNIT_ASSET;
+			this.cash += match.getNormalizedPrice();
 		}
 	}
 	
@@ -152,8 +160,8 @@ public class Agent {
 		// => getting loans from the seller: "un"-collateralizes assets
 		// => paying cash to the seller 
 		} else if ( MarketType.LOAN_CASH == match.getMarket() ) {
-			this.loansGiven += match.getAmount();			// "un"-collateralizes assets
-			this.cash -= match.getNormalizedPrice();	// paying money to seller
+			this.loansGiven += match.getAmount();			// giving loan to seller
+			this.cash -= match.getNormalizedPrice();		// paying money to seller
 			
 		// BUYING an asset for loan
 		// => getting assets from seller
@@ -163,7 +171,15 @@ public class Agent {
 			// amount is in this case the asset-amount traded
 			// getNormalizedPrice returns in this case the amount of loans needed for the given asset-amount
 			this.loansTaken += match.getNormalizedPrice();	// collateralize asset for loan
-			this.assets += match.getAmount();			// getting asset from seller
+			this.assets += match.getAmount();				// getting asset from seller
+		
+		// BUYING collateral for cash
+		// => getting COLLATERALIZED asset from seller (is asset + the amount of loan)
+		// => giving cash to seller
+		} else if ( MarketType.COLLATERAL_CASH == match.getMarket() ) {
+			this.loansTaken += match.getAmount();
+			this.assets += Markets.TRADING_UNIT_ASSET;
+			this.cash -= match.getNormalizedPrice();
 		}
 	}
 	
@@ -368,9 +384,9 @@ public class Agent {
 			
 		// loan-market is open AND there is still cash left for buying a bond
 		if ( this.markets.isLoanMarket() && this.cash > Markets.TRADING_EPSILON ) {
-			// want to BUY a loan against cash 
-			// => paying cash to seller
-			// => getting bond from seller
+			// want to BUY a loan against cash: GIVING the seller a loan, lending money to seller
+			// => paying cash to seller (lending money to seller)
+			// => getting bond from seller (giving loan to seller)
 			// => need to have positive amount of cash
 			
 			// the price for 1.0 Units of loans - will be normalized during a Match
@@ -393,9 +409,9 @@ public class Agent {
 		
 		// asset-against-bond market is open, check if agent can place buy-offers
 		if ( this.markets.isABM() ) {
-			// want to BUY a asset against loan
-			// => giving loan to seller: taking loan, collateralizing asset
+			// want to BUY an asset against loan
 			// => getting asset from seller
+			// => paying with a loan: taking loan from seller
 			// => because of taking loan: need to have enough amount of uncollateralized assets
 			
 			// the price for 1.0 unit of assets in loans => the unit of this variable is LOANS
@@ -418,6 +434,26 @@ public class Agent {
 		// asset-against-bond market is closed
 		} else {
 			offerings[ MarketType.ASSET_LOAN.ordinal() ] = null;
+		}
+		
+		// collateral-cash market is open, check if agent can place a buy offer
+		if ( this.markets.isCollateralMarket() ) {
+			// the price for 1.0 unit of assets in loans => the unit of this variable is LOANS
+			//double assetPriceInLoans = randomRange( minAssetPriceInLoans, expectedAssetPriceInLoans );
+			double assetPriceInLoans = randomRange( assetLoanLimits[ 0 ][ 0 ], assetLoanLimits[ 0 ][ 1 ] );
+			// calculate how much assets will be collateralized (because selling a loan)
+			double collateralizingAssetAmount = Markets.TRADING_UNIT_ASSET * assetPriceInLoans;
+			
+			// must be able to give away an asset because of collateral obligations
+			if ( this.cash > collateralizingAssetAmount ) {
+				offerings[ MarketType.COLLATERAL_CASH.ordinal() ] = new BidOffering( assetPriceInLoans, Markets.TRADING_UNIT_ASSET, this, MarketType.COLLATERAL_CASH );
+				
+			} else {
+				offerings[ MarketType.COLLATERAL_CASH.ordinal() ] = null;
+			}
+						
+		} else {
+			offerings[ MarketType.COLLATERAL_CASH.ordinal() ] = null;
 		}
 	}
 
@@ -447,9 +483,9 @@ public class Agent {
 		// agent can place a sell-offer because when selling a loan, it needs to be secured by collateralizing 
 		// the same amount of assets
 		if ( this.markets.isLoanMarket() && uncollAssets > Markets.TRADING_EPSILON ) {
-			// want to SELL a loan against cash
-			// => collateralize assets of the same amount as security
-			// => getting money from buyer 
+			// want to SELL a loan against cash: borrowing money from buyer by TAKING a loan
+			// => collateralize assets of the same amount as security (taking loan)
+			// => getting money from buyer  (borrowing money from buyer) 
 			// => need to have enough uncollateralized assets
 			
 			// this is always the price for 1.0 Units of loans - will be normalized during a Match
@@ -474,7 +510,7 @@ public class Agent {
 		if ( this.markets.isABM() ) {
 			// want to SELL a loan against an asset 
 			// => giving asset to buyer
-			// => getting bond from buyer: giving loan, "un"-collateralize assets
+			// => getting bond from buyer: giving loan
 			// => because of giving asset: need to have enough amount of uncollateralized assets
 			
 			// the price for 1.0 unit of assets in loans => the unit of this variable is LOANS
@@ -499,6 +535,40 @@ public class Agent {
 		} else {
 			offerings[ MarketType.ASSET_LOAN.ordinal() ] = null;
 		}
+		
+		// collateral-cash market is open, check if agent can place a sell offer
+		if ( this.markets.isCollateralMarket() ) {
+			/* TODO: implement
+			 * selling: giving COLLATERALIZED asset AND giving loan, getting cash
+			 * 		amount of asset:
+			 * 		amount of loan:
+			 * 		amount of cash: 
+			 * 
+			 * - limitPrice and min/max range
+			 * - which constraints need to be considered
+			 * */
+			
+			// the price for 1.0 unit of assets in loans => the unit of this variable is LOANS
+			//double assetPriceInLoans = randomRange( expectedAssetPriceInLoans, maxAssetPriceInLoans );
+			double assetPriceInLoans = randomRange( assetLoanLimits[ 1 ][ 0 ], assetLoanLimits[ 1 ][ 1 ] );
+			// calculating the amount of assets which will be freed/"un"-collaterlized
+			double uncollateralizingAssetAmount = Markets.TRADING_UNIT_ASSET * assetPriceInLoans;
+			
+			// in this case: collateral will be freed, thus reducing collateral obligations
+			// need to pass the negative value to signal the function that assets are UN-collateralized
+			double uncollAssetsAfterTrade = this.getUncollateralizedAssetsAfterTrade( -uncollateralizingAssetAmount );
+			
+			// can do trade only if there are still trading units left after the trade - no short-selling of assets
+			if ( uncollAssetsAfterTrade >= Markets.TRADING_UNIT_ASSET ) {
+				offerings[ MarketType.COLLATERAL_CASH.ordinal() ] = new AskOffering( assetPriceInLoans, Markets.TRADING_UNIT_ASSET, this, MarketType.COLLATERAL_CASH );
+				
+			} else {
+				offerings[ MarketType.COLLATERAL_CASH.ordinal() ] = null;
+			}
+			
+		} else {
+			offerings[ MarketType.COLLATERAL_CASH.ordinal() ] = null;
+		}
 	}
 
 	private void calculateOfferingLimits() {
@@ -516,11 +586,11 @@ public class Agent {
 		this.limitPriceLoan = markets.calculateLimitPriceLoan( this.h );
 		
 		this.minAssetPriceInCash = Math.min( pD, this.limitPriceAsset );
-		this.minLoanPriceInCash = Math.min( Math.min( pD, V ), this.limitPriceLoan );
+		this.minLoanPriceInCash = Math.min( minLoanPrice, this.limitPriceLoan );
 		this.minAssetPriceInLoans = minAssetPrice / maxLoanPrice;
 		
 		this.maxAssetPriceInCash = Math.max( pU, this.limitPriceAsset );
-		this.maxLoanPriceInCash = Math.max( Math.min( pU, V ), this.limitPriceLoan );
+		this.maxLoanPriceInCash = Math.max( maxLoanPrice, this.limitPriceLoan );
 		this.maxAssetPriceInLoans = maxAssetPrice / minLoanPrice;
 
 		this.expectedAssetPriceInLoans = this.limitPriceAsset / this.limitPriceLoan;

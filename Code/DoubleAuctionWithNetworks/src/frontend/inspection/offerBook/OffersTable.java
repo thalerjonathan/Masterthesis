@@ -16,6 +16,7 @@ public class OffersTable extends JTable {
 	private final static Object[] COLUMN_LABELS_ASSETCASH = new Object[] { "Asset Amount", "Asset Price" };
 	private final static Object[] COLUMN_LABELS_LOANS = new Object[] { "Loan Amount", "Loan Price" };
 	private final static Object[] COLUMN_LABELS_ASSETLOANS = new Object[] { "Asset Amount", "Loan Amount (Asset Price in Loans)" };
+	private final static Object[] COLUMN_LABELS_COLLATERALCASH = new Object[] { "Asset Amount", "Loan Amount" };
 	
 	public OffersTable( MarketType marketType ) {
 		Object[] columns = COLUMN_LABELS_ASSETCASH;
@@ -28,6 +29,9 @@ public class OffersTable extends JTable {
 			
 		} else if ( MarketType.LOAN_CASH == marketType ) {
 			columns = COLUMN_LABELS_LOANS;
+			
+		} else if ( MarketType.COLLATERAL_CASH == marketType ) {
+			columns = COLUMN_LABELS_COLLATERALCASH;
 		}
 		
 		this.model = new DefaultTableModel( columns, 0 ) {
@@ -57,6 +61,5 @@ public class OffersTable extends JTable {
 				InspectionPanel.TRADING_VALUES_FORMAT.format( ask.getAmount() ),
 				InspectionPanel.TRADING_VALUES_FORMAT.format( ask.getPrice() )
 		});
-		
 	}
 }

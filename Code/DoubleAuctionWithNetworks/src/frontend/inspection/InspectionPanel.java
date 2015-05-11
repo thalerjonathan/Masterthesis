@@ -233,7 +233,7 @@ public class InspectionPanel extends JPanel implements ActionListener, ChangeLis
 		this.advcanceModeSelection = new JComboBox<InspectionThread.AdvanceMode>( InspectionThread.AdvanceMode.values() );
 		this.loanTypeSelection = new JComboBox<LoanType>( LoanType.values() );
 		
-		this.agentCountSpinner = new JSpinner( new SpinnerNumberModel( 30, 10, 1000, 10 ) );
+		this.agentCountSpinner = new JSpinner( new SpinnerNumberModel( 30, 2, 1000, 10 ) );
 		
 		this.computationTimeLabel = new JLabel( "0,00 sec" );
 		this.succTxCounterLabel = new JLabel( "0" );
@@ -311,11 +311,8 @@ public class InspectionPanel extends JPanel implements ActionListener, ChangeLis
 					if ( -1 == rowIndex ) {
 						return;
 					}
-					
-					int txIndex = (int) InspectionPanel.this.txHistoryTable.getValueAt( rowIndex, 0 );
 
-					// starts with 1
-					txIndex--;
+					int txIndex = InspectionPanel.this.txHistoryTable.getRowSorter().convertRowIndexToModel( rowIndex );
 					
 					Transaction tx = InspectionPanel.this.successfulTx.get( txIndex );
 					InspectionPanel.this.offerBook.agentsUpdated( tx.getFinalAgents() );
@@ -629,7 +626,7 @@ public class InspectionPanel extends JPanel implements ActionListener, ChangeLis
 	private void setMarketMechanisms() {
 		this.markets.setABM( InspectionPanel.this.abmMarketCheck.isSelected() );
 		this.markets.setLoanMarket( InspectionPanel.this.loanCashMarketCheck.isSelected() );
-		this.markets.setLoanMarket( InspectionPanel.this.collateralMarketCheck.isSelected() );
+		this.markets.setCollateralMarket( InspectionPanel.this.collateralMarketCheck.isSelected() );
 		this.markets.setBP( InspectionPanel.this.bpMechanismCheck.isSelected() );
 	}
 	
@@ -839,7 +836,7 @@ public class InspectionPanel extends JPanel implements ActionListener, ChangeLis
 			this.recreateButton.setEnabled( false );
 			this.abmMarketCheck.setEnabled( false );
 			this.loanCashMarketCheck.setEnabled( false );
-			this.collateralMarketCheck.setEnabled( false );
+			//this.collateralMarketCheck.setEnabled( false );
 			this.bpMechanismCheck.setEnabled( false );
 			this.importanceSamplingCheck.setEnabled( false );
 			
