@@ -53,7 +53,7 @@ public class OfferBookFrame extends JFrame {
 		this.setResizable(false);
 		this.setDefaultCloseOperation( JFrame.DISPOSE_ON_CLOSE );
 		
-		this.setPreferredSize( new Dimension( 550, 400 ) );
+		this.setPreferredSize( new Dimension( 650, 400 ) );
 		
 		this.pack();
 	}

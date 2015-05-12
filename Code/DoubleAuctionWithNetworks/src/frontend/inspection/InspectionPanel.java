@@ -624,10 +624,10 @@ public class InspectionPanel extends JPanel implements ActionListener, ChangeLis
 	}
 	
 	private void setMarketMechanisms() {
-		this.markets.setABM( InspectionPanel.this.abmMarketCheck.isSelected() );
-		this.markets.setLoanMarket( InspectionPanel.this.loanCashMarketCheck.isSelected() );
-		this.markets.setCollateralMarket( InspectionPanel.this.collateralMarketCheck.isSelected() );
-		this.markets.setBP( InspectionPanel.this.bpMechanismCheck.isSelected() );
+		this.markets.setABM( this.abmMarketCheck.isSelected() );
+		this.markets.setLoanMarket( this.loanCashMarketCheck.isSelected() );
+		this.markets.setCollateralMarket( this.collateralMarketCheck.isSelected() );
+		this.markets.setBP( this.bpMechanismCheck.isSelected() );
 	}
 	
 	private void handleImportanceSampling() {

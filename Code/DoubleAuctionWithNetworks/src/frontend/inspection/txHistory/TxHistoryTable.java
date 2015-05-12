@@ -109,7 +109,8 @@ public class TxHistoryTable extends JTable {
 			loanAmount = InspectionPanel.TRADING_VALUES_FORMAT.format( match.getPrice() );
 		
 		} else if ( MarketType.COLLATERAL_CASH == match.getMarket() ) {
-			
+			assetAmount = InspectionPanel.TRADING_VALUES_FORMAT.format( match.getAmount() );
+			assetPrice = InspectionPanel.TRADING_VALUES_FORMAT.format( match.getPrice() );
 		}
 		
 		this.tableModel.addRow( new Object[] {

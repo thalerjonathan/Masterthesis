@@ -23,6 +23,7 @@ public class ExperimentPanel extends JPanel {
 	private JLabel assetLoanMarketLabel;
 	private JLabel loanCashMarketLabel;
 	private JLabel bondsPledgeabilityLabel;
+	private JLabel collateralMarketLabel;
 	private JLabel importanceSamplingLabel;
 	private JLabel terminationModeLabel;
 	private JLabel maxTxLabel;
@@ -44,6 +45,7 @@ public class ExperimentPanel extends JPanel {
 		
 		JLabel assetLoanMarketInfoLabel = new JLabel( "Asset/Loan: ");
 		JLabel loanCashMarketInfoLabel = new JLabel( "Loan/Cash: ");
+		JLabel collateralMarketInfoLabel = new JLabel( "Collateral/Cash: ");
 		JLabel bondsPledgeabilityInfoLabel = new JLabel( "BP: ");
 		
 		JLabel importanceSamplingInfoLabel = new JLabel( "Importance-Sampling: ");
@@ -57,6 +59,7 @@ public class ExperimentPanel extends JPanel {
 		this.topologyLabel = new JLabel( bean.getTopology() );
 		this.assetLoanMarketLabel = new JLabel( "" + bean.isAssetLoanMarket() );
 		this.loanCashMarketLabel = new JLabel( "" + bean.isLoanCashMarket() );
+		this.collateralMarketLabel = new JLabel( "" + bean.isCollateralCashMarket() );
 		this.bondsPledgeabilityLabel = new JLabel( "" + bean.isBondsPledgeability() );
 		this.importanceSamplingLabel = new JLabel( "" + bean.isImportanceSampling() );
 		this.terminationModeLabel = new JLabel( bean.getTerminationMode().name() );
@@ -113,6 +116,11 @@ public class ExperimentPanel extends JPanel {
 		c.gridx = 3;
 		this.add( this.bondsPledgeabilityLabel, c );
 
+		c.gridy = 0;
+		c.gridx = 4;
+		this.add( collateralMarketInfoLabel, c );
+		c.gridx = 5;
+		this.add( this.collateralMarketLabel, c );
 		c.gridy = 1;
 		c.gridx = 4;
 		this.add( importanceSamplingInfoLabel, c );

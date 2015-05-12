@@ -38,7 +38,7 @@ public class AgentInfoFrame extends JFrame {
 		this.getContentPane().setLayout( new BorderLayout() );
 		this.getContentPane().add( this.agentIdSpinner, BorderLayout.NORTH );
 		this.getContentPane().add( this.agentInfoPanel, BorderLayout.CENTER );
-		this.getContentPane().setPreferredSize( new Dimension( 550, 100 ) );
+		this.getContentPane().setPreferredSize( new Dimension( 650, 100 ) );
 		
 		this.setDefaultCloseOperation( JFrame.HIDE_ON_CLOSE );
 		this.setResizable( false );

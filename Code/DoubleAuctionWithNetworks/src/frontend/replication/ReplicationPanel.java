@@ -228,6 +228,8 @@ public class ReplicationPanel extends JPanel {
 					ReplicationPanel.this.bpMechanismCheck.setSelected( false );
 					ReplicationPanel.this.collateralMarketCheck.setSelected( false );
 				}
+				
+				ReplicationPanel.this.setMarketMechanisms();
 			}
 		};
 		
@@ -571,11 +573,8 @@ public class ReplicationPanel extends JPanel {
 		int agentCount = (int) this.agentCountSpinner.getValue();
 		
 		this.markets = new Markets( (LoanType) this.loanTypeSelection.getSelectedItem() );
-		this.markets.setABM( this.abmMarketCheck.isSelected() );
-		this.markets.setLoanMarket( this.loanCashMarketCheck.isSelected() );
-		this.markets.setCollateralMarket( this.collateralMarketCheck.isSelected() );
-		this.markets.setBP( this.bpMechanismCheck.isSelected() );
-
+		this.setMarketMechanisms();
+		
 		this.replicationTable.clearAll();
 
 		NetworkCreator creator = ( NetworkCreator ) this.topologySelection.getSelectedItem();
@@ -615,4 +614,12 @@ public class ReplicationPanel extends JPanel {
 		this.runningTimeLabel.setText( "Running since " + DATE_FORMATTER.format( this.replications.getStartingTime() ) 
 				+ ", " + ( duration / 1000 ) + " sec." );
 	}
+	
+	private void setMarketMechanisms() {
+		this.markets.setABM( this.abmMarketCheck.isSelected() );
+		this.markets.setLoanMarket( this.loanCashMarketCheck.isSelected() );
+		this.markets.setCollateralMarket( this.collateralMarketCheck.isSelected() );
+		this.markets.setBP( this.bpMechanismCheck.isSelected() );
+	}
+	
 }
