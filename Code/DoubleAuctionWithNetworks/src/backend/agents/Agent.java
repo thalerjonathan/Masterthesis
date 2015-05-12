@@ -188,32 +188,7 @@ public class Agent {
 		// the uncollateralized assets are those which are available for trade
 		// this is simply the amount of assets hold in total, which includes collateralized assets 
 		// and thus needs to subtract the collateral obligations
-		return this.getAssets() - this.getCollateralObligationsAfterTrade( 0.0 );
-	}
-	
-	/* calculates the collateral-obligations 
-	 * if > 0 then more loans are taken than loans are given => have debt obligations through securitization
-	 * collateralAdjustment allows to increase/decrease the obligations e.g. when necessary to caluclate
-	 * the obligations AFTER a trade (to calculate future obligations)
-	 */
-	private double getCollateralObligationsAfterTrade( double collateralTraded ) {
-		// when no BP Mechanism, loans given to other agents cannot be traded
-		// thus the collateral is the loans taken from other agents which implies
-		// assets as collateral 
-		double collateral = this.getLoansTaken();
-		
-		// when using Bonds-Pledgeability (BP) Mechanism, then it is possible
-		// to trade assets aquired by loans given to other agents
-		if ( this.markets.isBP() ) {
-			// loanGiven decreases the collateral in case of BP because it is available for trades
-			collateral -= this.getLoansGiven();
-		}
-		
-		return Math.max( 0.0, collateral + collateralTraded );
-	}
-	
-	private double getCurrentObligations() {
-		return this.getCollateralObligationsAfterTrade( 0.0 );
+		return this.getAssets() - this.getCurrentObligations();
 	}
 	
 	public void clearBestOfferings() {
@@ -393,6 +368,31 @@ public class Agent {
 		this.assetLoanLimits[1][1] = maxAssetPriceInLoans; //sell upper  
 	}
 	
+	/* calculates the collateral-obligations 
+	 * if > 0 then more loans are taken than loans are given => have debt obligations through securitization
+	 * collateralAdjustment allows to increase/decrease the obligations e.g. when necessary to caluclate
+	 * the obligations AFTER a trade (to calculate future obligations)
+	 */
+	private double getCollateralObligationsAfterTrade( double collateralTraded ) {
+		// when no BP Mechanism, loans given to other agents cannot be traded
+		// thus the collateral is the loans taken from other agents which implies
+		// assets as collateral 
+		double collateral = this.getLoansTaken();
+		
+		// when using Bonds-Pledgeability (BP) Mechanism, then it is possible
+		// to trade assets aquired by loans given to other agents
+		if ( this.markets.isBP() ) {
+			// loanGiven decreases the collateral in case of BP because it is available for trades
+			collateral -= this.getLoansGiven();
+		}
+		
+		return Math.max( 0.0, collateral + collateralTraded );
+	}
+	
+	private double getCurrentObligations() {
+		return this.getCollateralObligationsAfterTrade( 0.0 );
+	}
+	
 	private void calcBidOfferings( BidOffering[] offerings ) {		
 		// the price for 1.0 Units of asset - will be normalized during a Match
 		// to the given amount below - the unit of this variable is CASH
@@ -472,41 +472,14 @@ public class Agent {
 			offerings[ MarketType.ASSET_LOAN.ordinal() ] = null;
 		}
 		
-		/*
-		// collateral-cash market is open, check if agent can place a buy offer
-		if ( this.markets.isCollateralMarket() ) {
-			// NOTE: the amount of assets traded will be Markets.TRADING_UNIT_ASSET !!
-
-			// collateralized assets have their value measured in loans (leverage)
-			// this is the value of 1.0 asset in loans
-			double assetValueInLoans = randomRange( minAssetPriceInLoans, expectedAssetPriceInLoans );
-			// is the amount of loans for the amount of assets traded (Markets.TRADING_UNIT_ASSET)
-			double loanAmountForTradingAssets = Markets.TRADING_UNIT_ASSET * assetValueInLoans;
-			// calculate the cash-value of the amount of loans to determine the final trading price
-			double cashValueOfTradingLoans = loanAmountForTradingAssets * this.limitPriceLoan;
-
-			double assetsAfterTrade = this.assets + Markets.TRADING_UNIT_ASSET;
-			double collObligationsAfterTrade = this.getCollateralObligationsAfterTrade( loanAmountForTradingAssets );
-			double uncollAssetsAfterCollateralTrade = assetsAfterTrade - collObligationsAfterTrade;
-	
-			// must have enough cash to pay for the value of the asset AND
-			// must be able to satisfy collateral obligations AFTER trade too
-			if ( this.cash >= cashValueOfTradingLoans && uncollAssetsAfterCollateralTrade >= Markets.TRADING_EPSILON ) {
-				offerings[ MarketType.COLLATERAL_CASH.ordinal() ] = 
-						new BidOffering( cashValueOfTradingLoans, loanAmountForTradingAssets, this, MarketType.COLLATERAL_CASH );
-				
-			} else {
-				offerings[ MarketType.COLLATERAL_CASH.ordinal() ] = null;
-			}
-						
-		} else {
-			offerings[ MarketType.COLLATERAL_CASH.ordinal() ] = null;
-		}*/
-		
 		// collateral-cash market is open, can only place an offer if there is enough cash left
 		if ( this.markets.isCollateralMarket() && this.cash > Markets.TRADING_EPSILON ) {
+			// pick random asset price from range: is the price of 1.0 unit of assets
 			assetPriceInCash = randomRange( minCollateralPriceInCash, limitPriceCollateral );
+			// calculate how much assets could be bought with the cash owned
 			double assetAmount = this.cash / assetPriceInCash;
+			// trade in chunks of TRADING_UNIT_ASSET but if TRADING_UNIT_ASSET > than the
+			// tradeable amount assetAmount then trade the left amount of assetAmount assets
 			assetAmount = Math.min( assetAmount, Markets.TRADING_UNIT_ASSET );
 			
 			offerings[ MarketType.COLLATERAL_CASH.ordinal() ] = 
@@ -599,44 +572,14 @@ public class Agent {
 		} else {
 			offerings[ MarketType.ASSET_LOAN.ordinal() ] = null;
 		}
-		
-		/*
-		// collateral-cash market is open, check if agent can place a sell offer
-		// can only place offer if there are any collateralized assets around
-		if ( this.markets.isCollateralMarket() && currentObligations > Markets.TRADING_EPSILON ) {
-			// NOTE: the amount of assets traded will be Markets.TRADING_UNIT_ASSET !!
 
-			// collateralized assets have their value measured in loans (leverage)
-			// this is the value of 1.0 asset in loans
-			double assetValueInLoans = randomRange( expectedAssetPriceInLoans, maxAssetPriceInLoans );
-			// is the amount of loans for the amount of assets traded (Markets.TRADING_UNIT_ASSET)
-			double loanAmountForTradingAssets = Markets.TRADING_UNIT_ASSET * assetValueInLoans;
-			// calculate the cash-value of the amount of loans to determine the final trading price
-			double cashValueOfTradingLoans = loanAmountForTradingAssets * this.limitPriceLoan;
-
-			double assetsAfterTrade = this.assets - Markets.TRADING_UNIT_ASSET;
-			double collObligationsAfterTrade = this.getCollateralObligationsAfterTrade( -loanAmountForTradingAssets );
-			double uncollAssetsAfterCollateralTrade = assetsAfterTrade - collObligationsAfterTrade;
-
-			// can trade only in this market if we have any collateral obligations
-			// can trade only if after the trade uncollateralized assets >= 0
-			if ( uncollAssetsAfterCollateralTrade >= Markets.TRADING_EPSILON ) {
-				offerings[ MarketType.COLLATERAL_CASH.ordinal() ] = 
-						new AskOffering( cashValueOfTradingLoans, loanAmountForTradingAssets, this, MarketType.COLLATERAL_CASH );
-				
-			} else {
-				offerings[ MarketType.COLLATERAL_CASH.ordinal() ] = null;
-			}
-			
-		} else {
-			offerings[ MarketType.COLLATERAL_CASH.ordinal() ] = null;
-		}
-		*/
-		
 		// collateral-cash market is open, can only place offer if there are any collateralized assets around
 		if ( this.markets.isCollateralMarket() && currentObligations > Markets.TRADING_EPSILON ) {
-			//double assetPriceInCash = randomRange( limitPriceAsset, maxAssetPriceInCash );
+			// pick a random price from range: is the price for 1.0 Unit of (collateral) assets
 			double assetPriceInCash = randomRange( limitPriceCollateral, maxCollateralPriceInCash );
+			// calculate the amount of assets to trade: don't trade all but in small chunks of TRADING_UNIT_ASSET
+			// if TRADING_UNIT_ASSET > than the tradeable amount of currentObligations take the rest of 
+			// currentObligations to trade down to 0
 			double assetAmount = Math.min( currentObligations, Markets.TRADING_UNIT_ASSET );	
 			
 			offerings[ MarketType.COLLATERAL_CASH.ordinal() ] = 
