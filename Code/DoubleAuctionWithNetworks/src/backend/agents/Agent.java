@@ -141,12 +141,6 @@ public class Agent {
 		// => giving COLLATERALIZED asset to buyer (is asset + the amount of loan)
 		// => getting cash from buyer
 		} else if ( MarketType.COLLATERAL_CASH == match.getMarket() ) {
-			//double tradedLoanAmount = this.calculateLoanValueOfAsset( match.getAmount() );
-			double tradedLoanAmount = match.getAmount();
-			double tradedLoanValueInCashMyself = this.calculateCashValueOfLoan( tradedLoanAmount );
-			double tradedLoanValueInCashOther = match.getBuyer().calculateCashValueOfLoan( tradedLoanAmount );
-			double deltaCash = tradedLoanValueInCashMyself - tradedLoanValueInCashOther;
-			
 			this.loansGiven += match.getAmount();
 			this.assets -= match.getAmount();
 			this.cash += match.getNormalizedPrice();
@@ -184,12 +178,6 @@ public class Agent {
 		// => getting COLLATERALIZED asset from seller (is asset + the amount of loan)
 		// => giving cash to seller
 		} else if ( MarketType.COLLATERAL_CASH == match.getMarket() ) {
-			//double tradedLoanAmount = this.calculateLoanValueOfAsset( match.getAmount() );
-			double tradedLoanAmount = match.getAmount();
-			double tradedLoanValueInCashMyself = this.calculateCashValueOfLoan( tradedLoanAmount );
-			double tradedLoanValueInCashOther = match.getSeller().calculateCashValueOfLoan( tradedLoanAmount );
-			double deltaCash = tradedLoanValueInCashMyself - tradedLoanValueInCashOther;
-			
 			this.loansTaken += match.getAmount();
 			this.assets += match.getAmount();
 			this.cash -= match.getNormalizedPrice();
@@ -689,14 +677,14 @@ public class Agent {
 		this.minAssetPriceInLoans = minAssetPrice / maxLoanPrice;
 		//this.minCollateralPriceInCash = this.minAssetPriceInCash + this.minLoanPriceInCash;
 		//this.minCollateralPriceInCash = Math.min( minAssetPriceInCash, this.minLoanPriceInCash );
-		this.minCollateralPriceInCash = this.minAssetPriceInCash - this.minLoanPriceInCash;
+		this.minCollateralPriceInCash = Math.min( 0, this.minAssetPriceInCash - this.maxLoanPriceInCash );
 		
 		this.maxAssetPriceInCash = Math.max( pU, this.limitPriceAsset );
 		this.maxLoanPriceInCash = Math.max( maxLoanPrice, this.limitPriceLoan );
 		this.maxAssetPriceInLoans = maxAssetPrice / minLoanPrice;
 		//this.maxCollateralPriceInCash = this.maxAssetPriceInCash + this.maxLoanPriceInCash;
 		//this.maxCollateralPriceInCash = Math.max( this.maxAssetPriceInCash, this.maxLoanPriceInCash );
-		this.maxCollateralPriceInCash = this.maxAssetPriceInCash - this.maxLoanPriceInCash;
+		this.maxCollateralPriceInCash = this.maxAssetPriceInCash - this.minLoanPriceInCash;
 		
 		this.limitPriceAssetLoans = this.limitPriceAsset / this.limitPriceLoan;
 		
