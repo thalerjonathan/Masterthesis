@@ -31,8 +31,8 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
 import backend.Auction;
-import backend.Auction.EquilibriumStatistics;
 import backend.Auction.MatchingType;
+import backend.EquilibriumStatistics;
 import backend.agents.Agent;
 import backend.agents.AgentFactoryImpl;
 import backend.agents.network.AgentConnection;

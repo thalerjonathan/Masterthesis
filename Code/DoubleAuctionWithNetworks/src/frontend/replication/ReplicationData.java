@@ -3,7 +3,7 @@ package frontend.replication;
 import java.util.Date;
 import java.util.List;
 
-import backend.Auction.EquilibriumStatistics;
+import backend.EquilibriumStatistics;
 import backend.agents.Agent;
 import frontend.experimenter.xml.result.ReplicationBean;
 

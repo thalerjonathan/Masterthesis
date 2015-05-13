@@ -3,7 +3,8 @@ package frontend.experimenter.xml.result;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
-import backend.Auction.EquilibriumStatistics;
+import backend.EquilibriumStatistics;
+
 
 @XmlRootElement( name = "equilibrium" )
 public class EquilibriumBean {

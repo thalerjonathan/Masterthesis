@@ -18,8 +18,8 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 
 import backend.Auction;
-import backend.Auction.EquilibriumStatistics;
 import backend.Auction.MatchingType;
+import backend.EquilibriumStatistics;
 import backend.agents.Agent;
 import backend.agents.network.AgentNetwork;
 import backend.markets.Markets;

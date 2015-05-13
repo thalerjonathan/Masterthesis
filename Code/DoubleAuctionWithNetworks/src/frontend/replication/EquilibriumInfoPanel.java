@@ -6,8 +6,8 @@ import java.awt.GridBagLayout;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import backend.EquilibriumStatistics;
 import frontend.Utils;
-import backend.Auction.EquilibriumStatistics;
 
 @SuppressWarnings("serial")
 public class EquilibriumInfoPanel extends JPanel {

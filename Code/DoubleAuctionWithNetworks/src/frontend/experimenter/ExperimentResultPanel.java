@@ -15,7 +15,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
-import backend.Auction.EquilibriumStatistics;
+import backend.EquilibriumStatistics;
 import backend.agents.Agent;
 import backend.markets.Markets;
 import frontend.Utils;
