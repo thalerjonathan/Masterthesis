@@ -197,10 +197,12 @@ public class ReplicationsRunner {
 		EquilibriumStatistics meanStats = new EquilibriumStatistics();
 		
 		int validReplications = 0;
-		double[] medianConsumEndow = new double[ agentCount ];
-		double[] medianAssetEndow = new double[ agentCount ];
-		double[] medianLoanGivenEndow = new double[ agentCount ];
-		double[] medianLoanTakenEndow = new double[ agentCount ];
+		double[] cashAverage = new double[ agentCount ];
+		double[] assertAverage = new double[ agentCount ];
+		double[] loanGivenAverage = new double[ agentCount ];
+		double[] loanTakenAverage = new double[ agentCount ];
+		
+		// TODO: calculate the standard deviation
 		
 		for ( ReplicationData data : this.replicationData ) {
 			if ( data.isCanceled() ) {
@@ -212,10 +214,10 @@ public class ReplicationsRunner {
 			for ( int i = 0; i < finalAgents.size(); ++i ) {
 				Agent a = finalAgents.get( i );
 				
-				medianConsumEndow[ i ] += a.getCash();
-				medianAssetEndow[ i ] += a.getAssets();
-				medianLoanGivenEndow[ i ] += a.getLoansGiven();
-				medianLoanTakenEndow[ i ] += a.getLoansTaken();
+				cashAverage[ i ] += a.getCash();
+				assertAverage[ i ] += a.getAssets();
+				loanGivenAverage[ i ] += a.getLoansGiven();
+				loanTakenAverage[ i ] += a.getLoansTaken();
 			}
 			
 			meanStats.p += data.getStats().p;
@@ -260,35 +262,15 @@ public class ReplicationsRunner {
 			if ( templateAgent.getH() < meanStats.i1 ) {
 				meanStats.i1Index = i;
 			}
+
+			AgentBean medianBean = new AgentBean();
+			medianBean.setH( templateAgent.getH() );
+			medianBean.setAssets( assertAverage[ i ] / validReplications );
+			medianBean.setCash( cashAverage[ i ] / validReplications );
+			medianBean.setLoanGiven( loanGivenAverage[ i ] / validReplications );
+			medianBean.setLoanTaken( loanTakenAverage[ i ] / validReplications );
 			
-			double agentMCE = medianConsumEndow[ i ] / validReplications;
-			double agentMAE = medianAssetEndow[ i ] / validReplications;
-			double agentMLG = medianLoanGivenEndow[ i ] / validReplications;
-			double agentMLT = medianLoanTakenEndow[ i ] / validReplications;
-			
-			Agent medianAgent = new Agent( templateAgent.getId(), templateAgent.getH(), this.markets ) {
-				@Override
-				public double getCash() {
-					return agentMCE;
-				}
-				
-				@Override
-				public double getAssets() {
-					return agentMAE;
-				}
-				
-				@Override
-				public double getLoansGiven() {
-					return agentMLG;
-				}
-				
-				@Override
-				public double getLoansTaken() {
-					return agentMLT;
-				}
-			};
-			
-			meanAgents.add( medianAgent );
+			meanAgents.add( new Agent( medianBean, this.markets ) );
 		}
 		
 		currentStats.setFinalAgents( meanAgents );

@@ -1,3 +1,13 @@
+TODO
+	-> TODO		standardabweichungen in replicationen berechnen
+	-> TODO		Marktvisualisierung auch in replikationen einbauen
+				-> zu jedem zeitpunkt hat ein markt eine gewisse anzahl an erfolgreichen replikationen: über diese mitteln
+				-> nicht alle replikationen haben dieselbe anzahl an transaktionen, wenn mehr vorkommen, wird einfach darum erweitert
+	-> TODO		Marktvisualisierung auch in results der replikationen einbauen: muss aber den kompletten match-verlauf speichern
+	-> TODO		InspectionPanel überarbeiten
+				-> TODO		ordentliche callbacks im simulation-thread anstatt starke kopplung an InspectionPanel!
+				-> TODO		network visualization wieder funktionsfähig
+				
 Erledigt
 	-> OK		theoretisches gleichgewicht wird für fully connected noch nicht erreicht
 				-> !!!!!!!!!!!!! beim match evtl den preis anders: seller + buyer / 2 !!!!!!!!!!!!!

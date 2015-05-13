@@ -86,18 +86,18 @@ public class MainWindow extends JFrame {
 	private void createPanels() {
 		this.simulationModesTabPane = new JTabbedPane();
 		
-		this.experimenterPanel = new ExperimenterPanel();
-		this.simulationModesTabPane.addTab( "Experimenter", this.experimenterPanel );
-
-		ReplicationPanel rp = new ReplicationPanel();
-		this.simulationModesTabPane.addTab( "Replications", rp );
-
 		InspectionPanel ip = new InspectionPanel();
 		this.simulationModesTabPane.addTab( "Inspection 1", ip );			
 		
 		ip = new InspectionPanel();
-		this.simulationModesTabPane.addTab( "Inspection 2", ip );			
+		this.simulationModesTabPane.addTab( "Inspection 2", ip );		
 		
+		ReplicationPanel rp = new ReplicationPanel();
+		this.simulationModesTabPane.addTab( "Replications", rp );
+
+		this.experimenterPanel = new ExperimenterPanel();
+		this.simulationModesTabPane.addTab( "Experimenter", this.experimenterPanel );
+
 		this.simulationModesTabPane.setSelectedIndex( 0 );
 		
 		this.getContentPane().add( this.simulationModesTabPane );

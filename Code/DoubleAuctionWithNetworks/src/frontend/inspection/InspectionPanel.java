@@ -22,6 +22,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSpinner;
+import javax.swing.JTabbedPane;
 import javax.swing.JToggleButton;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingUtilities;
@@ -41,6 +42,7 @@ import backend.markets.LoanType;
 import backend.markets.Markets;
 import backend.offers.AskOffering;
 import backend.offers.BidOffering;
+import backend.tx.Match;
 import backend.tx.Transaction;
 import edu.uci.ics.jung.algorithms.layout.CircleLayout;
 import edu.uci.ics.jung.algorithms.layout.KKLayout;
@@ -67,6 +69,7 @@ import frontend.networkVisualisation.ConnectionSelectedEvent;
 import frontend.networkVisualisation.INetworkSelectionObserver;
 import frontend.networkVisualisation.NetworkRenderPanel;
 import frontend.replication.EquilibriumInfoPanel;
+import frontend.visualisation.MarketsVisualizer;
 import frontend.visualisation.WealthVisualizer;
 
 @SuppressWarnings("serial")
@@ -96,11 +99,6 @@ public class InspectionPanel extends JPanel implements ActionListener, ChangeLis
 
 	private JPanel visualizationPanel;
 	private JPanel networkPanel;
-	private WealthVisualizer agentWealthPanel;
-	private NetworkRenderPanel networkVisPanel;
-	private EquilibriumInfoPanel equilibriumInfoPanel;
-	
-	private OfferBook offerBook;
 	
 	private JComboBox<NetworkCreator> topologySelection;
 	private JComboBox<String> layoutSelection;
@@ -118,6 +116,15 @@ public class InspectionPanel extends JPanel implements ActionListener, ChangeLis
 	private JLabel failedTxCounterLabel;
 	private JLabel totalfailedTxCounterLabel;
 
+	private JTabbedPane visualizersTabbedPane;
+	
+	private WealthVisualizer agentWealthPanel;
+	private MarketsVisualizer marketsVisualizer;
+	private NetworkRenderPanel networkVisPanel;
+	private EquilibriumInfoPanel equilibriumInfoPanel;
+	
+	private OfferBook offerBook;
+	
 	private TxHistoryTable txHistoryTable;
 	
 	private Timer spinnerChangedTimer;
@@ -127,6 +134,7 @@ public class InspectionPanel extends JPanel implements ActionListener, ChangeLis
 	private Agent selectedAgent;
 	
 	private List<Transaction> successfulTx;
+	private List<Match> successfulMatches;
 	
 	private long lastRepaintTime;
 	
@@ -140,6 +148,7 @@ public class InspectionPanel extends JPanel implements ActionListener, ChangeLis
 	public InspectionPanel() {
 		this.markets = new Markets();
 		this.successfulTx = new ArrayList<Transaction>();
+		this.successfulMatches = new ArrayList<Match>();
 		
         this.setLayout( new GridBagLayout() );
         
@@ -203,11 +212,14 @@ public class InspectionPanel extends JPanel implements ActionListener, ChangeLis
 		// instancing of components ////////////////////////////////////
 		GridBagConstraints c = new GridBagConstraints();
 
+		this.visualizersTabbedPane = new JTabbedPane();
 		this.visualizationPanel = new JPanel( new GridBagLayout() );
 		this.networkPanel = new JPanel( new BorderLayout() );
 		this.offerBook = new OfferBook();
 		this.equilibriumInfoPanel = new EquilibriumInfoPanel();
-		
+		this.marketsVisualizer = new MarketsVisualizer( this.successfulMatches );
+		this.agentWealthPanel = new WealthVisualizer();
+
 		JPanel controlsPanel = new JPanel();
 		JPanel txInfoPanel = new JPanel( new GridBagLayout() );
 		JPanel networkVisControlsPanel = new JPanel();
@@ -280,6 +292,9 @@ public class InspectionPanel extends JPanel implements ActionListener, ChangeLis
 		txHistoryScrollPane.setHorizontalScrollBarPolicy( JScrollPane.HORIZONTAL_SCROLLBAR_NEVER );
 		
 		// setting properties of components ////////////////////////////////////
+		this.visualizersTabbedPane.addTab( "Agents", this.agentWealthPanel );
+		this.visualizersTabbedPane.addTab( "Markets", this.marketsVisualizer );
+		
 		this.loanTypeSelection.setSelectedItem( LoanType.LOAN_05 );
 		
 		this.abmMarketCheck.setSelected( this.markets.isABM() );
@@ -566,11 +581,16 @@ public class InspectionPanel extends JPanel implements ActionListener, ChangeLis
 		this.add( controlsPanel, c );
 
 		c.fill = GridBagConstraints.BOTH;
-		c.weightx = 0.5;
-		c.gridwidth = 1;
+		c.weightx = 1.0;
+		c.weighty = 1.0;
 		c.gridx = 0;
 		c.gridy = 0;
-		this.visualizationPanel.add( this.networkPanel, c );
+		this.visualizationPanel.add( this.visualizersTabbedPane, c );
+		/*
+		c.gridx = 1;
+		c.gridy = 0;
+		this.visualizationPanel.add( this.visualizersTabbedPane, c );
+		*/
 		
 		c.weighty = 1.0;
 		c.gridheight = 10;
@@ -587,11 +607,13 @@ public class InspectionPanel extends JPanel implements ActionListener, ChangeLis
 		long currMillis = System.currentTimeMillis();
 		if ( InspectionPanel.REPAINT_WEALTH_WHENRUNNING_INTERVAL < currMillis - this.lastRepaintTime || forceRedraw ) {
 			this.agentWealthPanel.setAgents( this.agentNetwork.getOrderedList() );
-
-			this.agentWealthPanel.repaint();
+			this.marketsVisualizer.repaint();
+			
 			this.lastRepaintTime = currMillis;
 		}
 
+		this.successfulMatches.add( tx.getMatch() );
+		
 		if ( this.keepAgentHistoryCheck.isSelected() ) {
 			this.successfulTx.add( tx );
 			this.txHistoryTable.addTx( tx );
@@ -658,31 +680,11 @@ public class InspectionPanel extends JPanel implements ActionListener, ChangeLis
 		
 		this.handleImportanceSampling();
 		
-		// if agent-wealth-visualisation panel is already there, remove it bevore adding a new instance
-		if ( null != this.agentWealthPanel ) {
-			this.visualizationPanel.remove( this.agentWealthPanel );
-			this.agentWealthPanel = null;
-		}
-
-		this.agentWealthPanel = this.agentNetwork.getWealthVisualizer();
-		
-		GridBagConstraints c = new GridBagConstraints();
-		c.fill = GridBagConstraints.BOTH;
-		c.weightx = 0.5;
-		c.gridwidth = 1;
-		c.gridheight = 1;
-		c.weighty = 1.0;
-		c.gridx = 1;
-		c.gridy = 0;
-		
-		if ( this.agentNetwork.size() > InspectionPanel.AGENTS_COUNT_HIDE_NETWORK_PANEL ) {
-			c.weightx = 1.0;
-			c.gridx = 0;
-		}
-		
-		this.visualizationPanel.add( this.agentWealthPanel, c );
-
 		this.txHistoryTable.clearAll();
+		this.successfulMatches.clear();
+		
+		this.agentWealthPanel.setAgents( this.agentNetwork.getOrderedList() );
+		this.marketsVisualizer.repaint();
 		
 		// close opened offer-books because agents changed (number of agents,...)
 		this.offerBook.agentsChanged( this.agentNetwork.getOrderedList(), this.getTitleExtension() );
@@ -826,6 +828,7 @@ public class InspectionPanel extends JPanel implements ActionListener, ChangeLis
 			this.txHistoryTable.getRowSorter().toggleSortOrder( 0 );
 				
 			this.successfulTx.clear();
+			this.successfulMatches.clear();
 			this.txHistoryTable.clearAll();
 	
 			// disable controls, to prevent changes by user
@@ -834,10 +837,6 @@ public class InspectionPanel extends JPanel implements ActionListener, ChangeLis
 			this.topologySelection.setEnabled( false );
 			this.optimismSelection.setEnabled( false );
 			this.recreateButton.setEnabled( false );
-			this.abmMarketCheck.setEnabled( false );
-			this.loanCashMarketCheck.setEnabled( false );
-			//this.collateralMarketCheck.setEnabled( false );
-			this.bpMechanismCheck.setEnabled( false );
 			this.importanceSamplingCheck.setEnabled( false );
 			
 			// reset controls
@@ -865,7 +864,7 @@ public class InspectionPanel extends JPanel implements ActionListener, ChangeLis
 			this.simulationThread.startSimulation();
 			
 			this.networkVisPanel.repaint();
-			
+			this.marketsVisualizer.repaint();
 			this.agentWealthPanel.repaint();
 			
 		// simulation is running
@@ -887,10 +886,6 @@ public class InspectionPanel extends JPanel implements ActionListener, ChangeLis
 			this.topologySelection.setEnabled( true );
 			this.optimismSelection.setEnabled( true );
 			this.recreateButton.setEnabled( true );
-			this.abmMarketCheck.setEnabled( true );
-			this.loanCashMarketCheck.setEnabled( true );
-			this.collateralMarketCheck.setEnabled( true );
-			this.bpMechanismCheck.setEnabled( true );
 			this.importanceSamplingCheck.setEnabled( true );
 		}
 	}
