@@ -5,6 +5,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -12,7 +13,6 @@ import java.util.List;
 import javax.swing.JPanel;
 
 import backend.markets.MarketType;
-import backend.tx.Match;
 
 @SuppressWarnings("serial")
 public class MarketsVisualizer extends JPanel {
@@ -42,14 +42,16 @@ public class MarketsVisualizer extends JPanel {
 		MARKET_COLORS[ MarketType.COLLATERAL_CASH.ordinal() ] = DARK_CYAN;
 	}
 		
-	private List<Match> successfulMatches;
+	private final static DecimalFormat TX_COUNT_FORMATTER = new DecimalFormat( "###,###.###" );
+	
+	private List<MarketType> successfulMarkets;
 
 	public MarketsVisualizer() {
 		this( new ArrayList<>() );
 	}
 	
-	public MarketsVisualizer( List<Match> successfulMatches ) {
-		this.successfulMatches = successfulMatches;
+	public MarketsVisualizer( List<MarketType> successfulMatches ) {
+		this.successfulMarkets = successfulMatches;
 		
 		this.setPreferredSize( new Dimension( (int) (this.getToolkit().getScreenSize().getWidth() / 2 ), 
 				(int) (0.75 * this.getToolkit().getScreenSize().getHeight() ) ) );
@@ -64,11 +66,11 @@ public class MarketsVisualizer extends JPanel {
 		int maxTx = 0;
 		int[] totalTxInMarket = new int[ MarketType.values().length ];
 		
-		for ( Match match : this.successfulMatches ) {
-			totalTxInMarket[ match.getMarket().ordinal() ]++;
+		for ( MarketType market : this.successfulMarkets ) {
+			totalTxInMarket[ market.ordinal() ]++;
 			
-			if ( totalTxInMarket[ match.getMarket().ordinal() ] > maxTx ) {
-				maxTx = totalTxInMarket[ match.getMarket().ordinal() ];
+			if ( totalTxInMarket[ market.ordinal() ] > maxTx ) {
+				maxTx = totalTxInMarket[ market.ordinal() ];
 			}
 		}
 		
@@ -84,10 +86,10 @@ public class MarketsVisualizer extends JPanel {
 		for ( int i = 0; i < X_ACHSIS_GRID; i++ ) {
 			double h = i / ( double ) X_ACHSIS_GRID;
 			int x = ( int ) ( width * h ) + SCALA_X_WIDTH;
-			str = " " + ( int ) ( h * this.successfulMatches.size() );
+			str = TX_COUNT_FORMATTER.format( ( int ) ( h * this.successfulMarkets.size() ) );
 
 			if ( i != 0 ) {
-				g.drawChars( str.toCharArray(), 0, str.length(), x - 5, (int) (height + 20) );
+				g.drawChars( str.toCharArray(), 0, str.length(), x - 15, (int) (height + 20) );
 				g.drawLine( x, 0, x, (int) (height + 5) );
 				
 			} else {
@@ -99,7 +101,7 @@ public class MarketsVisualizer extends JPanel {
 		for ( int i = 0; i < Y_ACHSIS_GRID; ++i ) {
 			double h = i / ( double ) Y_ACHSIS_GRID;
 			int y = (int) (height - height * h );
-			str = " " + ( int ) ( h * ( double ) maxTx );
+			str = TX_COUNT_FORMATTER.format( ( int ) ( h * ( double ) maxTx ) );
 
 			if ( i != 0 ) {
 				g.drawChars( str.toCharArray(), 0, str.length(), SCALA_X_WIDTH - 45, y + 5 );
@@ -115,7 +117,7 @@ public class MarketsVisualizer extends JPanel {
 		Arrays.fill( MARKET_X, SCALA_X_WIDTH );
 		Arrays.fill( MARKET_Y, height );
 		
-		double xPixelPerTx = ( double ) width / ( double ) this.successfulMatches.size();
+		double xPixelPerTx = ( double ) width / ( double ) this.successfulMarkets.size();
 		double yPixelPerTx = ( double ) height / ( double ) maxTx;
 		
 		( ( Graphics2D ) g ).setStroke( new BasicStroke( 2 ) );
@@ -127,8 +129,8 @@ public class MarketsVisualizer extends JPanel {
 		// draw y-achsis
 		g.drawLine( SCALA_X_WIDTH, ( int ) height, SCALA_X_WIDTH, 0 );
 		
-		for ( Match match : this.successfulMatches ) {
-			MARKET_TX_COUNT[ match.getMarket().ordinal() ]++;
+		for ( MarketType market : this.successfulMarkets ) {
+			MARKET_TX_COUNT[ market.ordinal() ]++;
 			
 			for ( int i = 0; i < MarketType.values().length; ++i ) {
 				double newMarketX = MARKET_X[ i ] + xPixelPerTx;

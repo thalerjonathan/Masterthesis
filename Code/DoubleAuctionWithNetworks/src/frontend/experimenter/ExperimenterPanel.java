@@ -21,6 +21,7 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 
 import frontend.MainWindow;
+import frontend.Utils;
 import frontend.experimenter.xml.experiment.ExperimentBean;
 import frontend.experimenter.xml.experiment.ExperimentListBean;
 import frontend.experimenter.xml.result.ResultBean;
@@ -36,9 +37,6 @@ public class ExperimenterPanel extends JPanel {
 	private JFileChooser fileChooser;
 
 	private JPanel experimentsPanel;
-	
-	public final static File EXPERIMENTS_DIRECTORY = new File( System.getProperty( "user.dir" ) + File.separator + "experiments" );
-	private final static File REPLICATIONS_DIRECTORY = new File( System.getProperty( "user.dir" ) + File.separator + "replications" );
 	
 	public ExperimenterPanel() {
 		this.setLayout( new BorderLayout() );
@@ -66,10 +64,10 @@ public class ExperimenterPanel extends JPanel {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if ( e.getSource() == ExperimenterPanel.this.openExperimentButton ) {
-					ExperimenterPanel.this.fileChooser.setCurrentDirectory( EXPERIMENTS_DIRECTORY );
+					ExperimenterPanel.this.fileChooser.setCurrentDirectory( Utils.EXPERIMENTS_DIRECTORY );
 					
                 } else if ( e.getSource() == ExperimenterPanel.this.openResultButton ) {
-                	ExperimenterPanel.this.fileChooser.setCurrentDirectory( REPLICATIONS_DIRECTORY );
+                	ExperimenterPanel.this.fileChooser.setCurrentDirectory( Utils.REPLICATIONS_DIRECTORY );
             		
                 }
 				

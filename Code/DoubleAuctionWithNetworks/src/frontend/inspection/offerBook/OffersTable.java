@@ -6,7 +6,7 @@ import javax.swing.table.DefaultTableModel;
 
 import backend.markets.MarketType;
 import backend.offers.Offering;
-import frontend.inspection.InspectionPanel;
+import frontend.Utils;
 
 @SuppressWarnings("serial")
 public class OffersTable extends JTable {
@@ -59,16 +59,16 @@ public class OffersTable extends JTable {
 		
 		if ( MarketType.COLLATERAL_CASH == ask.getMarketType() ) {
 			this.model.addRow( new Object[] {
-					InspectionPanel.TRADING_VALUES_FORMAT.format( ask.getAmount() ),
-					InspectionPanel.TRADING_VALUES_FORMAT.format( ask.getPrice() ),
-					InspectionPanel.TRADING_VALUES_FORMAT.format( 
+					Utils.DECIMAL_4_DIGITS_FORMATTER.format( ask.getAmount() ),
+					Utils.DECIMAL_4_DIGITS_FORMATTER.format( ask.getPrice() ),
+					Utils.DECIMAL_4_DIGITS_FORMATTER.format( 
 							ask.getAgent().calculateLoanValueOfAsset( ask.getAmount() ) ),
 			});
 			
 		} else {
 			this.model.addRow( new Object[] {
-					InspectionPanel.TRADING_VALUES_FORMAT.format( ask.getAmount() ),
-					InspectionPanel.TRADING_VALUES_FORMAT.format( ask.getPrice() )
+					Utils.DECIMAL_4_DIGITS_FORMATTER.format( ask.getAmount() ),
+					Utils.DECIMAL_4_DIGITS_FORMATTER.format( ask.getPrice() )
 			});
 		}
 	}

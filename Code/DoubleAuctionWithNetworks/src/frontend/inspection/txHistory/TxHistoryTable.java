@@ -1,6 +1,5 @@
 package frontend.inspection.txHistory;
 
-import frontend.inspection.InspectionPanel;
 
 import java.util.List;
 
@@ -9,6 +8,7 @@ import javax.swing.ListSelectionModel;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableRowSorter;
 
+import frontend.Utils;
 import backend.markets.MarketType;
 import backend.tx.Match;
 import backend.tx.Transaction;
@@ -86,8 +86,8 @@ public class TxHistoryTable extends JTable {
 		int txId = tx.getTransNum();
 		int sweepCount = tx.getSweepCount();
 		MarketType market = match.getMarket();
-		String askerH = InspectionPanel.AGENT_H_FORMAT.format( match.getSellOffer().getAgent().getH() );
-		String biderH = InspectionPanel.AGENT_H_FORMAT.format( match.getBuyOffer().getAgent().getH() );
+		String askerH = Utils.DECIMAL_2_DIGITS_FORMATTER.format( match.getSellOffer().getAgent().getH() );
+		String biderH = Utils.DECIMAL_2_DIGITS_FORMATTER.format( match.getBuyOffer().getAgent().getH() );
 		
 		String assetAmount = "-";
 		String assetPrice = "-";
@@ -95,22 +95,22 @@ public class TxHistoryTable extends JTable {
 		String loanPrice = "-";
 		
 		if ( MarketType.ASSET_CASH == match.getMarket() ) {
-			assetAmount = InspectionPanel.TRADING_VALUES_FORMAT.format( match.getAmount() );
-			assetPrice = InspectionPanel.TRADING_VALUES_FORMAT.format( match.getPrice()  );
+			assetAmount = Utils.DECIMAL_4_DIGITS_FORMATTER.format( match.getAmount() );
+			assetPrice = Utils.DECIMAL_4_DIGITS_FORMATTER.format( match.getPrice()  );
 
 		} else if ( MarketType.LOAN_CASH == match.getMarket() ) {
-			loanAmount = InspectionPanel.TRADING_VALUES_FORMAT.format( match.getAmount() );
-			loanPrice = InspectionPanel.TRADING_VALUES_FORMAT.format( match.getPrice()  );
+			loanAmount = Utils.DECIMAL_4_DIGITS_FORMATTER.format( match.getAmount() );
+			loanPrice = Utils.DECIMAL_4_DIGITS_FORMATTER.format( match.getPrice()  );
 
 		} else if ( MarketType.ASSET_LOAN == match.getMarket() ) {
-			assetAmount = InspectionPanel.TRADING_VALUES_FORMAT.format( match.getAmount() );
-			assetPrice = InspectionPanel.TRADING_VALUES_FORMAT.format( match.getPrice()  );
+			assetAmount = Utils.DECIMAL_4_DIGITS_FORMATTER.format( match.getAmount() );
+			assetPrice = Utils.DECIMAL_4_DIGITS_FORMATTER.format( match.getPrice()  );
 
-			loanAmount = InspectionPanel.TRADING_VALUES_FORMAT.format( match.getPrice() );
+			loanAmount = Utils.DECIMAL_4_DIGITS_FORMATTER.format( match.getPrice() );
 		
 		} else if ( MarketType.COLLATERAL_CASH == match.getMarket() ) {
-			assetAmount = InspectionPanel.TRADING_VALUES_FORMAT.format( match.getAmount() );
-			assetPrice = InspectionPanel.TRADING_VALUES_FORMAT.format( match.getPrice() );
+			assetAmount = Utils.DECIMAL_4_DIGITS_FORMATTER.format( match.getAmount() );
+			assetPrice = Utils.DECIMAL_4_DIGITS_FORMATTER.format( match.getPrice() );
 		}
 		
 		this.tableModel.addRow( new Object[] {

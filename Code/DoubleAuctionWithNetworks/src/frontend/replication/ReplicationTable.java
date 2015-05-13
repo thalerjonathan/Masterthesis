@@ -4,6 +4,7 @@ import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
 import javax.swing.table.DefaultTableModel;
 
+import frontend.Utils;
 import backend.Auction.EquilibriumStatistics;
 
 @SuppressWarnings("serial")
@@ -52,15 +53,15 @@ public class ReplicationTable extends JTable {
 		this.tableModel.addRow( new Object[] { data.getNumber(), data.getTaskId(), 
 				data.getTotalTxCount(),
 				data.getFailedTxCount(),
-				ReplicationPanel.VALUES_FORMAT.format( stats.p ), 
-				ReplicationPanel.VALUES_FORMAT.format( stats.q ), 
-				ReplicationPanel.VALUES_FORMAT.format( stats.pq ),
-				ReplicationPanel.VALUES_FORMAT.format( stats.i0 ),
-				ReplicationPanel.VALUES_FORMAT.format( stats.i1 ),
-				ReplicationPanel.VALUES_FORMAT.format( stats.i2 ),
-				ReplicationPanel.VALUES_FORMAT.format( stats.P ),
-				ReplicationPanel.VALUES_FORMAT.format( stats.M ),
-				ReplicationPanel.VALUES_FORMAT.format( stats.O ),
+				Utils.DECIMAL_2_DIGITS_FORMATTER.format( stats.p ), 
+				Utils.DECIMAL_2_DIGITS_FORMATTER.format( stats.q ), 
+				Utils.DECIMAL_2_DIGITS_FORMATTER.format( stats.pq ),
+				Utils.DECIMAL_2_DIGITS_FORMATTER.format( stats.i0 ),
+				Utils.DECIMAL_2_DIGITS_FORMATTER.format( stats.i1 ),
+				Utils.DECIMAL_2_DIGITS_FORMATTER.format( stats.i2 ),
+				Utils.DECIMAL_2_DIGITS_FORMATTER.format( stats.P ),
+				Utils.DECIMAL_2_DIGITS_FORMATTER.format( stats.M ),
+				Utils.DECIMAL_2_DIGITS_FORMATTER.format( stats.O ),
 				data.isCanceled(),  data.isTradingHalted(), durationSec } );
 	}
 }

@@ -6,7 +6,6 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -39,14 +38,15 @@ import backend.agents.AgentFactoryImpl;
 import backend.agents.network.AgentConnection;
 import backend.agents.network.AgentNetwork;
 import backend.markets.LoanType;
+import backend.markets.MarketType;
 import backend.markets.Markets;
 import backend.offers.AskOffering;
 import backend.offers.BidOffering;
-import backend.tx.Match;
 import backend.tx.Transaction;
 import edu.uci.ics.jung.algorithms.layout.CircleLayout;
 import edu.uci.ics.jung.algorithms.layout.KKLayout;
 import edu.uci.ics.jung.algorithms.layout.Layout;
+import frontend.Utils;
 import frontend.inspection.InspectionThread.AdvanceMode;
 import frontend.inspection.offerBook.OfferBook;
 import frontend.inspection.txHistory.TxHistoryTable;
@@ -134,13 +134,9 @@ public class InspectionPanel extends JPanel implements ActionListener, ChangeLis
 	private Agent selectedAgent;
 	
 	private List<Transaction> successfulTx;
-	private List<Match> successfulMatches;
+	private List<MarketType> successfulMarkets;
 	
 	private long lastRepaintTime;
-	
-	private static final DecimalFormat COMP_TIME_FORMAT = new DecimalFormat("0.00");
-	public static final DecimalFormat AGENT_H_FORMAT = new DecimalFormat("0.000");
-	public static final DecimalFormat TRADING_VALUES_FORMAT = new DecimalFormat("0.0000");
 	
 	private static final int AGENTS_COUNT_HIDE_NETWORK_PANEL = 51;
 	private static final int REPAINT_WEALTH_WHENRUNNING_INTERVAL = 1000;
@@ -148,7 +144,7 @@ public class InspectionPanel extends JPanel implements ActionListener, ChangeLis
 	public InspectionPanel() {
 		this.markets = new Markets();
 		this.successfulTx = new ArrayList<Transaction>();
-		this.successfulMatches = new ArrayList<Match>();
+		this.successfulMarkets = new ArrayList<MarketType>();
 		
         this.setLayout( new GridBagLayout() );
         
@@ -217,7 +213,7 @@ public class InspectionPanel extends JPanel implements ActionListener, ChangeLis
 		this.networkPanel = new JPanel( new BorderLayout() );
 		this.offerBook = new OfferBook();
 		this.equilibriumInfoPanel = new EquilibriumInfoPanel();
-		this.marketsVisualizer = new MarketsVisualizer( this.successfulMatches );
+		this.marketsVisualizer = new MarketsVisualizer( this.successfulMarkets );
 		this.agentWealthPanel = new WealthVisualizer();
 
 		JPanel controlsPanel = new JPanel();
@@ -612,7 +608,7 @@ public class InspectionPanel extends JPanel implements ActionListener, ChangeLis
 			this.lastRepaintTime = currMillis;
 		}
 
-		this.successfulMatches.add( tx.getMatch() );
+		this.successfulMarkets.add( tx.getMatch().getMarket() );
 		
 		if ( this.keepAgentHistoryCheck.isSelected() ) {
 			this.successfulTx.add( tx );
@@ -627,11 +623,11 @@ public class InspectionPanel extends JPanel implements ActionListener, ChangeLis
 	}
 	
 	void updateTXCounter( int succTx, int noSuccTX, int totalTX, int totalNotSuccTx, long calculationTime ) {
-		this.succTxCounterLabel.setText( "" + succTx );
-		this.failedTxCounterLabel.setText( "" + noSuccTX );
-		this.totalTxCounterLabel.setText( "" + totalTX );
-		this.totalfailedTxCounterLabel.setText( "" + totalNotSuccTx );
-		this.computationTimeLabel.setText( COMP_TIME_FORMAT.format( calculationTime / 1000.0 ) + " sec." );
+		this.succTxCounterLabel.setText( Utils.DECIMAL_LARGEVALUES_FORMATTER.format( succTx ) );
+		this.failedTxCounterLabel.setText( Utils.DECIMAL_LARGEVALUES_FORMATTER.format( noSuccTX ) );
+		this.totalTxCounterLabel.setText( Utils.DECIMAL_LARGEVALUES_FORMATTER.format( totalTX ) );
+		this.totalfailedTxCounterLabel.setText( Utils.DECIMAL_LARGEVALUES_FORMATTER.format( totalNotSuccTx )  );
+		this.computationTimeLabel.setText( Utils.DECIMAL_2_DIGITS_FORMATTER.format( calculationTime / 1000.0 ) + " sec." );
 	}
 	
 	void advanceTxFinished() {
@@ -681,7 +677,7 @@ public class InspectionPanel extends JPanel implements ActionListener, ChangeLis
 		this.handleImportanceSampling();
 		
 		this.txHistoryTable.clearAll();
-		this.successfulMatches.clear();
+		this.successfulMarkets.clear();
 		
 		this.agentWealthPanel.setAgents( this.agentNetwork.getOrderedList() );
 		this.marketsVisualizer.repaint();
@@ -828,7 +824,7 @@ public class InspectionPanel extends JPanel implements ActionListener, ChangeLis
 			this.txHistoryTable.getRowSorter().toggleSortOrder( 0 );
 				
 			this.successfulTx.clear();
-			this.successfulMatches.clear();
+			this.successfulMarkets.clear();
 			this.txHistoryTable.clearAll();
 	
 			// disable controls, to prevent changes by user

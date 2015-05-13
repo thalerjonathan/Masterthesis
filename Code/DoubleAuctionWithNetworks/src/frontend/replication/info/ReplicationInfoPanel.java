@@ -4,7 +4,6 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.text.DecimalFormat;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -14,6 +13,7 @@ import javax.swing.JProgressBar;
 
 import backend.replications.ReplicationsRunner.ReplicationTask;
 import backend.replications.ReplicationsRunner.TerminationMode;
+import frontend.Utils;
 import frontend.visualisation.WealthVisualizer;
 
 @SuppressWarnings("serial")
@@ -32,8 +32,6 @@ public class ReplicationInfoPanel extends JPanel {
 	private JProgressBar progressBar;
 	
 	private ReplicationTask task;
-	
-	private final static DecimalFormat TX_COUNT_FORMATTER = new DecimalFormat( "###,###.###" );
 	
 	public ReplicationInfoPanel( ReplicationTask task ) {
 		this.task = task;
@@ -149,11 +147,11 @@ public class ReplicationInfoPanel extends JPanel {
 	public void refreshInfo() {
 		long failedTxCount = this.task.getFailTxTotalCount();
 		this.terminationModeLabel.setText( this.task.getTerminationMode().name() );
-		this.totalTxLabel.setText( TX_COUNT_FORMATTER.format( this.task.getTotalTxCount() ) );
+		this.totalTxLabel.setText( Utils.DECIMAL_LARGEVALUES_FORMATTER.format( this.task.getTotalTxCount() ) );
 		this.replicationNumberLabel.setText( "" + this.task.getCurrentReplication() );
 		
 		if ( TerminationMode.TRADING_HALTED != task.getTerminationMode()) {
-			this.maxTxLabel.setText( TX_COUNT_FORMATTER.format( this.task.getMaxTx() )  );
+			this.maxTxLabel.setText( Utils.DECIMAL_LARGEVALUES_FORMATTER.format( this.task.getMaxTx() )  );
 			this.progressBar.setMaximum( this.task.getMaxTx() );
 			
 			if ( TerminationMode.TOTAL_TX == task.getTerminationMode() ) {
@@ -170,7 +168,7 @@ public class ReplicationInfoPanel extends JPanel {
 			this.maxTxLabel.setText( "-" );
 		}
 		
-		this.failedTxLabel.setText( TX_COUNT_FORMATTER.format( failedTxCount ) );
+		this.failedTxLabel.setText( Utils.DECIMAL_LARGEVALUES_FORMATTER.format( failedTxCount ) );
 	}
 
 	private void showWealth() {

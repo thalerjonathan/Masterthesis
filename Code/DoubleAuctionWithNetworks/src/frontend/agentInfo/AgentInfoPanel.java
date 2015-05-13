@@ -6,8 +6,8 @@ import java.awt.GridBagLayout;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import frontend.Utils;
 import backend.agents.Agent;
-import frontend.inspection.InspectionPanel;
 
 @SuppressWarnings("serial")
 public class AgentInfoPanel extends JPanel {
@@ -44,31 +44,31 @@ public class AgentInfoPanel extends JPanel {
 	
 	public void setAgent( Agent a ) {
 		this.idLabel.setText( "" + a.getId() );
-		this.hLabel.setText( InspectionPanel.AGENT_H_FORMAT.format( a.getH() ) );
+		this.hLabel.setText( Utils.DECIMAL_2_DIGITS_FORMATTER.format( a.getH() ) );
 		
-		this.consumEndowLabel.setText( InspectionPanel.TRADING_VALUES_FORMAT.format( a.getCash() ) );
-		this.assetEndowLabel.setText( InspectionPanel.TRADING_VALUES_FORMAT.format( a.getAssets() ) );
-		this.uncollateralizedAssets.setText( InspectionPanel.TRADING_VALUES_FORMAT.format( a.getUncollateralizedAssets() ) );
+		this.consumEndowLabel.setText( Utils.DECIMAL_4_DIGITS_FORMATTER.format( a.getCash() ) );
+		this.assetEndowLabel.setText( Utils.DECIMAL_4_DIGITS_FORMATTER.format( a.getAssets() ) );
+		this.uncollateralizedAssets.setText( Utils.DECIMAL_4_DIGITS_FORMATTER.format( a.getUncollateralizedAssets() ) );
 		
-		this.loansGivenLabel.setText( InspectionPanel.TRADING_VALUES_FORMAT.format( a.getLoansGiven() ) );
-		this.loansTakenLabel.setText( InspectionPanel.TRADING_VALUES_FORMAT.format( a.getLoansTaken() ) );
-		this.loansLabel.setText( InspectionPanel.TRADING_VALUES_FORMAT.format( a.getLoans() ) );
+		this.loansGivenLabel.setText( Utils.DECIMAL_4_DIGITS_FORMATTER.format( a.getLoansGiven() ) );
+		this.loansTakenLabel.setText( Utils.DECIMAL_4_DIGITS_FORMATTER.format( a.getLoansTaken() ) );
+		this.loansLabel.setText( Utils.DECIMAL_4_DIGITS_FORMATTER.format( a.getLoans() ) );
 		
-		this.minAssetPriceLabel.setText( InspectionPanel.TRADING_VALUES_FORMAT.format( a.getMinAssetPriceInCash() ) );
-		this.limitPriceAssetLabel.setText( InspectionPanel.TRADING_VALUES_FORMAT.format( a.getLimitPriceAsset() ) );
-		this.maxAssetPriceLabel.setText( InspectionPanel.TRADING_VALUES_FORMAT.format( a.getMaxAssetPriceInCash() ) );
+		this.minAssetPriceLabel.setText( Utils.DECIMAL_4_DIGITS_FORMATTER.format( a.getMinAssetPriceInCash() ) );
+		this.limitPriceAssetLabel.setText( Utils.DECIMAL_4_DIGITS_FORMATTER.format( a.getLimitPriceAsset() ) );
+		this.maxAssetPriceLabel.setText( Utils.DECIMAL_4_DIGITS_FORMATTER.format( a.getMaxAssetPriceInCash() ) );
 		
-		this.minLoansPriceLabel.setText( InspectionPanel.TRADING_VALUES_FORMAT.format( a.getMinLoanPriceInCash() ) );
-		this.limitPriceLoansLabel.setText( InspectionPanel.TRADING_VALUES_FORMAT.format( a.getLimitPriceLoans() ) );
-		this.maxLoansPriceLabel.setText( InspectionPanel.TRADING_VALUES_FORMAT.format( a.getMaxLoanPriceInCash() ) );
+		this.minLoansPriceLabel.setText( Utils.DECIMAL_4_DIGITS_FORMATTER.format( a.getMinLoanPriceInCash() ) );
+		this.limitPriceLoansLabel.setText( Utils.DECIMAL_4_DIGITS_FORMATTER.format( a.getLimitPriceLoans() ) );
+		this.maxLoansPriceLabel.setText( Utils.DECIMAL_4_DIGITS_FORMATTER.format( a.getMaxLoanPriceInCash() ) );
 		
-		this.minAssetLoansPriceLabel.setText( InspectionPanel.TRADING_VALUES_FORMAT.format( a.getMinAssetPriceInLoans() ) );
-		this.limitPriceAssetLoansLabel.setText( InspectionPanel.TRADING_VALUES_FORMAT.format( a.getLimitPriceAssetLoans() ) );
-		this.maxAssetLoansPriceLabel.setText( InspectionPanel.TRADING_VALUES_FORMAT.format( a.getMaxAssetPriceInLoans() ) );
+		this.minAssetLoansPriceLabel.setText( Utils.DECIMAL_4_DIGITS_FORMATTER.format( a.getMinAssetPriceInLoans() ) );
+		this.limitPriceAssetLoansLabel.setText( Utils.DECIMAL_4_DIGITS_FORMATTER.format( a.getLimitPriceAssetLoans() ) );
+		this.maxAssetLoansPriceLabel.setText( Utils.DECIMAL_4_DIGITS_FORMATTER.format( a.getMaxAssetPriceInLoans() ) );
 		
-		this.minCollateralPriceLabel.setText( InspectionPanel.TRADING_VALUES_FORMAT.format( a.getMinCollateralPriceInCash() ) );
-		this.limitPriceCollateralLabel.setText( InspectionPanel.TRADING_VALUES_FORMAT.format( a.getLimitPriceCollateral() ) );
-		this.maxCollateralPriceLabel.setText( InspectionPanel.TRADING_VALUES_FORMAT.format( a.getMaxCollateralPriceInCash() ) );
+		this.minCollateralPriceLabel.setText( Utils.DECIMAL_4_DIGITS_FORMATTER.format( a.getMinCollateralPriceInCash() ) );
+		this.limitPriceCollateralLabel.setText( Utils.DECIMAL_4_DIGITS_FORMATTER.format( a.getLimitPriceCollateral() ) );
+		this.maxCollateralPriceLabel.setText( Utils.DECIMAL_4_DIGITS_FORMATTER.format( a.getMaxCollateralPriceInCash() ) );
 	}
 	
 	private void createControls() {

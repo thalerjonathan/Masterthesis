@@ -6,6 +6,7 @@ import java.awt.GridBagLayout;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import frontend.Utils;
 import backend.Auction.EquilibriumStatistics;
 
 @SuppressWarnings("serial")
@@ -140,38 +141,38 @@ public class EquilibriumInfoPanel extends JPanel {
 	}
 	
 	public void setAssetPrice( double v ) {
-		this.assetPriceMeanLabel.setText( "" + ReplicationPanel.VALUES_FORMAT.format( v ) );
+		this.assetPriceMeanLabel.setText( "" + Utils.DECIMAL_2_DIGITS_FORMATTER.format( v ) );
 	}
 	
 	public void setLoanPrice( double v ) {
-		this.loanPriceMeanLabel.setText( "" + ReplicationPanel.VALUES_FORMAT.format( v ) );
+		this.loanPriceMeanLabel.setText( "" + Utils.DECIMAL_2_DIGITS_FORMATTER.format( v ) );
 	}
 	
 	public void setAssetLoanPrice( double v ) {
-		this.assetLoanPriceMeanLabel.setText( "" + ReplicationPanel.VALUES_FORMAT.format( v ) );
+		this.assetLoanPriceMeanLabel.setText( "" + Utils.DECIMAL_2_DIGITS_FORMATTER.format( v ) );
 	}
 	
 	public void setI0( double v, int i0Index ) {
-		this.i0Label.setText( "" + ReplicationPanel.VALUES_FORMAT.format( v ) + " (" + i0Index + ")" );
+		this.i0Label.setText( "" + Utils.DECIMAL_2_DIGITS_FORMATTER.format( v ) + " (" + i0Index + ")" );
 	}
 	
 	public void setI1( double v, int i1Index ) {
-		this.i1Label.setText( "" + ReplicationPanel.VALUES_FORMAT.format( v ) + " (" + i1Index + ")" );
+		this.i1Label.setText( "" + Utils.DECIMAL_2_DIGITS_FORMATTER.format( v ) + " (" + i1Index + ")" );
 	}
 	
 	public void setI2( double v ) {
-		this.i2Label.setText( "" + ReplicationPanel.VALUES_FORMAT.format( v ) );
+		this.i2Label.setText( "" + Utils.DECIMAL_2_DIGITS_FORMATTER.format( v ) );
 	}
 	
 	public void setPessimist( double v ) {
-		this.pessimistLabel.setText( "" + ReplicationPanel.VALUES_FORMAT.format( v ) );
+		this.pessimistLabel.setText( "" + Utils.DECIMAL_2_DIGITS_FORMATTER.format( v ) );
 	}
 	
 	public void setMedium( double v ) {
-		this.mediumLabel.setText( "" + ReplicationPanel.VALUES_FORMAT.format( v )  );
+		this.mediumLabel.setText( "" + Utils.DECIMAL_2_DIGITS_FORMATTER.format( v )  );
 	}
 	
 	public void setOptimist( double v ) {
-		this.optimistLabel.setText( "" + ReplicationPanel.VALUES_FORMAT.format( v ) );
+		this.optimistLabel.setText( "" + Utils.DECIMAL_2_DIGITS_FORMATTER.format( v ) );
 	}
 }

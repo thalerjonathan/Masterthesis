@@ -6,8 +6,6 @@ import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
-import java.text.DecimalFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -43,8 +41,8 @@ import backend.replications.ReplicationsRunner.ReplicationsListener;
 import backend.replications.ReplicationsRunner.TerminationMode;
 import edu.uci.ics.jung.algorithms.layout.CircleLayout;
 import edu.uci.ics.jung.algorithms.layout.Layout;
+import frontend.Utils;
 import frontend.agentInfo.AgentInfoFrame;
-import frontend.experimenter.ExperimenterPanel;
 import frontend.experimenter.xml.experiment.ExperimentBean;
 import frontend.experimenter.xml.experiment.ExperimentListBean;
 import frontend.inspection.NetworkVisualisationFrame;
@@ -112,9 +110,6 @@ public class ReplicationPanel extends JPanel {
 	private String name;
 	
 	private Timer runningSinceUpdater;
-
-	public final static SimpleDateFormat DATE_FORMATTER = new SimpleDateFormat( "dd.MM HH:mm:ss" );
-	public static final DecimalFormat VALUES_FORMAT = new DecimalFormat("0.0000");
 	
 	public ReplicationPanel() {
 		this.markets = new Markets();
@@ -186,7 +181,7 @@ public class ReplicationPanel extends JPanel {
 		
 		this.fileChooser = new JFileChooser();
 		this.fileChooser.setFileFilter( new FileNameExtensionFilter( "XML-Files", "xml" ) );
-		this.fileChooser.setCurrentDirectory( ExperimenterPanel.EXPERIMENTS_DIRECTORY );
+		this.fileChooser.setCurrentDirectory( Utils.EXPERIMENTS_DIRECTORY );
 		
 		this.replicationTable = new ReplicationTable();
 		
@@ -611,7 +606,7 @@ public class ReplicationPanel extends JPanel {
 	private void updateRunningTimeLabel() {
 		long currSysMillis = System.currentTimeMillis();
 		long duration = currSysMillis - this.replications.getStartingTime().getTime();
-		this.runningTimeLabel.setText( "Running since " + DATE_FORMATTER.format( this.replications.getStartingTime() ) 
+		this.runningTimeLabel.setText( "Running since " + Utils.DATE_FORMATTER.format( this.replications.getStartingTime() ) 
 				+ ", " + ( duration / 1000 ) + " sec." );
 	}
 	
