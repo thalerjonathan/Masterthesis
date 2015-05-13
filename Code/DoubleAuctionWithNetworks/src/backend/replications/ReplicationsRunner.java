@@ -17,6 +17,8 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 
+import org.apache.commons.math3.stat.StatUtils;
+
 import backend.Auction;
 import backend.Auction.MatchingType;
 import backend.EquilibriumStatistics;
@@ -43,6 +45,7 @@ public class ReplicationsRunner {
 	private Thread awaitFinishThread;
 	
 	private ReplicationData currentStats;
+	private EquilibriumStatistics varianceStats;
 	
 	private List<ReplicationData> replicationData;
 
@@ -58,7 +61,7 @@ public class ReplicationsRunner {
 	private final static String REPLICATIONS_DIR_NAME = "replications/";
 	
 	public interface ReplicationsListener {
-		public void replicationFinished( ReplicationData data, ReplicationData averageData );
+		public void replicationFinished( ReplicationData data, ReplicationData meanData, EquilibriumStatistics variance );
 		public void allReplicationsFinished();
 	}
 	
@@ -75,6 +78,8 @@ public class ReplicationsRunner {
 		
 		this.template = template;
 		this.markets = markets;
+		
+		this.varianceStats = new EquilibriumStatistics();
 	}
 	
 	public boolean isRunning() {
@@ -186,7 +191,7 @@ public class ReplicationsRunner {
 		this.replicationData.add( data );
 		this.currentStats = this.calculateStatistics();
 		
-		this.listener.replicationFinished( data, this.currentStats );
+		this.listener.replicationFinished( data, this.currentStats, this.varianceStats );
 	}
 	
 	private ReplicationData calculateStatistics() {
@@ -202,7 +207,15 @@ public class ReplicationsRunner {
 		double[] loanGivenAverage = new double[ agentCount ];
 		double[] loanTakenAverage = new double[ agentCount ];
 		
-		// TODO: calculate the standard deviation
+		double[] meanStatsAssetPriceValues = new double[ this.replicationData.size() ];
+		double[] meanStatsLoanPriceValues = new double[ this.replicationData.size() ];
+		double[] meanStatsAssetLoanQValues = new double[ this.replicationData.size() ];
+		double[] meanStatsI0Values = new double[ this.replicationData.size() ];
+		double[] meanStatsI1Values = new double[ this.replicationData.size() ];
+		double[] meanStatsI2Values = new double[ this.replicationData.size() ];
+		double[] meanStatsPValues = new double[ this.replicationData.size() ];
+		double[] meanStatsMValues = new double[ this.replicationData.size() ];
+		double[] meanStatsOValues = new double[ this.replicationData.size() ];
 		
 		for ( ReplicationData data : this.replicationData ) {
 			if ( data.isCanceled() ) {
@@ -232,6 +245,18 @@ public class ReplicationsRunner {
 			meanStats.M += data.getStats().M;
 			meanStats.O += data.getStats().O;
 			
+			meanStatsAssetPriceValues[ validReplications ] = data.getStats().p;
+			meanStatsLoanPriceValues[ validReplications ] = data.getStats().q;
+			meanStatsAssetLoanQValues[ validReplications ] = data.getStats().pq;
+			
+			meanStatsI0Values[ validReplications ] = data.getStats().i0;
+			meanStatsI1Values[ validReplications ] = data.getStats().i1;
+			meanStatsI2Values[ validReplications ] = data.getStats().i2;
+			
+			meanStatsPValues[ validReplications ] = data.getStats().P;
+			meanStatsMValues[ validReplications ] = data.getStats().M;
+			meanStatsOValues[ validReplications ] = data.getStats().O;
+			
 			validReplications++;
 		}
 		
@@ -251,6 +276,18 @@ public class ReplicationsRunner {
 		meanStats.P /= validReplications;
 		meanStats.M /= validReplications;
 		meanStats.O /= validReplications;
+		
+		varianceStats.p = Math.sqrt( StatUtils.variance( meanStatsAssetPriceValues, meanStats.p, 0, validReplications ) );
+		varianceStats.q = Math.sqrt( StatUtils.variance( meanStatsLoanPriceValues, meanStats.q, 0, validReplications ) );
+		varianceStats.pq = Math.sqrt( StatUtils.variance( meanStatsAssetLoanQValues, meanStats.pq, 0, validReplications ) );
+		
+		varianceStats.i0 = Math.sqrt( StatUtils.variance( meanStatsI0Values, meanStats.i0, 0, validReplications ) );
+		varianceStats.i1 = Math.sqrt( StatUtils.variance( meanStatsI1Values, meanStats.i1, 0, validReplications ) );
+		varianceStats.i2 = Math.sqrt( StatUtils.variance( meanStatsI2Values, meanStats.i2, 0, validReplications ) );
+		
+		varianceStats.P = Math.sqrt( StatUtils.variance( meanStatsPValues, meanStats.P, 0, validReplications ) );
+		varianceStats.M = Math.sqrt( StatUtils.variance( meanStatsMValues, meanStats.M, 0, validReplications ) );
+		varianceStats.O = Math.sqrt( StatUtils.variance( meanStatsOValues, meanStats.O, 0, validReplications ) );
 		
 		for ( int i = 0; i < agentCount; ++i ) {
 			Agent templateAgent = this.template.get( i );

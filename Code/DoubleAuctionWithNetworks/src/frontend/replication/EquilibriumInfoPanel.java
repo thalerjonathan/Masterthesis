@@ -126,53 +126,111 @@ public class EquilibriumInfoPanel extends JPanel {
 		this.optimistLabel.setText("");
 	}
 	
-	public void setStats( EquilibriumStatistics stats ) {
-		this.setAssetPrice( stats.p );
-		this.setLoanPrice( stats.q );
-		this.setAssetLoanPrice( stats.pq );
+	public void setStats( EquilibriumStatistics mean ) {
+		this.setAssetPrice( mean.p );
+		this.setLoanPrice( mean.q );
+		this.setAssetLoanPrice( mean.pq );
 		
-		this.setI0( stats.i0, stats.i0Index );
-		this.setI1( stats.i1, stats.i1Index );
-		this.setI2( stats.i2 );
+		this.setI0( mean.i0, mean.i0Index );
+		this.setI1( mean.i1, mean.i1Index );
+		this.setI2( mean.i2 );
 		
-		this.setPessimist( stats.P );
-		this.setMedium( stats.M );
-		this.setOptimist( stats.O );
+		this.setPessimist( mean.P );
+		this.setMedium( mean.M );
+		this.setOptimist( mean.O );
+	}
+	
+	public void setMeanAndVariance( EquilibriumStatistics mean, EquilibriumStatistics variance ) {
+		this.setAssetPrice( mean.p, variance.p );
+		this.setLoanPrice( mean.q, variance.q );
+		this.setAssetLoanPrice( mean.pq, variance.pq );
+		
+		this.setI0( mean.i0, variance.i0, mean.i0Index );
+		this.setI1( mean.i1, variance.i1, mean.i1Index );
+		this.setI2( mean.i2, variance.i2 );
+		
+		this.setPessimist( mean.P, variance.P );
+		this.setMedium( mean.M, variance.M );
+		this.setOptimist( mean.O, variance.O );
 	}
 	
 	public void setAssetPrice( double v ) {
-		this.assetPriceMeanLabel.setText( "" + Utils.DECIMAL_2_DIGITS_FORMATTER.format( v ) );
+		this.assetPriceMeanLabel.setText( Utils.DECIMAL_3_DIGITS_FORMATTER.format( v ) );
 	}
+	
+	public void setAssetPrice( double mean, double variance ) {
+		this.assetPriceMeanLabel.setText( Utils.DECIMAL_3_DIGITS_FORMATTER.format( mean ) + " (" + Utils.DECIMAL_3_DIGITS_FORMATTER.format( variance ) + ")" );
+	}
+	
 	
 	public void setLoanPrice( double v ) {
-		this.loanPriceMeanLabel.setText( "" + Utils.DECIMAL_2_DIGITS_FORMATTER.format( v ) );
+		this.loanPriceMeanLabel.setText( Utils.DECIMAL_3_DIGITS_FORMATTER.format( v ) );
 	}
+	
+	public void setLoanPrice( double mean, double variance ) {
+		this.loanPriceMeanLabel.setText( Utils.DECIMAL_3_DIGITS_FORMATTER.format( mean ) + " (" + Utils.DECIMAL_3_DIGITS_FORMATTER.format( variance ) + ")" );
+	}
+	
 	
 	public void setAssetLoanPrice( double v ) {
-		this.assetLoanPriceMeanLabel.setText( "" + Utils.DECIMAL_2_DIGITS_FORMATTER.format( v ) );
+		this.assetLoanPriceMeanLabel.setText( Utils.DECIMAL_3_DIGITS_FORMATTER.format( v ) );
 	}
+	
+	public void setAssetLoanPrice( double mean, double variance ) {
+		this.assetLoanPriceMeanLabel.setText( Utils.DECIMAL_3_DIGITS_FORMATTER.format( mean ) + " (" + Utils.DECIMAL_3_DIGITS_FORMATTER.format( variance ) + ")" );
+	}
+	
 	
 	public void setI0( double v, int i0Index ) {
-		this.i0Label.setText( "" + Utils.DECIMAL_2_DIGITS_FORMATTER.format( v ) + " (" + i0Index + ")" );
+		this.i0Label.setText( Utils.DECIMAL_3_DIGITS_FORMATTER.format( v ) + " (" + i0Index + ")" );
 	}
+	
+	public void setI0( double mean, double variance, int i0Index ) {
+		this.i0Label.setText( Utils.DECIMAL_3_DIGITS_FORMATTER.format( mean ) + " (" + i0Index + ") " + Utils.DECIMAL_3_DIGITS_FORMATTER.format( variance )  );
+	}
+	
 	
 	public void setI1( double v, int i1Index ) {
-		this.i1Label.setText( "" + Utils.DECIMAL_2_DIGITS_FORMATTER.format( v ) + " (" + i1Index + ")" );
+		this.i1Label.setText( Utils.DECIMAL_3_DIGITS_FORMATTER.format( v ) + " (" + i1Index + ")" );
 	}
+	
+	public void setI1( double mean, double variance, int i0Index ) {
+		this.i1Label.setText( Utils.DECIMAL_3_DIGITS_FORMATTER.format( mean ) + " (" + i0Index + ") " + Utils.DECIMAL_3_DIGITS_FORMATTER.format( variance )  );
+	}
+	
 	
 	public void setI2( double v ) {
-		this.i2Label.setText( "" + Utils.DECIMAL_2_DIGITS_FORMATTER.format( v ) );
+		this.i2Label.setText( Utils.DECIMAL_3_DIGITS_FORMATTER.format( v ) );
 	}
+	
+	public void setI2( double mean, double variance ) {
+		this.i2Label.setText( Utils.DECIMAL_3_DIGITS_FORMATTER.format( mean ) + " (" + Utils.DECIMAL_3_DIGITS_FORMATTER.format( variance ) + ")" );
+	}
+	
 	
 	public void setPessimist( double v ) {
-		this.pessimistLabel.setText( "" + Utils.DECIMAL_2_DIGITS_FORMATTER.format( v ) );
+		this.pessimistLabel.setText( Utils.DECIMAL_3_DIGITS_FORMATTER.format( v ) );
 	}
+	
+	public void setPessimist( double mean, double variance ) {
+		this.pessimistLabel.setText( Utils.DECIMAL_3_DIGITS_FORMATTER.format( mean ) + " (" + Utils.DECIMAL_3_DIGITS_FORMATTER.format( variance ) + ")" );
+	}
+	
 	
 	public void setMedium( double v ) {
-		this.mediumLabel.setText( "" + Utils.DECIMAL_2_DIGITS_FORMATTER.format( v )  );
+		this.mediumLabel.setText( Utils.DECIMAL_3_DIGITS_FORMATTER.format( v )  );
 	}
 	
+	public void setMedium( double mean, double variance ) {
+		this.mediumLabel.setText( Utils.DECIMAL_3_DIGITS_FORMATTER.format( mean ) + " (" + Utils.DECIMAL_3_DIGITS_FORMATTER.format( variance ) + ")" );
+	}
+	
+	
 	public void setOptimist( double v ) {
-		this.optimistLabel.setText( "" + Utils.DECIMAL_2_DIGITS_FORMATTER.format( v ) );
+		this.optimistLabel.setText( Utils.DECIMAL_3_DIGITS_FORMATTER.format( v ) );
+	}
+	
+	public void setOptimist( double mean, double variance ) {
+		this.optimistLabel.setText( Utils.DECIMAL_3_DIGITS_FORMATTER.format( mean ) + " (" + Utils.DECIMAL_3_DIGITS_FORMATTER.format( variance ) + ")" );
 	}
 }

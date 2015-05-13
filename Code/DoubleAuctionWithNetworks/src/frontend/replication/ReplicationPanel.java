@@ -30,6 +30,7 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 
+import backend.EquilibriumStatistics;
 import backend.agents.Agent;
 import backend.agents.AgentFactoryImpl;
 import backend.agents.network.AgentConnection;
@@ -487,7 +488,7 @@ public class ReplicationPanel extends JPanel {
 			
 			this.replications.start( bean, new ReplicationsListener() {
 				@Override
-				public void replicationFinished(ReplicationData data, ReplicationData currentStats ) {
+				public void replicationFinished(ReplicationData data, ReplicationData currentStats, EquilibriumStatistics variance ) {
 					SwingUtilities.invokeLater( new Runnable() {
 						@Override
 						public void run() {
@@ -495,7 +496,7 @@ public class ReplicationPanel extends JPanel {
 							ReplicationPanel.this.replicationsLeftLabel.setText( "Replications Left: " + ReplicationPanel.this.replications.getReplicationsLeft() );
 							
 							if ( null != currentStats ) {
-								ReplicationPanel.this.equilibriumInfoPanel.setStats( currentStats.getStats() );
+								ReplicationPanel.this.equilibriumInfoPanel.setMeanAndVariance( currentStats.getStats(), variance );
 								ReplicationPanel.this.agentWealthPanel.setAgents( currentStats.getFinalAgents() );
 								ReplicationPanel.this.updateAgentInfoFrame( currentStats.getFinalAgents() );
 							}
