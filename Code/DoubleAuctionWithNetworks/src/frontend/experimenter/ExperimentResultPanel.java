@@ -44,7 +44,9 @@ public class ExperimentResultPanel extends JPanel {
 	
 	private void createControls( ResultBean bean ) {
 		List<Agent> agents = new ArrayList<Agent>();
-		EquilibriumStatistics stats = new EquilibriumStatistics( bean.getEquilibrium() );
+		EquilibriumStatistics equilibriumMean = new EquilibriumStatistics( bean.getEquilibriumMean() );
+		EquilibriumStatistics equilibriumVariance = new EquilibriumStatistics( bean.getEquilibriumVariance() );
+		
 		Markets markets = new Markets();
 		markets.setABM( bean.getExperiment().isAssetLoanMarket() );
 		markets.setBP( bean.getExperiment().isBondsPledgeability() );
@@ -54,12 +56,16 @@ public class ExperimentResultPanel extends JPanel {
 		for ( int i = 0; i < bean.getAgents().size(); ++i ) {
 			AgentBean agentBean = bean.getAgents().get( i );
 			
-			if ( agentBean.getH() < stats.i0 ) {
-				stats.i0Index = i;
+			if ( agentBean.getH() < equilibriumMean.i0 ) {
+				equilibriumMean.i0Index = i;
 			}
 			
-			if ( agentBean.getH() < stats.i1 ) {
-				stats.i1Index = i;
+			if ( agentBean.getH() < equilibriumMean.i1 ) {
+				equilibriumMean.i1Index = i;
+			}
+			
+			if ( agentBean.getH() < equilibriumMean.i2 ) {
+				equilibriumMean.i2Index = i;
 			}
 			
 			agents.add( new Agent( agentBean, markets ) );
@@ -70,7 +76,7 @@ public class ExperimentResultPanel extends JPanel {
 		WealthVisualizer wealthvisualizer = new WealthVisualizer();
 
 		wealthvisualizer.setAgents( agents );
-		equilibriumInfoPanel.setStats( stats );
+		equilibriumInfoPanel.setMeanAndVariance( equilibriumMean, equilibriumVariance );
 
 		JButton showReplicationInfoButton = new JButton( "Replication-Info" );
 		showReplicationInfoButton.addActionListener( new ActionListener() {

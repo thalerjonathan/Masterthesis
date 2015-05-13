@@ -12,7 +12,8 @@ import frontend.experimenter.xml.experiment.ExperimentBean;
 public class ResultBean {
 
 	private ExperimentBean experiment;
-	private EquilibriumBean equilibrium;
+	private EquilibriumBean equilibriumMean;
+	private EquilibriumBean equilibriumVariance;
 	private List<AgentBean> agents;
 	private List<ReplicationBean> replications;
 	
@@ -42,15 +43,22 @@ public class ResultBean {
 		this.experiment = experiment;
 	}
 	
-	public EquilibriumBean getEquilibrium() {
-		return equilibrium;
+	public EquilibriumBean getEquilibriumMean() {
+		return equilibriumMean;
 	}
-	
-	@XmlElement( name = "equilibrium" )
-	public void setEquilibrium(EquilibriumBean equilibrium) {
-		this.equilibrium = equilibrium;
+
+	public void setEquilibriumMean(EquilibriumBean equilibriumMean) {
+		this.equilibriumMean = equilibriumMean;
 	}
-	
+
+	public EquilibriumBean getEquilibriumVariance() {
+		return equilibriumVariance;
+	}
+
+	public void setEquilibriumVariance(EquilibriumBean equilibriumVariance) {
+		this.equilibriumVariance = equilibriumVariance;
+	}
+
 	public List<AgentBean> getAgents() {
 		return agents;
 	}

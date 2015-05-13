@@ -12,27 +12,31 @@ public class EquilibriumBean {
 	private double assetPrice;
 	private double loanPrice;
 	private double assetLoanPrice;
+	private double collateralPrice;
+	
 	private double i0;
 	private double i1;
 	private double i2;
-	private double P;
-	private double M;
-	private double O;
+	
+	private double pessimistWealth;
+	private double medianistWealth;
+	private double optimistWealth;
 	
 	public EquilibriumBean() {
 	}
 	
 	
 	public EquilibriumBean( EquilibriumStatistics stats ) {
-		this.setAssetPrice( stats.p );
-		this.setLoanPrice( stats.q );
-		this.setAssetLoanPrice( stats.pq );
+		this.setAssetPrice( stats.assetPrice );
+		this.setLoanPrice( stats.loanPrice );
+		this.setAssetLoanPrice( stats.assetLoanPrice );
 		this.setI0( stats.i0 );
 		this.setI1( stats.i1 );
 		this.setI2( stats.i2 );
-		this.setP( stats.P );
-		this.setM( stats.M );
-		this.setO( stats.O );
+		this.setPessimistWealth( stats.pessimistWealth );
+		this.setMedianistWealth( stats.medianistWealth );
+		this.setOptimistWealth( stats.optimistWealth );
+		this.setCollateralPrice( stats.collateralPrice );
 	}
 	
 	public double getAssetPrice() {
@@ -89,30 +93,35 @@ public class EquilibriumBean {
 		this.i2 = i2;
 	}
 	
-	public double getP() {
-		return P;
+	public double getPessimistWealth() {
+		return pessimistWealth;
+	}
+
+	public void setPessimistWealth(double pessimistWealth) {
+		this.pessimistWealth = pessimistWealth;
+	}
+
+	public double getMedianistWealth() {
+		return medianistWealth;
+	}
+
+	public void setMedianistWealth(double medianistWealth) {
+		this.medianistWealth = medianistWealth;
+	}
+
+	public double getOptimistWealth() {
+		return optimistWealth;
+	}
+
+	public void setOptimistWealth(double optimistWealth) {
+		this.optimistWealth = optimistWealth;
+	}
+
+	public double getCollateralPrice() {
+		return collateralPrice;
 	}
 	
-	@XmlElement
-	public void setP(double p) {
-		P = p;
-	}
-	
-	public double getM() {
-		return M;
-	}
-	
-	@XmlElement
-	public void setM(double m) {
-		M = m;
-	}
-	
-	public double getO() {
-		return O;
-	}
-	
-	@XmlElement
-	public void setO(double o) {
-		O = o;
+	public void setCollateralPrice(double collateralPrice) {
+		this.collateralPrice = collateralPrice;
 	}
 }

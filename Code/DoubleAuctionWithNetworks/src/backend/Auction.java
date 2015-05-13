@@ -23,6 +23,7 @@ public class Auction {
 	private double[] lastAssetPrices;
 	private double[] lastLoanPrices;
 	private double[] lastAssetLoanPrices;
+	private double[] lastCollateralPrices;
 	private double[] lastAgents;
 
 	private final static int LAST_PRICES = 5;
@@ -43,6 +44,7 @@ public class Auction {
 		this.lastAssetPrices = new double[ Auction.LAST_PRICES ];
 		this.lastLoanPrices = new double[ Auction.LAST_PRICES ];
 		this.lastAssetLoanPrices = new double[ Auction.LAST_PRICES ];
+		this.lastCollateralPrices = new double[ Auction.LAST_PRICES ];
 		this.lastAgents = new double[ Auction.LAST_PRICES ];
 	}
 	
@@ -50,9 +52,10 @@ public class Auction {
 		int nM = 0;
 
 		EquilibriumStatistics stats = new EquilibriumStatistics();
-		stats.p = StatUtils.mean( this.lastAssetPrices );
-		stats.q = StatUtils.mean( this.lastLoanPrices );
-		stats.pq = StatUtils.mean( this.lastAssetLoanPrices );
+		stats.assetPrice = StatUtils.mean( this.lastAssetPrices );
+		stats.loanPrice = StatUtils.mean( this.lastLoanPrices );
+		stats.assetLoanPrice = StatUtils.mean( this.lastAssetLoanPrices );
+		stats.collateralPrice = StatUtils.mean( this.lastCollateralPrices );
 		stats.i2 = StatUtils.mean( this.lastAgents ); // assumes that the last agents which are trading are those around i2
 		
 		List<Agent> agents = this.agentNetwork.getOrderedList();
@@ -66,7 +69,7 @@ public class Auction {
 					stats.i1Index = i;
 				}
 				
-				stats.O += a.getAssets();
+				stats.optimistWealth += a.getAssets();
 				
 			// left of i1 are pessimists and medium
 			} else {
@@ -74,13 +77,17 @@ public class Auction {
 				if ( a.getCash() > ( Math.abs( a.getLoans() ) + Math.abs( a.getAssets() ) ) ) {
 					stats.i0Index = i;
 					
-					stats.P += a.getCash();
+					stats.pessimistWealth += a.getCash();
 				
 				// right of i0 are medium
 				} else {
-					stats.M += a.getLoans();
+					stats.medianistWealth += a.getLoans();
 					nM++;
 				}
+			}
+			
+			if ( a.getH() > stats.i2 ) {
+				stats.i2Index = i;
 			}
 		}
 		
@@ -89,7 +96,7 @@ public class Auction {
 		if( -1 != stats.i0Index ) {
 			stats.i0 = agents.get( stats.i0Index ).getH();
 			// calculate mean of pessimists wealth
-			stats.P /= ( stats.i0Index + 1 );
+			stats.pessimistWealth /= ( stats.i0Index + 1 );
 		}
   
 		// found marginal buyer i1
@@ -98,12 +105,12 @@ public class Auction {
 		if( -1 != stats.i1Index ) {
 			stats.i1 = agents.get( stats.i1Index ).getH();
 			// calculate mean of optimists wealth
-			stats.O /= ( agents.size() - stats.i1Index );
+			stats.optimistWealth /= ( agents.size() - stats.i1Index );
 		}
   
 		// found medium
 		if( 0 != nM ) {
-			stats.M /= nM;
+			stats.medianistWealth /= nM;
 		}
 		
 		return stats;
@@ -138,9 +145,6 @@ public class Auction {
 		}
 		
 		if ( false == this.isTradingPossible() ) {
-			//agentNetwork.addFullConnection();
-			//agentNetwork.addFullShortCuts();
-			
 			transaction.setTradingHalted( true );
 		}
 		
@@ -225,6 +229,9 @@ public class Auction {
 			
 		} else if ( MarketType.ASSET_LOAN == match.getMarket() ) {
 			this.lastAssetLoanPrices[ this.numTrans % Auction.LAST_PRICES ] = match.getPrice();
+			
+		} else if ( MarketType.COLLATERAL_CASH == match.getMarket() ) {
+			this.lastCollateralPrices[ this.numTrans % Auction.LAST_PRICES ] = match.getPrice();
 			
 		}
 		

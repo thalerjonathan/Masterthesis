@@ -209,13 +209,14 @@ public class ReplicationsRunner {
 		
 		double[] meanStatsAssetPriceValues = new double[ this.replicationData.size() ];
 		double[] meanStatsLoanPriceValues = new double[ this.replicationData.size() ];
-		double[] meanStatsAssetLoanQValues = new double[ this.replicationData.size() ];
+		double[] meanStatsAssetLoanValues = new double[ this.replicationData.size() ];
+		double[] meanStatsCollateralValues = new double[ this.replicationData.size() ];
 		double[] meanStatsI0Values = new double[ this.replicationData.size() ];
 		double[] meanStatsI1Values = new double[ this.replicationData.size() ];
 		double[] meanStatsI2Values = new double[ this.replicationData.size() ];
-		double[] meanStatsPValues = new double[ this.replicationData.size() ];
-		double[] meanStatsMValues = new double[ this.replicationData.size() ];
-		double[] meanStatsOValues = new double[ this.replicationData.size() ];
+		double[] meanStatsPessimistValues = new double[ this.replicationData.size() ];
+		double[] meanStatsMedianistValues = new double[ this.replicationData.size() ];
+		double[] meanStatsOptimistValues = new double[ this.replicationData.size() ];
 		
 		for ( ReplicationData data : this.replicationData ) {
 			if ( data.isCanceled() ) {
@@ -233,29 +234,31 @@ public class ReplicationsRunner {
 				loanTakenAverage[ i ] += a.getLoansTaken();
 			}
 			
-			meanStats.p += data.getStats().p;
-			meanStats.q += data.getStats().q;
-			meanStats.pq += data.getStats().pq;
+			meanStats.assetPrice += data.getStats().assetPrice;
+			meanStats.loanPrice += data.getStats().loanPrice;
+			meanStats.assetLoanPrice += data.getStats().assetLoanPrice;
+			meanStats.collateralPrice += data.getStats().collateralPrice;
 			
 			meanStats.i0 += data.getStats().i0;
 			meanStats.i1 += data.getStats().i1;
 			meanStats.i2 += data.getStats().i2;
 			
-			meanStats.P += data.getStats().P;
-			meanStats.M += data.getStats().M;
-			meanStats.O += data.getStats().O;
+			meanStats.pessimistWealth += data.getStats().pessimistWealth;
+			meanStats.medianistWealth += data.getStats().medianistWealth;
+			meanStats.optimistWealth += data.getStats().optimistWealth;
 			
-			meanStatsAssetPriceValues[ validReplications ] = data.getStats().p;
-			meanStatsLoanPriceValues[ validReplications ] = data.getStats().q;
-			meanStatsAssetLoanQValues[ validReplications ] = data.getStats().pq;
+			meanStatsAssetPriceValues[ validReplications ] = data.getStats().assetPrice;
+			meanStatsLoanPriceValues[ validReplications ] = data.getStats().loanPrice;
+			meanStatsAssetLoanValues[ validReplications ] = data.getStats().assetLoanPrice;
+			meanStatsCollateralValues[ validReplications ] = data.getStats().collateralPrice;
 			
 			meanStatsI0Values[ validReplications ] = data.getStats().i0;
 			meanStatsI1Values[ validReplications ] = data.getStats().i1;
 			meanStatsI2Values[ validReplications ] = data.getStats().i2;
 			
-			meanStatsPValues[ validReplications ] = data.getStats().P;
-			meanStatsMValues[ validReplications ] = data.getStats().M;
-			meanStatsOValues[ validReplications ] = data.getStats().O;
+			meanStatsPessimistValues[ validReplications ] = data.getStats().pessimistWealth;
+			meanStatsMedianistValues[ validReplications ] = data.getStats().medianistWealth;
+			meanStatsOptimistValues[ validReplications ] = data.getStats().optimistWealth;
 			
 			validReplications++;
 		}
@@ -265,29 +268,31 @@ public class ReplicationsRunner {
 			return null;
 		}
 		
-		meanStats.p /= validReplications;
-		meanStats.q /= validReplications;
-		meanStats.pq /= validReplications;
+		meanStats.assetPrice /= validReplications;
+		meanStats.loanPrice /= validReplications;
+		meanStats.assetLoanPrice /= validReplications;
+		meanStats.collateralPrice /= validReplications;
 		
 		meanStats.i0 /= validReplications;
 		meanStats.i1 /= validReplications;
 		meanStats.i2 /= validReplications;
 		
-		meanStats.P /= validReplications;
-		meanStats.M /= validReplications;
-		meanStats.O /= validReplications;
+		meanStats.pessimistWealth /= validReplications;
+		meanStats.medianistWealth /= validReplications;
+		meanStats.optimistWealth /= validReplications;
 		
-		varianceStats.p = Math.sqrt( StatUtils.variance( meanStatsAssetPriceValues, meanStats.p, 0, validReplications ) );
-		varianceStats.q = Math.sqrt( StatUtils.variance( meanStatsLoanPriceValues, meanStats.q, 0, validReplications ) );
-		varianceStats.pq = Math.sqrt( StatUtils.variance( meanStatsAssetLoanQValues, meanStats.pq, 0, validReplications ) );
+		this.varianceStats.assetPrice = Math.sqrt( StatUtils.variance( meanStatsAssetPriceValues, meanStats.assetPrice, 0, validReplications ) );
+		this.varianceStats.loanPrice = Math.sqrt( StatUtils.variance( meanStatsLoanPriceValues, meanStats.loanPrice, 0, validReplications ) );
+		this.varianceStats.assetLoanPrice = Math.sqrt( StatUtils.variance( meanStatsAssetLoanValues, meanStats.assetLoanPrice, 0, validReplications ) );
+		this.varianceStats.collateralPrice = Math.sqrt( StatUtils.variance( meanStatsCollateralValues, meanStats.collateralPrice, 0, validReplications ) );
 		
-		varianceStats.i0 = Math.sqrt( StatUtils.variance( meanStatsI0Values, meanStats.i0, 0, validReplications ) );
-		varianceStats.i1 = Math.sqrt( StatUtils.variance( meanStatsI1Values, meanStats.i1, 0, validReplications ) );
-		varianceStats.i2 = Math.sqrt( StatUtils.variance( meanStatsI2Values, meanStats.i2, 0, validReplications ) );
+		this.varianceStats.i0 = Math.sqrt( StatUtils.variance( meanStatsI0Values, meanStats.i0, 0, validReplications ) );
+		this.varianceStats.i1 = Math.sqrt( StatUtils.variance( meanStatsI1Values, meanStats.i1, 0, validReplications ) );
+		this.varianceStats.i2 = Math.sqrt( StatUtils.variance( meanStatsI2Values, meanStats.i2, 0, validReplications ) );
 		
-		varianceStats.P = Math.sqrt( StatUtils.variance( meanStatsPValues, meanStats.P, 0, validReplications ) );
-		varianceStats.M = Math.sqrt( StatUtils.variance( meanStatsMValues, meanStats.M, 0, validReplications ) );
-		varianceStats.O = Math.sqrt( StatUtils.variance( meanStatsOValues, meanStats.O, 0, validReplications ) );
+		this.varianceStats.pessimistWealth = Math.sqrt( StatUtils.variance( meanStatsPessimistValues, meanStats.pessimistWealth, 0, validReplications ) );
+		this.varianceStats.medianistWealth = Math.sqrt( StatUtils.variance( meanStatsMedianistValues, meanStats.medianistWealth, 0, validReplications ) );
+		this.varianceStats.optimistWealth = Math.sqrt( StatUtils.variance( meanStatsOptimistValues, meanStats.optimistWealth, 0, validReplications ) );
 		
 		for ( int i = 0; i < agentCount; ++i ) {
 			Agent templateAgent = this.template.get( i );
@@ -300,6 +305,10 @@ public class ReplicationsRunner {
 				meanStats.i1Index = i;
 			}
 
+			if ( templateAgent.getH() < meanStats.i2 ) {
+				meanStats.i2Index = i;
+			}
+			
 			AgentBean medianBean = new AgentBean();
 			medianBean.setH( templateAgent.getH() );
 			medianBean.setAssets( assertAverage[ i ] / validReplications );
@@ -330,7 +339,8 @@ public class ReplicationsRunner {
 		}
 		
 		ResultBean resultBean = new ResultBean();
-		EquilibriumBean equilibriumBean = new EquilibriumBean( this.currentStats.getStats() );
+		EquilibriumBean equilibriumMedianBean = new EquilibriumBean( this.currentStats.getStats() );
+		EquilibriumBean equilibriumVarianceBean = new EquilibriumBean( this.varianceStats );
 		
 		List<AgentBean> resultAgents = new ArrayList<AgentBean>();
 		Iterator<Agent> agentIter = this.currentStats.getFinalAgents().iterator();
@@ -361,7 +371,8 @@ public class ReplicationsRunner {
 		meanDuration /= ( validReplications * 1000 );
 		
 		resultBean.setAgents( resultAgents );
-		resultBean.setEquilibrium( equilibriumBean );
+		resultBean.setEquilibriumMean( equilibriumMedianBean );
+		resultBean.setEquilibriumVariance( equilibriumVarianceBean );
 		resultBean.setExperiment( this.experiment );
 		resultBean.setReplications( replications );
 		resultBean.setDuration( (int) (( endingTime.getTime() - this.startingTime.getTime() ) / 1000) );

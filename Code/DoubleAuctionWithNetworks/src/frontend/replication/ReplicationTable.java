@@ -15,8 +15,8 @@ public class ReplicationTable extends JTable {
 	public ReplicationTable() {
 		this.tableModel = new DefaultTableModel(
 				new Object[] { "Replication", "Task", 
-						"Total TXs", "Failed TXs", "p", "q", "pq", "i0", "i1", "i2", "P", "M", "O",
-						"Canceled", "Trading Halted", "Duration" }, 0 ) {
+						"TXs", "Failed TXs", "Asset", "Loan", "Asset/Loan", "Collateral", "i0", "i1", "i2", "Pessimist", "Medianist", "Optimist",
+						"Canceled", "Halted", "Duration" }, 0 ) {
 
 		    @Override
 		    public boolean isCellEditable(int row, int column) {
@@ -44,7 +44,7 @@ public class ReplicationTable extends JTable {
 	
 	public void addReplication( ReplicationData data ) {
 		// "Replication", "Task", 
-		// "Total TXs", "Failed TXs", "p", "q", "pq", "i0", "i1", "i2", "P", "M", "O",
+		// "Total TXs", "Failed TXs", "Asset", "Loan", "Asset/Loan", "Collateral", "i0", "i1", "i2", "Pessimist", "Medianist", "Optimist",
 		// "Canceled", "Trading Halted", "Duration"
 		EquilibriumStatistics stats = data.getStats();
 		
@@ -53,15 +53,16 @@ public class ReplicationTable extends JTable {
 		this.tableModel.addRow( new Object[] { data.getNumber(), data.getTaskId(), 
 				data.getTotalTxCount(),
 				data.getFailedTxCount(),
-				Utils.DECIMAL_2_DIGITS_FORMATTER.format( stats.p ), 
-				Utils.DECIMAL_2_DIGITS_FORMATTER.format( stats.q ), 
-				Utils.DECIMAL_2_DIGITS_FORMATTER.format( stats.pq ),
-				Utils.DECIMAL_2_DIGITS_FORMATTER.format( stats.i0 ),
-				Utils.DECIMAL_2_DIGITS_FORMATTER.format( stats.i1 ),
-				Utils.DECIMAL_2_DIGITS_FORMATTER.format( stats.i2 ),
-				Utils.DECIMAL_2_DIGITS_FORMATTER.format( stats.P ),
-				Utils.DECIMAL_2_DIGITS_FORMATTER.format( stats.M ),
-				Utils.DECIMAL_2_DIGITS_FORMATTER.format( stats.O ),
+				Utils.DECIMAL_3_DIGITS_FORMATTER.format( stats.assetPrice ), 
+				Utils.DECIMAL_3_DIGITS_FORMATTER.format( stats.loanPrice ), 
+				Utils.DECIMAL_3_DIGITS_FORMATTER.format( stats.assetLoanPrice ),
+				Utils.DECIMAL_3_DIGITS_FORMATTER.format( stats.collateralPrice ),
+				Utils.DECIMAL_3_DIGITS_FORMATTER.format( stats.i0 ),
+				Utils.DECIMAL_3_DIGITS_FORMATTER.format( stats.i1 ),
+				Utils.DECIMAL_3_DIGITS_FORMATTER.format( stats.i2 ),
+				Utils.DECIMAL_3_DIGITS_FORMATTER.format( stats.pessimistWealth ),
+				Utils.DECIMAL_3_DIGITS_FORMATTER.format( stats.medianistWealth ),
+				Utils.DECIMAL_3_DIGITS_FORMATTER.format( stats.optimistWealth ),
 				data.isCanceled(),  data.isTradingHalted(), durationSec } );
 	}
 }
