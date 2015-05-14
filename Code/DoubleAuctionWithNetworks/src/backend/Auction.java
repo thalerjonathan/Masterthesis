@@ -24,9 +24,11 @@ public class Auction {
 	private double[] lastLoanPrices;
 	private double[] lastAssetLoanPrices;
 	private double[] lastCollateralPrices;
+	private double[] lastSweepCounts;
 	private double[] lastAgents;
 
-	private final static int LAST_PRICES = 5;
+	private final static int MOVING_AVERAGE_SIZE = 5;
+	private final static int MOVING_AVERAGE_LARGE_SIZE = 10;
 	
 	private final static int MAX_SWEEPS = 500;
 
@@ -41,11 +43,22 @@ public class Auction {
 		
 		this.numTrans = 1;
 		
-		this.lastAssetPrices = new double[ Auction.LAST_PRICES ];
-		this.lastLoanPrices = new double[ Auction.LAST_PRICES ];
-		this.lastAssetLoanPrices = new double[ Auction.LAST_PRICES ];
-		this.lastCollateralPrices = new double[ Auction.LAST_PRICES ];
-		this.lastAgents = new double[ Auction.LAST_PRICES ];
+		this.lastAssetPrices = new double[ Auction.MOVING_AVERAGE_SIZE ];
+		this.lastLoanPrices = new double[ Auction.MOVING_AVERAGE_SIZE ];
+		this.lastAssetLoanPrices = new double[ Auction.MOVING_AVERAGE_SIZE ];
+		this.lastCollateralPrices = new double[ Auction.MOVING_AVERAGE_SIZE ];
+		
+		this.lastSweepCounts = new double[ Auction.MOVING_AVERAGE_LARGE_SIZE ];
+		
+		this.lastAgents = new double[ Auction.MOVING_AVERAGE_SIZE ];
+	}
+	
+	public double getSweepCountMean() {
+		return StatUtils.mean( this.lastSweepCounts );
+	}
+	
+	public double getSweepCountStd() {
+		return Math.sqrt( StatUtils.variance( this.lastSweepCounts ) );
 	}
 	
 	public EquilibriumStatistics calculateEquilibriumStats() {
@@ -221,22 +234,24 @@ public class Auction {
 
 		tx.setFinalAgents( finalAgents );
 		
+		this.lastSweepCounts[ this.numTrans % Auction.MOVING_AVERAGE_LARGE_SIZE ] = tx.getSweepCount();
+		
 		if ( MarketType.ASSET_CASH == match.getMarket() ) {
-			this.lastAssetPrices[ this.numTrans % Auction.LAST_PRICES ] = match.getPrice();
+			this.lastAssetPrices[ this.numTrans % Auction.MOVING_AVERAGE_SIZE ] = match.getPrice();
 			
 		} else if ( MarketType.LOAN_CASH == match.getMarket() ) {
-			this.lastLoanPrices[ this.numTrans % Auction.LAST_PRICES ] = match.getPrice();
+			this.lastLoanPrices[ this.numTrans % Auction.MOVING_AVERAGE_SIZE ] = match.getPrice();
 			
 		} else if ( MarketType.ASSET_LOAN == match.getMarket() ) {
-			this.lastAssetLoanPrices[ this.numTrans % Auction.LAST_PRICES ] = match.getPrice();
+			this.lastAssetLoanPrices[ this.numTrans % Auction.MOVING_AVERAGE_SIZE ] = match.getPrice();
 			
 		} else if ( MarketType.COLLATERAL_CASH == match.getMarket() ) {
-			this.lastCollateralPrices[ this.numTrans % Auction.LAST_PRICES ] = match.getPrice();
+			this.lastCollateralPrices[ this.numTrans % Auction.MOVING_AVERAGE_SIZE ] = match.getPrice();
 			
 		}
 		
 		// assumes that the last agents which are trading are those around i2
-		this.lastAgents[ this.numTrans % Auction.LAST_PRICES ] = 
+		this.lastAgents[ this.numTrans % Auction.MOVING_AVERAGE_SIZE ] = 
 				( match.getBuyer().getH() + match.getSeller().getH() ) / 2.0;
 		
 		return true;

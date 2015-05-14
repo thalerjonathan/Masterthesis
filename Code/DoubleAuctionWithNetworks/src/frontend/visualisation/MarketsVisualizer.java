@@ -20,8 +20,8 @@ public class MarketsVisualizer extends JPanel {
 	private final static int SCALA_X_WIDTH = 60;
 	private final static int SCALA_Y_WIDTH = 30;
 
-	private final static int X_ACHSIS_GRID = 10;
-	private final static int Y_ACHSIS_GRID = 10;
+	private final static int X_ACHSIS_GRID = 15;
+	private final static int Y_ACHSIS_GRID = 15;
 	
 	private final static int LEGEND_BOX_X = SCALA_X_WIDTH + 15;
 	private final static int LEGEND_BOX_Y = 15;

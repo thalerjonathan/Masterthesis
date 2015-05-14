@@ -77,6 +77,7 @@ public class InspectionPanel extends JPanel implements ActionListener, ChangeLis
 	
 	private AgentNetwork agentNetwork;
 	private Markets markets;
+	private Auction auction;
 	
 	private JCheckBox keepSuccTXHighCheck;
 	
@@ -115,7 +116,8 @@ public class InspectionPanel extends JPanel implements ActionListener, ChangeLis
 	private JLabel totalTxCounterLabel;
 	private JLabel failedTxCounterLabel;
 	private JLabel totalfailedTxCounterLabel;
-
+	private JLabel sweepsCounterLabel;
+	
 	private JTabbedPane visualizersTabbedPane;
 	
 	private WealthVisualizer agentWealthPanel;
@@ -247,7 +249,8 @@ public class InspectionPanel extends JPanel implements ActionListener, ChangeLis
 		this.succTxCounterLabel = new JLabel( "0" );
 		this.failedTxCounterLabel = new JLabel( "0" );
 		this.totalfailedTxCounterLabel = new JLabel( "0" );
-		this.totalTxCounterLabel = new JLabel( "0" );		
+		this.totalTxCounterLabel = new JLabel( "0" );	
+		this.sweepsCounterLabel = new JLabel( "0 (0)" );	
 		
 		this.recreateButton = new JButton( "Recreate" );
 		this.inspectionButton = new JButton( "Start Inspection" );
@@ -446,6 +449,7 @@ public class InspectionPanel extends JPanel implements ActionListener, ChangeLis
 		JLabel succTxCounterInfoLabel = new JLabel( "Successful TX: " );
 		JLabel failedTxCounterInfoLabel = new JLabel( "Failed TX: " );
 		JLabel totalTxCounterInfoLabel = new JLabel( "Total TX: " );
+		JLabel sweepsCounterInfoLabel = new JLabel( "Sweeps Count: " );
 		JLabel totalfailedTxCounterInfoLabel = new JLabel( "Total failed TX: " );
 		JLabel computationTimeInfoLabel = new JLabel( "Computation Time: " );
 
@@ -502,12 +506,18 @@ public class InspectionPanel extends JPanel implements ActionListener, ChangeLis
 		c.gridx = 1;
 	    c.gridy = 4;
 	    txLabelsPanel.add( this.totalTxCounterLabel, c );
-
 	    c.gridx = 0;
 	    c.gridy = 5;
+	    txLabelsPanel.add( sweepsCounterInfoLabel, c );
+		c.gridx = 1;
+	    c.gridy = 5;
+	    txLabelsPanel.add( this.sweepsCounterLabel, c );
+
+
+	    c.gridx = 0;
+	    c.gridy = 6;
 	    txLabelsPanel.add( this.equilibriumInfoPanel, c );
 		
-
 	    
 	    c.gridx = 0;
 		c.gridy = 0;
@@ -628,6 +638,8 @@ public class InspectionPanel extends JPanel implements ActionListener, ChangeLis
 		this.totalTxCounterLabel.setText( Utils.DECIMAL_LARGEVALUES_FORMATTER.format( totalTX ) );
 		this.totalfailedTxCounterLabel.setText( Utils.DECIMAL_LARGEVALUES_FORMATTER.format( totalNotSuccTx )  );
 		this.computationTimeLabel.setText( Utils.DECIMAL_2_DIGITS_FORMATTER.format( calculationTime / 1000.0 ) + " sec." );
+		this.sweepsCounterLabel.setText( Utils.DECIMAL_2_DIGITS_FORMATTER.format( this.auction.getSweepCountMean() ) + " (" + 
+				Utils.DECIMAL_2_DIGITS_FORMATTER.format( this.auction.getSweepCountStd() ) + ")" );
 	}
 	
 	void advanceTxFinished() {
@@ -853,10 +865,10 @@ public class InspectionPanel extends JPanel implements ActionListener, ChangeLis
 			this.pauseButton.setSelected( true );
 			this.pauseButton.setEnabled( true );
 			
-			Auction auction = new Auction( this.agentNetwork );
+			this.auction = new Auction( this.agentNetwork );
 			
 			// let simulation run in a separate thread to prevent blocking of gui
-			this.simulationThread = new InspectionThread( auction, this );
+			this.simulationThread = new InspectionThread( this.auction, this );
 			this.simulationThread.startSimulation();
 			
 			this.networkVisPanel.repaint();

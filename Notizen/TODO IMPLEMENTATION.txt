@@ -1,8 +1,4 @@
-TODO			
-	-> TODO		Marktvisualisierung auch in replikationen einbauen
-				-> zu jedem zeitpunkt hat ein markt eine gewisse anzahl an erfolgreichen replikationen: über diese mitteln
-				-> nicht alle replikationen haben dieselbe anzahl an transaktionen, wenn mehr vorkommen, wird einfach darum erweitert
-				
+TODO						
 	-> TODO		InspectionPanel überarbeiten
 				-> TODO		ordentliche callbacks im simulation-thread anstatt starke kopplung an InspectionPanel!
 				-> TODO		network visualization wieder funktionsfähig

@@ -15,6 +15,8 @@ import backend.agents.Agent;
 @SuppressWarnings("serial")
 public class WealthVisualizer extends JPanel {
 	private final static int X_ACHSIS_GRID = 10;
+	private final static int Y_ACHSIS_GRID = 10;
+	
 	private final static double Y_ACHSIS_RANGE = 6.0;
 	
 	private final static int POINT_RADIUS = 3;
@@ -81,7 +83,7 @@ public class WealthVisualizer extends JPanel {
 		// draw scala 
 		g.drawChars( "0.0".toCharArray(), 0, "0.0".length(), 5, (int) yHalf + 5 );
 		
-		for ( int i = 1; i < 10; i++ ) {
+		for ( int i = 1; i < Y_ACHSIS_GRID; i++ ) {
 			double r = i / Y_ACHSIS_RANGE;
 			int yPos = ( int ) ( yHalf - ( yHalf * r ) );
 			int yNeg = ( int ) ( yHalf + ( yHalf * r ) );
