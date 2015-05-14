@@ -7,6 +7,8 @@ import java.util.concurrent.locks.ReentrantLock;
 import javax.swing.SwingUtilities;
 
 import backend.Auction;
+import backend.EquilibriumStatistics;
+import backend.Auction.MatchingType;
 import backend.markets.MarketType;
 import backend.tx.Transaction;
 
@@ -17,7 +19,7 @@ public class InspectionThread implements Runnable {
 	  
 	private Auction auction;
 
-	private InspectionPanel inspectorPanel;
+	private InspectionObserver observer;
 	
 	private int succTXCounter;
 	private int noSuccTXCounter;
@@ -52,9 +54,23 @@ public class InspectionThread implements Runnable {
 		UNTRADER_FOUND
 	}
 	
-	public InspectionThread( Auction auction, InspectionPanel inspectorPanel ) {
+	public interface InspectionObserver {
+		public void advanceTxFinished();
+		public void addSuccessfulTX( Transaction tx, boolean forceRepaint );
+		public void updateEquilibriumStats( EquilibriumStatistics stats );
+		public void simulationTerminated();
+		public void resumeFromPause();
+		public void updateStats( int succTx, int noSuccTX, int totalTX, int totalNotSuccTx, long calculationTime );
+		
+		public MatchingType getMatchingType();
+		public boolean isKeepAgentHistory();
+		
+		public void repaint();
+	}
+	
+	public InspectionThread( Auction auction, InspectionObserver observer ) {
 		this.auction = auction;
-		this.inspectorPanel = inspectorPanel;
+		this.observer = observer;
 		
 		// start in pause-mode: simulation-thread must block bevore doing first transaction
 		this.state = SimulationState.PAUSED;
@@ -140,13 +156,7 @@ public class InspectionThread implements Runnable {
 					InspectionThread.this.lock.unlock();
 					InspectionThread.this.awaitNextTxThread = null;
 
-					// running in thread => need to update SWING through SwingUtilities.invokeLater
-					SwingUtilities.invokeLater( new Runnable() {
-						@Override
-						public void run() {
-							InspectionThread.this.inspectorPanel.advanceTxFinished();
-						}
-					});
+					InspectionThread.this.observer.advanceTxFinished();
 				}
 			}
 		});
@@ -183,9 +193,7 @@ public class InspectionThread implements Runnable {
 				long ts = System.currentTimeMillis();
 				
 				// execute the next transaction
-				Transaction tx = this.auction.executeSingleTransaction( 
-						InspectionThread.this.inspectorPanel.getSelectedMatchingType(),
-						InspectionThread.this.inspectorPanel.isKeepAgentHistory() );
+				Transaction tx = this.auction.executeSingleTransaction( observer.getMatchingType(), observer.isKeepAgentHistory() );
 				
 				// increment time
 				this.computationTimeMs += System.currentTimeMillis() - ts;
@@ -209,7 +217,7 @@ public class InspectionThread implements Runnable {
 					// between two successful TX is > 1000ms => there could have been a
 					// last successful TX which ist but not reflected in the visualisation
 					if ( this.noSuccTXCounter == 10 ) {
-						this.inspectorPanel.repaint();
+						this.observer.repaint();
 					}
 				}
 				
@@ -258,11 +266,11 @@ public class InspectionThread implements Runnable {
 						// add tx to gui when successful
 						if ( tx.wasSuccessful() ) {
 							// force redraw when NEXT_TX-state to reflect change immediately
-							InspectionThread.this.inspectorPanel.addSuccessfulTX( tx, SimulationState.RUNNING != stateBevoreTX );
-							InspectionThread.this.inspectorPanel.updateEquilibriumStats( auction.calculateEquilibriumStats() );
+							InspectionThread.this.observer.addSuccessfulTX( tx, SimulationState.RUNNING != stateBevoreTX );
+							InspectionThread.this.observer.updateEquilibriumStats( auction.calculateEquilibriumStats() );
 						// 
 						} else if ( tx.hasTradingHalted() ) {
-							InspectionThread.this.inspectorPanel.simulationTerminated();
+							InspectionThread.this.observer.simulationTerminated();
 						}
 
 						InspectionThread.this.updateTXCounter();
@@ -292,7 +300,7 @@ public class InspectionThread implements Runnable {
 			
 		// simulation-thread is blocked, switch state and signal to continue
 		} else if ( SimulationState.PAUSED == this.state ) {
-			this.inspectorPanel.restoreTXHistoryTable();
+			this.observer.resumeFromPause();
 			
 			// signal the thread to exit
 			this.lock.lock();
@@ -303,7 +311,8 @@ public class InspectionThread implements Runnable {
 	}
 	
 	private void updateTXCounter() {
-		this.inspectorPanel.updateTXCounter( this.succTXCounter, this.noSuccTXCounter, this.totalTXCounter, this.totalNotSuccTXCounter, this.computationTimeMs );
+		this.observer.updateStats( this.succTXCounter, this.noSuccTXCounter, this.totalTXCounter, 
+				this.totalNotSuccTXCounter, this.computationTimeMs );
 	}
 	
 	private void interruptNextTXThread() {

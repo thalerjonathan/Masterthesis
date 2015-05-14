@@ -36,9 +36,9 @@ public class MarketsVisualizer extends JPanel {
 	
 	static {
 		MARKET_COLORS = new Color[ MarketType.values().length ];
-		MARKET_COLORS[ MarketType.ASSET_CASH.ordinal() ] = DARK_GREEN;
+		MARKET_COLORS[ MarketType.ASSET_CASH.ordinal() ] =  Color.BLUE;
 		MARKET_COLORS[ MarketType.LOAN_CASH.ordinal() ] = Color.RED;
-		MARKET_COLORS[ MarketType.ASSET_LOAN.ordinal() ] = Color.BLUE;
+		MARKET_COLORS[ MarketType.ASSET_LOAN.ordinal() ] = DARK_GREEN;
 		MARKET_COLORS[ MarketType.COLLATERAL_CASH.ordinal() ] = DARK_CYAN;
 	}
 		
@@ -152,22 +152,22 @@ public class MarketsVisualizer extends JPanel {
 		g.fillRect( LEGEND_BOX_X, LEGEND_BOX_Y, 155, 85 );
 		
 		// draw legend
-		g.setColor( DARK_GREEN );
+		g.setColor( MarketsVisualizer.MARKET_COLORS[ MarketType.ASSET_CASH.ordinal() ] );
 		g.drawLine( LEGEND_BOX_X + 5, LEGEND_BOX_Y + 13, LEGEND_BOX_X + 50, LEGEND_BOX_Y + 13 );
 		g.setColor( Color.BLACK );
 		g.drawChars( "Asset/Cash".toCharArray(), 0, "Asset/Cash".length(), LEGEND_BOX_X + 60, LEGEND_BOX_Y + 18 );
 		
-		g.setColor( Color.RED );
+		g.setColor( MarketsVisualizer.MARKET_COLORS[ MarketType.LOAN_CASH.ordinal() ] );
 		g.drawLine( LEGEND_BOX_X + 5, LEGEND_BOX_Y + 33, LEGEND_BOX_X + 50, LEGEND_BOX_Y + 33 );
 		g.setColor( Color.BLACK );
 		g.drawChars( "Loan/Cash".toCharArray(), 0, "Loan/Cash".length(), LEGEND_BOX_X + 60, LEGEND_BOX_Y + 38 );
 		
-		g.setColor( Color.BLUE );
+		g.setColor( MarketsVisualizer.MARKET_COLORS[ MarketType.ASSET_LOAN.ordinal() ] );
 		g.drawLine( LEGEND_BOX_X + 5, LEGEND_BOX_Y + 53, LEGEND_BOX_X + 50, LEGEND_BOX_Y + 53 );
 		g.setColor( Color.BLACK );
 		g.drawChars( "Asset/Loans".toCharArray(), 0, "Asset/Loans".length(), LEGEND_BOX_X + 60, LEGEND_BOX_Y + 58 );
 
-		g.setColor( DARK_CYAN );
+		g.setColor( MarketsVisualizer.MARKET_COLORS[ MarketType.COLLATERAL_CASH.ordinal() ] );
 		g.drawLine( LEGEND_BOX_X + 5, LEGEND_BOX_Y + 73, LEGEND_BOX_X + 50, LEGEND_BOX_Y + 73 );
 		g.setColor( Color.BLACK );
 		g.drawChars( "Collateral/Cash".toCharArray(), 0, "Collateral/Cash".length(), LEGEND_BOX_X + 60, LEGEND_BOX_Y + 78 );

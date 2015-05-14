@@ -1,4 +1,9 @@
+Abstract
+	Anpssen, hypothese trifft nimmer zu
+	
 Introduction
+	Wirtschaftskrise "subprime mortgage crisis" als auslöser
+		-> leverage erhöht systemisches risiko
 	Motivation für solche experimente
 	Von Geanakoplos zum "Breuer et al" Paper
 		paper: prozess d.h. dynamik des systems beobachten
@@ -6,6 +11,8 @@ Introduction
 		erreicht der prozess das theoretische gleichgewicht bzw. preise
 
 Theorie
+	Leverage
+		Was ist leverage?
 	Continuous Double Auction
 		Paper: gode & sunders
 	Networks

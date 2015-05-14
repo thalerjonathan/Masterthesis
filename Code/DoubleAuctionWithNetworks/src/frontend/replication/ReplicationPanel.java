@@ -46,7 +46,6 @@ import frontend.Utils;
 import frontend.agentInfo.AgentInfoFrame;
 import frontend.experimenter.xml.experiment.ExperimentBean;
 import frontend.experimenter.xml.experiment.ExperimentListBean;
-import frontend.inspection.NetworkVisualisationFrame;
 import frontend.networkCreators.AscendingConnectedCreator;
 import frontend.networkCreators.AscendingFullShortcutsCreator;
 import frontend.networkCreators.AscendingRandomShortcutsCreator;
@@ -62,6 +61,7 @@ import frontend.networkCreators.NetworkCreator;
 import frontend.networkCreators.ThreeMedianHubsCreator;
 import frontend.networkCreators.WattStrogatzCreator;
 import frontend.networkVisualisation.NetworkRenderPanel;
+import frontend.networkVisualisation.NetworkVisualisationFrame;
 import frontend.replication.info.ReplicationInfoFrame;
 import frontend.visualisation.WealthVisualizer;
 
@@ -567,7 +567,6 @@ public class ReplicationPanel extends JPanel {
 	
 	private void createAgents() {
 		int agentCount = (int) this.agentCountSpinner.getValue();
-		
 		this.markets = new Markets( (LoanType) this.loanTypeSelection.getSelectedItem() );
 		this.setMarketMechanisms();
 		
@@ -578,14 +577,11 @@ public class ReplicationPanel extends JPanel {
 		
 		this.handleImportanceSampling();
 		
-		List<Agent> agents = this.agentNetworkTemplate.getOrderedList();
-		
 		this.replications = new ReplicationsRunner( this.agentNetworkTemplate, this.markets );
-		
 		this.agentWealthPanel.setAgents( this.agentNetworkTemplate.getOrderedList() );
 		
 		this.updateNetworkVisualisationFrame();
-		this.updateAgentInfoFrame( agents );
+		this.updateAgentInfoFrame( this.agentNetworkTemplate.getOrderedList() );
 	}
 	
 	private void updateAgentInfoFrame( List<Agent> agents ) {
@@ -598,7 +594,7 @@ public class ReplicationPanel extends JPanel {
 	@SuppressWarnings("unchecked")
 	private void updateNetworkVisualisationFrame() {
 		if ( null != this.netVisFrame && this.netVisFrame.isVisible() ) {
-			NetworkRenderPanel networkPanel = ReplicationPanel.this.agentNetworkTemplate.getNetworkRenderingPanel( (Class<? extends Layout<Agent, AgentConnection>>) CircleLayout.class, null );
+			NetworkRenderPanel networkPanel = this.agentNetworkTemplate.getNetworkRenderingPanel( (Class<? extends Layout<Agent, AgentConnection>>) CircleLayout.class, null );
 			this.netVisFrame.setNetworkRenderPanel( networkPanel );
 			this.netVisFrame.setTitle( "Agent Network (" + this.getTitleExtension() + ")" );
 		}

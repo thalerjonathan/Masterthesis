@@ -1,10 +1,11 @@
-TODO						
-	-> TODO		InspectionPanel überarbeiten
-				-> TODO		ordentliche callbacks im simulation-thread anstatt starke kopplung an InspectionPanel!
-				-> TODO		network visualization wieder funktionsfähig
-				-> TODO		implements ActionListener usw... wegbekommen
-				
 Erledigt
+	-> OK		InspectionPanel überarbeiten
+				-> OK		implements ActionListener usw... wegbekommen
+				-> OK		ordentliche callbacks im simulation-thread anstatt starke kopplung an InspectionPanel!
+				-> OK		checkbox um bei jeder TX ein redraw zu forcen
+				-> OK		network visualization wieder funktionsfähig
+					-> aber in eigenem fenster
+
 	-> OK		standardabweichungen in replikationen berechnen
 	
 	-> OK		statistiken vom collateral/cash marktpreis

@@ -33,6 +33,7 @@ public class EquilibriumInfoPanel extends JPanel {
 		this.setLayout( new GridBagLayout() );
 		
 		this.createControls();
+		this.clearStats();
 	}
 	
 	private void createControls() {
@@ -151,22 +152,22 @@ public class EquilibriumInfoPanel extends JPanel {
 	}
 	
 	public void clearStats() {
-		this.assetPriceLabel.setText("");
-		this.loanPriceLabel.setText("");
-		this.assetLoanPriceLabel.setText("");
-		this.collateralPriceLabel.setText( "" );
+		this.assetPriceLabel.setText("0.00");
+		this.loanPriceLabel.setText("0.00");
+		this.assetLoanPriceLabel.setText("0.00");
+		this.collateralPriceLabel.setText( "0.00" );
 		
-		this.i0Label.setText("");
-		this.i1Label.setText("");
-		this.i2Label.setText("");
+		this.i0Label.setText("0.00");
+		this.i1Label.setText("0.00");
+		this.i2Label.setText("0.00");
 		
-		this.i0IndexLabel.setText("");
-		this.i1IndexLabel.setText("");
-		this.i2IndexLabel.setText("");
+		this.i0IndexLabel.setText("N/A");
+		this.i1IndexLabel.setText("N/A");
+		this.i2IndexLabel.setText("N/A");
 		
-		this.pessimistWealthLabel.setText("");
-		this.mediumWealthLabel.setText("");
-		this.optimistWealthLabel.setText("");
+		this.pessimistWealthLabel.setText("0.00");
+		this.mediumWealthLabel.setText("0.00");
+		this.optimistWealthLabel.setText("0.00");
 	}
 	
 	public void setStats( EquilibriumStatistics stats ) {

@@ -1,7 +1,5 @@
 package frontend.inspection;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
@@ -12,7 +10,6 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
@@ -44,10 +41,10 @@ import backend.offers.AskOffering;
 import backend.offers.BidOffering;
 import backend.tx.Transaction;
 import edu.uci.ics.jung.algorithms.layout.CircleLayout;
-import edu.uci.ics.jung.algorithms.layout.KKLayout;
 import edu.uci.ics.jung.algorithms.layout.Layout;
 import frontend.Utils;
 import frontend.inspection.InspectionThread.AdvanceMode;
+import frontend.inspection.InspectionThread.InspectionObserver;
 import frontend.inspection.offerBook.OfferBook;
 import frontend.inspection.txHistory.TxHistoryTable;
 import frontend.networkCreators.AscendingConnectedCreator;
@@ -68,18 +65,17 @@ import frontend.networkVisualisation.AgentSelectedEvent;
 import frontend.networkVisualisation.ConnectionSelectedEvent;
 import frontend.networkVisualisation.INetworkSelectionObserver;
 import frontend.networkVisualisation.NetworkRenderPanel;
+import frontend.networkVisualisation.NetworkVisualisationFrame;
 import frontend.replication.EquilibriumInfoPanel;
 import frontend.visualisation.MarketsVisualizer;
 import frontend.visualisation.WealthVisualizer;
 
 @SuppressWarnings("serial")
-public class InspectionPanel extends JPanel implements ActionListener, ChangeListener {
+public class InspectionPanel extends JPanel {
 	
 	private AgentNetwork agentNetwork;
 	private Markets markets;
 	private Auction auction;
-	
-	private JCheckBox keepSuccTXHighCheck;
 	
 	private JCheckBox abmMarketCheck;
 	private JCheckBox loanCashMarketCheck;
@@ -88,21 +84,19 @@ public class InspectionPanel extends JPanel implements ActionListener, ChangeLis
 	private JCheckBox importanceSamplingCheck;
 	
 	private JCheckBox keepAgentHistoryCheck;
+	private JCheckBox forceRedrawCheck;
 	
 	private JButton inspectionButton;
-	private JButton recreateButton;
 	private JButton nextTxButton;
 	private JButton advance10TxButton;
 	private JButton advance100TxButton;
 	private JButton openOfferBookButton;
 	private JToggleButton pauseButton;
-	private JToggleButton toggleNetworkPanelButton;
+	private JButton showNetworkButton;
 
 	private JPanel visualizationPanel;
-	private JPanel networkPanel;
 	
 	private JComboBox<NetworkCreator> topologySelection;
-	private JComboBox<String> layoutSelection;
 	private JComboBox<String> optimismSelection;
 	private JComboBox<MatchingType> matchingTypeSelection;
 	private JComboBox<InspectionThread.AdvanceMode> advcanceModeSelection;
@@ -122,7 +116,7 @@ public class InspectionPanel extends JPanel implements ActionListener, ChangeLis
 	
 	private WealthVisualizer agentWealthPanel;
 	private MarketsVisualizer marketsVisualizer;
-	private NetworkRenderPanel networkVisPanel;
+	private NetworkVisualisationFrame netVisFrame;
 	private EquilibriumInfoPanel equilibriumInfoPanel;
 	
 	private OfferBook offerBook;
@@ -140,7 +134,6 @@ public class InspectionPanel extends JPanel implements ActionListener, ChangeLis
 	
 	private long lastRepaintTime;
 	
-	private static final int AGENTS_COUNT_HIDE_NETWORK_PANEL = 51;
 	private static final int REPAINT_WEALTH_WHENRUNNING_INTERVAL = 1000;
 	
 	public InspectionPanel() {
@@ -153,66 +146,28 @@ public class InspectionPanel extends JPanel implements ActionListener, ChangeLis
         this.createControls();
         this.createAgents();
 	}
-	
-	public void restoreTXHistoryTable() {
-		this.txHistoryTable.restore( this.successfulTx );
+
+	public String getTitleExtension() {
+		int agentCount = (int) this.agentCountSpinner.getValue();
+		NetworkCreator creator = (NetworkCreator) this.topologySelection.getSelectedItem();
+		return creator.name() + ", " + agentCount + " Agents";
 	}
 	
-	public MatchingType getSelectedMatchingType() {
-		return (MatchingType) this.matchingTypeSelection.getSelectedItem();
-	}
-	
-	public boolean isKeepAgentHistory() {
-		return this.keepAgentHistoryCheck.isSelected();
-	}
-	
-	public void simulationTerminated() {
+	private void simulationTerminated() {
 		// simulation was running, toggle will switch all gui-stuff to "stoped"
 		this.toggleInspection();
 		this.agentWealthPanel.repaint();
-		this.networkPanel.repaint();
+		InspectionPanel.this.repaintNetworkVisFrame();
 		JOptionPane.showMessageDialog( this, "No Agent is able to trade with any of its neighbours - Simulation stoped.", 
 				"Equilibrium Reached", JOptionPane.INFORMATION_MESSAGE );
 	}
 	
-	@Override
-	public void actionPerformed(ActionEvent e) {
-		this.createAgents();
-	}
-
-	@Override
-	public void stateChanged(ChangeEvent arg0) {
-		TimerTask task = new TimerTask() {
-			@Override
-			public void run() {
-				// we are running inside a thread => need to invoke SwingUtilities.invokeLater !
-				SwingUtilities.invokeLater( new Runnable() {
-					@Override
-					public void run() {
-						InspectionPanel.this.createAgents();
-					}
-				});
-			}
-		};
-		
-		// cancel already scheduled timer
-		if ( null != this.spinnerChangedTimer ) {
-			this.spinnerChangedTimer.cancel();
-			this.spinnerChangedTimer.purge();
-		}
-		
-		// schedule a recreation of the agents after 500ms
-		this.spinnerChangedTimer = new Timer();
-		this.spinnerChangedTimer.schedule( task, 500 );
-	}
-
 	private void createControls() {
 		// instancing of components ////////////////////////////////////
 		GridBagConstraints c = new GridBagConstraints();
 
 		this.visualizersTabbedPane = new JTabbedPane();
 		this.visualizationPanel = new JPanel( new GridBagLayout() );
-		this.networkPanel = new JPanel( new BorderLayout() );
 		this.offerBook = new OfferBook();
 		this.equilibriumInfoPanel = new EquilibriumInfoPanel();
 		this.marketsVisualizer = new MarketsVisualizer( this.successfulMarkets );
@@ -220,8 +175,7 @@ public class InspectionPanel extends JPanel implements ActionListener, ChangeLis
 
 		JPanel controlsPanel = new JPanel();
 		JPanel txInfoPanel = new JPanel( new GridBagLayout() );
-		JPanel networkVisControlsPanel = new JPanel();
-		
+
 		this.topologySelection = new JComboBox<NetworkCreator>();
 		this.topologySelection.addItem( new AscendingConnectedCreator() );
 		this.topologySelection.addItem( new AscendingFullShortcutsCreator() );
@@ -237,7 +191,6 @@ public class InspectionPanel extends JPanel implements ActionListener, ChangeLis
 		this.topologySelection.addItem( new BarbasiAlbertCreator() );
 		this.topologySelection.addItem( new WattStrogatzCreator() );
 		
-		this.layoutSelection = new JComboBox<String>( new String[] { "Circle", "KK" } );
 		this.optimismSelection = new JComboBox<String>( new String[] { "Linear", "Triangle"  } );
 		this.matchingTypeSelection = new JComboBox<MatchingType>( MatchingType.values() );
 		this.advcanceModeSelection = new JComboBox<InspectionThread.AdvanceMode>( InspectionThread.AdvanceMode.values() );
@@ -252,7 +205,7 @@ public class InspectionPanel extends JPanel implements ActionListener, ChangeLis
 		this.totalTxCounterLabel = new JLabel( "0" );	
 		this.sweepsCounterLabel = new JLabel( "0 (0)" );	
 		
-		this.recreateButton = new JButton( "Recreate" );
+		
 		this.inspectionButton = new JButton( "Start Inspection" );
 		this.nextTxButton = new JButton( "Next TX" );
 		this.advance10TxButton = new JButton( "Advance 10 TXs" );
@@ -260,22 +213,7 @@ public class InspectionPanel extends JPanel implements ActionListener, ChangeLis
 		
 		this.openOfferBookButton = new JButton( "Open Offer-Book" );
 		this.pauseButton = new JToggleButton ( "Pause" );
-		this.toggleNetworkPanelButton = new JToggleButton ( "Hide Network" );
-		
-		this.keepSuccTXHighCheck = new JCheckBox( "Keep TXs Highlighted" );
-		this.keepSuccTXHighCheck.addActionListener( new ActionListener() {
-			@Override
-			public void actionPerformed( ActionEvent e ) {
-				if ( null == InspectionPanel.this.simulationThread ) {
-					return;
-				}
-				
-				if ( InspectionPanel.this.networkVisPanel.isVisible() ) {
-					InspectionPanel.this.networkVisPanel.setKeepTXHighlighted( InspectionPanel.this.keepSuccTXHighCheck.isSelected() );
-					InspectionPanel.this.networkVisPanel.repaint();
-				}
-			}
-		});
+		this.showNetworkButton = new JButton ( "Show Network" );
 		
 		this.abmMarketCheck = new JCheckBox( "Asset/Loan Market" );
 		this.loanCashMarketCheck = new JCheckBox( "Loan/Cash Market" );
@@ -284,7 +222,8 @@ public class InspectionPanel extends JPanel implements ActionListener, ChangeLis
 		this.importanceSamplingCheck = new JCheckBox( "Importance-Sampling" );
 		
 		this.keepAgentHistoryCheck = new JCheckBox( "Keep Agent History" );
-
+		this.forceRedrawCheck = new JCheckBox( "Force Redraw" );
+		
 		this.txHistoryTable = new TxHistoryTable();
 		JScrollPane txHistoryScrollPane = new JScrollPane( this.txHistoryTable );
 		txHistoryScrollPane.setVerticalScrollBarPolicy( JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED );
@@ -364,32 +303,18 @@ public class InspectionPanel extends JPanel implements ActionListener, ChangeLis
 			}
 		});
 		
-		this.toggleNetworkPanelButton.addActionListener( new ActionListener() {
+		this.showNetworkButton.addActionListener( new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if ( InspectionPanel.this.toggleNetworkPanelButton.isSelected() ) {
-					InspectionPanel.this.toggleNetworkPanelButton.setText( "Show Network" );
-					InspectionPanel.this.networkPanel.setVisible( false );
-					
-				} else {
-					InspectionPanel.this.toggleNetworkPanelButton.setText( "Hide Network" );
-					InspectionPanel.this.networkPanel.setVisible( true );
-					InspectionPanel.this.createLayout();
+				if ( null == InspectionPanel.this.netVisFrame ) {
+					InspectionPanel.this.netVisFrame = new NetworkVisualisationFrame();
 				}
+
+				InspectionPanel.this.netVisFrame.setVisible( true );
+				InspectionPanel.this.updateNetworkVisualisationFrame();
 			}
 		});
 		
-		this.layoutSelection.addActionListener( new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				if ( null == InspectionPanel.this.agentNetwork ) {
-					return;
-				}
-				
-				InspectionPanel.this.createLayout();
-			}
-		} );
-
 		this.topologySelection.addActionListener( new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -420,11 +345,44 @@ public class InspectionPanel extends JPanel implements ActionListener, ChangeLis
 			}
 		});
 		
-		this.recreateButton.addActionListener( this );
-		this.optimismSelection.addActionListener( this );
-		this.loanTypeSelection.addActionListener( this );
+		ActionListener createAgentsAction = new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				InspectionPanel.this.createAgents();
+			}
+		};
 		
-		this.agentCountSpinner.addChangeListener( this );
+		ChangeListener createAgentsAfterTimeoutChange = new ChangeListener() {
+			@Override
+			public void stateChanged(ChangeEvent e) {
+				TimerTask task = new TimerTask() {
+					@Override
+					public void run() {
+						// we are running inside a thread => need to invoke SwingUtilities.invokeLater !
+						SwingUtilities.invokeLater( new Runnable() {
+							@Override
+							public void run() {
+								InspectionPanel.this.createAgents();
+							}
+						});
+					}
+				};
+				
+				// cancel already scheduled timer
+				if ( null != InspectionPanel.this.spinnerChangedTimer ) {
+					InspectionPanel.this.spinnerChangedTimer.cancel();
+					InspectionPanel.this.spinnerChangedTimer.purge();
+				}
+				
+				// schedule a recreation of the agents after 500ms
+				InspectionPanel.this.spinnerChangedTimer = new Timer();
+				InspectionPanel.this.spinnerChangedTimer.schedule( task, 500 );
+			}
+		};
+		
+		this.optimismSelection.addActionListener( createAgentsAction );
+		this.loanTypeSelection.addActionListener( createAgentsAction );
+		this.agentCountSpinner.addChangeListener( createAgentsAfterTimeoutChange );
 		
 		ActionListener checkListener = new ActionListener() {
 			@Override
@@ -463,12 +421,6 @@ public class InspectionPanel extends JPanel implements ActionListener, ChangeLis
 		controlsPanel.add( this.importanceSamplingCheck );
 		controlsPanel.add( this.inspectionButton );
 		
-		networkVisControlsPanel.add( this.recreateButton );
-		networkVisControlsPanel.add( this.layoutSelection );
-		networkVisControlsPanel.add( this.keepSuccTXHighCheck );
-		
-		this.networkPanel.add( networkVisControlsPanel, BorderLayout.NORTH ); 
-		    
 		JPanel txLabelsPanel = new JPanel( new GridBagLayout() );
 		JPanel txControlPanel = new JPanel( new GridBagLayout() );
 		
@@ -521,35 +473,39 @@ public class InspectionPanel extends JPanel implements ActionListener, ChangeLis
 	    
 	    c.gridx = 0;
 		c.gridy = 0;
-		c.gridwidth = 2;
+		c.gridwidth = 1;
 		txControlPanel.add( this.keepAgentHistoryCheck, c );
+		c.gridx = 1;
+		c.gridy = 0;
+		txControlPanel.add( this.forceRedrawCheck, c );
+		
+		c.gridwidth = 2;
 		c.gridx = 0;
 		c.gridy = 1;
 		txControlPanel.add( this.openOfferBookButton, c );
-	    c.gridx = 0;
+		c.gridx = 0;
 		c.gridy = 2;
-		txControlPanel.add( this.pauseButton, c );
+		txControlPanel.add( this.showNetworkButton, c );
 	    c.gridx = 0;
 		c.gridy = 3;
+		txControlPanel.add( this.pauseButton, c );
+	    c.gridx = 0;
+		c.gridy = 4;
 		txControlPanel.add( this.nextTxButton, c );
 		c.gridwidth = 1;
 		c.gridx = 0;
-		c.gridy = 4;
+		c.gridy = 5;
 		txControlPanel.add( this.advance10TxButton, c );
 		c.gridx = 1;
-		c.gridy = 4;
+		c.gridy = 5;
 		txControlPanel.add( this.advance100TxButton, c );
 		c.gridx = 0;
-		c.gridy = 5;
+		c.gridy = 6;
 		txControlPanel.add( this.advcanceModeSelection, c );
 	    c.gridx = 1;
-		c.gridy = 5;
-		txControlPanel.add( this.matchingTypeSelection, c );
-		c.gridx = 0;
 		c.gridy = 6;
-		c.gridwidth = 2;
-		txControlPanel.add( this.toggleNetworkPanelButton, c );
-	    
+		txControlPanel.add( this.matchingTypeSelection, c );
+		
 		c.weightx = 0.8;
 		c.weighty = 0.5;
 		c.gridx = 0;
@@ -592,12 +548,7 @@ public class InspectionPanel extends JPanel implements ActionListener, ChangeLis
 		c.gridx = 0;
 		c.gridy = 0;
 		this.visualizationPanel.add( this.visualizersTabbedPane, c );
-		/*
-		c.gridx = 1;
-		c.gridy = 0;
-		this.visualizationPanel.add( this.visualizersTabbedPane, c );
-		*/
-		
+
 		c.weighty = 1.0;
 		c.gridheight = 10;
 	    c.gridy = 1;
@@ -609,9 +560,12 @@ public class InspectionPanel extends JPanel implements ActionListener, ChangeLis
 		this.add( txInfoPanel, c );
 	}
 	
-	void addSuccessfulTX( Transaction tx, boolean forceRedraw ) {
+	private void addSuccessfulTX( Transaction tx, boolean forceRedraw ) {
 		long currMillis = System.currentTimeMillis();
-		if ( InspectionPanel.REPAINT_WEALTH_WHENRUNNING_INTERVAL < currMillis - this.lastRepaintTime || forceRedraw ) {
+		if ( InspectionPanel.REPAINT_WEALTH_WHENRUNNING_INTERVAL < currMillis - this.lastRepaintTime || 
+				forceRedraw ||
+				this.forceRedrawCheck.isSelected()) {
+			
 			this.agentWealthPanel.setAgents( this.agentNetwork.getOrderedList() );
 			this.marketsVisualizer.repaint();
 			
@@ -628,11 +582,98 @@ public class InspectionPanel extends JPanel implements ActionListener, ChangeLis
 		}
 	}
 	
-	void updateEquilibriumStats( EquilibriumStatistics stats ) {
-		this.equilibriumInfoPanel.setStats( stats );
+	@SuppressWarnings("unchecked")
+	private void updateNetworkVisualisationFrame() {
+		if ( null != this.netVisFrame && this.netVisFrame.isVisible() ) {
+			NetworkRenderPanel networkPanel = this.agentNetwork.getNetworkRenderingPanel( (Class<? extends Layout<Agent, AgentConnection>>) CircleLayout.class, 
+				new INetworkSelectionObserver() {
+					@Override
+					public void agentSeleted( AgentSelectedEvent agentSelectedEvent ) {
+						// no simulation running yet, just highlight selected agent, its neighbours and their connections
+						if ( null == InspectionPanel.this.simulationThread ) {
+							InspectionPanel.this.resetNetworkHighlights();
+							
+							Agent selectedAgent = agentSelectedEvent.getSelectedAgent();
+							selectedAgent.setHighlighted( true );
+							
+							Iterator<Agent> neighbourIter = InspectionPanel.this.agentNetwork.getNeighbors( selectedAgent );
+							while ( neighbourIter.hasNext() ) {
+								Agent neighbour = neighbourIter.next();
+								neighbour.setHighlighted( true );
+								
+								InspectionPanel.this.agentNetwork.getConnection( selectedAgent, neighbour ).setHighlighted( true );
+							}
+							
+							InspectionPanel.this.repaintNetworkVisFrame();
+							
+							return;
+						}
+						
+						// when simulation thread is not paused, don't react on selection
+						if ( false == InspectionPanel.this.simulationThread.isPause() ) {
+							return;
+						}
+						
+						InspectionPanel.this.resetNetworkHighlights();
+						InspectionPanel.this.txHistoryTable.clearAll();
+
+						// find path between two selected agents
+						if ( agentSelectedEvent.isCtrlDownFlag() && null != InspectionPanel.this.selectedAgent ) {
+							InspectionPanel.this.selectedAgent.setHighlighted( true );
+							agentSelectedEvent.getSelectedAgent().setHighlighted( true );
+							
+							List<AgentConnection> path = InspectionPanel.this.agentNetwork.getPath( InspectionPanel.this.selectedAgent, agentSelectedEvent.getSelectedAgent() );
+							// returns null when there is no path of successful transactions
+							if ( null != path ) {
+								for ( AgentConnection c : path ) {
+									c.setHighlighted( true );
+									InspectionPanel.this.addTXOfConnection( c );
+								}
+							}
+							
+						} else {
+							Agent a1 = agentSelectedEvent.getSelectedAgent();
+
+							for ( int i = 0; i < InspectionPanel.this.successfulTx.size(); ++i ) {
+								Agent a2 = null;
+								Transaction tx = InspectionPanel.this.successfulTx.get( i );
+
+								if ( a1 == tx.getMatch().getSellOffer().getAgent() ) {
+									a2 = tx.getMatch().getBuyOffer().getAgent();
+								} else if ( a1 == tx.getMatch().getBuyOffer().getAgent() ) {
+									a2 = tx.getMatch().getSellOffer().getAgent();
+								}
+								
+								if ( null != a2 ) {
+									InspectionPanel.this.txHistoryTable.addTx( tx );
+									InspectionPanel.this.agentNetwork.getConnection( a1, a2 ).setHighlighted( true );
+								}
+							}
+							
+							InspectionPanel.this.selectedAgent = a1;
+							InspectionPanel.this.selectedAgent.setHighlighted( true );
+						}
+						
+						InspectionPanel.this.repaintNetworkVisFrame();
+					}
+
+					@Override
+					public void connectionSeleted( ConnectionSelectedEvent connSelectedEvent ) {
+						InspectionPanel.this.resetNetworkHighlights();
+						InspectionPanel.this.txHistoryTable.clearAll();
+
+						connSelectedEvent.getSelectedConnection().setHighlighted( true );
+						InspectionPanel.this.addTXOfConnection( connSelectedEvent.getSelectedConnection() );
+						
+						InspectionPanel.this.repaintNetworkVisFrame();
+					}
+				} ); 
+			this.netVisFrame.setNetworkRenderPanel( networkPanel );
+			this.netVisFrame.setTitle( "Agent Network (" + this.getTitleExtension() + ")" );
+		}
 	}
 	
-	void updateTXCounter( int succTx, int noSuccTX, int totalTX, int totalNotSuccTx, long calculationTime ) {
+	private void updateStats( int succTx, int noSuccTX, int totalTX, int totalNotSuccTx, long calculationTime ) {
 		this.succTxCounterLabel.setText( Utils.DECIMAL_LARGEVALUES_FORMATTER.format( succTx ) );
 		this.failedTxCounterLabel.setText( Utils.DECIMAL_LARGEVALUES_FORMATTER.format( noSuccTX ) );
 		this.totalTxCounterLabel.setText( Utils.DECIMAL_LARGEVALUES_FORMATTER.format( totalTX ) );
@@ -642,7 +683,7 @@ public class InspectionPanel extends JPanel implements ActionListener, ChangeLis
 				Utils.DECIMAL_2_DIGITS_FORMATTER.format( this.auction.getSweepCountStd() ) + ")" );
 	}
 	
-	void advanceTxFinished() {
+	private void advanceTxFinished() {
 		this.nextTxButton.setEnabled( true );
 		this.advance10TxButton.setEnabled( true );
 		this.advance100TxButton.setEnabled( true );
@@ -671,13 +712,7 @@ public class InspectionPanel extends JPanel implements ActionListener, ChangeLis
 			}
 		}
 	}
-	
-	public String getTitleExtension() {
-		int agentCount = (int) this.agentCountSpinner.getValue();
-		NetworkCreator creator = (NetworkCreator) this.topologySelection.getSelectedItem();
-		return creator.name() + ", " + agentCount + " Agents";
-	}
-	
+
 	private void createAgents() {
 		int agentCount = (int) this.agentCountSpinner.getValue();
 		this.markets = new Markets( this.loanTypeSelection.getItemAt( this.loanTypeSelection.getSelectedIndex() ) );
@@ -697,132 +732,7 @@ public class InspectionPanel extends JPanel implements ActionListener, ChangeLis
 		// close opened offer-books because agents changed (number of agents,...)
 		this.offerBook.agentsChanged( this.agentNetwork.getOrderedList(), this.getTitleExtension() );
 		
-		// need to create the layout too, will do the final pack-call on this frame
-		this.createLayout();
-	}
-	
-	@SuppressWarnings("unchecked")
-	private void createLayout() {
-		Class<? extends Layout<Agent, AgentConnection>> layout = (Class<? extends Layout<Agent, AgentConnection>>) CircleLayout.class;
-		
-		if ( 1 == this.layoutSelection.getSelectedIndex() ) {
-			layout = (Class<? extends Layout<Agent, AgentConnection>>) KKLayout.class;
-		}
-		
-		this.toggleNetworkPanelButton.setVisible( this.agentNetwork.size() <= InspectionPanel.AGENTS_COUNT_HIDE_NETWORK_PANEL );
-		
-		// don't show network-panel when too many agents
-		if ( this.agentNetwork.size() > InspectionPanel.AGENTS_COUNT_HIDE_NETWORK_PANEL || 
-				this.toggleNetworkPanelButton.isSelected() ) {
-			this.networkPanel.setVisible( false );
-			this.revalidate();
-			return;
-
-		} else {
-			this.networkPanel.setVisible( true );
-		}
-		
-		this.recreateButton.setVisible( this.agentNetwork.isRandomNetwork() );
-		
-		// remove network-visualization panel when already there
-		if ( null != this.networkVisPanel ) {
-			this.networkPanel.remove( this.networkVisPanel );
-		}
-		
-		this.networkVisPanel = InspectionPanel.this.agentNetwork.getNetworkRenderingPanel( layout, new INetworkSelectionObserver() {
-			@Override
-			public void agentSeleted( AgentSelectedEvent agentSelectedEvent ) {
-				// no simulation running yet, just highlight selected agent, its neighbours and their connections
-				if ( null == InspectionPanel.this.simulationThread ) {
-					InspectionPanel.this.resetNetworkHighlights();
-					
-					Agent selectedAgent = agentSelectedEvent.getSelectedAgent();
-					selectedAgent.setHighlighted( true );
-					
-					Iterator<Agent> neighbourIter = InspectionPanel.this.agentNetwork.getNeighbors( selectedAgent );
-					while ( neighbourIter.hasNext() ) {
-						Agent neighbour = neighbourIter.next();
-						neighbour.setHighlighted( true );
-						
-						InspectionPanel.this.agentNetwork.getConnection( selectedAgent, neighbour ).setHighlighted( true );
-					}
-					
-					if ( InspectionPanel.this.networkVisPanel.isVisible() ) {
-						InspectionPanel.this.networkVisPanel.repaint();
-					}
-					
-					return;
-				}
-				
-				// when simulation thread is not paused, don't react on selection
-				if ( false == InspectionPanel.this.simulationThread.isPause() ) {
-					return;
-				}
-				
-				InspectionPanel.this.resetNetworkHighlights();
-				InspectionPanel.this.txHistoryTable.clearAll();
-
-				// find path between two selected agents
-				if ( agentSelectedEvent.isCtrlDownFlag() && null != InspectionPanel.this.selectedAgent ) {
-					InspectionPanel.this.selectedAgent.setHighlighted( true );
-					agentSelectedEvent.getSelectedAgent().setHighlighted( true );
-					
-					List<AgentConnection> path = InspectionPanel.this.agentNetwork.getPath( InspectionPanel.this.selectedAgent, agentSelectedEvent.getSelectedAgent() );
-					// returns null when there is no path of successful transactions
-					if ( null != path ) {
-						for ( AgentConnection c : path ) {
-							c.setHighlighted( true );
-							InspectionPanel.this.addTXOfConnection( c );
-						}
-					}
-					
-				} else {
-					Agent a1 = agentSelectedEvent.getSelectedAgent();
-
-					for ( int i = 0; i < InspectionPanel.this.successfulTx.size(); ++i ) {
-						Agent a2 = null;
-						Transaction tx = InspectionPanel.this.successfulTx.get( i );
-
-						if ( a1 == tx.getMatch().getSellOffer().getAgent() ) {
-							a2 = tx.getMatch().getBuyOffer().getAgent();
-						} else if ( a1 == tx.getMatch().getBuyOffer().getAgent() ) {
-							a2 = tx.getMatch().getSellOffer().getAgent();
-						}
-						
-						if ( null != a2 ) {
-							InspectionPanel.this.txHistoryTable.addTx( tx );
-							InspectionPanel.this.agentNetwork.getConnection( a1, a2 ).setHighlighted( true );
-						}
-					}
-					
-					InspectionPanel.this.selectedAgent = a1;
-					InspectionPanel.this.selectedAgent.setHighlighted( true );
-				}
-				
-				if ( InspectionPanel.this.networkVisPanel.isVisible() ) {
-					InspectionPanel.this.networkVisPanel.repaint();
-				}
-			}
-
-			@Override
-			public void connectionSeleted( ConnectionSelectedEvent connSelectedEvent ) {
-				InspectionPanel.this.resetNetworkHighlights();
-				InspectionPanel.this.txHistoryTable.clearAll();
-
-				connSelectedEvent.getSelectedConnection().setHighlighted( true );
-				InspectionPanel.this.addTXOfConnection( connSelectedEvent.getSelectedConnection() );
-				
-				if ( InspectionPanel.this.networkVisPanel.isVisible() ) {
-					InspectionPanel.this.networkVisPanel.repaint();
-				}
-			}
-		} );
-
-		this.networkPanel.setBorder( BorderFactory.createTitledBorder( BorderFactory.createLineBorder( Color.black ), "" ) );
-		
-		this.networkPanel.add( this.networkVisPanel, BorderLayout.CENTER );
-		this.networkPanel.revalidate();
-		this.revalidate();
+		this.updateNetworkVisualisationFrame();
 	}
 	
 	private void toggleInspection() {
@@ -844,7 +754,7 @@ public class InspectionPanel extends JPanel implements ActionListener, ChangeLis
 			this.loanTypeSelection.setEnabled( false );
 			this.topologySelection.setEnabled( false );
 			this.optimismSelection.setEnabled( false );
-			this.recreateButton.setEnabled( false );
+			// TODO this.recreateButton.setEnabled( false );
 			this.importanceSamplingCheck.setEnabled( false );
 			
 			// reset controls
@@ -868,10 +778,62 @@ public class InspectionPanel extends JPanel implements ActionListener, ChangeLis
 			this.auction = new Auction( this.agentNetwork );
 			
 			// let simulation run in a separate thread to prevent blocking of gui
-			this.simulationThread = new InspectionThread( this.auction, this );
+			this.simulationThread = new InspectionThread( this.auction, new InspectionObserver() {
+				@Override
+				public void advanceTxFinished() {
+					// running in thread => need to update SWING through SwingUtilities.invokeLater
+					SwingUtilities.invokeLater( new Runnable() {
+						@Override
+						public void run() {
+							InspectionPanel.this.advanceTxFinished();
+						}
+					});
+				}
+
+				@Override
+				public MatchingType getMatchingType() {
+					return (MatchingType) InspectionPanel.this.matchingTypeSelection.getSelectedItem();
+				}
+
+				@Override
+				public boolean isKeepAgentHistory() {
+					return InspectionPanel.this.keepAgentHistoryCheck.isSelected();
+				}
+
+				@Override
+				public void repaint() {
+					InspectionPanel.this.repaint();
+				}
+
+				@Override
+				public void addSuccessfulTX(Transaction tx, boolean forceRepaint ) {
+					InspectionPanel.this.addSuccessfulTX( tx, forceRepaint );
+				}
+
+				@Override
+				public void updateEquilibriumStats(EquilibriumStatistics stats) {
+					InspectionPanel.this.equilibriumInfoPanel.setStats( stats );
+				}
+
+				@Override
+				public void simulationTerminated() {
+					InspectionPanel.this.simulationTerminated();
+				}
+
+				@Override
+				public void resumeFromPause() {
+					InspectionPanel.this.txHistoryTable.restore( InspectionPanel.this.successfulTx );
+				}
+
+				@Override
+				public void updateStats(int succTx, int noSuccTX, int totalTX, int totalNotSuccTx, long calculationTime) {
+					InspectionPanel.this.updateStats(succTx, noSuccTX, totalTX, totalNotSuccTx, calculationTime);
+				}
+			} );
+			
 			this.simulationThread.startSimulation();
 			
-			this.networkVisPanel.repaint();
+			
 			this.marketsVisualizer.repaint();
 			this.agentWealthPanel.repaint();
 			
@@ -893,14 +855,14 @@ public class InspectionPanel extends JPanel implements ActionListener, ChangeLis
 			this.loanTypeSelection.setEnabled( true );
 			this.topologySelection.setEnabled( true );
 			this.optimismSelection.setEnabled( true );
-			this.recreateButton.setEnabled( true );
+			// TODO this.recreateButton.setEnabled( true );
 			this.importanceSamplingCheck.setEnabled( true );
 		}
 	}
 	
 	private void highlightTx( Transaction tx ) {
 		// no need for anything highlighting-related when no network-panel available
-		if ( false == this.networkPanel.isVisible() ) {
+		if ( null == this.netVisFrame || false == this.netVisFrame.isVisible()  ) {
 			return;
 		}
 	
@@ -928,7 +890,7 @@ public class InspectionPanel extends JPanel implements ActionListener, ChangeLis
 			agentsIter.next().setCantTrade( finalAgentsIter.next().isCantTrade() );
 		}
 
-		this.networkVisPanel.repaint();
+		InspectionPanel.this.repaintNetworkVisFrame();
 	}
 	
 	private void resetNetworkHighlights() {
@@ -969,10 +931,7 @@ public class InspectionPanel extends JPanel implements ActionListener, ChangeLis
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			InspectionPanel.this.resetNetworkHighlights();
-			
-			if ( InspectionPanel.this.networkVisPanel.isVisible() ) {
-				InspectionPanel.this.networkVisPanel.repaint();
-			}
+			InspectionPanel.this.repaintNetworkVisFrame();
 			
 			InspectionPanel.this.nextTxButton.setEnabled( false );
 			InspectionPanel.this.advance10TxButton.setEnabled( false );
@@ -985,5 +944,10 @@ public class InspectionPanel extends JPanel implements ActionListener, ChangeLis
 
 			InspectionPanel.this.simulationThread.advanceTX( ( AdvanceMode ) InspectionPanel.this.advcanceModeSelection.getSelectedItem(), this.txCount );
 		}
+	}
+	
+	private void repaintNetworkVisFrame() {
+		if ( null != this.netVisFrame && this.netVisFrame.isVisible() )
+			this.netVisFrame.repaint();
 	}
 }
