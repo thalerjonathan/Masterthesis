@@ -13,6 +13,9 @@ import frontend.Utils;
 @SuppressWarnings("serial")
 public class MarketsTimeVisualizer extends MarketsVisualizer {
 
+	private final static int LEGEND_BOX_X = SCALA_X_WIDTH + 15;
+	private final static int LEGEND_BOX_Y = 45;
+
 	private final static double[] MOVING_AVG = new double[ MarketType.values().length ];
 		
 	private final static int WINDOW_SIZE = 100;
@@ -42,21 +45,21 @@ public class MarketsTimeVisualizer extends MarketsVisualizer {
 
 			if ( i != 0 ) {
 				g.drawChars( str.toCharArray(), 0, str.length(), x - 15, (int) (height + 20) );
-				g.drawLine( x, 0, x, (int) (height + 5) );
+				g.drawLine( x, SCALA_Y_WIDTH, x, (int) (height + 5) );
 				
 			} else {
-				g.drawLine( x, 0, x, (int) height );
+				g.drawLine( x, SCALA_Y_WIDTH, x, (int) height );
 			}
 		}
 		
 		// draw y-achsis sections
-		for ( int i = 0; i < Y_ACHSIS_GRID; ++i ) {
+		for ( int i = 0; i <= Y_ACHSIS_GRID; ++i ) {
 			double h = i / ( double ) Y_ACHSIS_GRID;
-			int y = (int) ( height - ( height * h ) );
+			int y = (int) ( height - ( ( height - SCALA_Y_WIDTH ) * h ) );
 			str = Utils.DECIMAL_2_DIGITS_FORMATTER.format( h );
+			g.drawChars( str.toCharArray(), 0, str.length(), SCALA_X_WIDTH - 45, y + 5 );
 			
-			if ( i != 0 ) {
-				g.drawChars( str.toCharArray(), 0, str.length(), SCALA_X_WIDTH - 45, y + 5 );
+			if ( i != 0 && i != Y_ACHSIS_GRID ) {
 				g.drawLine( SCALA_X_WIDTH - 5, y, (int) d.width, y );
 				
 			} else {
@@ -65,43 +68,55 @@ public class MarketsTimeVisualizer extends MarketsVisualizer {
 			}
 		}
 
-		
-		( ( Graphics2D ) g ).setStroke( new BasicStroke( 2 ) );
-		
 		// draw grid
 		( ( Graphics2D ) g ).setStroke( new BasicStroke( 2 ) );
 		// draw x-achsis
 		g.drawLine( SCALA_X_WIDTH, ( int ) height, d.width, ( int ) height );
-		// draw y-achsis
-		g.drawLine( SCALA_X_WIDTH, ( int ) height, SCALA_X_WIDTH, 0 );
-		
+		// draw lower y-achsis 
+		g.drawLine( SCALA_X_WIDTH, ( int ) height, SCALA_X_WIDTH, SCALA_Y_WIDTH );
+		// draw upper y-achsis 
+		g.drawLine( SCALA_X_WIDTH, ( int ) SCALA_Y_WIDTH, d.width, SCALA_Y_WIDTH );
+				
+		// transactions displayed on screen: subtract WINDOW_SIZE because need at least WINDOW_SIZE 
+		// transactions because WINDOW_SIZE will contribute to each pixel
+		int txCount = this.successfulMarkets.size() - WINDOW_SIZE;
+		// calculate ratio of transactions-count to widths in pixel (how many transactions fit on one pixel)
+		int txToWidthRatio = Math.max( 1, (int) (txCount / width) );
+		// adaptive moving-average kernel window: for each tx-to-pixel ratio increase by MOVING_AVG_SIZE
+		// this will keep the curve about the same smoothness independent of the amount of transactions
+		int movingAvgWindow = MOVING_AVG_SIZE * txToWidthRatio;
+
 		Arrays.fill( MARKET_Y, height );
 		
-		double xPixelPerTx = ( double ) width / ( double ) ( this.successfulMarkets.size() - WINDOW_SIZE - MOVING_AVG_SIZE );
+		double xPixelPerTx = ( double ) width / ( double ) ( txCount - movingAvgWindow );
 		double xAchsisCurrent = SCALA_X_WIDTH;
 		double xAchsisNext = 0.0;
 		
-		for ( int i = 0; i < this.successfulMarkets.size() - WINDOW_SIZE - MOVING_AVG_SIZE; ++i ) {
-			xAchsisNext = xAchsisCurrent + xPixelPerTx;
+		// don't visit each transaction: do steps of txToWidthRatio, will do moving average anyway
+		for ( int i = 0; i < txCount - movingAvgWindow; i += txToWidthRatio ) {
+			// advance x-achsis
+			xAchsisNext = xAchsisCurrent + txToWidthRatio * xPixelPerTx;
 			
 			Arrays.fill( MOVING_AVG, 0.0 );
 			
-			for ( int avg = 0; avg < MOVING_AVG_SIZE; ++avg ) {
+			// calculate moving average
+			for ( int avg = 0; avg < movingAvgWindow; ++avg ) {
 				Arrays.fill( MARKET_TX_COUNT, 0 );
 				
+				// accumulate over WINDOW_SIZE transactions
 				for ( int w = i + avg; w < i + WINDOW_SIZE + avg; ++w ) {
 					MarketType market = this.successfulMarkets.get( w );
 					MARKET_TX_COUNT[ market.ordinal() ]++;
 				}
 				
 				for ( int m = 0; m < MarketType.values().length; ++m ) {
-					MOVING_AVG[ m ] += ( double ) MARKET_TX_COUNT[ m ] / ( double ) MOVING_AVG_SIZE; 
+					MOVING_AVG[ m ] += ( double ) MARKET_TX_COUNT[ m ] / ( double ) movingAvgWindow; 
 				}
 			}
 		
 			for ( int m = 0; m < MarketType.values().length; ++m ) {
 				double ratio = ( double ) MOVING_AVG[ m ] / ( double ) WINDOW_SIZE;
-				double yAchsisMarketNext = height - ( height * ratio ) ;
+				double yAchsisMarketNext = height - ( ( height - SCALA_Y_WIDTH ) * ratio ) ;
 				
 				g.setColor( MARKET_COLORS[ m ] );
 				g.drawLine( (int) xAchsisCurrent, ( int ) MARKET_Y[ m ], ( int ) xAchsisNext, ( int ) yAchsisMarketNext );
@@ -112,6 +127,6 @@ public class MarketsTimeVisualizer extends MarketsVisualizer {
 			xAchsisCurrent = xAchsisNext;
 		}
 		
-		this.renderLegend( g );
+		this.renderLegend( g, LEGEND_BOX_X, LEGEND_BOX_Y );
 	}
 }
