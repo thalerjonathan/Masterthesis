@@ -14,7 +14,7 @@ public class Utils {
 	public final static DecimalFormat DECIMAL_4_DIGITS_FORMATTER = new DecimalFormat("0.0000" );
 
 	public final static DecimalFormat DECIMAL_LARGEVALUES_FORMATTER = new DecimalFormat( "###,###.###" );
-
+	
 	public final static File EXPERIMENTS_DIRECTORY = new File( System.getProperty( "user.dir" ) + File.separator + "experiments" );
 	public final static File REPLICATIONS_DIRECTORY = new File( System.getProperty( "user.dir" ) + File.separator + "replications" );
 	
