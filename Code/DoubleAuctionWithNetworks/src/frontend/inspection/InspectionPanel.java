@@ -67,7 +67,8 @@ import frontend.networkVisualisation.INetworkSelectionObserver;
 import frontend.networkVisualisation.NetworkRenderPanel;
 import frontend.networkVisualisation.NetworkVisualisationFrame;
 import frontend.replication.EquilibriumInfoPanel;
-import frontend.visualisation.MarketsVisualizer;
+import frontend.visualisation.MarketsAccumulatedVisualizer;
+import frontend.visualisation.MarketsTimeVisualizer;
 import frontend.visualisation.WealthVisualizer;
 
 @SuppressWarnings("serial")
@@ -115,7 +116,8 @@ public class InspectionPanel extends JPanel {
 	private JTabbedPane visualizersTabbedPane;
 	
 	private WealthVisualizer agentWealthPanel;
-	private MarketsVisualizer marketsVisualizer;
+	private MarketsTimeVisualizer marketsTimeVisualizer;
+	private MarketsAccumulatedVisualizer marketsAccuVisualizer;
 	private NetworkVisualisationFrame netVisFrame;
 	private EquilibriumInfoPanel equilibriumInfoPanel;
 	
@@ -170,7 +172,8 @@ public class InspectionPanel extends JPanel {
 		this.visualizationPanel = new JPanel( new GridBagLayout() );
 		this.offerBook = new OfferBook();
 		this.equilibriumInfoPanel = new EquilibriumInfoPanel();
-		this.marketsVisualizer = new MarketsVisualizer( this.successfulMarkets );
+		this.marketsTimeVisualizer = new MarketsTimeVisualizer( this.successfulMarkets );
+		this.marketsAccuVisualizer = new MarketsAccumulatedVisualizer( this.successfulMarkets );
 		this.agentWealthPanel = new WealthVisualizer();
 
 		JPanel controlsPanel = new JPanel();
@@ -231,7 +234,8 @@ public class InspectionPanel extends JPanel {
 		
 		// setting properties of components ////////////////////////////////////
 		this.visualizersTabbedPane.addTab( "Agents", this.agentWealthPanel );
-		this.visualizersTabbedPane.addTab( "Markets", this.marketsVisualizer );
+		this.visualizersTabbedPane.addTab( "Markets Time", this.marketsTimeVisualizer );
+		this.visualizersTabbedPane.addTab( "Markets Accum", this.marketsAccuVisualizer );
 		
 		this.loanTypeSelection.setSelectedItem( LoanType.LOAN_05 );
 		
@@ -567,7 +571,8 @@ public class InspectionPanel extends JPanel {
 				this.forceRedrawCheck.isSelected()) {
 			
 			this.agentWealthPanel.setAgents( this.agentNetwork.getOrderedList() );
-			this.marketsVisualizer.repaint();
+			this.marketsTimeVisualizer.repaint();
+			this.marketsAccuVisualizer.repaint();
 			
 			this.lastRepaintTime = currMillis;
 		}
@@ -727,7 +732,8 @@ public class InspectionPanel extends JPanel {
 		this.successfulMarkets.clear();
 		
 		this.agentWealthPanel.setAgents( this.agentNetwork.getOrderedList() );
-		this.marketsVisualizer.repaint();
+		this.marketsTimeVisualizer.repaint();
+		this.marketsAccuVisualizer.repaint();
 		
 		// close opened offer-books because agents changed (number of agents,...)
 		this.offerBook.agentsChanged( this.agentNetwork.getOrderedList(), this.getTitleExtension() );
@@ -832,9 +838,9 @@ public class InspectionPanel extends JPanel {
 			} );
 			
 			this.simulationThread.startSimulation();
-			
-			
-			this.marketsVisualizer.repaint();
+
+			this.marketsTimeVisualizer.repaint();
+			this.marketsAccuVisualizer.repaint();
 			this.agentWealthPanel.repaint();
 			
 		// simulation is running
