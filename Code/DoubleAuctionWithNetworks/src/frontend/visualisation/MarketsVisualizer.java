@@ -5,7 +5,6 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.util.List;
 
 import javax.swing.JPanel;
 
@@ -20,7 +19,7 @@ public abstract class MarketsVisualizer extends JPanel {
 	protected final static int X_ACHSIS_GRID = 15;
 	protected final static int Y_ACHSIS_GRID = 10;
 	
-	protected final static int[] MARKET_TX_COUNT = new int[ MarketType.values().length ];
+
 	protected final static double[] MARKET_Y = new double[ MarketType.values().length ];
 	
 	protected final static Color[] MARKET_COLORS;
@@ -35,11 +34,7 @@ public abstract class MarketsVisualizer extends JPanel {
 		MARKET_COLORS[ MarketType.COLLATERAL_CASH.ordinal() ] = DARK_CYAN;
 	}
 	
-	protected List<MarketType> successfulMarkets;
-
-	public MarketsVisualizer( List<MarketType> successfulMatches ) {
-		this.successfulMarkets = successfulMatches;
-		
+	public MarketsVisualizer() {
 		this.setPreferredSize( new Dimension( (int) (this.getToolkit().getScreenSize().getWidth() / 2 ), 
 				(int) (0.75 * this.getToolkit().getScreenSize().getHeight() ) ) );
 		

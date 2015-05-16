@@ -4,6 +4,7 @@ import java.awt.BasicStroke;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -11,19 +12,24 @@ import backend.markets.MarketType;
 import frontend.Utils;
 
 @SuppressWarnings("serial")
-public class MarketsAccumulatedVisualizer extends MarketsVisualizer {
+public class MarketsAccumulatedMedianVisualizer extends MarketsVisualizer {
 
 	private final static int LEGEND_BOX_X = SCALA_X_WIDTH + 15;
 	private final static int LEGEND_BOX_Y = 15;
 
-	protected final static int[] MARKET_TX_COUNT = new int[ MarketType.values().length ];
+	private final static double[] MARKET_TX_COUNT = new double[ MarketType.values().length ];
 	
-	protected List<MarketType> successfulMarkets;
+	private List<double[]> successfulMarkets;
 
-	public MarketsAccumulatedVisualizer(List<MarketType> successfulMatches) {
+	public MarketsAccumulatedMedianVisualizer() {
 		super();
 		
+		this.successfulMarkets = new ArrayList<>();
+	}
+
+	public void setMarkets( List<double[]> successfulMatches ) {
 		this.successfulMarkets = successfulMatches;
+		repaint();
 	}
 	
 	@Override
@@ -33,11 +39,13 @@ public class MarketsAccumulatedVisualizer extends MarketsVisualizer {
 		int maxTx = 0;
 		int[] totalTxInMarket = new int[ MarketType.values().length ];
 		
-		for ( MarketType market : this.successfulMarkets ) {
-			totalTxInMarket[ market.ordinal() ]++;
-			
-			if ( totalTxInMarket[ market.ordinal() ] > maxTx ) {
-				maxTx = totalTxInMarket[ market.ordinal() ];
+		for ( double[] marketCounts : this.successfulMarkets ) {
+			for ( int i = 0; i < marketCounts.length; ++i ) {
+				totalTxInMarket[ i ] += marketCounts[ i ];
+				
+				if ( totalTxInMarket[ i ] > maxTx ) {
+					maxTx = totalTxInMarket[ i ];
+				}
 			}
 		}
 		
@@ -96,12 +104,11 @@ public class MarketsAccumulatedVisualizer extends MarketsVisualizer {
 		g.drawLine( SCALA_X_WIDTH, ( int ) height, SCALA_X_WIDTH, 0 );
 		
 		for ( int i = 0; i < this.successfulMarkets.size(); ++i ) {
-			MarketType market = this.successfulMarkets.get( i );
+			double[] marketCounts = this.successfulMarkets.get( i );
 			xAchsisNext = xAchsisCurrent + xPixelPerTx;
 			
-			MARKET_TX_COUNT[ market.ordinal() ]++;
-			
 			for ( int m = 0; m < MarketType.values().length; ++m ) {
+				MARKET_TX_COUNT[ m ] += marketCounts[ m ];
 				double newMarketY = height - MARKET_TX_COUNT[ m ] * yPixelPerTx;
 				
 				g.setColor( MARKET_COLORS[ m ] );

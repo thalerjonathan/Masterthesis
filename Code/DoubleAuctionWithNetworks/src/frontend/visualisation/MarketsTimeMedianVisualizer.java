@@ -4,6 +4,7 @@ import java.awt.BasicStroke;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -11,26 +12,30 @@ import backend.markets.MarketType;
 import frontend.Utils;
 
 @SuppressWarnings("serial")
-public class MarketsTimeVisualizer extends MarketsVisualizer {
+public class MarketsTimeMedianVisualizer extends MarketsVisualizer {
 
 	private final static int LEGEND_BOX_X = SCALA_X_WIDTH + 15;
 	private final static int LEGEND_BOX_Y = 45;
 
-	protected final static int[] MARKET_TX_COUNT = new int[ MarketType.values().length ];
-	
+	private final static double[] MARKET_TX_COUNT = new double[ MarketType.values().length ];
 	private final static double[] MOVING_AVG = new double[ MarketType.values().length ];
 		
 	private final static int WINDOW_SIZE = 100;
 	private final static int MOVING_AVG_SIZE = 50;
 	
-	protected List<MarketType> successfulMarkets;
+	protected List<double[]> successfulMarkets;
 
-	public MarketsTimeVisualizer(List<MarketType> successfulMatches) {
+	public MarketsTimeMedianVisualizer() {
 		super();
 		
-		this.successfulMarkets = successfulMatches;
+		this.successfulMarkets = new ArrayList<>();
 	}
 
+	public void setMarkets( List<double[]> successfulMatches ) {
+		this.successfulMarkets = successfulMatches;
+		repaint();
+	}
+	
 	@Override
 	protected void paintComponent(Graphics g) {
 		super.paintComponent(g);
@@ -111,12 +116,11 @@ public class MarketsTimeVisualizer extends MarketsVisualizer {
 				
 				// accumulate over WINDOW_SIZE transactions
 				for ( int w = i + avg; w < i + WINDOW_SIZE + avg; ++w ) {
-					MarketType market = this.successfulMarkets.get( w );
-					MARKET_TX_COUNT[ market.ordinal() ]++;
-				}
-				
-				for ( int m = 0; m < MarketType.values().length; ++m ) {
-					MOVING_AVG[ m ] += ( double ) MARKET_TX_COUNT[ m ] / ( double ) movingAvgWindow; 
+					double[] marketCounts = this.successfulMarkets.get( w );
+					
+					for ( int m = 0; m < MarketType.values().length; ++m ) {
+						MOVING_AVG[ m ] += ( double ) marketCounts[ m ] / ( double ) movingAvgWindow; 
+					}
 				}
 			}
 		

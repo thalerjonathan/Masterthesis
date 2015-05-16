@@ -5,6 +5,7 @@ import java.util.List;
 
 import backend.EquilibriumStatistics;
 import backend.agents.Agent;
+import backend.markets.MarketType;
 import frontend.experimenter.xml.result.ReplicationBean;
 
 public class ReplicationData {
@@ -21,6 +22,7 @@ public class ReplicationData {
 	private Date endingTime;
 	
 	private List<Agent> finalAgents;
+	private List<MarketType> successfulMarkets;
 	
 	private EquilibriumStatistics stats;
 	
@@ -117,5 +119,13 @@ public class ReplicationData {
 
 	public void setEndingTime(Date endingTime) {
 		this.endingTime = endingTime;
+	}
+
+	public List<MarketType> getSuccessfulMarkets() {
+		return successfulMarkets;
+	}
+
+	public void setSuccessfulMarkets(List<MarketType> successfulMarkets) {
+		this.successfulMarkets = successfulMarkets;
 	}
 }

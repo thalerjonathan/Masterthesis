@@ -20,6 +20,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
+import javax.swing.JTabbedPane;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
@@ -63,6 +64,8 @@ import frontend.networkCreators.WattStrogatzCreator;
 import frontend.networkVisualisation.NetworkRenderPanel;
 import frontend.networkVisualisation.NetworkVisualisationFrame;
 import frontend.replication.info.ReplicationInfoFrame;
+import frontend.visualisation.MarketsAccumulatedMedianVisualizer;
+import frontend.visualisation.MarketsTimeMedianVisualizer;
 import frontend.visualisation.WealthVisualizer;
 
 @SuppressWarnings( value = {"serial" } )
@@ -99,9 +102,12 @@ public class ReplicationPanel extends JPanel {
 	private EquilibriumInfoPanel equilibriumInfoPanel;
 	private ReplicationTable replicationTable;
 	
+	private JTabbedPane visualizersTabbedPane;
+	
 	private AgentInfoFrame agentInfoFrame;
 	private ReplicationInfoFrame replicationInfoFrame;
-	
+	private MarketsTimeMedianVisualizer marketsTimeVisualizer;
+	private MarketsAccumulatedMedianVisualizer marketsAccuVisualizer;
 	private WealthVisualizer agentWealthPanel;
 	private NetworkVisualisationFrame netVisFrame;
 	
@@ -153,7 +159,11 @@ public class ReplicationPanel extends JPanel {
 	
 	private void createControls() {
 		// creating controls
+		this.visualizersTabbedPane = new JTabbedPane();
+		
 		this.agentWealthPanel = new WealthVisualizer();
+		this.marketsTimeVisualizer = new MarketsTimeMedianVisualizer();
+		this.marketsAccuVisualizer = new MarketsAccumulatedMedianVisualizer();
 		this.equilibriumInfoPanel = new EquilibriumInfoPanel();
 		
 		this.abmMarketCheck = new JCheckBox( "Asset/Loan Market" );
@@ -332,6 +342,10 @@ public class ReplicationPanel extends JPanel {
 			}
 		});
 		
+		this.visualizersTabbedPane.addTab( "Agents", this.agentWealthPanel );
+		this.visualizersTabbedPane.addTab( "Markets Time", this.marketsTimeVisualizer );
+		this.visualizersTabbedPane.addTab( "Markets Accum", this.marketsAccuVisualizer );
+		
 		// adding components ////////////////////////////////////
 		JPanel controlsPanel = new JPanel( new GridBagLayout() );
 		JPanel agentsConfigPanel = new JPanel();
@@ -357,8 +371,6 @@ public class ReplicationPanel extends JPanel {
 		replicationsConfigPanel.add( this.runningTimeLabel );
 		replicationsConfigPanel.add( this.replicationsLeftLabel );
 		
-		this.agentWealthPanel.setSize( this.getSize() );
-		
 		GridBagConstraints c = new GridBagConstraints();
 		
 		c.gridy = 0;
@@ -367,7 +379,7 @@ public class ReplicationPanel extends JPanel {
 		controlsPanel.add( replicationsConfigPanel, c );
 
 		this.add( controlsPanel, BorderLayout.NORTH );
-		this.add( this.agentWealthPanel, BorderLayout.CENTER );
+		this.add( this.visualizersTabbedPane, BorderLayout.CENTER );
 		this.add( this.equilibriumInfoPanel, BorderLayout.SOUTH );
 	}
 	
@@ -471,6 +483,8 @@ public class ReplicationPanel extends JPanel {
 			// reset previously calculated data
 			this.replicationTable.clearAll();
 			this.agentWealthPanel.setAgents( this.agentNetworkTemplate.getOrderedList() );
+			this.marketsAccuVisualizer.setMarkets( new ArrayList<>() );
+			this.marketsTimeVisualizer.setMarkets( new ArrayList<>() );
 			
 			ExperimentBean bean = new ExperimentBean();
 			bean.setName( this.name );
@@ -488,7 +502,7 @@ public class ReplicationPanel extends JPanel {
 			
 			this.replications.start( bean, new ReplicationsListener() {
 				@Override
-				public void replicationFinished(ReplicationData data, ReplicationData currentStats, EquilibriumStatistics variance ) {
+				public void replicationFinished( ReplicationData data, ReplicationData currentStats, EquilibriumStatistics variance, List<double[]> medianMarkets ) {
 					SwingUtilities.invokeLater( new Runnable() {
 						@Override
 						public void run() {
@@ -498,6 +512,9 @@ public class ReplicationPanel extends JPanel {
 							if ( null != currentStats ) {
 								ReplicationPanel.this.equilibriumInfoPanel.setMeanAndVariance( currentStats.getStats(), variance );
 								ReplicationPanel.this.agentWealthPanel.setAgents( currentStats.getFinalAgents() );
+								ReplicationPanel.this.marketsAccuVisualizer.setMarkets( medianMarkets );
+								ReplicationPanel.this.marketsTimeVisualizer.setMarkets( medianMarkets );
+								
 								ReplicationPanel.this.updateAgentInfoFrame( currentStats.getFinalAgents() );
 							}
 						}
@@ -579,6 +596,8 @@ public class ReplicationPanel extends JPanel {
 		
 		this.replications = new ReplicationsRunner( this.agentNetworkTemplate, this.markets );
 		this.agentWealthPanel.setAgents( this.agentNetworkTemplate.getOrderedList() );
+		this.marketsAccuVisualizer.setMarkets( new ArrayList<>() );
+		this.marketsTimeVisualizer.setMarkets( new ArrayList<>() );
 		
 		this.updateNetworkVisualisationFrame();
 		this.updateAgentInfoFrame( this.agentNetworkTemplate.getOrderedList() );

@@ -24,6 +24,7 @@ import backend.Auction.MatchingType;
 import backend.EquilibriumStatistics;
 import backend.agents.Agent;
 import backend.agents.network.AgentNetwork;
+import backend.markets.MarketType;
 import backend.markets.Markets;
 import backend.tx.Transaction;
 import frontend.experimenter.xml.experiment.ExperimentBean;
@@ -44,11 +45,8 @@ public class ReplicationsRunner {
 	private List<ReplicationTask> replicationTasks;
 	private Thread awaitFinishThread;
 	
-	private ReplicationData currentStats;
-	private EquilibriumStatistics varianceStats;
-	
 	private List<ReplicationData> replicationData;
-
+	
 	private AgentNetwork template;
 	private Markets markets;
 	private ReplicationsListener listener;
@@ -57,11 +55,15 @@ public class ReplicationsRunner {
 	
 	private ExperimentBean experiment;
 	
+	private ReplicationData currentStats;
+	private EquilibriumStatistics varianceStats;
+	private List<double[]> medianMarkets;
+	
 	private final static SimpleDateFormat FILENAME_DATE_FORMATTER = new SimpleDateFormat( "yyyyMMdd_HHmmss" );
 	private final static String REPLICATIONS_DIR_NAME = "replications/";
 	
 	public interface ReplicationsListener {
-		public void replicationFinished( ReplicationData data, ReplicationData meanData, EquilibriumStatistics variance );
+		public void replicationFinished( ReplicationData data, ReplicationData meanData, EquilibriumStatistics variance, List<double[]> medianMarkets );
 		public void allReplicationsFinished();
 	}
 	
@@ -75,6 +77,7 @@ public class ReplicationsRunner {
 	public ReplicationsRunner( AgentNetwork template, Markets markets ) {
 		this.replicationTasks = new ArrayList<>();
 		this.replicationData = new ArrayList<>();
+		this.medianMarkets = new ArrayList<>();
 		
 		this.template = template;
 		this.markets = markets;
@@ -191,7 +194,10 @@ public class ReplicationsRunner {
 		this.replicationData.add( data );
 		this.currentStats = this.calculateStatistics();
 		
-		this.listener.replicationFinished( data, this.currentStats, this.varianceStats );
+		// NOTE: need to copy markets because gui-thread will use it concurrently and may be cleared during replicationFinished 
+		List<double[]> copyMarkets = new ArrayList<>( this.medianMarkets );
+		
+		this.listener.replicationFinished( data, this.currentStats, this.varianceStats, copyMarkets );
 	}
 	
 	private ReplicationData calculateStatistics() {
@@ -218,13 +224,29 @@ public class ReplicationsRunner {
 		double[] meanStatsMedianistValues = new double[ this.replicationData.size() ];
 		double[] meanStatsOptimistValues = new double[ this.replicationData.size() ];
 		
+		this.medianMarkets.clear();
+		
 		for ( ReplicationData data : this.replicationData ) {
 			if ( data.isCanceled() ) {
 				continue;
 			}
 			
-			List<Agent> finalAgents = data.getFinalAgents();
+			List<MarketType> successfulMarkets = data.getSuccessfulMarkets();
+			for ( int i = 0; i < successfulMarkets.size(); ++i ) {
+				MarketType market = successfulMarkets.get( i );
+				double[] marketCounts = null;
+				
+				if ( i == medianMarkets.size() ) {
+					marketCounts = new double[ MarketType.values().length ];
+					medianMarkets.add( marketCounts );
+				} else {
+					marketCounts = medianMarkets.get( i );
+				}
+				
+				marketCounts[ market.ordinal() ]++;
+			}
 			
+			List<Agent> finalAgents = data.getFinalAgents();
 			for ( int i = 0; i < finalAgents.size(); ++i ) {
 				Agent a = finalAgents.get( i );
 				
@@ -266,6 +288,12 @@ public class ReplicationsRunner {
 		// no valid replications so far: no current data
 		if ( 0 == validReplications ) {
 			return null;
+		}
+		
+		for ( double[] marketCounts : this.medianMarkets ) {
+			for ( int i = 0; i < MarketType.values().length; ++i ) {
+				marketCounts[ i ] /= validReplications;
+			}
 		}
 		
 		meanStats.assetPrice /= validReplications;
@@ -501,6 +529,7 @@ public class ReplicationsRunner {
 			this.totalTxCount = 0;
 			this.failTxTotalCount = 0;
 			this.failTxSuccessiveCount = 0;
+			List<MarketType> successfulMarkets = new ArrayList<>();
 			
 			while ( true ) {
 				Transaction tx = auction.executeSingleTransaction( MatchingType.BEST_NEIGHBOUR, false );
@@ -513,6 +542,8 @@ public class ReplicationsRunner {
 					
 				} else {
 					this.failTxSuccessiveCount = 0;
+					successfulMarkets.add( tx.getMatch().getMarket() );
+					
 				}
 
 				if ( TerminationMode.TOTAL_TX == ReplicationsRunner.this.experiment.getTerminationMode() ) {
@@ -550,6 +581,7 @@ public class ReplicationsRunner {
 					data.setTaskId( this.taskId );
 					data.setTotalTxCount( this.totalTxCount );
 					data.setFailedTxCount( this.failTxTotalCount );
+					data.setSuccessfulMarkets( successfulMarkets );
 					
 					this.nextTxFlag = false;
 					
