@@ -19,7 +19,6 @@ public abstract class MarketsVisualizer extends JPanel {
 	protected final static int X_ACHSIS_GRID = 15;
 	protected final static int Y_ACHSIS_GRID = 10;
 	
-
 	protected final static double[] MARKET_Y = new double[ MarketType.values().length ];
 	
 	protected final static Color[] MARKET_COLORS;
@@ -35,7 +34,7 @@ public abstract class MarketsVisualizer extends JPanel {
 	}
 	
 	public MarketsVisualizer() {
-		this.setPreferredSize( new Dimension( (int) (this.getToolkit().getScreenSize().getWidth() / 2 ), 
+		this.setPreferredSize( new Dimension( (int) (this.getToolkit().getScreenSize().getWidth() ), 
 				(int) (0.75 * this.getToolkit().getScreenSize().getHeight() ) ) );
 		
 		this.setBackground( Color.WHITE );
@@ -47,22 +46,22 @@ public abstract class MarketsVisualizer extends JPanel {
 		g.fillRect( topX, topY, 155, 85 );
 		
 		// draw legend
-		g.setColor( MarketsAccumulatedVisualizer.MARKET_COLORS[ MarketType.ASSET_CASH.ordinal() ] );
+		g.setColor( MarketsAccuOnlineVisualizer.MARKET_COLORS[ MarketType.ASSET_CASH.ordinal() ] );
 		g.drawLine( topX + 5, topY + 13, topX + 50, topY + 13 );
 		g.setColor( Color.BLACK );
 		g.drawChars( "Asset/Cash".toCharArray(), 0, "Asset/Cash".length(), topX + 60, topY + 18 );
 		
-		g.setColor( MarketsAccumulatedVisualizer.MARKET_COLORS[ MarketType.LOAN_CASH.ordinal() ] );
+		g.setColor( MarketsAccuOnlineVisualizer.MARKET_COLORS[ MarketType.LOAN_CASH.ordinal() ] );
 		g.drawLine( topX + 5, topY + 33, topX + 50, topY + 33 );
 		g.setColor( Color.BLACK );
 		g.drawChars( "Loan/Cash".toCharArray(), 0, "Loan/Cash".length(), topX + 60, topY + 38 );
 		
-		g.setColor( MarketsAccumulatedVisualizer.MARKET_COLORS[ MarketType.ASSET_LOAN.ordinal() ] );
+		g.setColor( MarketsAccuOnlineVisualizer.MARKET_COLORS[ MarketType.ASSET_LOAN.ordinal() ] );
 		g.drawLine( topX + 5, topY + 53, topX + 50, topY + 53 );
 		g.setColor( Color.BLACK );
 		g.drawChars( "Asset/Loans".toCharArray(), 0, "Asset/Loans".length(), topX + 60, topY + 58 );
 
-		g.setColor( MarketsAccumulatedVisualizer.MARKET_COLORS[ MarketType.COLLATERAL_CASH.ordinal() ] );
+		g.setColor( MarketsAccuOnlineVisualizer.MARKET_COLORS[ MarketType.COLLATERAL_CASH.ordinal() ] );
 		g.drawLine( topX + 5, topY + 73, topX + 50, topY + 73 );
 		g.setColor( Color.BLACK );
 		g.drawChars( "Collateral/Cash".toCharArray(), 0, "Collateral/Cash".length(), topX + 60, topY + 78 );

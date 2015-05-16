@@ -11,7 +11,7 @@ import backend.markets.MarketType;
 import frontend.Utils;
 
 @SuppressWarnings("serial")
-public class MarketsTimeVisualizer extends MarketsVisualizer {
+public class MarketsTimeOnlineVisualizer extends MarketsVisualizer {
 
 	private final static int LEGEND_BOX_X = SCALA_X_WIDTH + 15;
 	private final static int LEGEND_BOX_Y = 45;
@@ -25,7 +25,7 @@ public class MarketsTimeVisualizer extends MarketsVisualizer {
 	
 	protected List<MarketType> successfulMarkets;
 
-	public MarketsTimeVisualizer(List<MarketType> successfulMatches) {
+	public MarketsTimeOnlineVisualizer(List<MarketType> successfulMatches) {
 		super();
 		
 		this.successfulMarkets = successfulMatches;

@@ -26,8 +26,8 @@ import frontend.experimenter.xml.result.ResultBean;
 import frontend.replication.EquilibriumInfoPanel;
 import frontend.replication.ReplicationData;
 import frontend.replication.ReplicationTable;
-import frontend.visualisation.MarketsAccumulatedMedianVisualizer;
-import frontend.visualisation.MarketsTimeMedianVisualizer;
+import frontend.visualisation.MarketsAccuOfflineVisualizer;
+import frontend.visualisation.MarketsTimeOfflineVisualizer;
 import frontend.visualisation.WealthVisualizer;
 
 @SuppressWarnings("serial")
@@ -78,9 +78,9 @@ public class ExperimentResultPanel extends JPanel {
 		ExperimentInfoPanel experimentPanel = new ExperimentInfoPanel( bean.getExperiment(), true );
 		EquilibriumInfoPanel equilibriumInfoPanel = new EquilibriumInfoPanel();
 		WealthVisualizer wealthvisualizer = new WealthVisualizer();
-		MarketsTimeMedianVisualizer marketsTimeVisualizer = new MarketsTimeMedianVisualizer( bean.getMedianMarkets() );
-		MarketsAccumulatedMedianVisualizer marketsAccuVisualizer = new MarketsAccumulatedMedianVisualizer(  bean.getMedianMarkets() );
-		
+		MarketsTimeOfflineVisualizer marketsTimeVisualizer = new MarketsTimeOfflineVisualizer( bean.getMedianMarkets() );
+		MarketsAccuOfflineVisualizer marketsAccuVisualizer = new MarketsAccuOfflineVisualizer( bean.getMedianMarkets() );
+
 		wealthvisualizer.setAgents( agents );
 		equilibriumInfoPanel.setMeanAndVariance( equilibriumMean, equilibriumVariance );
 

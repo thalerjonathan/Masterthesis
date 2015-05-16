@@ -64,8 +64,8 @@ import frontend.networkCreators.WattStrogatzCreator;
 import frontend.networkVisualisation.NetworkRenderPanel;
 import frontend.networkVisualisation.NetworkVisualisationFrame;
 import frontend.replication.info.ReplicationInfoFrame;
-import frontend.visualisation.MarketsAccumulatedMedianVisualizer;
-import frontend.visualisation.MarketsTimeMedianVisualizer;
+import frontend.visualisation.MarketsAccuOfflineVisualizer;
+import frontend.visualisation.MarketsTimeOfflineVisualizer;
 import frontend.visualisation.WealthVisualizer;
 
 @SuppressWarnings( value = {"serial" } )
@@ -106,8 +106,8 @@ public class ReplicationPanel extends JPanel {
 	
 	private AgentInfoFrame agentInfoFrame;
 	private ReplicationInfoFrame replicationInfoFrame;
-	private MarketsTimeMedianVisualizer marketsTimeVisualizer;
-	private MarketsAccumulatedMedianVisualizer marketsAccuVisualizer;
+	private MarketsTimeOfflineVisualizer marketsTimeVisualizer;
+	private MarketsAccuOfflineVisualizer marketsAccuVisualizer;
 	private WealthVisualizer agentWealthPanel;
 	private NetworkVisualisationFrame netVisFrame;
 	
@@ -162,8 +162,8 @@ public class ReplicationPanel extends JPanel {
 		this.visualizersTabbedPane = new JTabbedPane();
 		
 		this.agentWealthPanel = new WealthVisualizer();
-		this.marketsTimeVisualizer = new MarketsTimeMedianVisualizer();
-		this.marketsAccuVisualizer = new MarketsAccumulatedMedianVisualizer();
+		this.marketsTimeVisualizer = new MarketsTimeOfflineVisualizer();
+		this.marketsAccuVisualizer = new MarketsAccuOfflineVisualizer();
 		this.equilibriumInfoPanel = new EquilibriumInfoPanel();
 		
 		this.abmMarketCheck = new JCheckBox( "Asset/Loan Market" );

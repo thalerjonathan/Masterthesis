@@ -67,8 +67,8 @@ import frontend.networkVisualisation.INetworkSelectionObserver;
 import frontend.networkVisualisation.NetworkRenderPanel;
 import frontend.networkVisualisation.NetworkVisualisationFrame;
 import frontend.replication.EquilibriumInfoPanel;
-import frontend.visualisation.MarketsAccumulatedVisualizer;
-import frontend.visualisation.MarketsTimeVisualizer;
+import frontend.visualisation.MarketsAccuOnlineVisualizer;
+import frontend.visualisation.MarketsTimeOnlineVisualizer;
 import frontend.visualisation.WealthVisualizer;
 
 @SuppressWarnings("serial")
@@ -116,8 +116,8 @@ public class InspectionPanel extends JPanel {
 	private JTabbedPane visualizersTabbedPane;
 	
 	private WealthVisualizer agentWealthPanel;
-	private MarketsTimeVisualizer marketsTimeVisualizer;
-	private MarketsAccumulatedVisualizer marketsAccuVisualizer;
+	private MarketsTimeOnlineVisualizer marketsTimeVisualizer;
+	private MarketsAccuOnlineVisualizer marketsAccuVisualizer;
 	private NetworkVisualisationFrame netVisFrame;
 	private EquilibriumInfoPanel equilibriumInfoPanel;
 	
@@ -172,8 +172,8 @@ public class InspectionPanel extends JPanel {
 		this.visualizationPanel = new JPanel( new GridBagLayout() );
 		this.offerBook = new OfferBook();
 		this.equilibriumInfoPanel = new EquilibriumInfoPanel();
-		this.marketsTimeVisualizer = new MarketsTimeVisualizer( this.successfulMarkets );
-		this.marketsAccuVisualizer = new MarketsAccumulatedVisualizer( this.successfulMarkets );
+		this.marketsTimeVisualizer = new MarketsTimeOnlineVisualizer( this.successfulMarkets );
+		this.marketsAccuVisualizer = new MarketsAccuOnlineVisualizer( this.successfulMarkets );
 		this.agentWealthPanel = new WealthVisualizer();
 
 		JPanel controlsPanel = new JPanel();

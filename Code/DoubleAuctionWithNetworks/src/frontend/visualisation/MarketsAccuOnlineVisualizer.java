@@ -4,7 +4,6 @@ import java.awt.BasicStroke;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -12,44 +11,33 @@ import backend.markets.MarketType;
 import frontend.Utils;
 
 @SuppressWarnings("serial")
-public class MarketsAccumulatedMedianVisualizer extends MarketsVisualizer {
+public class MarketsAccuOnlineVisualizer extends MarketsVisualizer {
 
 	private final static int LEGEND_BOX_X = SCALA_X_WIDTH + 15;
 	private final static int LEGEND_BOX_Y = 15;
 
-	private final static double[] MARKET_TX_COUNT = new double[ MarketType.values().length ];
+	protected final static int[] MARKET_TX_COUNT = new int[ MarketType.values().length ];
 	
-	private List<double[]> medianMarkets;
+	protected List<MarketType> successfulMarkets;
 
-	public MarketsAccumulatedMedianVisualizer() {
-		this(new ArrayList<>());
-	}
-
-	public MarketsAccumulatedMedianVisualizer( List<double[]> medianMarkets ) {
+	public MarketsAccuOnlineVisualizer(List<MarketType> successfulMatches) {
 		super();
 		
-		this.medianMarkets = medianMarkets;
-	} 
-
-	public void setMarkets( List<double[]> successfulMatches ) {
-		this.medianMarkets = successfulMatches;
-		repaint();
+		this.successfulMarkets = successfulMatches;
 	}
 	
 	@Override
 	protected void paintComponent(Graphics g) {
 		super.paintComponent(g);
 		
-		double maxTx = 0;
-		double[] totalTxInMarket = new double[ MarketType.values().length ];
+		int maxTx = 0;
+		int[] totalTxInMarket = new int[ MarketType.values().length ];
 		
-		for ( double[] marketCounts : this.medianMarkets ) {
-			for ( int i = 0; i < MarketType.values().length; ++i ) {
-				totalTxInMarket[ i ] += marketCounts[ i ];
-				
-				if ( totalTxInMarket[ i ] >= maxTx ) {
-					maxTx = totalTxInMarket[ i ];
-				}
+		for ( MarketType market : this.successfulMarkets ) {
+			totalTxInMarket[ market.ordinal() ]++;
+			
+			if ( totalTxInMarket[ market.ordinal() ] > maxTx ) {
+				maxTx = totalTxInMarket[ market.ordinal() ];
 			}
 		}
 		
@@ -65,7 +53,7 @@ public class MarketsAccumulatedMedianVisualizer extends MarketsVisualizer {
 		for ( int i = 0; i < X_ACHSIS_GRID; i++ ) {
 			double h = i / ( double ) X_ACHSIS_GRID;
 			int x = ( int ) ( width * h ) + SCALA_X_WIDTH;
-			str = Utils.DECIMAL_LARGEVALUES_FORMATTER.format( ( int ) ( h * this.medianMarkets.size() ) );
+			str = Utils.DECIMAL_LARGEVALUES_FORMATTER.format( ( int ) ( h * this.successfulMarkets.size() ) );
 
 			if ( i != 0 ) {
 				g.drawChars( str.toCharArray(), 0, str.length(), x - 15, (int) (height + 20) );
@@ -95,10 +83,10 @@ public class MarketsAccumulatedMedianVisualizer extends MarketsVisualizer {
 		Arrays.fill( MARKET_TX_COUNT, 0 );
 		Arrays.fill( MARKET_Y, height );
 		
-		double xPixelPerTx = ( double ) width / ( double ) this.medianMarkets.size();
+		double xPixelPerTx = ( double ) width / ( double ) this.successfulMarkets.size();
 		double xAchsisCurrent = SCALA_X_WIDTH;
 		double xAchsisNext = 0.0;
-		double yPixelPerTx = ( double ) ( height - SCALA_Y_WIDTH ) / maxTx;
+		double yPixelPerTx = ( double ) ( height - SCALA_Y_WIDTH ) / ( double ) maxTx;
 		
 		// draw grid
 		( ( Graphics2D ) g ).setStroke( new BasicStroke( 2 ) );
@@ -107,12 +95,13 @@ public class MarketsAccumulatedMedianVisualizer extends MarketsVisualizer {
 		// draw y-achsis
 		g.drawLine( SCALA_X_WIDTH, ( int ) height, SCALA_X_WIDTH, 0 );
 		
-		for ( int i = 0; i < this.medianMarkets.size(); ++i ) {
-			double[] marketCounts = this.medianMarkets.get( i );
+		for ( int i = 0; i < this.successfulMarkets.size(); ++i ) {
+			MarketType market = this.successfulMarkets.get( i );
 			xAchsisNext = xAchsisCurrent + xPixelPerTx;
 			
+			MARKET_TX_COUNT[ market.ordinal() ]++;
+			
 			for ( int m = 0; m < MarketType.values().length; ++m ) {
-				MARKET_TX_COUNT[ m ] += marketCounts[ m ];
 				double newMarketY = height - MARKET_TX_COUNT[ m ] * yPixelPerTx;
 				
 				g.setColor( MARKET_COLORS[ m ] );
