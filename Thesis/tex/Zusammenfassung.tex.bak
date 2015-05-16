@@ -1,7 +1,0 @@
-\documentclass[Bachelorarbeit.tex]{subfiles}
-\begin{document}
-\chapter*{Zusammenfassung}
-[Deutschen Titel anführen]
-
-Formatvorlage für den Fließtext.
-\end{document}

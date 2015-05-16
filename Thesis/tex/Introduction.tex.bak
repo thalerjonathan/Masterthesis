@@ -1,9 +1,0 @@
-\documentclass[Bachelorarbeit.tex]{subfiles}
-\begin{document}
-\chapter{Introduction}
-Formatvorlage für den Fließtext. Formatvorlage für den Fließtext. Formatvorlage für den Fließtext. Formatvorlage für den Fließtext. Formatvorlage für den Fließtext. Formatvorlage für den Fließtext. Formatvorlage für den Fließtext. Formatvorlage für den Fließtext. Formatvorlage für den Fließtext. Formatvorlage für den Fließtext. Formatvorlage für den Fließtext.
-\begin{quote}
-  Formatvorlage für ein längeres direktes Zitat. Formatvorlage für ein längeres direktes Zitat. Formatvorlage für ein längeres direktes Zitat. Formatvorlage für ein längeres direktes Zitat. Formatvorlage für ein längeres direktes Zitat. Formatvorlage für ein längeres direktes Zitat….
-\end{quote}
-Hinweise zum Zitieren und Belegen fremder Quellen finden Sie in der Lehrunterlage \glqq Wissenschaftliches Arbeiten. Ein Leitfaden\grqq. Die aktuelle Fassung dieses Leitfadens ist auf der FHV-Bibliothekshomepage hinterlegt und kann frei heruntergeladen werden (\href{http://www.fhv.at/bibliothek/teaching-library/leitfaden}{http://www.fhv.at/bibliothek/teaching-library/leitfaden}).
-\end{document}
