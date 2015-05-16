@@ -409,6 +409,7 @@ public class ReplicationsRunner {
 		resultBean.setStartingTime( this.startingTime );
 		resultBean.setEndingTime( endingTime );
 		resultBean.setMeanDuration( meanDuration );
+		resultBean.setMedianMarkets( this.medianMarkets );
 		
 		try {
 			JAXBContext jaxbContext = JAXBContext.newInstance( ResultBean.class );

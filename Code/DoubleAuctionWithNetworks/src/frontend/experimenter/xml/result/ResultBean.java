@@ -16,6 +16,7 @@ public class ResultBean {
 	private EquilibriumBean equilibriumVariance;
 	private List<AgentBean> agents;
 	private List<ReplicationBean> replications;
+	private List<double[]> medianMarkets;
 	
 	private Date startingTime;
 	private Date endingTime;
@@ -25,6 +26,14 @@ public class ResultBean {
 	private double meanFailedTransactions;
 	private double meanDuration;
 	
+	public List<double[]> getMedianMarkets() {
+		return medianMarkets;
+	}
+
+	public void setMedianMarkets(List<double[]> medianMarkets) {
+		this.medianMarkets = medianMarkets;
+	}
+
 	public List<ReplicationBean> getReplications() {
 		return replications;
 	}

@@ -65,9 +65,9 @@ public class MarketsAccumulatedVisualizer extends MarketsVisualizer {
 		}
 		
 		// draw y-achsis sections
-		for ( int i = 0; i < Y_ACHSIS_GRID; ++i ) {
+		for ( int i = 0; i <= Y_ACHSIS_GRID; ++i ) {
 			double h = i / ( double ) Y_ACHSIS_GRID;
-			int y = (int) (height - height * h );
+			int y = (int) ( height - ( height - SCALA_Y_WIDTH ) * h );
 			str = Utils.DECIMAL_LARGEVALUES_FORMATTER.format( ( int ) ( h * ( double ) maxTx ) );
 
 			if ( i != 0 ) {
@@ -86,7 +86,7 @@ public class MarketsAccumulatedVisualizer extends MarketsVisualizer {
 		double xPixelPerTx = ( double ) width / ( double ) this.successfulMarkets.size();
 		double xAchsisCurrent = SCALA_X_WIDTH;
 		double xAchsisNext = 0.0;
-		double yPixelPerTx = ( double ) height / ( double ) maxTx;
+		double yPixelPerTx = ( double ) ( height - SCALA_Y_WIDTH ) / ( double ) maxTx;
 		
 		// draw grid
 		( ( Graphics2D ) g ).setStroke( new BasicStroke( 2 ) );

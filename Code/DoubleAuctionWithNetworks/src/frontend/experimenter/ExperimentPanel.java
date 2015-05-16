@@ -1,154 +1,162 @@
 package frontend.experimenter;
 
-import java.awt.Dimension;
+import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 
+import javax.swing.BorderFactory;
 import javax.swing.JButton;
-import javax.swing.JLabel;
+import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextField;
+import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Unmarshaller;
 
 import frontend.MainWindow;
+import frontend.Utils;
 import frontend.experimenter.xml.experiment.ExperimentBean;
-import frontend.replication.ReplicationPanel;
+import frontend.experimenter.xml.experiment.ExperimentListBean;
+import frontend.experimenter.xml.result.ResultBean;
 
 @SuppressWarnings("serial")
 public class ExperimentPanel extends JPanel {
 
-	private JLabel agentCountLabel;
-	private JLabel faceValueLabel;
-	private JLabel topologyLabel;
-	private JLabel assetLoanMarketLabel;
-	private JLabel loanCashMarketLabel;
-	private JLabel bondsPledgeabilityLabel;
-	private JLabel collateralMarketLabel;
-	private JLabel importanceSamplingLabel;
-	private JLabel terminationModeLabel;
-	private JLabel maxTxLabel;
-	private JLabel replicationsLabel;
-
-	private JButton openAsReplicationButton;
+	private JButton openExperimentButton;
+	private JButton openResultButton;
 	
-	public ExperimentPanel( ExperimentBean bean, boolean isResult ) {
-		this.setLayout( new GridBagLayout() );
-		this.setPreferredSize( new Dimension( 1024, 100 ) );
+	private JTextField experimentPathTextField;
+	
+	private JFileChooser fileChooser;
+
+	private JPanel experimentsPanel;
+	
+	public ExperimentPanel() {
+		this.setLayout( new BorderLayout() );
 		
-		this.createControls( bean, isResult );
+		this.createControls();
 	}
 
-	private void createControls( ExperimentBean bean, boolean isResult ) {
-		JLabel agentCountInfoLabel = new JLabel( "Agents: ");
-		JLabel faceValueInfoLabel = new JLabel( "Loan-Type: ");
-		JLabel topologyInfoLabel = new JLabel( "Topology: ");
+	private void createControls() {
+		this.openExperimentButton = new JButton( "Open Experiment" );
+		this.openResultButton = new JButton( "Open Result" );
 		
-		JLabel assetLoanMarketInfoLabel = new JLabel( "Asset/Loan: ");
-		JLabel loanCashMarketInfoLabel = new JLabel( "Loan/Cash: ");
-		JLabel collateralMarketInfoLabel = new JLabel( "Collateral/Cash: ");
-		JLabel bondsPledgeabilityInfoLabel = new JLabel( "BP: ");
+		this.experimentPathTextField = new JTextField();
+		this.experimentPathTextField.setEditable( false );
 		
-		JLabel importanceSamplingInfoLabel = new JLabel( "Importance-Sampling: ");
-		JLabel terminationModeInfoLabel = new JLabel( "Termination: ");
+		this.fileChooser = new JFileChooser();
+		this.fileChooser.setFileFilter( new FileNameExtensionFilter( "XML-Files", "xml" ) );
 		
-		JLabel maxTxInfoLabel = new JLabel( "Max TX: ");
-		JLabel replicationsInfoLabel = new JLabel( "Replications: ");
+		this.experimentsPanel = new JPanel( new GridBagLayout() );
+
+		JScrollPane experimentsScrollPanel = new JScrollPane( this.experimentsPanel );
+		experimentsScrollPanel.setVerticalScrollBarPolicy( JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED );
+		experimentsScrollPanel.setHorizontalScrollBarPolicy( JScrollPane.HORIZONTAL_SCROLLBAR_NEVER );
 		
-		this.agentCountLabel = new JLabel( "" + bean.getAgentCount() );
-		this.faceValueLabel = new JLabel( bean.getLoanType().name() );
-		this.topologyLabel = new JLabel( bean.getTopology() );
-		this.assetLoanMarketLabel = new JLabel( "" + bean.isAssetLoanMarket() );
-		this.loanCashMarketLabel = new JLabel( "" + bean.isLoanCashMarket() );
-		this.collateralMarketLabel = new JLabel( "" + bean.isCollateralCashMarket() );
-		this.bondsPledgeabilityLabel = new JLabel( "" + bean.isBondsPledgeability() );
-		this.importanceSamplingLabel = new JLabel( "" + bean.isImportanceSampling() );
-		this.terminationModeLabel = new JLabel( bean.getTerminationMode().name() );
-		this.maxTxLabel = new JLabel( "" + bean.getMaxTx() );
-		this.replicationsLabel = new JLabel( "" + bean.getReplications() );
+		ActionListener openButtonAction = new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if ( e.getSource() == ExperimentPanel.this.openExperimentButton ) {
+					ExperimentPanel.this.fileChooser.setCurrentDirectory( Utils.EXPERIMENTS_DIRECTORY );
+					
+                } else if ( e.getSource() == ExperimentPanel.this.openResultButton ) {
+                	ExperimentPanel.this.fileChooser.setCurrentDirectory( Utils.REPLICATIONS_DIRECTORY );
+            		
+                }
+				
+				int returnVal = ExperimentPanel.this.fileChooser.showOpenDialog( ExperimentPanel.this );
+				
+	            if (returnVal == JFileChooser.APPROVE_OPTION) {
+	                File file = ExperimentPanel.this.fileChooser.getSelectedFile();
+	                
+	                if ( e.getSource() == ExperimentPanel.this.openExperimentButton ) {
+	                	ExperimentPanel.this.openExperiment( file );
+	                	
+	                } else if ( e.getSource() == ExperimentPanel.this.openResultButton ) {
+	                	ExperimentPanel.this.openResult( file );
+	                	
+	                }
+	            }
+			}
+		};
+			
+		this.openExperimentButton.addActionListener( openButtonAction );
+		this.openResultButton.addActionListener( openButtonAction );
 		
-		if ( false == isResult ) {
-			this.openAsReplicationButton = new JButton( "Open As Replication" );
-			this.openAsReplicationButton.addActionListener( new ActionListener() {
-				@Override
-				public void actionPerformed(ActionEvent e) {
-					ReplicationPanel replicationPanel = new ReplicationPanel( bean );
-					MainWindow.getInstance().addPanel( replicationPanel, bean.getName() );
-				}
-			} );
-		}
-		
+		JPanel controlsPanel = new JPanel( new GridBagLayout() );
 		GridBagConstraints c = new GridBagConstraints();
 		c.fill = GridBagConstraints.BOTH;
-		c.ipady = 2;
-		c.ipadx = 10;
-		c.gridwidth = 1;
-		c.gridheight = 1;
-		
-		c.gridx = 0;
-		c.gridy = 0;
-		this.add( agentCountInfoLabel, c );
-		c.gridx = 1;
-		this.add( this.agentCountLabel, c );
-		c.gridy = 1;
-		c.gridx = 0;
-		this.add( faceValueInfoLabel, c );
-		c.gridx = 1;
-		this.add( this.faceValueLabel, c );
-		c.gridy = 2;
-		c.gridx = 0;
-		this.add( topologyInfoLabel, c );
-		c.gridx = 1;
-		this.add( this.topologyLabel, c );
-		
-		c.gridy = 0;
-		c.gridx = 2;
-		this.add( assetLoanMarketInfoLabel, c );
-		c.gridx = 3;
-		this.add( this.assetLoanMarketLabel, c );
-		c.gridy = 1;
-		c.gridx = 2;
-		this.add( loanCashMarketInfoLabel, c );
-		c.gridx = 3;
-		this.add( this.loanCashMarketLabel, c );
-		c.gridy = 2;
-		c.gridx = 2;
-		this.add( bondsPledgeabilityInfoLabel, c );
-		c.gridx = 3;
-		this.add( this.bondsPledgeabilityLabel, c );
 
+		c.gridx = 0;
 		c.gridy = 0;
-		c.gridx = 4;
-		this.add( collateralMarketInfoLabel, c );
-		c.gridx = 5;
-		this.add( this.collateralMarketLabel, c );
-		c.gridy = 1;
-		c.gridx = 4;
-		this.add( importanceSamplingInfoLabel, c );
-		c.gridx = 5;
-		this.add( this.importanceSamplingLabel, c );
-		c.gridy = 2;
-		c.gridx = 4;
-		this.add( terminationModeInfoLabel, c );
-		c.gridx = 5;
-		this.add( this.terminationModeLabel, c );
+		c.gridheight = 1;
+		c.gridwidth = 10;
+		c.weightx = 0.9;
+		controlsPanel.add( this.experimentPathTextField, c );
+		c.gridx = 10;
+		c.gridwidth = 1;
+		c.weightx = 0.1;
+		controlsPanel.add( this.openExperimentButton, c );
 		
-		c.gridy = 0;
-		c.gridx = 6;
-		this.add( maxTxInfoLabel, c );
-		c.gridx = 7;
-		this.add( this.maxTxLabel, c );
+		c.gridx = 0;
 		c.gridy = 1;
-		c.gridx = 6;
-		this.add( replicationsInfoLabel, c );
-		c.gridx = 7;
-		this.add( this.replicationsLabel, c );
+		c.gridheight = 1;
+		c.gridwidth = 11;
+		c.weightx = 1.0;
+		controlsPanel.add( this.openResultButton, c );
 		
-		if ( false == isResult ) {
+		this.add( controlsPanel, BorderLayout.NORTH );
+		this.add( experimentsScrollPanel, BorderLayout.CENTER );
+	}
+
+	private void openExperiment( File file ) {
+		try {
+			JAXBContext jaxbContext = JAXBContext.newInstance( ExperimentListBean.class );
+			Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
+			ExperimentListBean experimentList = ( ExperimentListBean ) jaxbUnmarshaller.unmarshal( file );
+			
+			this.experimentsPanel.removeAll();
+			
+			GridBagConstraints c = new GridBagConstraints();
+			c.fill = GridBagConstraints.BOTH;
+			c.gridx = 0;
 			c.gridy = 0;
-			c.gridx = 28;
-			c.gridwidth = 2;
-			c.gridheight = 3;
-			this.add( this.openAsReplicationButton, c );
+			
+			for ( ExperimentBean experimentBean : experimentList.getExperiments() ) {
+				ExperimentInfoPanel panel = new ExperimentInfoPanel( experimentBean, false );
+				panel.setBorder( BorderFactory.createTitledBorder( BorderFactory.createLineBorder( Color.black ), experimentBean.getName() ) );
+				
+				this.experimentsPanel.add( panel, c );
+				
+				c.gridy++;
+			}
+			
+			this.experimentPathTextField.setText( file.getAbsolutePath() );
+			this.revalidate();
+			
+		} catch (JAXBException e) {
+			JOptionPane.showMessageDialog( this, "An Error occured parsing XML-File \"" + file.getAbsoluteFile() + "\"" );
+		}
+	}
+	
+	private void openResult( File file ) {
+		try {
+			JAXBContext jaxbContext = JAXBContext.newInstance( ResultBean.class );
+			Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
+			ResultBean resultBean = ( ResultBean ) jaxbUnmarshaller.unmarshal( file );
+			
+			ExperimentResultPanel resultPanel = new ExperimentResultPanel( resultBean );
+			MainWindow.getInstance().addPanel( resultPanel, resultBean.getExperiment().getName() );
+
+		} catch (JAXBException e) {
+			JOptionPane.showMessageDialog( this, "An Error occured parsing XML-File \"" + file.getName() + "\"" );
 		}
 	}
 }

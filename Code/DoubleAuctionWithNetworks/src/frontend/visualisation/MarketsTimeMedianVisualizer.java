@@ -23,16 +23,20 @@ public class MarketsTimeMedianVisualizer extends MarketsVisualizer {
 	private final static int WINDOW_SIZE = 100;
 	private final static int MOVING_AVG_SIZE = 50;
 	
-	protected List<double[]> successfulMarkets;
+	protected List<double[]> medianMarkets;
 
 	public MarketsTimeMedianVisualizer() {
-		super();
-		
-		this.successfulMarkets = new ArrayList<>();
+		this(new ArrayList<>());
 	}
 
+	public MarketsTimeMedianVisualizer( List<double[]> medianMarkets ) {
+		super();
+		
+		this.medianMarkets = medianMarkets;
+	} 
+	
 	public void setMarkets( List<double[]> successfulMatches ) {
-		this.successfulMarkets = successfulMatches;
+		this.medianMarkets = successfulMatches;
 		repaint();
 	}
 	
@@ -52,7 +56,7 @@ public class MarketsTimeMedianVisualizer extends MarketsVisualizer {
 		for ( int i = 0; i < X_ACHSIS_GRID; i++ ) {
 			double h = i / ( double ) X_ACHSIS_GRID;
 			int x = ( int ) ( width * h ) + SCALA_X_WIDTH;
-			str = Utils.DECIMAL_LARGEVALUES_FORMATTER.format( ( int ) ( h * this.successfulMarkets.size() ) );
+			str = Utils.DECIMAL_LARGEVALUES_FORMATTER.format( ( int ) ( h * this.medianMarkets.size() ) );
 
 			if ( i != 0 ) {
 				g.drawChars( str.toCharArray(), 0, str.length(), x - 15, (int) (height + 20) );
@@ -90,7 +94,7 @@ public class MarketsTimeMedianVisualizer extends MarketsVisualizer {
 				
 		// transactions displayed on screen: subtract WINDOW_SIZE because need at least WINDOW_SIZE 
 		// transactions because WINDOW_SIZE will contribute to each pixel
-		int txCount = this.successfulMarkets.size() - WINDOW_SIZE;
+		int txCount = this.medianMarkets.size() - WINDOW_SIZE;
 		// calculate ratio of transactions-count to widths in pixel (how many transactions fit on one pixel)
 		int txToWidthRatio = Math.max( 1, (int) (txCount / width) );
 		// adaptive moving-average kernel window: for each tx-to-pixel ratio increase by MOVING_AVG_SIZE
@@ -116,7 +120,7 @@ public class MarketsTimeMedianVisualizer extends MarketsVisualizer {
 				
 				// accumulate over WINDOW_SIZE transactions
 				for ( int w = i + avg; w < i + WINDOW_SIZE + avg; ++w ) {
-					double[] marketCounts = this.successfulMarkets.get( w );
+					double[] marketCounts = this.medianMarkets.get( w );
 					
 					for ( int m = 0; m < MarketType.values().length; ++m ) {
 						MOVING_AVG[ m ] += ( double ) marketCounts[ m ] / ( double ) movingAvgWindow; 

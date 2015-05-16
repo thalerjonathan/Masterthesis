@@ -14,6 +14,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JTabbedPane;
 
 import backend.EquilibriumStatistics;
 import backend.agents.Agent;
@@ -25,6 +26,8 @@ import frontend.experimenter.xml.result.ResultBean;
 import frontend.replication.EquilibriumInfoPanel;
 import frontend.replication.ReplicationData;
 import frontend.replication.ReplicationTable;
+import frontend.visualisation.MarketsAccumulatedMedianVisualizer;
+import frontend.visualisation.MarketsTimeMedianVisualizer;
 import frontend.visualisation.WealthVisualizer;
 
 @SuppressWarnings("serial")
@@ -71,13 +74,20 @@ public class ExperimentResultPanel extends JPanel {
 			agents.add( new Agent( agentBean, markets ) );
 		}
 		
-		ExperimentPanel experimentPanel = new ExperimentPanel( bean.getExperiment(), true );
+		JTabbedPane visualizersTabbedPane = new JTabbedPane();
+		ExperimentInfoPanel experimentPanel = new ExperimentInfoPanel( bean.getExperiment(), true );
 		EquilibriumInfoPanel equilibriumInfoPanel = new EquilibriumInfoPanel();
 		WealthVisualizer wealthvisualizer = new WealthVisualizer();
-
+		MarketsTimeMedianVisualizer marketsTimeVisualizer = new MarketsTimeMedianVisualizer( bean.getMedianMarkets() );
+		MarketsAccumulatedMedianVisualizer marketsAccuVisualizer = new MarketsAccumulatedMedianVisualizer(  bean.getMedianMarkets() );
+		
 		wealthvisualizer.setAgents( agents );
 		equilibriumInfoPanel.setMeanAndVariance( equilibriumMean, equilibriumVariance );
 
+		visualizersTabbedPane.addTab( "Agents", wealthvisualizer );
+		visualizersTabbedPane.addTab( "Markets Time", marketsTimeVisualizer );
+		visualizersTabbedPane.addTab( "Markets Accum", marketsAccuVisualizer );
+		
 		JButton showReplicationInfoButton = new JButton( "Replication-Info" );
 		showReplicationInfoButton.addActionListener( new ActionListener() {
 			@Override
@@ -152,7 +162,7 @@ public class ExperimentResultPanel extends JPanel {
 		northPanel.add( experimentPanel, BorderLayout.EAST );
 		
 		this.add( northPanel, BorderLayout.NORTH );
-		this.add( wealthvisualizer, BorderLayout.CENTER );
+		this.add( visualizersTabbedPane, BorderLayout.CENTER );
 		this.add( equilibriumInfoPanel, BorderLayout.SOUTH );
 	}
 	

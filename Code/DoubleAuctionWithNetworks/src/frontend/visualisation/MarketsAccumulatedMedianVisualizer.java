@@ -19,16 +19,20 @@ public class MarketsAccumulatedMedianVisualizer extends MarketsVisualizer {
 
 	private final static double[] MARKET_TX_COUNT = new double[ MarketType.values().length ];
 	
-	private List<double[]> successfulMarkets;
+	private List<double[]> medianMarkets;
 
 	public MarketsAccumulatedMedianVisualizer() {
-		super();
-		
-		this.successfulMarkets = new ArrayList<>();
+		this(new ArrayList<>());
 	}
 
+	public MarketsAccumulatedMedianVisualizer( List<double[]> medianMarkets ) {
+		super();
+		
+		this.medianMarkets = medianMarkets;
+	} 
+
 	public void setMarkets( List<double[]> successfulMatches ) {
-		this.successfulMarkets = successfulMatches;
+		this.medianMarkets = successfulMatches;
 		repaint();
 	}
 	
@@ -36,14 +40,14 @@ public class MarketsAccumulatedMedianVisualizer extends MarketsVisualizer {
 	protected void paintComponent(Graphics g) {
 		super.paintComponent(g);
 		
-		int maxTx = 0;
-		int[] totalTxInMarket = new int[ MarketType.values().length ];
+		double maxTx = 0;
+		double[] totalTxInMarket = new double[ MarketType.values().length ];
 		
-		for ( double[] marketCounts : this.successfulMarkets ) {
-			for ( int i = 0; i < marketCounts.length; ++i ) {
+		for ( double[] marketCounts : this.medianMarkets ) {
+			for ( int i = 0; i < MarketType.values().length; ++i ) {
 				totalTxInMarket[ i ] += marketCounts[ i ];
 				
-				if ( totalTxInMarket[ i ] > maxTx ) {
+				if ( totalTxInMarket[ i ] >= maxTx ) {
 					maxTx = totalTxInMarket[ i ];
 				}
 			}
@@ -61,7 +65,7 @@ public class MarketsAccumulatedMedianVisualizer extends MarketsVisualizer {
 		for ( int i = 0; i < X_ACHSIS_GRID; i++ ) {
 			double h = i / ( double ) X_ACHSIS_GRID;
 			int x = ( int ) ( width * h ) + SCALA_X_WIDTH;
-			str = Utils.DECIMAL_LARGEVALUES_FORMATTER.format( ( int ) ( h * this.successfulMarkets.size() ) );
+			str = Utils.DECIMAL_LARGEVALUES_FORMATTER.format( ( int ) ( h * this.medianMarkets.size() ) );
 
 			if ( i != 0 ) {
 				g.drawChars( str.toCharArray(), 0, str.length(), x - 15, (int) (height + 20) );
@@ -73,9 +77,9 @@ public class MarketsAccumulatedMedianVisualizer extends MarketsVisualizer {
 		}
 		
 		// draw y-achsis sections
-		for ( int i = 0; i < Y_ACHSIS_GRID; ++i ) {
+		for ( int i = 0; i <= Y_ACHSIS_GRID; ++i ) {
 			double h = i / ( double ) Y_ACHSIS_GRID;
-			int y = (int) (height - height * h );
+			int y = (int) ( height - ( height - SCALA_Y_WIDTH ) * h );
 			str = Utils.DECIMAL_LARGEVALUES_FORMATTER.format( ( int ) ( h * ( double ) maxTx ) );
 
 			if ( i != 0 ) {
@@ -91,10 +95,10 @@ public class MarketsAccumulatedMedianVisualizer extends MarketsVisualizer {
 		Arrays.fill( MARKET_TX_COUNT, 0 );
 		Arrays.fill( MARKET_Y, height );
 		
-		double xPixelPerTx = ( double ) width / ( double ) this.successfulMarkets.size();
+		double xPixelPerTx = ( double ) width / ( double ) this.medianMarkets.size();
 		double xAchsisCurrent = SCALA_X_WIDTH;
 		double xAchsisNext = 0.0;
-		double yPixelPerTx = ( double ) height / ( double ) maxTx;
+		double yPixelPerTx = ( double ) ( height - SCALA_Y_WIDTH ) / maxTx;
 		
 		// draw grid
 		( ( Graphics2D ) g ).setStroke( new BasicStroke( 2 ) );
@@ -103,8 +107,8 @@ public class MarketsAccumulatedMedianVisualizer extends MarketsVisualizer {
 		// draw y-achsis
 		g.drawLine( SCALA_X_WIDTH, ( int ) height, SCALA_X_WIDTH, 0 );
 		
-		for ( int i = 0; i < this.successfulMarkets.size(); ++i ) {
-			double[] marketCounts = this.successfulMarkets.get( i );
+		for ( int i = 0; i < this.medianMarkets.size(); ++i ) {
+			double[] marketCounts = this.medianMarkets.get( i );
 			xAchsisNext = xAchsisCurrent + xPixelPerTx;
 			
 			for ( int m = 0; m < MarketType.values().length; ++m ) {
