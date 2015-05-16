@@ -4,7 +4,6 @@ import java.awt.BasicStroke;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.Point;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -22,8 +21,18 @@ public class MarketsTimeOfflineVisualizer extends MarketsVisualizer {
 	private final static int MOVING_AVG_SIZE = 50;
 	
 	private int medianMarketsSize;
-	private List<Point[]> preprocessedCoords;
+	private List<DoublePoint[]> preprocessedCoords;
 
+	private class DoublePoint {
+		double x;
+		double y;
+		
+		DoublePoint( double x, double y ) {
+			this.x = x;
+			this.y = y;
+		}
+	}
+	
 	public MarketsTimeOfflineVisualizer() {
 		this(new ArrayList<>());
 	}
@@ -46,32 +55,23 @@ public class MarketsTimeOfflineVisualizer extends MarketsVisualizer {
 		Dimension d = this.getPreferredSize();
 	
 		double width = d.getWidth() - SCALA_X_WIDTH;
-		double height = d.getHeight() - SCALA_Y_WIDTH;
 		
 		// transactions displayed on screen: subtract WINDOW_SIZE because need at least WINDOW_SIZE 
 		// transactions because WINDOW_SIZE will contribute to each pixel
 		int txCount = medianMarkets.size() - WINDOW_SIZE;
 		// calculate ratio of transactions-count to widths in pixel (how many transactions fit on one pixel)
-		int txToWidthRatio = Math.max( 1, (int) (txCount / width) );
+		int txToWidthRatio = Math.max( 1, (int) ( txCount / width) );
 		// adaptive moving-average kernel window: for each tx-to-pixel ratio increase by MOVING_AVG_SIZE
 		// this will keep the curve about the same smoothness independent of the amount of transactions
 		int movingAvgWindow = MOVING_AVG_SIZE * txToWidthRatio;
 
-		Arrays.fill( MARKET_Y, height );
 		double[] MARKET_TX_COUNT = new double[ MarketType.values().length ];
 		double[] MOVING_AVG = new double[ MarketType.values().length ];
-		
-		double xPixelPerTx = ( double ) width / ( double ) ( txCount - movingAvgWindow );
-		double xAchsisCurrent = SCALA_X_WIDTH;
-		double xAchsisNext = 0.0;
 		
 		this.preprocessedCoords = new ArrayList<>( );
 		
 		// don't visit each transaction: do steps of txToWidthRatio, will do moving average anyway
 		for ( int i = 0; i < txCount - movingAvgWindow; i += txToWidthRatio ) {
-			// advance x-achsis
-			xAchsisNext = xAchsisCurrent + txToWidthRatio * xPixelPerTx;
-			
 			Arrays.fill( MOVING_AVG, 0.0 );
 			
 			// calculate moving average
@@ -88,22 +88,17 @@ public class MarketsTimeOfflineVisualizer extends MarketsVisualizer {
 				}
 			}
 		
-			Point[] marketCoords = new Point[  MarketType.values().length  ];
+			DoublePoint[] relativeMarketCoords = new DoublePoint[  MarketType.values().length  ];
 			
 			for ( int m = 0; m < MarketType.values().length; ++m ) {
-				double ratio = ( double ) MOVING_AVG[ m ] / ( double ) WINDOW_SIZE;
-				double yAchsisMarketNext = height - ( ( height - SCALA_Y_WIDTH ) * ratio ) ;
-
-				MARKET_Y[ m ] = yAchsisMarketNext;
+				double relativeYCoord = ( double ) MOVING_AVG[ m ] / ( double ) WINDOW_SIZE;
+				double relativeXCoord = ( double ) i / ( double ) txCount;
 				
-				marketCoords[ m ] = new Point( ( int ) xAchsisNext, ( int ) yAchsisMarketNext );
+				relativeMarketCoords[ m ] = new DoublePoint( relativeXCoord, relativeYCoord );
 			}
 			
-			this.preprocessedCoords.add( marketCoords );
-			
-			xAchsisCurrent = xAchsisNext;
-		}
-				
+			this.preprocessedCoords.add( relativeMarketCoords );
+		}		
 	}
 	
 	@Override
@@ -158,21 +153,25 @@ public class MarketsTimeOfflineVisualizer extends MarketsVisualizer {
 		// draw upper y-achsis 
 		g.drawLine( SCALA_X_WIDTH, ( int ) SCALA_Y_WIDTH, d.width, SCALA_Y_WIDTH );
 
-		Point initialPoint = new Point( SCALA_X_WIDTH, (int) height );
-		Point[] lastPoints = new Point[ MarketType.values().length ];
-		Arrays.fill( lastPoints, initialPoint );
+		double[] lastAbsoluteXCoord = new double[ MarketType.values().length ];
+		double[] lastAbsoluteYCoord = new double[ MarketType.values().length ];
+		Arrays.fill( lastAbsoluteXCoord , SCALA_X_WIDTH );
+		Arrays.fill( lastAbsoluteYCoord , height );
 		
 		// don't visit each transaction: do steps of txToWidthRatio, will do moving average anyway
-		for ( Point[] marketCoords : this.preprocessedCoords ) {
+		for ( DoublePoint[] marketCoords : this.preprocessedCoords ) {
 			for ( int m = 0; m < MarketType.values().length; ++m ) {
-				Point p = marketCoords[ m ];
+				DoublePoint p = marketCoords[ m ];
+
+				double absoluteXCoord = SCALA_X_WIDTH + ( p.x * width );
+				double absoluteYCoord = height - ( ( height - SCALA_Y_WIDTH ) * p.y );
 				
 				g.setColor( MARKET_COLORS[ m ] );
-				g.drawLine( lastPoints[ m ].x, lastPoints[ m ].y, p.x, p.y );
+				g.drawLine( ( int ) lastAbsoluteXCoord[ m ], ( int ) lastAbsoluteYCoord[ m ], ( int ) absoluteXCoord, ( int ) absoluteYCoord );
 				
-				lastPoints[ m ] = p;
+				lastAbsoluteXCoord[ m ] = absoluteXCoord;
+				lastAbsoluteYCoord[ m ] = absoluteYCoord;
 			}
-
 		}
 		
 		this.renderLegend( g, LEGEND_BOX_X, LEGEND_BOX_Y );
