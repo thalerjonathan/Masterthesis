@@ -500,7 +500,7 @@ public class ReplicationPanel extends JPanel {
 			bean.setTerminationMode( this.terminationSelection.getItemAt( this.terminationSelection.getSelectedIndex() ) );
 			bean.setTopology( this.topologySelection.getItemAt( this.topologySelection.getSelectedIndex() ).name() );
 			
-			this.replications.start( bean, new ReplicationsListener() {
+			this.replications.startAsync( bean, new ReplicationsListener() {
 				@Override
 				public void replicationFinished( final ReplicationData data, final ReplicationData currentStats, 
 						final EquilibriumStatistics variance, final List<double[]> medianMarkets ) {
@@ -543,7 +543,7 @@ public class ReplicationPanel extends JPanel {
 			}, 1000, 1000 );
 			
 		} else {
-			this.replications.stop();
+			this.replications.stopAsync();
 			this.resetControls();
 		}
 	}

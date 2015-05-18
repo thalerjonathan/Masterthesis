@@ -94,7 +94,7 @@ public class ExperimentCMDRunner {
 		System.out.println( "..." );
 		
 		ReplicationsRunner replications = new ReplicationsRunner( agentNetwork, markets );
-		replications.start( experiment, new ReplicationsListener() {
+		replications.startAndWaitFinish( experiment, new ReplicationsListener() {
 			@Override
 			public void replicationFinished( ReplicationData data,
 					ReplicationData meanData, EquilibriumStatistics variance,
@@ -108,8 +108,6 @@ public class ExperimentCMDRunner {
 				System.out.println( "Experiment " + experiment.getName() + " finished." );
 			}
 		}, this.maxThreads );
-		
-		replications.awaitFinished();
 	}
 	
 	private AgentNetwork createAgentNetwork( ExperimentBean bean, Markets markets ) {

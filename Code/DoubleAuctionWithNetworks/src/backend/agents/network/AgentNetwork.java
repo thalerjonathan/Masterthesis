@@ -6,10 +6,10 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.concurrent.ThreadLocalRandom;
 
 import org.apache.commons.collections15.Transformer;
 
+import utils.Utils;
 import backend.agents.Agent;
 import backend.agents.IAgentFactory;
 import edu.uci.ics.jung.algorithms.layout.Layout;
@@ -559,8 +559,8 @@ public class AgentNetwork {
 		}
 
 		Agent[] neighborArray = neighbors.toArray( new Agent[ neighbors.size() ] );
-		
-		return neighborArray[ (int) (ThreadLocalRandom.current().nextDouble() * neighbors.size()) ];
+
+		return neighborArray[ (int) (Utils.THREADLOCAL_RANDOM.get().nextDouble() * neighbors.size()) ];
 	}
 	
 	public boolean isFullyConnected() {

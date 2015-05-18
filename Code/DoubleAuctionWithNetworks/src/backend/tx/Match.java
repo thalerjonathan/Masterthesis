@@ -1,9 +1,8 @@
 package backend.tx;
 
-import java.util.concurrent.ThreadLocalRandom;
-
 import org.apache.commons.math3.random.RandomDataGenerator;
 
+import utils.Utils;
 import backend.agents.Agent;
 import backend.markets.MarketType;
 import backend.markets.Markets;
@@ -46,7 +45,7 @@ public class Match {
 		for ( int i = 0; i < Markets.NUMMARKETS; ++i ) {
 			int marketIndex = perm[ i ];
 			
-			boolean checkAgentSellFirst = ThreadLocalRandom.current().nextDouble() >= 0.5;
+			boolean checkAgentSellFirst = Utils.THREADLOCAL_RANDOM.get().nextDouble() >= 0.5;
 			
 			// check whether a sell matches or a buy matches in random order - first match wins
 			for ( int marketPermutate = 0; marketPermutate < 2; ++marketPermutate ) {

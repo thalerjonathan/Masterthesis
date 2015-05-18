@@ -41,6 +41,7 @@ public class ReplicationsRunner {
 	
 	private ExecutorService replicationTaskExecutor;
 	
+	private boolean running;
 	private boolean canceled;
 	
 	private List<ReplicationTask> replicationTasks;
@@ -86,7 +87,7 @@ public class ReplicationsRunner {
 	}
 	
 	public boolean isRunning() {
-		return this.awaitFinishThread != null;
+		return this.running;
 	}
 	
 	public Date getStartingTime() {
@@ -105,21 +106,85 @@ public class ReplicationsRunner {
 		return this.replicationTasks;
 	}
 	
-	public void start( ExperimentBean experiment, ReplicationsListener listener ) {
+	public void startAsync( ExperimentBean experiment, ReplicationsListener listener ) {
 		int processorCount = Runtime.getRuntime().availableProcessors();
 		// leave one for GUI-purposes, otherwise would freeze
 		processorCount--;
 
 		this.start(experiment, listener, processorCount );
+		
+		this.awaitFinishThread = new Thread( new Runnable() {
+			@Override
+			public void run() {
+				for ( ReplicationTask task : replicationTasks ) {
+					try {
+						task.getFuture().get();
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					} catch (ExecutionException e) {
+						e.printStackTrace();
+					}
+				}
+				
+				if ( false == ReplicationsRunner.this.canceled ) {
+					ReplicationsRunner.this.listener.allReplicationsFinished();
+				}
+				
+				ReplicationsRunner.this.cleanUp();
+			}
+		} );
+		
+		this.awaitFinishThread.setName( "Replications finished wait-thread" );
+		this.awaitFinishThread.start();
+	}
+	
+	public void startAndWaitFinish( ExperimentBean experiment, ReplicationsListener listener, int maxThreads ) {
+		this.start(experiment, listener, maxThreads );
+		
+		for ( ReplicationTask task : replicationTasks ) {
+			try {
+				task.getFuture().get();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			} catch (ExecutionException e) {
+				e.printStackTrace();
+			}
+		}
+	
+		this.listener.allReplicationsFinished();
+		this.cleanUp();
+	}
+	
+	
+	public void stopAsync() {
+		// no replications running
+		if ( false == this.isRunning() ) {
+			return;
+		}
+		
+		this.canceled = true;
+		
+		for ( ReplicationTask task : this.replicationTasks ) {
+			task.cancel();
+		}
+		
+		try {
+			this.awaitFinishThread.join();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		
+		this.running = false;
 	}
 	
 	@SuppressWarnings("rawtypes")
-	public void start( ExperimentBean experiment, ReplicationsListener listener, int maxThreads ) {
+	private void start( ExperimentBean experiment, ReplicationsListener listener, int maxThreads ) {
 		// replications already running
 		if ( this.isRunning() ) {
 			return;
 		}
 		
+		this.running = true;
 		this.canceled = false;
 		this.startingTime = new Date();
 		this.experiment = experiment;
@@ -145,58 +210,7 @@ public class ReplicationsRunner {
 			task.setFuture( future );
 
 			this.replicationTasks.add( task );
-		}
-		
-		this.awaitFinishThread = new Thread( new Runnable() {
-			@Override
-			public void run() {
-				for ( ReplicationTask task : replicationTasks ) {
-					try {
-						task.getFuture().get();
-					} catch (InterruptedException e) {
-						e.printStackTrace();
-					} catch (ExecutionException e) {
-						e.printStackTrace();
-					}
-				}
-				
-				if ( false == canceled ) {
-					ReplicationsRunner.this.listener.allReplicationsFinished();
-				}
-				
-				ReplicationsRunner.this.cleanUp();
-			}
-		} );
-		
-		this.awaitFinishThread.setName( "Replications finished wait-thread" );
-		this.awaitFinishThread.start();
-	}
-	
-	public void awaitFinished() {
-		try {
-			this.awaitFinishThread.join();
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-	}
-	
-	public void stop() {
-		// no replications running
-		if ( false == this.isRunning() ) {
-			return;
-		}
-		
-		this.canceled = true;
-		
-		for ( ReplicationTask task : this.replicationTasks ) {
-			task.cancel();
-		}
-		
-		try {
-			this.awaitFinishThread.join();
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
+		}		
 	}
 
 	private void cleanUp() {
