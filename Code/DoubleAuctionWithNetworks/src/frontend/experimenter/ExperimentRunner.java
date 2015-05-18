@@ -37,24 +37,6 @@ public class ExperimentRunner {
 	private ExperimentListBean experiments;
 	private List<NetworkCreator> networkCreators;
 	
-	public static void main( String[] args ) {
-		if ( 1 != args.length ) {
-			System.out.println( "Usage: ExperimentRunner <experimentFileName>" );
-			return;
-		}
-		
-		File experimentFile = new File( args[ 0 ] );
-		if ( false == experimentFile.exists() ) {
-			System.out.println( "Experimentfile \"" + args[ 0 ] + "\" does not exist." );
-			return;
-		}
-		
-		ExperimentRunner eperimentRunner = ExperimentRunner.openExperiment( experimentFile );
-		if ( null != eperimentRunner ) {
-			eperimentRunner.runAllExperiments();
-		}
-	}
-	
 	public static ExperimentRunner openExperiment( File file ) {
 		try {
 			JAXBContext jaxbContext = JAXBContext.newInstance( ExperimentListBean.class );

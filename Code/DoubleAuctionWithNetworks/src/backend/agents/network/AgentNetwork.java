@@ -1,7 +1,5 @@
 package backend.agents.network;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -11,14 +9,6 @@ import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
 import org.apache.commons.collections15.Transformer;
-import org.jfree.chart.ChartFactory;
-import org.jfree.chart.ChartPanel;
-import org.jfree.chart.ChartUtilities;
-import org.jfree.chart.JFreeChart;
-import org.jfree.chart.plot.PlotOrientation;
-import org.jfree.data.statistics.HistogramDataset;
-import org.jfree.data.xy.XYSeries;
-import org.jfree.data.xy.XYSeriesCollection;
 
 import backend.agents.Agent;
 import backend.agents.IAgentFactory;
@@ -573,6 +563,43 @@ public class AgentNetwork {
 		return neighborArray[ (int) (ThreadLocalRandom.current().nextDouble() * neighbors.size()) ];
 	}
 	
+	public boolean isFullyConnected() {
+		return this.fullyConnectedFlag;
+	}
+	
+	public NetworkRenderPanel getNetworkRenderingPanel( Class<? extends Layout<Agent, AgentConnection>> layoutClazz, 
+			INetworkSelectionObserver selectionObserver ) {
+		return new NetworkRenderPanel( this.graph, layoutClazz, selectionObserver );
+	}
+	
+	public WealthVisualizer getWealthVisualizer() {
+		return new WealthVisualizer( this.orderedAgents );
+	}
+	
+	private void populate( IAgentFactory agentFactory ) {
+		Agent a = null;
+		
+		while ( ( a = agentFactory.createAgent() ) != null ) {
+			this.orderedAgents.add( a );
+			this.graph.addVertex( a );
+		}
+	}
+	
+	private void connectCompleted(int fromIndex, int toIndex) {
+		for ( int i = fromIndex; i < toIndex - 1; ++i ) {
+			Agent from = this.orderedAgents.get( i );
+			
+			for ( int j = i + 1; j < toIndex; ++j ) {
+				Agent to = this.orderedAgents.get( j );
+
+				if ( false == this.graph.isNeighbor( from, to ) ) {
+					this.graph.addEdge( new AgentConnection(), from, to );
+				}
+			}
+		}
+	}
+	
+	/*
 	public void createHistogramm() {
 		int i = 0;
 		
@@ -698,39 +725,7 @@ public class AgentNetwork {
 		
 		return new ChartPanel( chart );
 	}
-	
-	public NetworkRenderPanel getNetworkRenderingPanel( Class<? extends Layout<Agent, AgentConnection>> layoutClazz, 
-			INetworkSelectionObserver selectionObserver ) {
-		return new NetworkRenderPanel( this.graph, layoutClazz, selectionObserver );
-	}
-	
-	public WealthVisualizer getWealthVisualizer() {
-		return new WealthVisualizer( this.orderedAgents );
-	}
-	
-	private void populate( IAgentFactory agentFactory ) {
-		Agent a = null;
-		
-		while ( ( a = agentFactory.createAgent() ) != null ) {
-			this.orderedAgents.add( a );
-			this.graph.addVertex( a );
-		}
-	}
-	
-	private void connectCompleted(int fromIndex, int toIndex) {
-		for ( int i = fromIndex; i < toIndex - 1; ++i ) {
-			Agent from = this.orderedAgents.get( i );
-			
-			for ( int j = i + 1; j < toIndex; ++j ) {
-				Agent to = this.orderedAgents.get( j );
 
-				if ( false == this.graph.isNeighbor( from, to ) ) {
-					this.graph.addEdge( new AgentConnection(), from, to );
-				}
-			}
-		}
-	}
-	
 	private JFreeChart writeHistogramm(String plotTitle, String fileName, HistogramDataset dataset) {
 		String xaxis = "Degree";
 		String yaxis = "Count"; 
@@ -762,8 +757,5 @@ public class AgentNetwork {
 		
 		return chart;
 	}
-
-	public boolean isFullyConnected() {
-		return this.fullyConnectedFlag;
-	}
+	 */
 }

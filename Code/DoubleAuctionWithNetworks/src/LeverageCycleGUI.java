@@ -1,6 +1,6 @@
 import frontend.MainWindow;
 
-public class LeverageCycle {
+public class LeverageCycleGUI {
 	public static void main(String[] args) {
 		MainWindow.getInstance();
 	}
