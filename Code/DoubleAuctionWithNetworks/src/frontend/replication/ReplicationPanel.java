@@ -185,7 +185,7 @@ public class ReplicationPanel extends JPanel {
 		
 		this.agentCountSpinner = new JSpinner( new SpinnerNumberModel( 30, 10, 1000, 10 ) );
 		this.replicationCountSpinner = new JSpinner( new SpinnerNumberModel( 4, 1, 1000, 1 ) );
-		this.maxTxSpinner = new JSpinner( new SpinnerNumberModel( 1_000, 1, 1_000_000, 100 ) );
+		this.maxTxSpinner = new JSpinner( new SpinnerNumberModel( 1000, 1, 1000000, 100 ) );
 		
 		this.runningTimeLabel = new JLabel( "Running since: -" );
 		this.replicationsLeftLabel = new JLabel( "Replications left: -" );
@@ -406,20 +406,20 @@ public class ReplicationPanel extends JPanel {
 			
         } else {
         	experimentList = new ExperimentListBean();
-        	experimentList.setExperiments( new ArrayList<>() );
+        	experimentList.setExperiments( new ArrayList<ExperimentBean>() );
         }
         
         ExperimentBean experimentBean = new ExperimentBean();
-        experimentBean.setAgentCount( (int) this.agentCountSpinner.getValue() );
+        experimentBean.setAgentCount( (Integer) this.agentCountSpinner.getValue() );
         experimentBean.setAssetLoanMarket( this.abmMarketCheck.isSelected() );
         experimentBean.setBondsPledgeability( this.bpMechanismCheck.isSelected() );
         experimentBean.setLoanType( (LoanType) this.loanTypeSelection.getSelectedItem() );
         experimentBean.setImportanceSampling( this.importanceSamplingCheck.isSelected() );
         experimentBean.setLoanCashMarket( this.loanCashMarketCheck.isSelected() );
         experimentBean.setCollateralCashMarket( this.collateralMarketCheck.isSelected() );
-        experimentBean.setMaxTx( (int) this.maxTxSpinner.getValue() );
+        experimentBean.setMaxTx( (Integer) this.maxTxSpinner.getValue() );
         experimentBean.setName( name );
-        experimentBean.setReplications( (int) this.replicationCountSpinner.getValue() );
+        experimentBean.setReplications( (Integer) this.replicationCountSpinner.getValue() );
         experimentBean.setTerminationMode( (TerminationMode) this.terminationSelection.getSelectedItem() );
         experimentBean.setTopology( ( (NetworkCreator) this.topologySelection.getSelectedItem() ).name() );
         
@@ -478,31 +478,36 @@ public class ReplicationPanel extends JPanel {
 			this.replicationCountSpinner.setEnabled( false );
 			this.showReplicationInfoButton.setEnabled( true );
 			
-			this.replicationsLeftLabel.setText( "Replications Left: " + (int) this.replicationCountSpinner.getValue() );
+			this.replicationsLeftLabel.setText( "Replications Left: " + (Integer) this.replicationCountSpinner.getValue() );
 
 			// reset previously calculated data
 			this.replicationTable.clearAll();
 			this.agentWealthPanel.setAgents( this.agentNetworkTemplate.getOrderedList() );
-			this.marketsAccuVisualizer.setMarkets( new ArrayList<>() );
-			this.marketsTimeVisualizer.setMarkets( new ArrayList<>() );
+			this.marketsAccuVisualizer.setMarkets( new ArrayList<double[]>() );
+			this.marketsTimeVisualizer.setMarkets( new ArrayList<double[]>() );
 			
 			ExperimentBean bean = new ExperimentBean();
 			bean.setName( this.name );
-			bean.setAgentCount( (int) this.agentCountSpinner.getValue() );
+			bean.setAgentCount( (Integer) this.agentCountSpinner.getValue() );
 			bean.setAssetLoanMarket( this.abmMarketCheck.isSelected() );
 			bean.setBondsPledgeability( this.bpMechanismCheck.isSelected() );
 			bean.setLoanType( (LoanType) this.loanTypeSelection.getSelectedItem() );
 			bean.setImportanceSampling( this.importanceSamplingCheck.isSelected() );
 			bean.setLoanCashMarket( this.loanCashMarketCheck.isSelected() );
 			bean.setCollateralCashMarket( this.collateralMarketCheck.isSelected() );
-			bean.setMaxTx( (int) this.maxTxSpinner.getValue() );
-			bean.setReplications( (int) this.replicationCountSpinner.getValue() );
+			bean.setMaxTx( (Integer) this.maxTxSpinner.getValue() );
+			bean.setReplications( (Integer) this.replicationCountSpinner.getValue() );
 			bean.setTerminationMode( this.terminationSelection.getItemAt( this.terminationSelection.getSelectedIndex() ) );
 			bean.setTopology( this.topologySelection.getItemAt( this.topologySelection.getSelectedIndex() ).name() );
 			
 			this.replications.start( bean, new ReplicationsListener() {
 				@Override
-				public void replicationFinished( ReplicationData data, ReplicationData currentStats, EquilibriumStatistics variance, List<double[]> medianMarkets ) {
+				public void replicationFinished( final ReplicationData data, final ReplicationData currentStats, 
+						final EquilibriumStatistics variance, final List<double[]> medianMarkets ) {
+					
+					// setting markets on ofline timevisualizere here to prevent blocking of guy
+					ReplicationPanel.this.marketsTimeVisualizer.setMarkets( medianMarkets );
+
 					SwingUtilities.invokeLater( new Runnable() {
 						@Override
 						public void run() {
@@ -513,7 +518,7 @@ public class ReplicationPanel extends JPanel {
 								ReplicationPanel.this.equilibriumInfoPanel.setMeanAndVariance( currentStats.getStats(), variance );
 								ReplicationPanel.this.agentWealthPanel.setAgents( currentStats.getFinalAgents() );
 								ReplicationPanel.this.marketsAccuVisualizer.setMarkets( medianMarkets );
-								ReplicationPanel.this.marketsTimeVisualizer.setMarkets( medianMarkets );
+								ReplicationPanel.this.marketsTimeVisualizer.repaint();
 								
 								ReplicationPanel.this.updateAgentInfoFrame( currentStats.getFinalAgents() );
 							}
@@ -525,7 +530,7 @@ public class ReplicationPanel extends JPanel {
 				public void allReplicationsFinished() {
 					ReplicationPanel.this.resetControls();
 				}
-			} );
+			}, true );
 			
 			this.updateRunningTimeLabel();
 			this.runningSinceUpdater = new Timer();
@@ -577,13 +582,13 @@ public class ReplicationPanel extends JPanel {
 	}
 	
 	public String getTitleExtension() {
-		int agentCount = (int) this.agentCountSpinner.getValue();
+		int agentCount = (Integer) this.agentCountSpinner.getValue();
 		NetworkCreator creator = (NetworkCreator) this.topologySelection.getSelectedItem();
 		return creator.name() + ", " + agentCount + " Agents";
 	}
 	
 	private void createAgents() {
-		int agentCount = (int) this.agentCountSpinner.getValue();
+		int agentCount = (Integer) this.agentCountSpinner.getValue();
 		this.markets = new Markets( (LoanType) this.loanTypeSelection.getSelectedItem() );
 		this.setMarketMechanisms();
 		
@@ -596,8 +601,11 @@ public class ReplicationPanel extends JPanel {
 		
 		this.replications = new ReplicationsRunner( this.agentNetworkTemplate, this.markets );
 		this.agentWealthPanel.setAgents( this.agentNetworkTemplate.getOrderedList() );
-		this.marketsAccuVisualizer.setMarkets( new ArrayList<>() );
-		this.marketsTimeVisualizer.setMarkets( new ArrayList<>() );
+		this.marketsAccuVisualizer.setMarkets( new ArrayList<double[]>() );
+		this.marketsTimeVisualizer.setMarkets( new ArrayList<double[]>() );
+		
+		this.marketsAccuVisualizer.repaint();
+		this.marketsTimeVisualizer.repaint();
 		
 		this.updateNetworkVisualisationFrame();
 		this.updateAgentInfoFrame( this.agentNetworkTemplate.getOrderedList() );

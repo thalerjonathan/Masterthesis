@@ -29,7 +29,7 @@ public class ReplicationInfoFrame extends JFrame {
 	public ReplicationInfoFrame( ReplicationTable replicationTable ) {
 		super( "Replication-Info" );
 
-		this.infoPanels = new ArrayList<>();
+		this.infoPanels = new ArrayList<ReplicationInfoPanel>();
 
 		this.getContentPane().setLayout( new BorderLayout() );
 		this.getContentPane().setPreferredSize( new Dimension( 1300, 600 ) );

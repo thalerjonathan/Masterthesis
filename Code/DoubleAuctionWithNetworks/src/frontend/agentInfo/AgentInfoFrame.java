@@ -28,7 +28,7 @@ public class AgentInfoFrame extends JFrame {
 		this.agentIdSpinner.addChangeListener( new ChangeListener() {
 			@Override
 			public void stateChanged(ChangeEvent e) {
-				int agentId = (int) AgentInfoFrame.this.agentIdSpinner.getValue();
+				int agentId = (Integer) AgentInfoFrame.this.agentIdSpinner.getValue();
 				Agent a = agents.get( agentId - 1 );
 				
 				AgentInfoFrame.this.agentInfoPanel.setAgent( a );
@@ -54,7 +54,7 @@ public class AgentInfoFrame extends JFrame {
 		} else {
 			// if number of agents has changed, do a complete reset
 			if ( this.agents.size() == agents.size() ) {
-				agentId = (int) AgentInfoFrame.this.agentIdSpinner.getValue();
+				agentId = (Integer) AgentInfoFrame.this.agentIdSpinner.getValue();
 			} else {
 				this.agentIdSpinner.setModel( new SpinnerNumberModel( 1, 1, agents.size(), 1 ) );
 			}

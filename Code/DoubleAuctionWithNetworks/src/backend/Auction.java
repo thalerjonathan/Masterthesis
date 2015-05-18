@@ -39,7 +39,7 @@ public class Auction {
 	
 	public Auction( AgentNetwork agentNetwork ) {
 		this.agentNetwork = agentNetwork;
-		this.tradingAgents = new ArrayList<>( this.agentNetwork.getOrderedList() );
+		this.tradingAgents = new ArrayList<Agent>( this.agentNetwork.getOrderedList() );
 		
 		this.numTrans = 1;
 		

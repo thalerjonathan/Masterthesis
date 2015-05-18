@@ -187,13 +187,13 @@ public class InspectionThread implements Runnable {
 				// count total number of TX so far
 				this.totalTXCounter++;
 				
-				SimulationState stateBevoreTX = this.state;
+				final SimulationState stateBevoreTX = this.state;
 				
 				// take current millis to calculate delta time
 				long ts = System.currentTimeMillis();
 				
 				// execute the next transaction
-				Transaction tx = this.auction.executeSingleTransaction( observer.getMatchingType(), observer.isKeepAgentHistory() );
+				final Transaction tx = this.auction.executeSingleTransaction( observer.getMatchingType(), observer.isKeepAgentHistory() );
 				
 				// increment time
 				this.computationTimeMs += System.currentTimeMillis() - ts;

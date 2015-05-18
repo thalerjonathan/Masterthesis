@@ -38,7 +38,7 @@ public class ExperimentInfoPanel extends JPanel {
 		this.createControls( bean, isResult );
 	}
 
-	private void createControls( ExperimentBean bean, boolean isResult ) {
+	private void createControls( final ExperimentBean bean, boolean isResult ) {
 		JLabel agentCountInfoLabel = new JLabel( "Agents: ");
 		JLabel faceValueInfoLabel = new JLabel( "Loan-Type: ");
 		JLabel topologyInfoLabel = new JLabel( "Topology: ");

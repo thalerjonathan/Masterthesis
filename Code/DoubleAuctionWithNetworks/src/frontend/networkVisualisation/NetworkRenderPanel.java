@@ -10,7 +10,6 @@ import java.awt.event.MouseEvent;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Ellipse2D;
 import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.text.DecimalFormat;
 import java.util.Comparator;
 
@@ -146,7 +145,7 @@ public class NetworkRenderPanel extends JPanel {
 			Constructor<? extends Layout<Agent, AgentConnection>> constr = this.layoutClazz.getConstructor( Graph.class );
 			layout = constr.newInstance( graph );
 			
-		} catch (InstantiationException | IllegalAccessException | NoSuchMethodException | SecurityException | IllegalArgumentException | InvocationTargetException e) {
+		} catch ( Exception e ) { 
 			e.printStackTrace();
 			return null;
 		}

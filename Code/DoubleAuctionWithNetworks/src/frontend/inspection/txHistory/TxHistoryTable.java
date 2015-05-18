@@ -19,9 +19,11 @@ public class TxHistoryTable extends JTable {
 	private DefaultTableModel tableModel;
 	
 	@SuppressWarnings("rawtypes")
+	private final static Class[] COLUMN_CLASSES = new Class[]{ Integer.class, 
+		Integer.class, MarketType.class, String.class, String.class, String.class,
+			String.class, String.class, String.class };
+	
 	public TxHistoryTable() {
-		Class[] columnClasses = new Class[]{ Integer.class, Integer.class, MarketType.class, String.class, String.class, String.class,
-				String.class, String.class, String.class };
 		
 		this.tableModel = new DefaultTableModel(
 				new Object[] { "TX", "Sweeps", "Market",
@@ -36,11 +38,11 @@ public class TxHistoryTable extends JTable {
 
 			@Override
 			public Class<?> getColumnClass(int columnIndex) {
-				return columnClasses[ columnIndex ];
+				return COLUMN_CLASSES[ columnIndex ];
 			}
 		};
 		
-		TableRowSorter<DefaultTableModel> rowSorter = new TableRowSorter<>( this.tableModel );
+		TableRowSorter<DefaultTableModel> rowSorter = new TableRowSorter<DefaultTableModel>( this.tableModel );
 		new TXColumnComparator( 5, rowSorter );
 		new TXColumnComparator( 6, rowSorter );
 		new TXColumnComparator( 7, rowSorter );

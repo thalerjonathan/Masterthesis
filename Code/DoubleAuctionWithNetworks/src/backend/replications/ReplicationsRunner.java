@@ -75,9 +75,9 @@ public class ReplicationsRunner {
 	}
 
 	public ReplicationsRunner( AgentNetwork template, Markets markets ) {
-		this.replicationTasks = new ArrayList<>();
-		this.replicationData = new ArrayList<>();
-		this.medianMarkets = new ArrayList<>();
+		this.replicationTasks = new ArrayList<ReplicationTask>();
+		this.replicationData = new ArrayList<ReplicationData>();
+		this.medianMarkets = new ArrayList<double[]>();
 		
 		this.template = template;
 		this.markets = markets;
@@ -106,7 +106,7 @@ public class ReplicationsRunner {
 	}
 	
 	@SuppressWarnings("rawtypes")
-	public void start( ExperimentBean experiment, ReplicationsListener listener ) {
+	public void start( ExperimentBean experiment, ReplicationsListener listener, boolean spareGuiProcessor ) {
 		// replications already running
 		if ( this.isRunning() ) {
 			return;
@@ -118,8 +118,16 @@ public class ReplicationsRunner {
 		
 		this.listener = listener;
 		this.replications = new AtomicInteger( experiment.getReplications() );
-		// always do parallel-processing
-		int threadCount = Math.max( 1, Runtime.getRuntime().availableProcessors() - 1 ); // leave one for GUI-purposes, otherwise would freeze
+		
+		int processorCount = Runtime.getRuntime().availableProcessors();
+		
+		if ( spareGuiProcessor ) {
+			// leave one for GUI-purposes, otherwise would freeze
+			processorCount--;
+		}
+		
+		// always do parallel-processing but at least one thread
+		int threadCount = Math.max( 1, processorCount ); 
 		// if less replications than threads, then limit thread-count by replication-count
 		threadCount = Math.min( threadCount, experiment.getReplications() );
 
@@ -127,7 +135,7 @@ public class ReplicationsRunner {
 			public Thread newThread( Runnable r ) {
 				return new Thread( r, "Replication-Thread" );
 			}
-		});
+		} );
 		
 		for ( int i = 0; i < threadCount; ++i ) {
 			ReplicationTask task = new ReplicationTask( i );
@@ -144,13 +152,15 @@ public class ReplicationsRunner {
 				for ( ReplicationTask task : replicationTasks ) {
 					try {
 						task.getFuture().get();
-					} catch (InterruptedException | ExecutionException e) {
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					} catch (ExecutionException e) {
 						e.printStackTrace();
 					}
 				}
 				
 				if ( false == canceled ) {
-					listener.allReplicationsFinished();
+					ReplicationsRunner.this.listener.allReplicationsFinished();
 				}
 				
 				ReplicationsRunner.this.cleanUp();
@@ -159,6 +169,14 @@ public class ReplicationsRunner {
 		
 		this.awaitFinishThread.setName( "Replications finished wait-thread" );
 		this.awaitFinishThread.start();
+	}
+	
+	public void awaitFinished() {
+		try {
+			this.awaitFinishThread.join();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	public void stop() {
@@ -195,7 +213,7 @@ public class ReplicationsRunner {
 		this.currentStats = this.calculateStatistics();
 		
 		// NOTE: need to copy markets because gui-thread will use it concurrently and may be cleared during replicationFinished 
-		List<double[]> copyMarkets = new ArrayList<>( this.medianMarkets );
+		List<double[]> copyMarkets = new ArrayList<double[]>( this.medianMarkets );
 		
 		this.listener.replicationFinished( data, this.currentStats, this.varianceStats, copyMarkets );
 	}
@@ -204,7 +222,7 @@ public class ReplicationsRunner {
 		int agentCount = this.template.size();
 		
 		ReplicationData currentStats = new ReplicationData();
-		List<Agent> meanAgents = new ArrayList<>( agentCount );
+		List<Agent> meanAgents = new ArrayList<Agent>( agentCount );
 		EquilibriumStatistics meanStats = new EquilibriumStatistics();
 		
 		int validReplications = 0;
@@ -530,7 +548,7 @@ public class ReplicationsRunner {
 			this.totalTxCount = 0;
 			this.failTxTotalCount = 0;
 			this.failTxSuccessiveCount = 0;
-			List<MarketType> successfulMarkets = new ArrayList<>();
+			List<MarketType> successfulMarkets = new ArrayList<MarketType>();
 			
 			while ( true ) {
 				Transaction tx = auction.executeSingleTransaction( MatchingType.BEST_NEIGHBOUR, false );

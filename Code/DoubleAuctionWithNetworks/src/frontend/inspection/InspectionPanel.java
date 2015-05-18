@@ -150,7 +150,7 @@ public class InspectionPanel extends JPanel {
 	}
 
 	public String getTitleExtension() {
-		int agentCount = (int) this.agentCountSpinner.getValue();
+		int agentCount = (Integer) this.agentCountSpinner.getValue();
 		NetworkCreator creator = (NetworkCreator) this.topologySelection.getSelectedItem();
 		return creator.name() + ", " + agentCount + " Agents";
 	}
@@ -719,7 +719,7 @@ public class InspectionPanel extends JPanel {
 	}
 
 	private void createAgents() {
-		int agentCount = (int) this.agentCountSpinner.getValue();
+		int agentCount = (Integer) this.agentCountSpinner.getValue();
 		this.markets = new Markets( this.loanTypeSelection.getItemAt( this.loanTypeSelection.getSelectedIndex() ) );
 		this.setMarketMechanisms();
 		

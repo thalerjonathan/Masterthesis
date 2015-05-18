@@ -1,20 +1,20 @@
 \documentclass[Bachelorarbeit.tex]{subfiles}
 \begin{document}
 \chapter*{Abstract}
-In the paper of \cite{Breuer2015} a model for endogenous leverage in a continuous double-auction is introduced and it is shown under which circumstances holdings and trading prices approach an equilibrium. One main criteria is the trading network the agents use where Breuer et al. examine only two topologies and report that the prices come to an equilibrium only in the case of a fully connected network. They leave the question open on how the model behaves with different kind of networks and which network topology exactly allows an equilibrium to be reached  for further research. This thesis builds upon this model and gives a hypothesis for a necessary condition a network must satisfy to allow the model to approach an equilibrium. Then a few network-topologies are examined in regard of their ability to allow equilibria to be reached or not through computer-driven simulation. As will be shown in this thesis the hypothesis turns out to be correct both through validation by computer-driven simulation and through mathematical proof.
+In the paper of \cite{Breuer2015} a model for endogenous leverage in a continuous double-auction is introduced and it is shown under which circumstances holdings and trading prices approach an equilibrium. One main criteria is the trading network the agents use where Breuer et al. examine only two topologies and report that the prices come to an equilibrium only in the case of a fully connected network. They leave the question open on how the model behaves with different kind of networks and which network topology exactly allows an equilibrium to be reached  for further research. This thesis builds upon this model and gives a hypothesis for a necessary condition a network must satisfy to allow the model to approach an equilibrium. Then a few network-topologies are examined in regard of their ability to allow equilibria to be reached or not through computer-driven simulation. As will be shown in this thesis through validation by computer-driven simulation the hypothesis turns out to be correct only after extending the simulation-model by an additional market. This result raises questions this thesis tries to solve about market-mechanisms and market-types when agents don't trade in a fully informed network. 
 
-In "Introduction" I will give a deeper insight on the workings of the model of Breuer et al. and introduce the hypothesis.
+In "Introduction" a short motivation for the development of such models as in \cite{Breuer2015} is given and what the goal and purpose of such research is.
 
-In "State of the art" an overview of abstract networks and their properties is given. Also network-generating algorithms are presented and discussed. Because continuous double-auctions are the type of market which is used for matchings a short introduction is given on this topic too.
+In "Theory" the theoretical background involved with this thesis is presented. First Leverage and systemic risk and its implications are discussed. Then an introduction into the mechanics of Continuous Double Auction as market-mechanisms and equilibrium theory in economics is given. Finally an overview of abstract networks, network-generationg algorithms and and their properties is given.
 
-In "Analysis" the hypothesis is verified and examined thoroughly and a mathematical proof is given.
+In "The Leverage Cycle" the theoretical model \cite{Breuer2015} built their simulation upon is discussed in-depth.
 
-In "Development" I will give an overview on the implementation of the computer-driver simulation of Breuer et al and the extensions introduced by this thesis which are network-generating algorithms, real-time visualisations and tracking of a whole process over time. Also a short overview of the software-architecture is given.
+In "Hypothesis" the conjecture about the type of topology necessary to reach the theoretical equilibirum is presented and discussed in comparison with a range of various other topologies including small-world and scale-free ones.
 
-In "Implementation" the experiments, their setup and design are discussed.
+"Implementation" gives an in-depth explanation of the implementation of the computer-driven simulation presented in \cite{Breuer2015} including a description of the architecture, implementation of the markets and trading mechanisms.
 
-In "Evaluation" the results of the previously discussed experiments are shown.
+"Results" concentrates the content of the previous chapters to show that the initial conjecture/hypothesis does not satisfy the equlibrium and shows how it can be reached by introducing an additional market. Then results using this market are given and discussed where will be shown that using the additional market an equilibrium will be reached but that it is different from the theoretical predictions.
 
-In "Interpretation" the results of the experiments are discussed.
+In "Conclusions" a short sum-up of the thesis and questions left for further research are presented.
 
 \end{document}

@@ -34,7 +34,7 @@ public class MarketsTimeOfflineVisualizer extends MarketsVisualizer {
 	}
 	
 	public MarketsTimeOfflineVisualizer() {
-		this(new ArrayList<>());
+		this(new ArrayList<double[]>());
 	}
 
 	public MarketsTimeOfflineVisualizer( List<double[]> medianMarkets ) {
@@ -45,10 +45,9 @@ public class MarketsTimeOfflineVisualizer extends MarketsVisualizer {
 	
 	public void setMarkets( List<double[]> medianMarkets ) {
 		this.preprocessData( medianMarkets );
-		repaint();
 	}
 	
-	private void preprocessData( List<double[]> medianMarkets ) {
+	private synchronized void preprocessData( List<double[]> medianMarkets ) {
 		this.medianMarketsSize = medianMarkets.size();
 		
 		// NOTE: Center Of Origin is TOP-LEFT => need to transform y-achsis to origin of CENTER-LEFT (x-achsis origin is already left)
@@ -68,7 +67,7 @@ public class MarketsTimeOfflineVisualizer extends MarketsVisualizer {
 		double[] MARKET_TX_COUNT = new double[ MarketType.values().length ];
 		double[] MOVING_AVG = new double[ MarketType.values().length ];
 		
-		this.preprocessedCoords = new ArrayList<>( );
+		this.preprocessedCoords = new ArrayList<DoublePoint[]>( );
 		
 		// don't visit each transaction: do steps of txToWidthRatio, will do moving average anyway
 		for ( int i = 0; i < txCount - movingAvgWindow; i += txToWidthRatio ) {
@@ -158,19 +157,23 @@ public class MarketsTimeOfflineVisualizer extends MarketsVisualizer {
 		Arrays.fill( lastAbsoluteXCoord , SCALA_X_WIDTH );
 		Arrays.fill( lastAbsoluteYCoord , height );
 		
-		// don't visit each transaction: do steps of txToWidthRatio, will do moving average anyway
-		for ( DoublePoint[] marketCoords : this.preprocessedCoords ) {
-			for ( int m = 0; m < MarketType.values().length; ++m ) {
-				DoublePoint p = marketCoords[ m ];
-
-				double absoluteXCoord = SCALA_X_WIDTH + ( p.x * width );
-				double absoluteYCoord = height - ( ( height - SCALA_Y_WIDTH ) * p.y );
-				
-				g.setColor( MARKET_COLORS[ m ] );
-				g.drawLine( ( int ) lastAbsoluteXCoord[ m ], ( int ) lastAbsoluteYCoord[ m ], ( int ) absoluteXCoord, ( int ) absoluteYCoord );
-				
-				lastAbsoluteXCoord[ m ] = absoluteXCoord;
-				lastAbsoluteYCoord[ m ] = absoluteYCoord;
+		// synchronize on preprocessed coords because preprocessData is synchronized and 
+		// is working on preprocessedCoords
+		synchronized( this.preprocessedCoords ) {
+			// don't visit each transaction: do steps of txToWidthRatio, will do moving average anyway
+			for ( DoublePoint[] marketCoords : this.preprocessedCoords ) {
+				for ( int m = 0; m < MarketType.values().length; ++m ) {
+					DoublePoint p = marketCoords[ m ];
+	
+					double absoluteXCoord = SCALA_X_WIDTH + ( p.x * width );
+					double absoluteYCoord = height - ( ( height - SCALA_Y_WIDTH ) * p.y );
+					
+					g.setColor( MARKET_COLORS[ m ] );
+					g.drawLine( ( int ) lastAbsoluteXCoord[ m ], ( int ) lastAbsoluteYCoord[ m ], ( int ) absoluteXCoord, ( int ) absoluteYCoord );
+					
+					lastAbsoluteXCoord[ m ] = absoluteXCoord;
+					lastAbsoluteYCoord[ m ] = absoluteYCoord;
+				}
 			}
 		}
 		

@@ -22,7 +22,7 @@ public class MarketsAccuOfflineVisualizer extends MarketsVisualizer {
 	private List<double[]> medianMarkets;
 
 	public MarketsAccuOfflineVisualizer() {
-		this(new ArrayList<>());
+		this(new ArrayList<double[]>());
 	}
 
 	public MarketsAccuOfflineVisualizer( List<double[]> medianMarkets ) {
@@ -33,7 +33,7 @@ public class MarketsAccuOfflineVisualizer extends MarketsVisualizer {
 
 	public void setMarkets( List<double[]> successfulMatches ) {
 		this.medianMarkets = successfulMatches;
-		repaint();
+		this.repaint();
 	}
 	
 	@Override

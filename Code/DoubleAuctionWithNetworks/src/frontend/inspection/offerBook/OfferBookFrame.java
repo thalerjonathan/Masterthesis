@@ -59,7 +59,7 @@ public class OfferBookFrame extends JFrame {
 	}
 
 	public void refresh() {
-		int agentIndex = (int) this.agentIndexSpinner.getValue();
+		int agentIndex = (Integer) this.agentIndexSpinner.getValue();
 		Agent a = this.parent.getAgents().get( agentIndex - 1 );
 		
 		this.agentInfoPanel.setAgent( a );
@@ -152,7 +152,7 @@ public class OfferBookFrame extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				
-				parent.createAndShowInstance( (int) OfferBookFrame.this.agentIndexSpinner.getValue(),
+				parent.createAndShowInstance( (Integer) OfferBookFrame.this.agentIndexSpinner.getValue(),
 						OfferBookFrame.this.marketTabPane.getSelectedIndex() );
 			}
 		});

@@ -499,7 +499,7 @@ public class AgentNetwork {
 	}
 	
 	public List<Agent> cloneAgents() {
-		List<Agent> clonedAgents = new ArrayList<>( this.orderedAgents.size() );
+		List<Agent> clonedAgents = new ArrayList<Agent>( this.orderedAgents.size() );
 		for ( Agent a : this.orderedAgents ) {
 			Agent clone = ( Agent ) a.clone();
 			clonedAgents.add( clone );

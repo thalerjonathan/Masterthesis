@@ -14,7 +14,7 @@ public class OfferBook {
 	private List<OfferBookFrame> offerBookInstances;
 	
 	public OfferBook() {
-		this.offerBookInstances = new ArrayList<>();
+		this.offerBookInstances = new ArrayList<OfferBookFrame>();
 	}
 	
 	public void agentsChanged( List<Agent> agents, String titleExtension ) {
