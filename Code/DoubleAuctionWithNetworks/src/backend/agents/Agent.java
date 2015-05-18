@@ -618,21 +618,14 @@ public class Agent {
 		this.minAssetPriceInCash = Math.min( pD, this.limitPriceAsset );
 		this.minLoanPriceInCash = Math.min( minLoanPrice, this.limitPriceLoan );
 		this.minAssetPriceInLoans = minAssetPrice / maxLoanPrice;
-		//this.minCollateralPriceInCash = this.minAssetPriceInCash + this.minLoanPriceInCash;
-		//this.minCollateralPriceInCash = Math.min( minAssetPriceInCash, this.minLoanPriceInCash );
 		this.minCollateralPriceInCash = Math.min( 0, this.minAssetPriceInCash - this.maxLoanPriceInCash );
 		
 		this.maxAssetPriceInCash = Math.max( pU, this.limitPriceAsset );
 		this.maxLoanPriceInCash = Math.max( maxLoanPrice, this.limitPriceLoan );
 		this.maxAssetPriceInLoans = maxAssetPrice / minLoanPrice;
-		//this.maxCollateralPriceInCash = this.maxAssetPriceInCash + this.maxLoanPriceInCash;
-		//this.maxCollateralPriceInCash = Math.max( this.maxAssetPriceInCash, this.maxLoanPriceInCash );
 		this.maxCollateralPriceInCash = this.maxAssetPriceInCash - this.minLoanPriceInCash;
 		
 		this.limitPriceAssetLoans = this.limitPriceAsset / this.limitPriceLoan;
-		
-		//this.limitPriceCollateral = this.limitPriceAsset + this.limitPriceLoan;
-		//this.limitPriceCollateral = Math.max( this.limitPriceAsset, this.limitPriceLoan );
 		this.limitPriceCollateral = this.limitPriceAsset - this.limitPriceLoan;
 	}
 	

@@ -20,8 +20,8 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 
+import utils.Utils;
 import frontend.MainWindow;
-import frontend.Utils;
 import frontend.experimenter.xml.experiment.ExperimentBean;
 import frontend.experimenter.xml.experiment.ExperimentListBean;
 import frontend.experimenter.xml.result.ResultBean;
@@ -67,7 +67,7 @@ public class ExperimentPanel extends JPanel {
 					ExperimentPanel.this.fileChooser.setCurrentDirectory( Utils.EXPERIMENTS_DIRECTORY );
 					
                 } else if ( e.getSource() == ExperimentPanel.this.openResultButton ) {
-                	ExperimentPanel.this.fileChooser.setCurrentDirectory( Utils.REPLICATIONS_DIRECTORY );
+                	ExperimentPanel.this.fileChooser.setCurrentDirectory( Utils.RESULTS_DIRECTORY );
             		
                 }
 				

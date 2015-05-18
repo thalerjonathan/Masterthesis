@@ -8,8 +8,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import utils.Utils;
 import backend.markets.MarketType;
-import frontend.Utils;
 
 @SuppressWarnings("serial")
 public class MarketsTimeOfflineVisualizer extends MarketsVisualizer {

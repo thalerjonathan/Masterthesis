@@ -6,7 +6,7 @@ import java.awt.GridBagLayout;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-import frontend.Utils;
+import utils.Utils;
 import backend.agents.Agent;
 
 @SuppressWarnings("serial")

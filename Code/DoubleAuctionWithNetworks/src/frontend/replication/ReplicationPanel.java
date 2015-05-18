@@ -31,6 +31,7 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 
+import utils.Utils;
 import backend.EquilibriumStatistics;
 import backend.agents.Agent;
 import backend.agents.AgentFactoryImpl;
@@ -43,7 +44,6 @@ import backend.replications.ReplicationsRunner.ReplicationsListener;
 import backend.replications.ReplicationsRunner.TerminationMode;
 import edu.uci.ics.jung.algorithms.layout.CircleLayout;
 import edu.uci.ics.jung.algorithms.layout.Layout;
-import frontend.Utils;
 import frontend.agentInfo.AgentInfoFrame;
 import frontend.experimenter.xml.experiment.ExperimentBean;
 import frontend.experimenter.xml.experiment.ExperimentListBean;
@@ -530,7 +530,7 @@ public class ReplicationPanel extends JPanel {
 				public void allReplicationsFinished() {
 					ReplicationPanel.this.resetControls();
 				}
-			}, true );
+			} );
 			
 			this.updateRunningTimeLabel();
 			this.runningSinceUpdater = new Timer();

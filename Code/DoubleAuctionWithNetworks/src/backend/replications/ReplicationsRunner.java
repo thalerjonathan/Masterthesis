@@ -19,6 +19,7 @@ import javax.xml.bind.Marshaller;
 
 import org.apache.commons.math3.stat.StatUtils;
 
+import utils.Utils;
 import backend.Auction;
 import backend.Auction.MatchingType;
 import backend.EquilibriumStatistics;
@@ -60,7 +61,6 @@ public class ReplicationsRunner {
 	private List<double[]> medianMarkets;
 	
 	private final static SimpleDateFormat FILENAME_DATE_FORMATTER = new SimpleDateFormat( "yyyyMMdd_HHmmss" );
-	private final static String REPLICATIONS_DIR_NAME = "replications/";
 	
 	public interface ReplicationsListener {
 		public void replicationFinished( ReplicationData data, ReplicationData meanData, EquilibriumStatistics variance, List<double[]> medianMarkets );
@@ -105,8 +105,16 @@ public class ReplicationsRunner {
 		return this.replicationTasks;
 	}
 	
+	public void start( ExperimentBean experiment, ReplicationsListener listener ) {
+		int processorCount = Runtime.getRuntime().availableProcessors();
+		// leave one for GUI-purposes, otherwise would freeze
+		processorCount--;
+
+		this.start(experiment, listener, processorCount );
+	}
+	
 	@SuppressWarnings("rawtypes")
-	public void start( ExperimentBean experiment, ReplicationsListener listener, boolean spareGuiProcessor ) {
+	public void start( ExperimentBean experiment, ReplicationsListener listener, int maxThreads ) {
 		// replications already running
 		if ( this.isRunning() ) {
 			return;
@@ -119,15 +127,8 @@ public class ReplicationsRunner {
 		this.listener = listener;
 		this.replications = new AtomicInteger( experiment.getReplications() );
 		
-		int processorCount = Runtime.getRuntime().availableProcessors();
-		
-		if ( spareGuiProcessor ) {
-			// leave one for GUI-purposes, otherwise would freeze
-			processorCount--;
-		}
-		
 		// always do parallel-processing but at least one thread
-		int threadCount = Math.max( 1, processorCount ); 
+		int threadCount = Math.max( 1, maxThreads ); 
 		// if less replications than threads, then limit thread-count by replication-count
 		threadCount = Math.min( threadCount, experiment.getReplications() );
 
@@ -435,7 +436,10 @@ public class ReplicationsRunner {
 			 
 		    jaxbMarshaller.setProperty( Marshaller.JAXB_FORMATTED_OUTPUT, true );
 
-		    jaxbMarshaller.marshal( resultBean, new File( REPLICATIONS_DIR_NAME + name + ".xml"  ) );
+		    String fileName = Utils.RESULTS_DIRECTORY.getAbsolutePath()
+		    		+ File.separator + name + ".xml";
+		    
+		    jaxbMarshaller.marshal( resultBean, new File( fileName  ) );
 		    
 		} catch (JAXBException e) {
 			e.printStackTrace();

@@ -16,10 +16,10 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 
+import utils.Utils;
 import backend.EquilibriumStatistics;
 import backend.agents.Agent;
 import backend.markets.Markets;
-import frontend.Utils;
 import frontend.experimenter.xml.result.AgentBean;
 import frontend.experimenter.xml.result.ReplicationBean;
 import frontend.experimenter.xml.result.ResultBean;

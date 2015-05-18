@@ -4,9 +4,9 @@ import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
 import javax.swing.table.DefaultTableModel;
 
+import utils.Utils;
 import backend.markets.MarketType;
 import backend.offers.Offering;
-import frontend.Utils;
 
 @SuppressWarnings("serial")
 public class OffersTable extends JTable {

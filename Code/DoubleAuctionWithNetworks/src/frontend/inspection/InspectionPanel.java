@@ -27,6 +27,7 @@ import javax.swing.event.ChangeListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
+import utils.Utils;
 import backend.Auction;
 import backend.Auction.MatchingType;
 import backend.EquilibriumStatistics;
@@ -42,7 +43,6 @@ import backend.offers.BidOffering;
 import backend.tx.Transaction;
 import edu.uci.ics.jung.algorithms.layout.CircleLayout;
 import edu.uci.ics.jung.algorithms.layout.Layout;
-import frontend.Utils;
 import frontend.inspection.InspectionThread.AdvanceMode;
 import frontend.inspection.InspectionThread.InspectionObserver;
 import frontend.inspection.offerBook.OfferBook;

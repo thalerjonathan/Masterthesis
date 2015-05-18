@@ -32,12 +32,13 @@ import frontend.networkCreators.ThreeMedianHubsCreator;
 import frontend.networkCreators.WattStrogatzCreator;
 import frontend.replication.ReplicationData;
 
-public class ExperimentRunner {
+public class ExperimentCMDRunner {
 
+	private int maxThreads;
 	private ExperimentListBean experiments;
 	private List<NetworkCreator> networkCreators;
 	
-	public static ExperimentRunner openExperiment( File file ) {
+	public static ExperimentCMDRunner openExperiment( File file, int maxThreads ) {
 		try {
 			JAXBContext jaxbContext = JAXBContext.newInstance( ExperimentListBean.class );
 			Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
@@ -49,14 +50,15 @@ public class ExperimentRunner {
 				System.out.println();
 			}
 			
-			return new ExperimentRunner( experiments );
+			return new ExperimentCMDRunner( experiments, maxThreads );
 		} catch ( JAXBException e ) {
 			System.out.println( "An Error occured parsing XML-File \"" + file.getAbsoluteFile() + "\"" );
 			return null;
 		}
 	}
 	
-	private ExperimentRunner( ExperimentListBean experiments ) {
+	private ExperimentCMDRunner( ExperimentListBean experiments, int maxThreads ) {
+		this.maxThreads = maxThreads;
 		this.experiments = experiments;
 		this.networkCreators = new ArrayList<NetworkCreator>();
 		
@@ -97,15 +99,15 @@ public class ExperimentRunner {
 			public void replicationFinished( ReplicationData data,
 					ReplicationData meanData, EquilibriumStatistics variance,
 					List<double[]> medianMarkets)  {
-				System.out.println( "	Finished Replication #" + data.getNumber() + " of " +
-						experiment.getReplications() + " total Replications ");
+				System.out.println( "	Finished Replication #" + data.getNumber() + " / " +
+						experiment.getReplications() );
 			}
 			
 			@Override
 			public void allReplicationsFinished() {
 				System.out.println( "Experiment " + experiment.getName() + " finished." );
 			}
-		}, false );
+		}, this.maxThreads );
 		
 		replications.awaitFinished();
 	}

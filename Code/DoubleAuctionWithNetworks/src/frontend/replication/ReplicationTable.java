@@ -4,8 +4,8 @@ import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
 import javax.swing.table.DefaultTableModel;
 
+import utils.Utils;
 import backend.EquilibriumStatistics;
-import frontend.Utils;
 
 @SuppressWarnings("serial")
 public class ReplicationTable extends JTable {

@@ -7,8 +7,8 @@ import java.awt.Graphics2D;
 import java.util.Arrays;
 import java.util.List;
 
+import utils.Utils;
 import backend.markets.MarketType;
-import frontend.Utils;
 
 @SuppressWarnings("serial")
 public class MarketsTimeOnlineVisualizer extends MarketsVisualizer {
