@@ -134,6 +134,7 @@ public class ExperimentCMDRunner {
 		markets.setLoanMarket( bean.isLoanCashMarket() );
 		markets.setBP( bean.isBondsPledgeability() );
 		markets.setLoanType( bean.getLoanType() );
+		markets.setCollateralMarket( bean.isCollateralCashMarket() );
 		
 		return markets;
 	}

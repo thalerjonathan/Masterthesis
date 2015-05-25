@@ -52,17 +52,4 @@
         <terminationMode>FAIL_SUCCESSIVE_TX</terminationMode>
         <topology>Fully Connected</topology>
     </experiment>
-    <experiment>
-        <agentCount>100</agentCount>
-        <assetLoanMarket>true</assetLoanMarket>
-        <bondsPledgeability>true</bondsPledgeability>
-        <loanType>LOAN_05</loanType>
-        <importanceSampling>false</importanceSampling>
-        <loanCashMarket>true</loanCashMarket>
-        <maxTx>100</maxTx>
-        <name>AC Full ShortCuts</name>
-        <replications>9</replications>
-        <terminationMode>FAIL_SUCCESSIVE_TX</terminationMode>
-        <topology>Ascending Full Shortcuts</topology>
-    </experiment>
 </experiments>
