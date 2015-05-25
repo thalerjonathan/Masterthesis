@@ -1,46 +1,59 @@
 \documentclass[Bachelorarbeit.tex]{subfiles}
 \begin{document}
 \chapter{Introduction}
-Wirtschaftskrise "subprime mortgage crisis" als auslöser
-		-> leverage erhöht systemisches risiko
-	Motivation für solche experimente
-	Von Geanakoplos zum "Breuer et al" Paper
-		paper: prozess d.h. dynamik des systems beobachten
-		preise vorgeben vs. preise endogen entwickeln
-		erreicht der prozess das theoretische gleichgewicht bzw. preise
+In 2008 the so called "Subprime Mortgage Crisis" struck the world. It was caused by declining house prices which rose during the US Housing Market Bubble in 2006 to an all-time high. Borrowers used their asset as collateral for the mortgage which constantly increased in value which guaranteed them a low payment-rate because the rate was coupled to the value of the asset.
+Banks granted "subprime" mortgages to more and more highly risky borrowers. In 2007 borrowers started to default which led to falling prices as the banks reclaimed the collateral and wanted to sell it again on the market to compensate for the loss. This led to a flood of assets which led to a decline of housing prices overall.
+As the prices fell dramatically the payment-rates rose dramatically to compensate for the cheaper asset. This in turn resulted in even more borrowers going default which resulted in a dramatic downward spiral.
+Even worse the banks were selling these collateralized products between each other and even insured themself against defaults of borrowers which led to an even more dramatic kick-back.
 
+\thinspace
 
+This mechanism of borrowing money to buy goods which in turn act as a security for the borrowed money is called leverage which was determined as the primary driving force behind systemic risk in the aftermath of the "Subprime Mortgage Crisis". See Chapter 2.1 "Leverage and Systemic Risk" for a more in-depth discussion.
 
+\bigskip
 
+Up until 2010 leverage was always exogenous in the literature on collateralized credit but recently Geanakoplos and Zame ( TODO: cite) proposed theories which endogenized leverage within a general equilibrium framework.
 
+\thinspace
 
+\cite{Breuer2015} developed a simulation on top of the model of Geanakoplos in which zero-intelligence agents trade assets and loans in a continuous double auction. They wanted to better understand the dynamic of such a theoretical process and how prices develop instead of being predicted through an equilibrium theory. 
+The paper \cite{Breuer2015} is unique in that it presents double auctions for leveraged assets and show how collateral is cleared and how leveraged purchases are coordinated across asset and debt markets. They could show that in their simulation trading prices and wealth-distribution approach the theoretical equilibrium of Geanakoplos.
+In their simulation only a fully connected network and a hub-network of agents was investigated where the equilibrium was only reached in the case of the fully connected network. See Chapter 3. "The Leverage Cycle" for a thorough description of the simulation-model of \cite{Breuer2015}. 
 
-TODO:
-In "Introduction" I will give a deeper insight on the workings of the model of Breuer et al. and introduce the hypothesis.
+\thinspace
 
-das orginalpaper kurz vorstellen, dass dort wenig nachforschungen bezüglich netzwerken gemacht wurde. Diese thesis geht den netzwerken auf den grund, aber nur als rein abstrakte netzwerke.
-das modell vorstellen, was gehandelt wird, zero-intelligence agents, utility-funktionen erklären, equilibrium erklären.
+This thesis investigates more topologies of networks and their states of equilibrium. Furthermore it presents a hypothesis about the necessary property a topology of a network must satisfy to reach the theoretical equilibrium predicted in the theory of Geanakoplos. 
+Interestingly it is shown experimentally that the hypothesis alone does not guarantee
+the reach of the theoretical equilibrium but further mechanisms needs to be implemented.
+See Chapter 4 "Hypothesis" and Chapter 6 "Results" for an in-depth explanation of both the hypothesis and why it does not hold and needs to be extended by means of an additional market-mechanism.
 
-hypothese vorstellen: jedes paar von agenten muss über einen kantenzug erreichbar sein, in dem der optimismusfaktor von agent zu agent monoton wächst.
+\thinspace
 
+For experimental investigation a software was built for this thesis which 
+implemented the exact simulation model of \cite{Breuer2015} but extended it further to be 
+applicable to arbitrary topologies. See Chapter 5 "Implementation" on details of the software.
 
-aim of the paper:
-leverage in markets and how it affects prices of assets.
-motivation: understanding financial crisis because leverage was identified "as one of the key drivers of systemic risk"
-builds upon the paper of geanakoplos and zame and geanakoplos to "endogenzie leverage within a general equilibrium framework"
-"endogenous leverage also has asset pricing implications: In general, both equilibrium asset prices and the prices of debt are distorted."
-trading mechanism used: continous double auctions (see State-Of-The-Art for details on continous double auctions)
-agent-based simulation with blind utility improvers.
-paper unique in that it presents double auctions for leveraged assets.
-	-> how is collateral cleared and how is leveraged purchases coordinated across asset and debt markets
-analyse final prices and robustness, when trade is restricted to neighbours then final prices different!
+\bigskip
 
-the model:
-up and down state of the world tomorrow
-one unit of cash, one unit of assets
-in up-state asset 1.0, down asset is 0.2 worth
-klarstellen, dass der up/down state nie wirklich ausgewürfelt wird, dieses experiment ist einstufig.
+In Chapter 2 "Theory" the theoretical background involved with this thesis is presented. First Leverage and systemic risk and its implications are discussed. Then an introduction into the mechanics of Continuous Double Auction as market-mechanisms and equilibrium theory in economics is given. Finally an overview of abstract networks, network-generating algorithms and and their properties is given.
 
+\bigskip
 
+In Chapter 3 "The Leverage Cycle" the theoretical model \cite{Breuer2015} built their simulation upon is discussed in-depth.
 
+\bigskip
+
+In Chapter 4 "Hypothesis" the conjecture about the type of topology necessary to reach the theoretical equilibirum is presented and discussed in comparison with a range of various other topologies including small-world and scale-free networks.
+
+\bigskip
+
+Chapter 5 "Implementation" gives an in-depth explanation of the implementation of the computer-driven simulation presented in \cite{Breuer2015} including a description of the architecture, implementation of the markets and trading mechanisms.
+
+\bigskip
+
+Chapter 6 "Results" connects the content of the previous chapters to show that the initial hypothesis of Chapter 4 does not satisfy the equilibrium and shows how it can be reached by introducing an additional market. Then results of simulations with this market are given and discussed where will be shown that using the additional market an equilibrium will be reached but that it is different from the theoretical predictions.
+
+\bigskip
+
+In Chapter 7 "Conclusions" a short sum-up of the thesis and questions left for further research are presented.
 \end{document}
