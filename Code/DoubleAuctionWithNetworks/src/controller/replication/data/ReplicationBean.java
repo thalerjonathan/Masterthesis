@@ -1,10 +1,8 @@
-package frontend.experimenter.xml.result;
+package controller.replication.data;
 
 import java.util.Date;
 
 import javax.xml.bind.annotation.XmlRootElement;
-
-import frontend.replication.ReplicationData;
 
 @XmlRootElement( name = "replication" )
 public class ReplicationBean {

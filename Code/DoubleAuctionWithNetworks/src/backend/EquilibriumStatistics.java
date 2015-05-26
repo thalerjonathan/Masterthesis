@@ -1,6 +1,6 @@
 package backend;
 
-import frontend.experimenter.xml.result.EquilibriumBean;
+import controller.replication.data.EquilibriumBean;
 
 //used purely as a data-structure
 public class EquilibriumStatistics {

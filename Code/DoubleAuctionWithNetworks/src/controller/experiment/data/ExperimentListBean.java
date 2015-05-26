@@ -1,4 +1,4 @@
-package frontend.experimenter.xml.experiment;
+package controller.experiment.data;
 
 import java.util.List;
 

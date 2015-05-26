@@ -1,4 +1,4 @@
-package frontend.inspection;
+package controller.inspection;
 
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;

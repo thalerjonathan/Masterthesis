@@ -4,6 +4,7 @@ import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
 import javax.swing.table.DefaultTableModel;
 
+import controller.replication.data.ReplicationData;
 import utils.Utils;
 import backend.EquilibriumStatistics;
 

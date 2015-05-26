@@ -10,8 +10,8 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import controller.experiment.data.ExperimentBean;
 import frontend.MainWindow;
-import frontend.experimenter.xml.experiment.ExperimentBean;
 import frontend.replication.ReplicationPanel;
 
 @SuppressWarnings("serial")

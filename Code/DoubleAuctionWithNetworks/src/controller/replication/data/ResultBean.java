@@ -1,4 +1,4 @@
-package frontend.experimenter.xml.result;
+package controller.replication.data;
 
 import java.util.Date;
 import java.util.List;
@@ -6,7 +6,7 @@ import java.util.List;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
-import frontend.experimenter.xml.experiment.ExperimentBean;
+import controller.experiment.data.ExperimentBean;
 
 @XmlRootElement( name = "result" )
 public class ResultBean {

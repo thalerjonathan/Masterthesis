@@ -1,6 +1,6 @@
 import java.io.File;
 
-import frontend.experimenter.ExperimentCMDRunner;
+import controller.experiment.ExperimentCMDRunner;
 
 public class LeverageCycleCMD {
 

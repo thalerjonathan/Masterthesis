@@ -1,4 +1,4 @@
-package frontend.experimenter;
+package controller.experiment;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -8,14 +8,15 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 
+import controller.experiment.data.ExperimentBean;
+import controller.experiment.data.ExperimentListBean;
+import controller.replication.ReplicationsRunner;
+import controller.replication.ReplicationsRunner.ReplicationsListener;
+import controller.replication.data.ReplicationData;
 import backend.EquilibriumStatistics;
 import backend.agents.AgentFactoryImpl;
 import backend.agents.network.AgentNetwork;
 import backend.markets.Markets;
-import backend.replications.ReplicationsRunner;
-import backend.replications.ReplicationsRunner.ReplicationsListener;
-import frontend.experimenter.xml.experiment.ExperimentBean;
-import frontend.experimenter.xml.experiment.ExperimentListBean;
 import frontend.networkCreators.AscendingConnectedCreator;
 import frontend.networkCreators.AscendingFullShortcutsCreator;
 import frontend.networkCreators.AscendingRandomShortcutsCreator;
@@ -30,7 +31,6 @@ import frontend.networkCreators.MedianHubCreator;
 import frontend.networkCreators.NetworkCreator;
 import frontend.networkCreators.ThreeMedianHubsCreator;
 import frontend.networkCreators.WattStrogatzCreator;
-import frontend.replication.ReplicationData;
 
 public class ExperimentCMDRunner {
 

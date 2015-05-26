@@ -1,4 +1,4 @@
-package backend.replications;
+package controller.replication;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
@@ -19,6 +19,12 @@ import javax.xml.bind.Marshaller;
 
 import org.apache.commons.math3.stat.StatUtils;
 
+import controller.experiment.data.ExperimentBean;
+import controller.replication.data.AgentBean;
+import controller.replication.data.EquilibriumBean;
+import controller.replication.data.ReplicationBean;
+import controller.replication.data.ReplicationData;
+import controller.replication.data.ResultBean;
 import utils.Utils;
 import backend.Auction;
 import backend.Auction.MatchingType;
@@ -28,12 +34,6 @@ import backend.agents.network.AgentNetwork;
 import backend.markets.MarketType;
 import backend.markets.Markets;
 import backend.tx.Transaction;
-import frontend.experimenter.xml.experiment.ExperimentBean;
-import frontend.experimenter.xml.result.AgentBean;
-import frontend.experimenter.xml.result.EquilibriumBean;
-import frontend.experimenter.xml.result.ReplicationBean;
-import frontend.experimenter.xml.result.ResultBean;
-import frontend.replication.ReplicationData;
 
 public class ReplicationsRunner {
 

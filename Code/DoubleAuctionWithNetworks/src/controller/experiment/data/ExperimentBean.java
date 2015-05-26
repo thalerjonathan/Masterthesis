@@ -1,10 +1,10 @@
-package frontend.experimenter.xml.experiment;
+package controller.experiment.data;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import controller.replication.ReplicationsRunner.TerminationMode;
 import backend.markets.LoanType;
-import backend.replications.ReplicationsRunner.TerminationMode;
 
 @XmlRootElement( name = "experiment" )
 public class ExperimentBean {

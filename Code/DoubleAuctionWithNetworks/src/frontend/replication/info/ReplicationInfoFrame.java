@@ -16,7 +16,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
-import backend.replications.ReplicationsRunner.ReplicationTask;
+import controller.replication.ReplicationsRunner.ReplicationTask;
 import frontend.replication.ReplicationTable;
 
 @SuppressWarnings("serial")

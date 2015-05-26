@@ -20,11 +20,11 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 
+import controller.experiment.data.ExperimentBean;
+import controller.experiment.data.ExperimentListBean;
+import controller.replication.data.ResultBean;
 import utils.Utils;
 import frontend.MainWindow;
-import frontend.experimenter.xml.experiment.ExperimentBean;
-import frontend.experimenter.xml.experiment.ExperimentListBean;
-import frontend.experimenter.xml.result.ResultBean;
 
 @SuppressWarnings("serial")
 public class ExperimentPanel extends JPanel {

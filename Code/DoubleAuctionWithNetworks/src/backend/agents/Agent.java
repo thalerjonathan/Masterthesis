@@ -2,13 +2,13 @@ package backend.agents;
 
 import java.util.Arrays;
 
+import controller.replication.data.AgentBean;
 import utils.Utils;
 import backend.markets.MarketType;
 import backend.markets.Markets;
 import backend.offers.AskOffering;
 import backend.offers.BidOffering;
 import backend.tx.Match;
-import frontend.experimenter.xml.result.AgentBean;
 
 public class Agent {
 	private int id;

@@ -1,4 +1,4 @@
-package frontend.replication;
+package controller.replication.data;
 
 import java.util.Date;
 import java.util.List;
@@ -6,7 +6,6 @@ import java.util.List;
 import backend.EquilibriumStatistics;
 import backend.agents.Agent;
 import backend.markets.MarketType;
-import frontend.experimenter.xml.result.ReplicationBean;
 
 public class ReplicationData {
 
