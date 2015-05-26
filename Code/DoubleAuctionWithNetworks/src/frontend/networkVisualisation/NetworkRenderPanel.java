@@ -55,6 +55,12 @@ public class NetworkRenderPanel extends JPanel {
 		this.keepTXHighlighted = flag;
 	}
 	
+	public void changeLayout( Class<? extends Layout<Agent, AgentConnection>> layoutClazz ) {
+		this.layoutClazz = layoutClazz;
+		this.remove( this.visualizationViewer );
+		this.initVisualizationViewer();
+	}
+	
 	private void initVisualizationViewer() {
 		final DecimalFormat df = new DecimalFormat("#.##");
 		Layout<Agent, AgentConnection> layout = this.createLayout();

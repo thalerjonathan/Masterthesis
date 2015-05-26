@@ -27,9 +27,6 @@ import javax.swing.event.ChangeListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
-import controller.inspection.InspectionThread;
-import controller.inspection.InspectionThread.AdvanceMode;
-import controller.inspection.InspectionThread.InspectionObserver;
 import utils.Utils;
 import backend.Auction;
 import backend.Auction.MatchingType;
@@ -44,7 +41,9 @@ import backend.markets.Markets;
 import backend.offers.AskOffering;
 import backend.offers.BidOffering;
 import backend.tx.Transaction;
-import edu.uci.ics.jung.algorithms.layout.CircleLayout;
+import controller.inspection.InspectionThread;
+import controller.inspection.InspectionThread.AdvanceMode;
+import controller.inspection.InspectionThread.InspectionObserver;
 import edu.uci.ics.jung.algorithms.layout.Layout;
 import frontend.inspection.offerBook.OfferBook;
 import frontend.inspection.txHistory.TxHistoryTable;
@@ -588,10 +587,11 @@ public class InspectionPanel extends JPanel {
 		}
 	}
 	
-	@SuppressWarnings("unchecked")
 	private void updateNetworkVisualisationFrame() {
 		if ( null != this.netVisFrame && this.netVisFrame.isVisible() ) {
-			NetworkRenderPanel networkPanel = this.agentNetwork.getNetworkRenderingPanel( (Class<? extends Layout<Agent, AgentConnection>>) CircleLayout.class, 
+			Class<? extends Layout<Agent, AgentConnection>> layoutClazz = this.netVisFrame.getSelectedLayout();
+			
+			NetworkRenderPanel networkPanel = this.agentNetwork.getNetworkRenderingPanel( layoutClazz, 
 				new INetworkSelectionObserver() {
 					@Override
 					public void agentSeleted( AgentSelectedEvent agentSelectedEvent ) {
@@ -674,7 +674,7 @@ public class InspectionPanel extends JPanel {
 						InspectionPanel.this.repaintNetworkVisFrame();
 					}
 				} ); 
-			this.netVisFrame.setNetworkRenderPanel( networkPanel );
+			this.netVisFrame.setNetworkRenderPanel( networkPanel, this.agentNetwork );
 			this.netVisFrame.setTitle( "Agent Network (" + this.getTitleExtension() + ")" );
 		}
 	}
@@ -761,7 +761,6 @@ public class InspectionPanel extends JPanel {
 			this.loanTypeSelection.setEnabled( false );
 			this.topologySelection.setEnabled( false );
 			this.optimismSelection.setEnabled( false );
-			// TODO this.recreateButton.setEnabled( false );
 			this.importanceSamplingCheck.setEnabled( false );
 			
 			// reset controls
@@ -862,7 +861,6 @@ public class InspectionPanel extends JPanel {
 			this.loanTypeSelection.setEnabled( true );
 			this.topologySelection.setEnabled( true );
 			this.optimismSelection.setEnabled( true );
-			// TODO this.recreateButton.setEnabled( true );
 			this.importanceSamplingCheck.setEnabled( true );
 		}
 	}

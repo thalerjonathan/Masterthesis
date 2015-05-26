@@ -31,22 +31,19 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 
+import utils.Utils;
+import backend.EquilibriumStatistics;
+import backend.agents.Agent;
+import backend.agents.AgentFactoryImpl;
+import backend.agents.network.AgentNetwork;
+import backend.markets.LoanType;
+import backend.markets.Markets;
 import controller.experiment.data.ExperimentBean;
 import controller.experiment.data.ExperimentListBean;
 import controller.replication.ReplicationsRunner;
 import controller.replication.ReplicationsRunner.ReplicationsListener;
 import controller.replication.ReplicationsRunner.TerminationMode;
 import controller.replication.data.ReplicationData;
-import utils.Utils;
-import backend.EquilibriumStatistics;
-import backend.agents.Agent;
-import backend.agents.AgentFactoryImpl;
-import backend.agents.network.AgentConnection;
-import backend.agents.network.AgentNetwork;
-import backend.markets.LoanType;
-import backend.markets.Markets;
-import edu.uci.ics.jung.algorithms.layout.CircleLayout;
-import edu.uci.ics.jung.algorithms.layout.Layout;
 import frontend.agentInfo.AgentInfoFrame;
 import frontend.networkCreators.AscendingConnectedCreator;
 import frontend.networkCreators.AscendingFullShortcutsCreator;
@@ -619,11 +616,10 @@ public class ReplicationPanel extends JPanel {
 		}
 	}
 	
-	@SuppressWarnings("unchecked")
 	private void updateNetworkVisualisationFrame() {
 		if ( null != this.netVisFrame && this.netVisFrame.isVisible() ) {
-			NetworkRenderPanel networkPanel = this.agentNetworkTemplate.getNetworkRenderingPanel( (Class<? extends Layout<Agent, AgentConnection>>) CircleLayout.class, null );
-			this.netVisFrame.setNetworkRenderPanel( networkPanel );
+			NetworkRenderPanel networkPanel = this.agentNetworkTemplate.getNetworkRenderingPanel( this.netVisFrame.getSelectedLayout(), null );
+			this.netVisFrame.setNetworkRenderPanel( networkPanel, this.agentNetworkTemplate );
 			this.netVisFrame.setTitle( "Agent Network (" + this.getTitleExtension() + ")" );
 		}
 	}
