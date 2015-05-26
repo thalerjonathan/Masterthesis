@@ -199,7 +199,7 @@ public class InspectionPanel extends JPanel {
 		this.advcanceModeSelection = new JComboBox<InspectionThread.AdvanceMode>( InspectionThread.AdvanceMode.values() );
 		this.loanTypeSelection = new JComboBox<LoanType>( LoanType.values() );
 		
-		this.agentCountSpinner = new JSpinner( new SpinnerNumberModel( 30, 2, 1000, 10 ) );
+		this.agentCountSpinner = new JSpinner( new SpinnerNumberModel( 100, 2, 1000, 10 ) );
 		
 		this.computationTimeLabel = new JLabel( "0,00 sec" );
 		this.succTxCounterLabel = new JLabel( "0" );

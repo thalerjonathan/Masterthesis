@@ -6,6 +6,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Iterator;
 
+import utils.Utils;
 import backend.agents.Agent;
 
 public class NetworkExporter {
@@ -17,13 +18,13 @@ public class NetworkExporter {
 			out = new BufferedWriter( new FileWriter( new File( fileName ) ) );
 			out.write( "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" );
 			out.write( "<gexf xmlns=\"http://www.gexf.net/1.2draft\" version=\"1.2\">" );
-			out.write( "<graph mode=\"static\" defaultedgetype=\"directed\">");
+			out.write( "<graph mode=\"static\" defaultedgetype=\"undirected\">");
 			
 			out.write( "<nodes>");
 			Iterator<Agent> nodesIter = network.iterator();
 			while( nodesIter.hasNext() ) {
 				Agent a = nodesIter.next();
-				out.write( "<node id=\"" + a.getId() + "\" label=\"" + a.getH() + "\" />" );
+				out.write( "<node id=\"" + a.getId() + "\" label=\"" + Utils.DECIMAL_3_DIGITS_FORMATTER.format( a.getH() ) + "\" />" );
 			}
 			out.write( "</nodes>");
 			

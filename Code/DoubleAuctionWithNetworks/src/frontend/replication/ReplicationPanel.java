@@ -181,7 +181,7 @@ public class ReplicationPanel extends JPanel {
 		this.showAgentInfoButton = new JButton( "Agent-Info" );
 		this.showReplicationInfoButton = new JButton( "Replication-Info" );
 		
-		this.agentCountSpinner = new JSpinner( new SpinnerNumberModel( 30, 10, 1000, 10 ) );
+		this.agentCountSpinner = new JSpinner( new SpinnerNumberModel( 100, 2, 1000, 10 ) );
 		this.replicationCountSpinner = new JSpinner( new SpinnerNumberModel( 4, 1, 1000, 1 ) );
 		this.maxTxSpinner = new JSpinner( new SpinnerNumberModel( 1000, 1, 1000000, 100 ) );
 		

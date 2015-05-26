@@ -118,8 +118,9 @@ public class NetworkVisualisationFrame extends JFrame {
 		}
 		
 		this.getContentPane().add( p, BorderLayout.CENTER );
-		this.revalidate();
-
+		//this.revalidate();
+		this.pack();
+		
 		this.networkRenderPanel = p;
 		this.network = network;
 	}
