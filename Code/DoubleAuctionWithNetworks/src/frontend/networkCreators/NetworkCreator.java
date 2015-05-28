@@ -1,5 +1,7 @@
 package frontend.networkCreators;
 
+import java.util.Map;
+
 import backend.agents.IAgentFactory;
 import backend.agents.network.AgentNetwork;
 import backend.markets.Markets;
@@ -20,6 +22,9 @@ public abstract class NetworkCreator {
 	public abstract void deferCreation( Runnable okCallback );
 	
 	public abstract String name();
+	
+	public abstract void setParams( Map<String, String> params );
+	public abstract Map<String, String> getParams();
 	
 	public String toString() {
 		return this.name();

@@ -394,9 +394,11 @@ public class ReplicationsRunner {
 			return;
 		}
 		
+		String name = this.experiment.getName();
 		Date endingTime = new Date();
-		String name = FILENAME_DATE_FORMATTER.format( endingTime );
+		
 		if ( null == this.experiment.getName() ) {
+			name = FILENAME_DATE_FORMATTER.format( endingTime );
 			this.experiment.setName( name );
 		}
 		

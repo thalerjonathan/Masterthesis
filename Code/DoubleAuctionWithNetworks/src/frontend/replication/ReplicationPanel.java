@@ -40,6 +40,7 @@ import backend.markets.LoanType;
 import backend.markets.Markets;
 import controller.experiment.data.ExperimentBean;
 import controller.experiment.data.ExperimentListBean;
+import controller.experiment.data.TopologyBean;
 import controller.replication.ReplicationsRunner;
 import controller.replication.ReplicationsRunner.ReplicationsListener;
 import controller.replication.ReplicationsRunner.TerminationMode;
@@ -407,6 +408,11 @@ public class ReplicationPanel extends JPanel {
         	experimentList.setExperiments( new ArrayList<ExperimentBean>() );
         }
         
+        NetworkCreator networkCreator = this.topologySelection.getItemAt( this.topologySelection.getSelectedIndex() );
+        TopologyBean topologyBean = new TopologyBean();
+        topologyBean.setClazz( networkCreator.getClass().getName() );
+        topologyBean.setParams( networkCreator.getParams() );
+        
         ExperimentBean experimentBean = new ExperimentBean();
         experimentBean.setAgentCount( (Integer) this.agentCountSpinner.getValue() );
         experimentBean.setAssetLoanMarket( this.abmMarketCheck.isSelected() );
@@ -419,7 +425,7 @@ public class ReplicationPanel extends JPanel {
         experimentBean.setName( name );
         experimentBean.setReplications( (Integer) this.replicationCountSpinner.getValue() );
         experimentBean.setTerminationMode( (TerminationMode) this.terminationSelection.getSelectedItem() );
-        experimentBean.setTopology( ( (NetworkCreator) this.topologySelection.getSelectedItem() ).name() );
+        experimentBean.setTopology( topologyBean );
         
         experimentList.getExperiments().add( experimentBean );
         
@@ -484,6 +490,11 @@ public class ReplicationPanel extends JPanel {
 			this.marketsAccuVisualizer.setMarkets( new ArrayList<double[]>() );
 			this.marketsTimeVisualizer.setMarkets( new ArrayList<double[]>() );
 			
+			NetworkCreator networkCreator = this.topologySelection.getItemAt( this.topologySelection.getSelectedIndex() );
+			TopologyBean topologyBean = new TopologyBean();
+			topologyBean.setClazz( networkCreator.getClass().getName() );
+			topologyBean.setParams( networkCreator.getParams() );
+					        
 			ExperimentBean bean = new ExperimentBean();
 			bean.setName( this.name );
 			bean.setAgentCount( (Integer) this.agentCountSpinner.getValue() );
@@ -496,7 +507,7 @@ public class ReplicationPanel extends JPanel {
 			bean.setMaxTx( (Integer) this.maxTxSpinner.getValue() );
 			bean.setReplications( (Integer) this.replicationCountSpinner.getValue() );
 			bean.setTerminationMode( this.terminationSelection.getItemAt( this.terminationSelection.getSelectedIndex() ) );
-			bean.setTopology( this.topologySelection.getItemAt( this.topologySelection.getSelectedIndex() ).name() );
+			bean.setTopology( topologyBean );
 			
 			this.replications.startAsync( bean, new ReplicationsListener() {
 				@Override

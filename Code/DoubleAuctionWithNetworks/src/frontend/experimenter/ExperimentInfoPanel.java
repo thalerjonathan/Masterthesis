@@ -56,7 +56,7 @@ public class ExperimentInfoPanel extends JPanel {
 		
 		this.agentCountLabel = new JLabel( "" + bean.getAgentCount() );
 		this.faceValueLabel = new JLabel( bean.getLoanType().name() );
-		this.topologyLabel = new JLabel( bean.getTopology() );
+		this.topologyLabel = new JLabel( bean.getTopology().getClazz() );
 		this.assetLoanMarketLabel = new JLabel( "" + bean.isAssetLoanMarket() );
 		this.loanCashMarketLabel = new JLabel( "" + bean.isLoanCashMarket() );
 		this.collateralMarketLabel = new JLabel( "" + bean.isCollateralCashMarket() );

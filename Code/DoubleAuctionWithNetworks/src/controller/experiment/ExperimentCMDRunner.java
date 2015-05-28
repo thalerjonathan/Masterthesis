@@ -3,6 +3,7 @@ package controller.experiment;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -52,7 +53,9 @@ public class ExperimentCMDRunner {
 			
 			return new ExperimentCMDRunner( experiments, maxThreads );
 		} catch ( JAXBException e ) {
-			System.out.println( "An Error occured parsing XML-File \"" + file.getAbsoluteFile() + "\"" );
+			e.printStackTrace();
+			
+			System.out.println( "An Error occured parsing XML-File \"" + file.getAbsoluteFile() + "\": " + e.getMessage() );
 			return null;
 		}
 	}
@@ -82,7 +85,9 @@ public class ExperimentCMDRunner {
 			Markets markets = createMarkets( experimentBean );
 			AgentNetwork agentNetwork = this.createAgentNetwork( experimentBean, markets );
 			
-			this.runExperiment( experimentBean, agentNetwork, markets );
+			if ( null != agentNetwork ) {
+				this.runExperiment( experimentBean, agentNetwork, markets );
+			}
 		}
 		
 		System.out.println( "\nAll Experiments finished." );
@@ -114,12 +119,22 @@ public class ExperimentCMDRunner {
 		NetworkCreator networkCreator = null;
 		
 		for ( NetworkCreator creator : this.networkCreators ) {
-			if ( creator.name().equals( bean.getTopology() ) ) {
+			if ( creator.getClass().getName().equals( bean.getTopology().getClazz() ) ) {
 				networkCreator = creator;
 				break;
 			}
 		}
 
+		if ( null == networkCreator ) {
+			System.out.println( "Couldn't find topology-creator class \"" + bean.getTopology().getClazz() + "\" skipping experiment." );
+			return null;
+		}
+		
+		Map<String, String> creatorParams = bean.getTopology().getParams();
+		if ( null != creatorParams ) {
+			networkCreator.setParams( creatorParams );
+		}
+		
 		AgentNetwork agentNetwork = networkCreator.createNetwork( new AgentFactoryImpl( bean.getAgentCount(), markets ) );
 		if ( bean.isImportanceSampling() ) {
 			networkCreator.createImportanceSampling( agentNetwork, markets );
@@ -141,7 +156,7 @@ public class ExperimentCMDRunner {
 	
 	private static void printExperimentInfo( ExperimentBean experiment ) {
 		System.out.print( "Experiment \"" + experiment.getName() + "\", " + experiment.getAgentCount() + " Agents"
-				+ ", Topology \"" + experiment.getTopology() + "\""
+				+ ", Topology \"" + experiment.getTopology().getClazz() + "\""
 				+ ", " + experiment.getReplications() + " Replications" );
 	}
 }

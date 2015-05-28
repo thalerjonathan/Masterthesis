@@ -1,5 +1,8 @@
 package frontend.networkCreators;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.swing.JOptionPane;
 
 import backend.agents.IAgentFactory;
@@ -38,5 +41,16 @@ public class ErdosRenyiCreator extends NetworkCreator {
 	
 	public boolean createImportanceSampling( AgentNetwork agents, Markets markets ) {
 		return false;
+	}
+	
+	public void setParams( Map<String, String> params ) {
+		this.p = Double.parseDouble( params.get( "p" ) );
+	}
+	
+	public Map<String, String> getParams() {
+		Map<String, String> params = new HashMap<String, String>();
+		params.put( "p", String.valueOf( this.p ) );
+
+		return params;
 	}
 }

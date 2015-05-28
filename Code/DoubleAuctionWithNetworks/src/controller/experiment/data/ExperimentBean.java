@@ -12,7 +12,6 @@ public class ExperimentBean {
 	private String name;
 	private int agentCount;
 	private LoanType loanType;
-	private String topology;
 	private boolean assetLoanMarket;
 	private boolean loanCashMarket;
 	private boolean collateralCashMarket;
@@ -21,6 +20,7 @@ public class ExperimentBean {
 	private TerminationMode terminationMode;
 	private int maxTx;
 	private int replications;
+	private TopologyBean topology;
 	
 	public ExperimentBean() {
 		
@@ -52,12 +52,12 @@ public class ExperimentBean {
 		this.loanType = loanType;
 	}
 
-	public String getTopology() {
+	public TopologyBean getTopology() {
 		return topology;
 	}
 	
 	@XmlElement
-	public void setTopology(String topology) {
+	public void setTopology(TopologyBean topology) {
 		this.topology = topology;
 	}
 	
