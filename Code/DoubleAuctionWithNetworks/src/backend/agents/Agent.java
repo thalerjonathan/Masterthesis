@@ -69,6 +69,12 @@ public class Agent {
 		this.markets = markets;
 	}
 	
+	// NOTE: use only for visualization purposes!!
+	public Agent( int id, double h ) {
+		this.id = id;
+		this.h = h;
+	}
+		
 	public Agent( int id, double h, Markets markets ) {
 		this.id = id;
 		this.h = h;

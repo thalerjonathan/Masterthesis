@@ -10,7 +10,7 @@ public class NodeBean {
 	@XmlAttribute( name = "id" )
 	private int id;
 	@XmlAttribute( name = "label" )
-	private String label;
+	private double label;
 	
 	public NodeBean() {
 	}
@@ -23,11 +23,11 @@ public class NodeBean {
 		this.id = id;
 	}
 
-	public String getLabel() {
+	public double getLabel() {
 		return label;
 	}
 
-	public void setLabel(String label) {
+	public void setLabel(double label) {
 		this.label = label;
 	}
 }

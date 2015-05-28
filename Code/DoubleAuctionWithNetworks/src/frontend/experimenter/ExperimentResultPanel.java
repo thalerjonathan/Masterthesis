@@ -16,14 +16,17 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 
+import utils.Utils;
+import backend.EquilibriumStatistics;
+import backend.agents.Agent;
+import backend.agents.network.AgentNetwork;
+import backend.markets.Markets;
 import controller.replication.data.AgentBean;
 import controller.replication.data.ReplicationBean;
 import controller.replication.data.ReplicationData;
 import controller.replication.data.ResultBean;
-import utils.Utils;
-import backend.EquilibriumStatistics;
-import backend.agents.Agent;
-import backend.markets.Markets;
+import frontend.networkVisualisation.NetworkRenderPanel;
+import frontend.networkVisualisation.NetworkVisualisationFrame;
 import frontend.replication.EquilibriumInfoPanel;
 import frontend.replication.ReplicationTable;
 import frontend.visualisation.MarketsAccuOfflineVisualizer;
@@ -34,6 +37,7 @@ import frontend.visualisation.WealthVisualizer;
 public class ExperimentResultPanel extends JPanel {
 
 	private JFrame replicationInfoFrame;
+	private NetworkVisualisationFrame netVisFrame;
 	
 	private ResultBean bean;
 
@@ -93,6 +97,14 @@ public class ExperimentResultPanel extends JPanel {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				ExperimentResultPanel.this.showReplicationInfo();
+			}
+		});
+		
+		JButton showNetworkButton = new JButton( "Show Network" );
+		showNetworkButton.addActionListener( new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				ExperimentResultPanel.this.showNetwork();
 			}
 		});
 		
@@ -169,7 +181,11 @@ public class ExperimentResultPanel extends JPanel {
 		resultInfoPanel.add( meanFailedTxLabel, c );
 		
 		JPanel northPanel = new JPanel( new BorderLayout() );
-		northPanel.add( showReplicationInfoButton, BorderLayout.SOUTH );
+		JPanel buttonPanel = new JPanel( new BorderLayout() );
+		buttonPanel.add( showReplicationInfoButton, BorderLayout.NORTH );
+		buttonPanel.add( showNetworkButton, BorderLayout.SOUTH );
+		
+		northPanel.add( buttonPanel, BorderLayout.SOUTH );
 		northPanel.add( resultInfoPanel, BorderLayout.CENTER );
 		northPanel.add( experimentPanel, BorderLayout.EAST );
 		
@@ -178,6 +194,21 @@ public class ExperimentResultPanel extends JPanel {
 		this.add( equilibriumInfoPanel, BorderLayout.SOUTH );
 	}
 	
+	private void showNetwork() {
+		if ( null == this.netVisFrame ) {
+			this.netVisFrame = new NetworkVisualisationFrame();
+		}
+
+		this.netVisFrame.setVisible( true );
+		
+		// NOTE: for visualization purposes only!
+		AgentNetwork agentNetwork = AgentNetwork.createByGraphBean( this.bean.getGraph() );
+		
+		NetworkRenderPanel networkPanel = agentNetwork.getNetworkRenderingPanel( this.netVisFrame.getSelectedLayout(), null );
+		this.netVisFrame.setNetworkRenderPanel( networkPanel, agentNetwork );
+		this.netVisFrame.setTitle( "Agent Network (" + this.bean.getExperiment().getName() + ")" );
+	}
+
 	private void showReplicationInfo() {
 		if ( null == this.replicationInfoFrame ) {
 			this.replicationInfoFrame = new JFrame( "Replication-Info " + this.bean.getExperiment().getName() );

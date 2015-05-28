@@ -12,6 +12,9 @@ import org.apache.commons.collections15.Transformer;
 import utils.Utils;
 import backend.agents.Agent;
 import backend.agents.IAgentFactory;
+import backend.agents.network.export.EdgeBean;
+import backend.agents.network.export.GraphBean;
+import backend.agents.network.export.NodeBean;
 import edu.uci.ics.jung.algorithms.layout.Layout;
 import edu.uci.ics.jung.algorithms.shortestpath.DijkstraShortestPath;
 import edu.uci.ics.jung.graph.Graph;
@@ -33,8 +36,40 @@ public class AgentNetwork {
 	
 	private boolean randomNetworkFlag;
 	private boolean fullyConnectedFlag;
+
+	// NOTE: use only to visualize results
+	public static AgentNetwork createByGraphBean( GraphBean graphBean ) {
+		AgentNetwork network = new AgentNetwork( "N/A", false );
+		
+		HashMap<Integer, Agent> agentsById = new HashMap<Integer, Agent>();
+		
+		Iterator<NodeBean> beanIter = graphBean.getNodes().iterator();
+		while ( beanIter.hasNext() ) {
+			NodeBean node = beanIter.next();
+			double h = node.getLabel();
+			// note: violates the agent-creation delegation through agent-factory, but this is
+			// only for visualization purposes anyway
+			Agent a = new Agent( node.getId(), h );
+			
+			agentsById.put( a.getId(), a );
+			network.orderedAgents.add( a );
+			
+			network.graph.addVertex( a );
+		}
+		
+		Iterator<EdgeBean> edgeIter = graphBean.getEdges().iterator();
+		while ( edgeIter.hasNext() ) {
+			EdgeBean edge = edgeIter.next();
+			
+			Agent source = agentsById.get( edge.getSource() );
+			Agent target = agentsById.get( edge.getTarget() );
+			
+			network.graph.addEdge( new AgentConnection(), source, target );
+		}
+		
+		return network;
+	}
 	
-	// NOTE: SATISFIES HYPOTHESIS
 	public static AgentNetwork createFullyConnected( IAgentFactory agentFactory ) {
 		AgentNetwork network = new AgentNetwork( "FullyConnected", false );
 		network.fullyConnectedFlag = true;
@@ -44,12 +79,10 @@ public class AgentNetwork {
 		return network;
 	}
 	
-	// NOTE: SATISFIES HYPOTHESIS
 	public static AgentNetwork createAscendingConnected( IAgentFactory agentFactory ) {
 		return AgentNetwork.createAscendingConnectedWithRandomShortcuts( 0.0, agentFactory );
 	}
 	
-	// NOTE: SATISFIES HYPOTHESIS
 	public static AgentNetwork createAscendingConnectedWithRandomShortcuts( double p, IAgentFactory agentFactory ) {
 		AgentNetwork network = new AgentNetwork( "AscendingConnected", p != 0.0 );
 		network.populate( agentFactory );
@@ -81,7 +114,6 @@ public class AgentNetwork {
 		return network;
 	}
 	
-	// NOTE: SATISFIES HYPOTHESIS
 	public static AgentNetwork createAscendingConnectedWithRegularShortcuts( int n, IAgentFactory agentFactory ) {
 		AgentNetwork network = new AgentNetwork( "AscendingConnectedWithShortcuts", false );
 		network.populate( agentFactory );
@@ -103,7 +135,6 @@ public class AgentNetwork {
 		return network;
 	}
 	
-	// NOTE: SATISFIES HYPOTHESIS
 	public static AgentNetwork createAscendingConnectedWithFullShortcuts( int n, IAgentFactory agentFactory ) {
 		AgentNetwork network = new AgentNetwork( "AscendingConnectedWithFullShortcuts", false );
 		network.populate( agentFactory );
@@ -253,7 +284,7 @@ public class AgentNetwork {
 		
 		return network;
 	}
-	// NOTE: DOES NOT SATISFIES HYPOTHESIS 
+
 	public static AgentNetwork createErdosRenyiConnected( double p, IAgentFactory agentFactory ) {
 		AgentNetwork network = new AgentNetwork( "ErdosRenyi", true );
 		network.populate( agentFactory );
@@ -275,7 +306,6 @@ public class AgentNetwork {
 		return network;
 	}
 	
-	// NOTE: DOES NOT SATISFIES HYPOTHESIS
 	public static AgentNetwork createBarbasiAlbertConnected( int m0, int m, IAgentFactory agentFactory ) {
 		AgentNetwork network = new AgentNetwork( "BarbasiAlbert", true );
 		
@@ -342,7 +372,6 @@ public class AgentNetwork {
 		return network;
 	}
 	
-	// NOTE: SATISFIES HYPOTHESIS IF k == 2
 	public static AgentNetwork createWattsStrogatzConnected( int k, double b, IAgentFactory agentFactory ) {
 		AgentNetwork network = new AgentNetwork( "WattsStrongatz", true );
 		network.populate( agentFactory );

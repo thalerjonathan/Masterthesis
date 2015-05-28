@@ -1,11 +1,11 @@
 Noch Offen
--> TODO		netzwerke aus result öffnen können um zum visualisieren, dort dann nach gephi exportierbar
 -> TODO		netzwerke parametrisierbar machen bei experimentdefinition
 
+-> OK		netzwerke aus result öffnen können um zum visualisieren, dort dann nach gephi exportierbar
 -> OK		netzwerke ebenfalls exportieren bei result: in das result-file
--> OK	standardabweichugnen in results: total tx
--> OK	in results hinzufügen: successful tx und auch deren standardabweichugnen
--> OK	standardabweichugnen in results: failed tx
+-> OK		standardabweichugnen in results: total tx
+-> OK		in results hinzufügen: successful tx und auch deren standardabweichugnen
+-> OK		standardabweichugnen in results: failed tx
 
 Erledigt
 	-> OK		InspectionPanel überarbeiten

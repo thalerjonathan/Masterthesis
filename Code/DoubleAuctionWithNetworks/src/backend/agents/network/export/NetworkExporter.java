@@ -7,7 +7,6 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 
-import utils.Utils;
 import backend.agents.Agent;
 import backend.agents.network.AgentNetwork;
 
@@ -22,7 +21,7 @@ public class NetworkExporter {
 			
 			NodeBean node = new NodeBean();
 			node.setId( a.getId() );
-			node.setLabel( Utils.DECIMAL_3_DIGITS_FORMATTER.format( a.getH() ) );
+			node.setLabel( a.getH() );
 		
 			graphBean.getNodes().add( node );
 		}
