@@ -6,6 +6,7 @@ import java.util.List;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import backend.agents.network.export.GraphBean;
 import controller.experiment.data.ExperimentBean;
 
 @XmlRootElement( name = "result" )
@@ -31,6 +32,8 @@ public class ResultBean {
 	private double stdFailedTransactions;
 	
 	private double meanDuration;
+	
+	private GraphBean graph;
 	
 	public List<double[]> getMedianMarkets() {
 		return medianMarkets;
@@ -161,5 +164,13 @@ public class ResultBean {
 
 	public void setStdFailedTransactions(double stdFailedTransactions) {
 		this.stdFailedTransactions = stdFailedTransactions;
+	}
+
+	public GraphBean getGraph() {
+		return graph;
+	}
+
+	public void setGraph(GraphBean graph) {
+		this.graph = graph;
 	}
 }

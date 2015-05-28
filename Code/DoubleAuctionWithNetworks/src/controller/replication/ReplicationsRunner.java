@@ -31,6 +31,7 @@ import backend.Auction.MatchingType;
 import backend.EquilibriumStatistics;
 import backend.agents.Agent;
 import backend.agents.network.AgentNetwork;
+import backend.agents.network.export.NetworkExporter;
 import backend.markets.MarketType;
 import backend.markets.Markets;
 import backend.tx.Transaction;
@@ -447,6 +448,7 @@ public class ReplicationsRunner {
 		resultBean.setEndingTime( endingTime );
 		resultBean.setMeanDuration( StatUtils.mean( durations, 0, validReplications ) / 1000 );
 		resultBean.setMedianMarkets( this.medianMarkets );
+		resultBean.setGraph( NetworkExporter.createGraphBean( this.template ) );
 		
 		try {
 			JAXBContext jaxbContext = JAXBContext.newInstance( ResultBean.class );
