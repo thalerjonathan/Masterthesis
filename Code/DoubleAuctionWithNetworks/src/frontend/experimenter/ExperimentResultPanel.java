@@ -103,13 +103,19 @@ public class ExperimentResultPanel extends JPanel {
 		JLabel endingTimeLabel = new JLabel( Utils.DATE_FORMATTER.format( bean.getEndingTime() ) );
 		JLabel durationInfoLabel = new JLabel( "Duration:" );
 		JLabel durationLabel = new JLabel( "" + bean.getDuration() + " sec");
-	
+
 		JLabel meanDurationInfoLabel = new JLabel( "Mean Replication Duration:" );
 		JLabel meanDurationLabel = new JLabel( "" + Utils.DECIMAL_3_DIGITS_FORMATTER.format( bean.getMeanDuration() ) + " sec");
+		
+		JLabel meanSuccessfulTxInfoLabel = new JLabel( "Mean Replication Successful TX:" );
+		JLabel meanSuccessfulTxLabel = new JLabel( "" + Utils.DECIMAL_3_DIGITS_FORMATTER.format( bean.getMeanSuccessfulTransactions() ) +
+				" (" + Utils.DECIMAL_2_DIGITS_FORMATTER.format( bean.getStdSuccessfulTransactions() ) + ")" );
 		JLabel meanTotalTxInfoLabel = new JLabel( "Mean Replication Total TX:" );
-		JLabel meanTotalTxLabel = new JLabel( "" + Utils.DECIMAL_3_DIGITS_FORMATTER.format( bean.getMeanTotalTransactions() ) );
+		JLabel meanTotalTxLabel = new JLabel( "" + Utils.DECIMAL_3_DIGITS_FORMATTER.format( bean.getMeanTotalTransactions() ) + 
+				" (" + Utils.DECIMAL_2_DIGITS_FORMATTER.format( bean.getStdTotalTransactions() ) + ")" );
 		JLabel meanFailedTxInfoLabel = new JLabel( "Mean Replication Failed TX:" );
-		JLabel meanFailedTxLabel = new JLabel( "" + Utils.DECIMAL_3_DIGITS_FORMATTER.format( bean.getMeanFailedTransactions() ) );
+		JLabel meanFailedTxLabel = new JLabel( "" + Utils.DECIMAL_3_DIGITS_FORMATTER.format( bean.getMeanFailedTransactions() ) +
+				" (" + Utils.DECIMAL_2_DIGITS_FORMATTER.format( bean.getStdFailedTransactions() ) + ")" );
 		
 		GridBagConstraints c = new GridBagConstraints();
 		c.fill = GridBagConstraints.BOTH;
@@ -136,13 +142,19 @@ public class ExperimentResultPanel extends JPanel {
 		c.gridx = 1;
 		c.gridy = 2;
 		resultInfoPanel.add( durationLabel, c );
+		c.gridx = 0;
+		c.gridy = 3;
+		resultInfoPanel.add( meanDurationInfoLabel, c );
+		c.gridx = 1;
+		c.gridy = 3;
+		resultInfoPanel.add( meanDurationLabel, c );
 		
 		c.gridx = 2;
 		c.gridy = 0;
-		resultInfoPanel.add( meanDurationInfoLabel, c );
+		resultInfoPanel.add( meanSuccessfulTxInfoLabel, c );
 		c.gridx = 3;
 		c.gridy = 0;
-		resultInfoPanel.add( meanDurationLabel, c );
+		resultInfoPanel.add( meanSuccessfulTxLabel, c );
 		c.gridx = 2;
 		c.gridy = 1;
 		resultInfoPanel.add( meanTotalTxInfoLabel, c );

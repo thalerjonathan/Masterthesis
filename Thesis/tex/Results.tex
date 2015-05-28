@@ -1,18 +1,44 @@
 \documentclass[Bachelorarbeit.tex]{subfiles}
 \begin{document}
 \chapter{Results}
-Es trifft hypothese offensichtlich nicht zu (resultate zeigen und interpretieren)
-		Gibt es möglicherweise Marktmechanismen, die dies beheben können oder liegt es grundstäzlich in der natur der topologie?
-		Entweder Vollvernetzung notwendig oder neuer markt für theoretisches gleichgewicht
-		
-		neuer markt: Collateralisierte ASsets gegen Cash			
-			Neuer Markt: Collateralisierte Assets gegen Cash
-			Käufer: 		bekommt Asset und Loan, zahlt Cash
-			Verkäufer: 		bekommt Cash und gibt Asset und Loan
-			limit-preis für diesen markt?
-			Fläche unter P/M/O gleich bei Fully-Connected und Ascending-Connected obwohl unterschiedliche
-	
-	Erweiterung mit zweiter Hypothese
-		zweite Hypothese: erreicht ascending-connected nun mit dem neuen markt das gleichgewicht?
-		ergebnis der zweiten hypothese: noch unklar
+
+In this Chapter the results of the experiments are given. Each topology-type is handled in a separate section where the hypothesis was put to test in the section regarding the Ascending-Connected Topologies.
+
+In all experiments 100 Agents were used, all Markets were enabled, the bond-type 0.5 was selected and if replications were used the number of runs over which was averaged was always 50.
+As Termination-Mode "Failed successive Transactions" is selected with the number of failed transactions in a row is 1000. Please note that if trading is not possible anymore bevore these 1000 failed transactions have been reached, the simulation is halted and thus it is possible that it terminates earlier.
+
+\section{Fully-Connected Topology}
+To demonstrate the ability of the software to produce the results given in the paper of \cite{Breuer2015} the results of a single run and in addition with a replication run of a Fully-Connected Topology is given.
+
+It is also a point-of-reference for the other experiments as this fully-connected topology gives a good point of visual information which can be applied to the other topologies to give a visual clue whether they could have actually reached the equilibrium.
+
+\section{Deterministic Hub-Based Topologies} 
+
+Half-Fully Connected
+N-Hubs
+1-Median Hub
+3-Median Hub
+Maximum Hub
+
+1000 failed transactions in a row
+
+\section{Random- Scale-Free and Small-World Topologies}
+Ascending-Connected Random Shortcuts
+Erdos-Renyi
+Barbasi-Albert
+Watts-Strogatz
+
+\section{Ascending-Connected Topologies} 
+Experiments have shown that the Hypothesis as it is given in Chapter 4 does not apply. The following experiments have been conducted:
+
+Topologies
+ASCENDING-CONNECTED
+ASCENDING-CONNECTED WITH IMPORTANCE SAMPLING
+ASCENDING-CONNECTED WITH FULL SHORTCUTS 5
+ASCENDING-CONNECTED WITH REGULAR SHORTCUTS 5
+ASCENDING-CONNECTED WITH FULL SHORTCUTS 10
+ASCENDING-CONNECTED WITH REGULAR SHORTCUTS 10
+ASCENDING-CONNECTED WITH FULL SHORTCUTS 30
+ASCENDING-CONNECTED WITH REGULAR SHORTCUTS 30
+
 \end{document}

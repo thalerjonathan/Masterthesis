@@ -1,3 +1,13 @@
+Noch Offen
+
+-> TODO		netzwerke ebenfalls exportieren bei result: in das result-file
+-> TODO		netzwerke parametrisierbar machen bei experimentdefinition
+-> TODO		netzwerke aus result öffnen können um zuvisualisieren
+
+-> OK	standardabweichugnen in results: total tx
+-> OK	in results hinzufügen: successful tx und auch deren standardabweichugnen
+-> OK	standardabweichugnen in results: failed tx
+
 Erledigt
 	-> OK		InspectionPanel überarbeiten
 				-> OK		implements ActionListener usw... wegbekommen

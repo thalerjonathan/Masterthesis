@@ -410,38 +410,42 @@ public class ReplicationsRunner {
 			resultAgents.add( new AgentBean( a ) );
 		}
 		
-		double meanTotalTx = 0.0;
-		double meanFailedTx = 0.0;
-		double meanDuration = 0.0;
 		int validReplications = 0;
+		
+		double[] totalTx = new double[ this.replicationData.size() ];
+		double[] successfulTx = new double[ this.replicationData.size() ];
+		double[] failedTx = new double[ this.replicationData.size() ];
+		double[] durations = new double[ this.replicationData.size() ];
 		
 		List<ReplicationBean> replications = new ArrayList<ReplicationBean>();
 		for ( ReplicationData data : this.replicationData ) {
 			if ( false == data.isCanceled() ) {
-				meanTotalTx += data.getTotalTxCount();
-				meanFailedTx += data.getFailedTxCount();
-				meanDuration += ( data.getEndingTime().getTime() - data.getStartingTime().getTime() );
+				totalTx[ validReplications ] = data.getTotalTxCount();
+				successfulTx[ validReplications ] = data.getTotalTxCount() - data.getFailedTxCount();
+				failedTx[ validReplications ] = data.getFailedTxCount();
+				durations[ validReplications ] = ( data.getEndingTime().getTime() - data.getStartingTime().getTime() );
+				
 				validReplications++;
 			}
 			
 			replications.add( new ReplicationBean( data ) );
 		}
-		
-		meanTotalTx /= validReplications;
-		meanFailedTx /= validReplications;
-		meanDuration /= ( validReplications * 1000 );
-		
+
 		resultBean.setAgents( resultAgents );
 		resultBean.setEquilibriumMean( equilibriumMedianBean );
 		resultBean.setEquilibriumVariance( equilibriumVarianceBean );
 		resultBean.setExperiment( this.experiment );
 		resultBean.setReplications( replications );
 		resultBean.setDuration( (int) (( endingTime.getTime() - this.startingTime.getTime() ) / 1000) );
-		resultBean.setMeanTotalTransactions( meanTotalTx );
-		resultBean.setMeanFailedTransactions( meanFailedTx );
+		resultBean.setMeanTotalTransactions( StatUtils.mean( totalTx, 0, validReplications ) );
+		resultBean.setMeanSuccessfulTransactions( StatUtils.mean( successfulTx, 0, validReplications ) );
+		resultBean.setMeanFailedTransactions( StatUtils.mean( failedTx, 0, validReplications ) );
+		resultBean.setStdTotalTransactions( Math.sqrt( StatUtils.variance( totalTx, 0, validReplications ) ) );
+		resultBean.setStdSuccessfulTransactions( Math.sqrt( StatUtils.variance( successfulTx, 0, validReplications ) ) );
+		resultBean.setStdFailedTransactions( Math.sqrt( StatUtils.variance( failedTx, 0, validReplications ) ) );
 		resultBean.setStartingTime( this.startingTime );
 		resultBean.setEndingTime( endingTime );
-		resultBean.setMeanDuration( meanDuration );
+		resultBean.setMeanDuration( StatUtils.mean( durations, 0, validReplications ) / 1000 );
 		resultBean.setMedianMarkets( this.medianMarkets );
 		
 		try {

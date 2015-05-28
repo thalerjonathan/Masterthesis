@@ -23,7 +23,13 @@ public class ResultBean {
 	private int duration;
 	
 	private double meanTotalTransactions;
+	private double meanSuccessfulTransactions;
 	private double meanFailedTransactions;
+	
+	private double stdTotalTransactions;
+	private double stdSuccessfulTransactions;
+	private double stdFailedTransactions;
+	
 	private double meanDuration;
 	
 	public List<double[]> getMedianMarkets() {
@@ -123,5 +129,37 @@ public class ResultBean {
 
 	public void setMeanDuration(double meanDuration) {
 		this.meanDuration = meanDuration;
+	}
+
+	public double getMeanSuccessfulTransactions() {
+		return meanSuccessfulTransactions;
+	}
+
+	public void setMeanSuccessfulTransactions(double meanSuccessfulTransactions) {
+		this.meanSuccessfulTransactions = meanSuccessfulTransactions;
+	}
+
+	public double getStdTotalTransactions() {
+		return stdTotalTransactions;
+	}
+
+	public void setStdTotalTransactions(double stdTotalTransactions) {
+		this.stdTotalTransactions = stdTotalTransactions;
+	}
+
+	public double getStdSuccessfulTransactions() {
+		return stdSuccessfulTransactions;
+	}
+
+	public void setStdSuccessfulTransactions(double stdSuccessfulTransactions) {
+		this.stdSuccessfulTransactions = stdSuccessfulTransactions;
+	}
+
+	public double getStdFailedTransactions() {
+		return stdFailedTransactions;
+	}
+
+	public void setStdFailedTransactions(double stdFailedTransactions) {
+		this.stdFailedTransactions = stdFailedTransactions;
 	}
 }
