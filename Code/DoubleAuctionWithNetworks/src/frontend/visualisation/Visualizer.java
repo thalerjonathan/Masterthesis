@@ -1,5 +1,6 @@
 package frontend.visualisation;
 
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -17,6 +18,8 @@ import utils.Utils;
 @SuppressWarnings("serial")
 public class Visualizer extends JPanel {
 
+	protected final static Font RENDER_FONT = new Font( "Helvetica", Font.BOLD, 16 );
+	
 	public Visualizer() {
 		this.addMouseListener( new MouseAdapter() {
 			@Override

@@ -41,7 +41,7 @@ public abstract class MarketsVisualizer extends Visualizer {
 	protected void renderLegend( Graphics g, int topX, int topY ) {
 		// draw legend-box
 		g.setColor( Color.WHITE );
-		g.fillRect( topX, topY, 155, 85 );
+		g.fillRect( topX, topY, 185, 85 );
 		
 		// draw legend
 		g.setColor( MarketsAccuOnlineVisualizer.MARKET_COLORS[ MarketType.ASSET_CASH.ordinal() ] );
@@ -67,6 +67,6 @@ public abstract class MarketsVisualizer extends Visualizer {
 		// draw border of legend-box
 		( ( Graphics2D ) g ).setStroke( new BasicStroke( 1 ) );
 		g.setColor( Color.BLACK );
-		g.drawRect( topX, topY, 155, 85 );
+		g.drawRect( topX, topY, 185, 85 );
 	}
 }

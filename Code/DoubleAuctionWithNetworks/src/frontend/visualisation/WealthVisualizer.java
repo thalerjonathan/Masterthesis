@@ -15,15 +15,15 @@ public class WealthVisualizer extends Visualizer {
 	private final static int X_ACHSIS_GRID = 10;
 	private final static int Y_ACHSIS_GRID = 10;
 	
-	private final static double Y_ACHSIS_RANGE = 6.0;
+	private final static double Y_ACHSIS_RANGE = 6.8;
 	
 	private final static int POINT_RADIUS = 3;
 	private final static int POINT_DIAMETER = POINT_RADIUS * 2;
 
-	private final static int LEGEND_BOX_X = 45;
-	private final static int LEGEND_BOX_Y = 100;
+	private final static int LEGEND_BOX_X = 48;
+	private final static int LEGEND_BOX_Y = 140;
 	
-	private final static int SCALA_WIDTH = 30;
+	private final static int SCALA_WIDTH = 40;
 	
 	private final static Color DARK_GREEN = new Color( 0, 150, 0 );
 	private final static Color DARK_CYAN = new Color(0, 180, 180);
@@ -64,6 +64,8 @@ public class WealthVisualizer extends Visualizer {
 		double width = d.getWidth() - SCALA_WIDTH;
 		double yHalf = d.height / 2.0;
 
+		g.setFont( RENDER_FONT );
+		
 		// draw grid
 		( ( Graphics2D ) g ).setStroke( new BasicStroke( 2 ) );
 		g.drawLine( SCALA_WIDTH, ( int ) yHalf, d.width, ( int ) yHalf );
@@ -75,7 +77,7 @@ public class WealthVisualizer extends Visualizer {
 			String str = " " + h;
 			
 			g.drawLine( x, 0, x, d.height );
-			g.drawChars( str.toCharArray(), 0, str.length(), x, d.height - 2 );
+			g.drawChars( str.toCharArray(), 0, str.length(), x, d.height - 5 );
 		}
 		
 		// draw scala 
@@ -147,7 +149,7 @@ public class WealthVisualizer extends Visualizer {
 
 		// draw legend-box
 		g.setColor( Color.WHITE );
-		g.fillRect( LEGEND_BOX_X, d.height - LEGEND_BOX_Y, 155, 85 );
+		g.fillRect( LEGEND_BOX_X, d.height - LEGEND_BOX_Y, 175, 85 );
 
 		// draw legend
 		g.setColor( Color.BLUE );
@@ -173,7 +175,7 @@ public class WealthVisualizer extends Visualizer {
 		// draw border of legend-box
 		( ( Graphics2D ) g ).setStroke( new BasicStroke( 1 ) );
 		g.setColor( Color.BLACK );
-		g.drawRect( LEGEND_BOX_X, d.height - LEGEND_BOX_Y, 155, 85 );
+		g.drawRect( LEGEND_BOX_X, d.height - LEGEND_BOX_Y, 175, 85 );
 	}
 }
 

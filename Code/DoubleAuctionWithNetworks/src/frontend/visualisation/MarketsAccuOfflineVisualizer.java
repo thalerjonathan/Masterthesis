@@ -61,6 +61,8 @@ public class MarketsAccuOfflineVisualizer extends MarketsVisualizer {
 		
 		String str = null;
 		
+		g.setFont( RENDER_FONT );
+		
 		// draw x-achsis sections
 		for ( int i = 0; i < X_ACHSIS_GRID; i++ ) {
 			double h = i / ( double ) X_ACHSIS_GRID;
