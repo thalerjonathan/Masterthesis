@@ -146,12 +146,22 @@ public class ReplicationPanel extends JPanel {
 		this.terminationSelection.setSelectedItem( bean.getTerminationMode() );
 		this.importanceSamplingCheck.setSelected( bean.isImportanceSampling() );
 
+		NetworkCreator creator = null;
+		
 		for ( int i = 0; i < this.topologySelection.getItemCount(); ++i ) {
-			NetworkCreator creator = this.topologySelection.getItemAt( i );
-			if ( creator.name().equals( bean.getTopology() ) ) {
+			creator = this.topologySelection.getItemAt( i );
+			if ( creator.getClass().getName().equals( bean.getTopology().getClazz() ) ) {
+				// need to prevent the provocation of a selection-event to prevent the input-boxes showing up
+				ActionListener selectionListener = this.topologySelection.getActionListeners()[ 0 ];
+				this.topologySelection.removeActionListener( selectionListener );
 				this.topologySelection.setSelectedIndex( i );
+				this.topologySelection.addActionListener( selectionListener );
 				break;
 			}
+		}
+		
+		if ( null != creator ) {
+			creator.setParams( bean.getTopology().getParams() );
 		}
 		
 		this.createAgents();
