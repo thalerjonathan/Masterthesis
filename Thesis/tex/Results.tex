@@ -11,13 +11,42 @@ As Termination-Mode "Failed successive Transactions" is selected with the number
 The 0.5 Bond was selected because its a risky one and only when a risky bond is traded then will this equilibirum show up as for unrisky bonds with Facevalue <= 0.2 the results are indifferent.
 Obviously the whole simulation-process is a random-process with an equilibrium (different for each topology) as the fixed-point solution thus one needs replications to reduce noise. The number of 50 Replications was chosen because its a good match between run-time duration and overall reduction of noise - increasing the number e.g. to 100 or 200 would not result in very much better results but would need much longer to run. All facts can be seen and derived when using 50 replications.
 
-The theoretical equilibrium for this parameters is:
-TODO: table with i0, i1, P, M, Q and final prices: p,q,pq
+Theoretical equilibrium for i0, i1, asset price and loan price can be calculated and are as follows:
+
 
 \section{Fully-Connected Topology}
 To demonstrate the ability of the software to produce the results given in the paper of \cite{Breuer2015} the results of a single run and in addition with a replication run of a Fully-Connected Topology is given.
 
 It is also a point-of-reference for the other experiments as this fully-connected topology gives a good point of visual information which can be applied to the other topologies to give a visual clue whether they could have actually reached the equilibrium.
+
+\begin{figure}[ht]
+	\centering
+  \includegraphics[width=0.33\textwidth, angle=30]{../pngs/FULLYCONNECTED_100_NOCOLLATERALMARKET.png}
+	\caption{um 30 Grad gedreht}
+	\label{fig1}
+\end{figure}
+
+
+Equilibrium (Standard-deviations are given in parantheses)
+
+\begin{tabular} { l c r }
+	Asset-Price & 0.689 (0.010) \\
+	Loan-Price & 0.384 (0.004) \\
+	Asset/Loan Price & 1.911 (0.001) \\
+	i0 (Marginal Buyer) & 0.603 (0.007) \\
+	i1 (Marginal Seller) & 0.803 (0.003) \\
+	Pessimist Wealth & 1.597 (0.015) \\
+	Medianist Wealth & 4.565 (0.113) \\
+	Optimist Wealth & 5.021 (0.064) \\
+\end{tabular}
+
+Performance (Standard-deviations are given in parantheses)
+
+\begin{tabular} { l c r }
+	Successful TX & 1916.14 (31.42) \\
+	Total TX & 6364.8 (1679.21) \\
+	Failed TX & 4448.66 (1668.93) \\
+\end{tabular}
 
 \section{Deterministic Hub-Based Topologies} 
 

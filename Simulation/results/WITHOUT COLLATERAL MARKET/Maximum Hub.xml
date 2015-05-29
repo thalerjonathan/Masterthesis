@@ -1,0 +1,2831 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<result>
+    <agents>
+        <assets>0.3600000000000001</assets>
+        <cash>1.0312893709962978</cash>
+        <h>0.009900990099009901</h>
+        <loan>0.7166596414680233</loan>
+        <loanGiven>0.7912857436965642</loanGiven>
+        <loanTaken>0.07462610222854092</loanTaken>
+    </agents>
+    <agents>
+        <assets>0.392</assets>
+        <cash>1.019103273589887</cash>
+        <h>0.019801980198019802</h>
+        <loan>0.7530798806285595</loan>
+        <loanGiven>0.7927476561372759</loanGiven>
+        <loanTaken>0.0396677755087165</loanTaken>
+    </agents>
+    <agents>
+        <assets>0.49000000000000016</assets>
+        <cash>1.0221672503050698</cash>
+        <h>0.0297029702970297</h>
+        <loan>0.6357790212338736</loan>
+        <loanGiven>0.6821806600608905</loanGiven>
+        <loanTaken>0.046401638827016894</loanTaken>
+    </agents>
+    <agents>
+        <assets>0.5399999999999998</assets>
+        <cash>1.023043651147536</cash>
+        <h>0.039603960396039604</h>
+        <loan>0.5601648319680025</loan>
+        <loanGiven>0.6020025065578468</loanGiven>
+        <loanTaken>0.04183767458984433</loanTaken>
+    </agents>
+    <agents>
+        <assets>0.5920000000000002</assets>
+        <cash>1.0183962851418933</cash>
+        <h>0.04950495049504951</h>
+        <loan>0.5188576410907411</loan>
+        <loanGiven>0.5451032695579798</loanGiven>
+        <loanTaken>0.026245628467238814</loanTaken>
+    </agents>
+    <agents>
+        <assets>0.666</assets>
+        <cash>1.0215340545892881</cash>
+        <h>0.0594059405940594</h>
+        <loan>0.41141307619469525</loan>
+        <loanGiven>0.44729777890378963</loanGiven>
+        <loanTaken>0.0358847027090944</loanTaken>
+    </agents>
+    <agents>
+        <assets>0.6600000000000001</assets>
+        <cash>1.0207619150041196</cash>
+        <h>0.06930693069306931</h>
+        <loan>0.4369643762761695</loan>
+        <loanGiven>0.4714409011507825</loanGiven>
+        <loanTaken>0.03447652487461301</loanTaken>
+    </agents>
+    <agents>
+        <assets>0.728</assets>
+        <cash>1.0153534558122101</cash>
+        <h>0.07920792079207921</h>
+        <loan>0.3519541050720434</loan>
+        <loanGiven>0.38356071180369433</loanGiven>
+        <loanTaken>0.031606606731650944</loanTaken>
+    </agents>
+    <agents>
+        <assets>0.722</assets>
+        <cash>1.0146933756298693</cash>
+        <h>0.0891089108910891</h>
+        <loan>0.37247356870624193</loan>
+        <loanGiven>0.40470509264862625</loanGiven>
+        <loanTaken>0.032231523942384314</loanTaken>
+    </agents>
+    <agents>
+        <assets>0.7519999999999999</assets>
+        <cash>1.0325547759595686</cash>
+        <h>0.09900990099009901</h>
+        <loan>0.26806048401518723</loan>
+        <loanGiven>0.3047086858984983</loanGiven>
+        <loanTaken>0.03664820188331106</loanTaken>
+    </agents>
+    <agents>
+        <assets>0.7799999999999998</assets>
+        <cash>1.025544309579673</cash>
+        <h>0.10891089108910891</h>
+        <loan>0.2555120459514197</loan>
+        <loanGiven>0.31139613420181683</loanGiven>
+        <loanTaken>0.055884088250397125</loanTaken>
+    </agents>
+    <agents>
+        <assets>0.8360000000000001</assets>
+        <cash>1.0192018242621363</cash>
+        <h>0.1188118811881188</h>
+        <loan>0.2005767378937946</loan>
+        <loanGiven>0.22299878251172597</loanGiven>
+        <loanTaken>0.02242204461793136</loanTaken>
+    </agents>
+    <agents>
+        <assets>0.8339999999999997</assets>
+        <cash>1.015033299108255</cash>
+        <h>0.12871287128712872</h>
+        <loan>0.21180098827492794</loan>
+        <loanGiven>0.23580436857411943</loanGiven>
+        <loanTaken>0.024003380299191485</loanTaken>
+    </agents>
+    <agents>
+        <assets>0.816</assets>
+        <cash>1.0203332454740348</cash>
+        <h>0.13861386138613863</h>
+        <loan>0.22163313437403756</loan>
+        <loanGiven>0.2533089741456506</loanGiven>
+        <loanTaken>0.031675839771613055</loanTaken>
+    </agents>
+    <agents>
+        <assets>0.8479999999999995</assets>
+        <cash>1.026814790879544</cash>
+        <h>0.1485148514851485</h>
+        <loan>0.165079774727644</loan>
+        <loanGiven>0.20123876285625666</loanGiven>
+        <loanTaken>0.03615898812861264</loanTaken>
+    </agents>
+    <agents>
+        <assets>0.8519999999999996</assets>
+        <cash>1.0168384022994479</cash>
+        <h>0.15841584158415842</h>
+        <loan>0.18098963525312298</loan>
+        <loanGiven>0.20899222549735327</loanGiven>
+        <loanTaken>0.028002590244230293</loanTaken>
+    </agents>
+    <agents>
+        <assets>0.8879999999999996</assets>
+        <cash>1.0118162673523377</cash>
+        <h>0.16831683168316833</h>
+        <loan>0.1418244410797031</loan>
+        <loanGiven>0.1698244410797031</loanGiven>
+        <loanTaken>0.027999999999999997</loanTaken>
+    </agents>
+    <agents>
+        <assets>0.8979999999999997</assets>
+        <cash>1.0185523041784497</cash>
+        <h>0.1782178217821782</h>
+        <loan>0.10918774005085541</loan>
+        <loanGiven>0.13963259114821622</loanGiven>
+        <loanTaken>0.030444851097360805</loanTaken>
+    </agents>
+    <agents>
+        <assets>0.9079999999999996</assets>
+        <cash>1.0094712693109547</cash>
+        <h>0.18811881188118812</h>
+        <loan>0.12694635957854855</loan>
+        <loanGiven>0.145788692410202</loanGiven>
+        <loanTaken>0.01884233283165347</loanTaken>
+    </agents>
+    <agents>
+        <assets>0.8879999999999995</assets>
+        <cash>1.0188867587475106</cash>
+        <h>0.19801980198019803</h>
+        <loan>0.13050054339183625</loan>
+        <loanGiven>0.16255144472554267</loanGiven>
+        <loanTaken>0.032050901333706416</loanTaken>
+    </agents>
+    <agents>
+        <assets>0.9079999999999998</assets>
+        <cash>1.0164524271488964</cash>
+        <h>0.2079207920792079</h>
+        <loan>0.10144943759453205</loan>
+        <loanGiven>0.1290115049268864</loanGiven>
+        <loanTaken>0.027562067332354345</loanTaken>
+    </agents>
+    <agents>
+        <assets>0.8999999999999999</assets>
+        <cash>1.0173738194440742</cash>
+        <h>0.21782178217821782</h>
+        <loan>0.12027810697629965</loan>
+        <loanGiven>0.14015847716129684</loanGiven>
+        <loanTaken>0.019880370184997186</loanTaken>
+    </agents>
+    <agents>
+        <assets>0.9059999999999997</assets>
+        <cash>1.0104530524571116</cash>
+        <h>0.22772277227722773</h>
+        <loan>0.1269882425490308</loan>
+        <loanGiven>0.1391367179557775</loanGiven>
+        <loanTaken>0.012148475406746701</loanTaken>
+    </agents>
+    <agents>
+        <assets>0.9299999999999997</assets>
+        <cash>1.0191706602553186</cash>
+        <h>0.2376237623762376</h>
+        <loan>0.06833786991453816</loan>
+        <loanGiven>0.10842795727698476</loanGiven>
+        <loanTaken>0.0400900873624466</loanTaken>
+    </agents>
+    <agents>
+        <assets>0.9479999999999995</assets>
+        <cash>1.0175009023008232</cash>
+        <h>0.24752475247524752</h>
+        <loan>0.03753717336837813</loan>
+        <loanGiven>0.06812678436936963</loanGiven>
+        <loanTaken>0.030589611000991505</loanTaken>
+    </agents>
+    <agents>
+        <assets>0.9199999999999998</assets>
+        <cash>1.0145544634327366</cash>
+        <h>0.25742574257425743</h>
+        <loan>0.09297084255321596</loan>
+        <loanGiven>0.1130164808459002</loanGiven>
+        <loanTaken>0.02004563829268424</loanTaken>
+    </agents>
+    <agents>
+        <assets>0.9519999999999998</assets>
+        <cash>1.012766332106607</cash>
+        <h>0.26732673267326734</h>
+        <loan>0.048131006058759765</loan>
+        <loanGiven>0.06781235788727534</loanGiven>
+        <loanTaken>0.019681351828515572</loanTaken>
+    </agents>
+    <agents>
+        <assets>0.9339999999999999</assets>
+        <cash>1.0210646568841737</cash>
+        <h>0.27722772277227725</h>
+        <loan>0.06351029306454432</loan>
+        <loanGiven>0.08351029306454433</loanGiven>
+        <loanTaken>0.02</loanTaken>
+    </agents>
+    <agents>
+        <assets>0.9219999999999997</assets>
+        <cash>1.0168848246163376</cash>
+        <h>0.2871287128712871</h>
+        <loan>0.08649212211372215</loan>
+        <loanGiven>0.10622603881126341</loanGiven>
+        <loanTaken>0.01973391669754127</loanTaken>
+    </agents>
+    <agents>
+        <assets>0.9579999999999999</assets>
+        <cash>1.0100659674731276</cash>
+        <h>0.297029702970297</h>
+        <loan>0.04214968762398047</loan>
+        <loanGiven>0.05829252319232639</loanGiven>
+        <loanTaken>0.01614283556834592</loanTaken>
+    </agents>
+    <agents>
+        <assets>0.9219999999999997</assets>
+        <cash>1.011782428837715</cash>
+        <h>0.3069306930693069</h>
+        <loan>0.10209267361603296</loan>
+        <loanGiven>0.11009268117824038</loanGiven>
+        <loanTaken>0.008000007562207421</loanTaken>
+    </agents>
+    <agents>
+        <assets>0.9559999999999998</assets>
+        <cash>1.0164345066879705</cash>
+        <h>0.31683168316831684</h>
+        <loan>0.03454500169690981</loan>
+        <loanGiven>0.058406330161088114</loanGiven>
+        <loanTaken>0.023861328464178305</loanTaken>
+    </agents>
+    <agents>
+        <assets>0.9539999999999996</assets>
+        <cash>1.0207083377928428</cash>
+        <h>0.32673267326732675</h>
+        <loan>0.0280690796967705</loan>
+        <loanGiven>0.04416720758549702</loanGiven>
+        <loanTaken>0.01609812788872652</loanTaken>
+    </agents>
+    <agents>
+        <assets>0.954</assets>
+        <cash>1.013291960529852</cash>
+        <h>0.33663366336633666</h>
+        <loan>0.04656400046119196</loan>
+        <loanGiven>0.06334119951515622</loanGiven>
+        <loanTaken>0.016777199053964263</loanTaken>
+    </agents>
+    <agents>
+        <assets>0.9559999999999998</assets>
+        <cash>1.012808420472072</cash>
+        <h>0.3465346534653465</h>
+        <loan>0.045686981496362904</loan>
+        <loanGiven>0.06568775241867182</loanGiven>
+        <loanTaken>0.020000770922308918</loanTaken>
+    </agents>
+    <agents>
+        <assets>0.9579999999999997</assets>
+        <cash>1.0094271105820984</cash>
+        <h>0.3564356435643564</h>
+        <loan>0.0526358795719101</loan>
+        <loanGiven>0.06509333706828273</loanGiven>
+        <loanTaken>0.012457457496372629</loanTaken>
+    </agents>
+    <agents>
+        <assets>0.9779999999999999</assets>
+        <cash>1.0112095400040149</cash>
+        <h>0.36633663366336633</h>
+        <loan>0.012639894598457884</loan>
+        <loanGiven>0.024639894598457886</loanGiven>
+        <loanTaken>0.012000000000000002</loanTaken>
+    </agents>
+    <agents>
+        <assets>0.9659999999999996</assets>
+        <cash>1.008978906950237</cash>
+        <h>0.37623762376237624</h>
+        <loan>0.03715118564773674</loan>
+        <loanGiven>0.05315120354856496</loanGiven>
+        <loanTaken>0.016000017900828216</loanTaken>
+    </agents>
+    <agents>
+        <assets>0.9479999999999995</assets>
+        <cash>1.0146778385752349</cash>
+        <h>0.38613861386138615</h>
+        <loan>0.05482821813761214</loan>
+        <loanGiven>0.08185604841235791</loanGiven>
+        <loanTaken>0.027027830274745774</loanTaken>
+    </agents>
+    <agents>
+        <assets>0.9699999999999998</assets>
+        <cash>1.004428276186742</cash>
+        <h>0.39603960396039606</h>
+        <loan>0.041621882796627166</loan>
+        <loanGiven>0.046173375375847155</loanGiven>
+        <loanTaken>0.004551492579219987</loanTaken>
+    </agents>
+    <agents>
+        <assets>0.9799999999999999</assets>
+        <cash>1.0131493118197235</cash>
+        <h>0.40594059405940597</h>
+        <loan>0.0020702068403233853</loan>
+        <loanGiven>0.02920787716287484</loanGiven>
+        <loanTaken>0.027137670322551453</loanTaken>
+    </agents>
+    <agents>
+        <assets>0.9659999999999997</assets>
+        <cash>1.008057007281414</cash>
+        <h>0.4158415841584158</h>
+        <loan>0.041661509506966246</loan>
+        <loanGiven>0.053727759724955054</loanGiven>
+        <loanTaken>0.012066250217988812</loanTaken>
+    </agents>
+    <agents>
+        <assets>0.9719999999999998</assets>
+        <cash>1.011672143826507</cash>
+        <h>0.42574257425742573</h>
+        <loan>0.023761108093755215</loan>
+        <loanGiven>0.03584006917539715</loanGiven>
+        <loanTaken>0.012078961081641935</loanTaken>
+    </agents>
+    <agents>
+        <assets>0.9719999999999998</assets>
+        <cash>1.021270371177747</cash>
+        <h>0.43564356435643564</h>
+        <loan>-0.003636815080967845</loan>
+        <loanGiven>0.03214771159928206</loanGiven>
+        <loanTaken>0.0357845266802499</loanTaken>
+    </agents>
+    <agents>
+        <assets>0.9719999999999999</assets>
+        <cash>1.0100238912622386</cash>
+        <h>0.44554455445544555</h>
+        <loan>0.027999105179839265</loan>
+        <loanGiven>0.04015776626416827</loanGiven>
+        <loanTaken>0.012158661084329005</loanTaken>
+    </agents>
+    <agents>
+        <assets>0.9679999999999999</assets>
+        <cash>1.0075493539903773</cash>
+        <h>0.45544554455445546</h>
+        <loan>0.039302740858230927</loan>
+        <loanGiven>0.043302772748312054</loanGiven>
+        <loanTaken>0.004000031890081129</loanTaken>
+    </agents>
+    <agents>
+        <assets>0.9839999999999998</assets>
+        <cash>1.0059273711219359</cash>
+        <h>0.46534653465346537</h>
+        <loan>0.014209229957555877</loan>
+        <loanGiven>0.022218638430564167</loanGiven>
+        <loanTaken>0.00800940847300829</loanTaken>
+    </agents>
+    <agents>
+        <assets>0.9839999999999998</assets>
+        <cash>1.0087518917382206</cash>
+        <h>0.4752475247524752</h>
+        <loan>0.006393641205320325</loan>
+        <loanGiven>0.018174794680775385</loanGiven>
+        <loanTaken>0.01178115347545506</loanTaken>
+    </agents>
+    <agents>
+        <assets>0.9799999999999999</assets>
+        <cash>1.014164539507183</cash>
+        <h>0.48514851485148514</h>
+        <loan>0.002240364970528829</loan>
+        <loanGiven>0.022295854088078482</loanGiven>
+        <loanTaken>0.020055489117549653</loanTaken>
+    </agents>
+    <agents>
+        <assets>0.986</assets>
+        <cash>1.005364047936282</cash>
+        <h>0.49504950495049505</h>
+        <loan>0.013371026227491863</loan>
+        <loanGiven>0.026293898967032475</loanGiven>
+        <loanTaken>0.012922872739540611</loanTaken>
+    </agents>
+    <agents>
+        <assets>0.9859999999999998</assets>
+        <cash>1.0092852952939473</cash>
+        <h>0.504950495049505</h>
+        <loan>0.0023720539089944342</loan>
+        <loanGiven>0.014372548811386481</loanGiven>
+        <loanTaken>0.012000494902392047</loanTaken>
+    </agents>
+    <agents>
+        <assets>0.9859999999999998</assets>
+        <cash>1.003008437174003</cash>
+        <h>0.5148514851485149</h>
+        <loan>0.01834443463749696</loan>
+        <loanGiven>0.01834443463749696</loanGiven>
+        <loanTaken>0.0</loanTaken>
+    </agents>
+    <agents>
+        <assets>0.9739999999999998</assets>
+        <cash>1.011681806471039</cash>
+        <h>0.5247524752475248</h>
+        <loan>0.020988610226412276</loan>
+        <loanGiven>0.025677165349517913</loanGiven>
+        <loanTaken>0.004688555123105639</loanTaken>
+    </agents>
+    <agents>
+        <assets>0.9799999999999999</assets>
+        <cash>1.0133107074204655</cash>
+        <h>0.5346534653465347</h>
+        <loan>0.006556253387552419</loan>
+        <loanGiven>0.018603578203625695</loanGiven>
+        <loanTaken>0.012047324816073277</loanTaken>
+    </agents>
+    <agents>
+        <assets>0.9919999999999999</assets>
+        <cash>1.0051796201822256</cash>
+        <h>0.5445544554455446</h>
+        <loan>0.003342421002081551</loan>
+        <loanGiven>0.007362236948285683</loanGiven>
+        <loanTaken>0.004019815946204132</loanTaken>
+    </agents>
+    <agents>
+        <assets>0.99</assets>
+        <cash>1.0079519021559782</cash>
+        <h>0.5544554455445545</h>
+        <loan>-8.728194577267475E-4</loan>
+        <loanGiven>0.011175802453171228</loanGiven>
+        <loanTaken>0.012048621910897976</loanTaken>
+    </agents>
+    <agents>
+        <assets>0.986</assets>
+        <cash>1.0035586875761935</cash>
+        <h>0.5643564356435643</h>
+        <loan>0.018413731937130112</loan>
+        <loanGiven>0.022427228291428333</loanGiven>
+        <loanTaken>0.004013496354298222</loanTaken>
+    </agents>
+    <agents>
+        <assets>0.9839999999999998</assets>
+        <cash>1.0129540824175711</cash>
+        <h>0.5742574257425742</h>
+        <loan>-9.769695923290255E-4</loan>
+        <loanGiven>0.015023159539550303</loanGiven>
+        <loanTaken>0.01600012913187933</loanTaken>
+    </agents>
+    <agents>
+        <assets>0.99</assets>
+        <cash>1.0050265720545226</cash>
+        <h>0.5841584158415841</h>
+        <loan>0.00688447331952711</loan>
+        <loanGiven>0.01488447331952711</loanGiven>
+        <loanTaken>0.0080</loanTaken>
+    </agents>
+    <agents>
+        <assets>0.988</assets>
+        <cash>1.0102426553983717</cash>
+        <h>0.594059405940594</h>
+        <loan>-8.689619391874029E-4</loan>
+        <loanGiven>0.015131038060812597</loanGiven>
+        <loanTaken>0.016</loanTaken>
+    </agents>
+    <agents>
+        <assets>0.986</assets>
+        <cash>1.0085669042365324</cash>
+        <h>0.6039603960396039</h>
+        <loan>0.006586652511635404</loan>
+        <loanGiven>0.014911751658172594</loanGiven>
+        <loanTaken>0.00832509914653719</loanTaken>
+    </agents>
+    <agents>
+        <assets>0.996</assets>
+        <cash>1.0017501530507125</cash>
+        <h>0.6138613861386139</h>
+        <loan>0.0036111926275292474</loan>
+        <loanGiven>0.007645063121816329</loanGiven>
+        <loanTaken>0.004033870494287082</loanTaken>
+    </agents>
+    <agents>
+        <assets>0.986</assets>
+        <cash>1.0079332040897222</cash>
+        <h>0.6237623762376238</h>
+        <loan>0.00735216365388011</loan>
+        <loanGiven>0.011364944197847624</loanGiven>
+        <loanTaken>0.004012780543967514</loanTaken>
+    </agents>
+    <agents>
+        <assets>0.998</assets>
+        <cash>1.0071440219382533</cash>
+        <h>0.6336633663366337</h>
+        <loan>-0.012174422167291627</loan>
+        <loanGiven>0.0038255778327083733</loanGiven>
+        <loanTaken>0.016</loanTaken>
+    </agents>
+    <agents>
+        <assets>0.9939999999999999</assets>
+        <cash>1.0051149949863365</cash>
+        <h>0.6435643564356436</h>
+        <loan>-2.7010632010627134E-4</loan>
+        <loanGiven>0.0037299390702570066</loanGiven>
+        <loanTaken>0.004000045390363278</loanTaken>
+    </agents>
+    <agents>
+        <assets>0.9939999999999999</assets>
+        <cash>1.0050614357748873</cash>
+        <h>0.6534653465346535</h>
+        <loan>-2.948956317651505E-4</loan>
+        <loanGiven>0.00770510436823485</loanGiven>
+        <loanTaken>0.0080</loanTaken>
+    </agents>
+    <agents>
+        <assets>0.9879999999999999</assets>
+        <cash>1.0032758946309075</cash>
+        <h>0.6633663366336634</h>
+        <loan>0.015246924585160089</loan>
+        <loanGiven>0.015246924585160089</loanGiven>
+        <loanTaken>0.0</loanTaken>
+    </agents>
+    <agents>
+        <assets>0.992</assets>
+        <cash>1.006875120016783</cash>
+        <h>0.6732673267326733</h>
+        <loan>-2.3466670328598947E-4</loan>
+        <loanGiven>0.0037653332967140106</loanGiven>
+        <loanTaken>0.0040</loanTaken>
+    </agents>
+    <agents>
+        <assets>0.996</assets>
+        <cash>1.003543587264096</cash>
+        <h>0.6831683168316832</h>
+        <loan>-2.2168329011629587E-4</loan>
+        <loanGiven>0.0037783677397871945</loanGiven>
+        <loanTaken>0.00400005102990349</loanTaken>
+    </agents>
+    <agents>
+        <assets>0.99</assets>
+        <cash>1.0070186854271233</cash>
+        <h>0.693069306930693</h>
+        <loan>0.003526944396235663</loan>
+        <loanGiven>0.015607284068646152</loanGiven>
+        <loanTaken>0.012080339672410489</loanTaken>
+    </agents>
+    <agents>
+        <assets>1.0</assets>
+        <cash>1.0035412485284794</cash>
+        <h>0.7029702970297029</h>
+        <loan>-0.0080</loan>
+        <loanGiven>0.0</loanGiven>
+        <loanTaken>0.0080</loanTaken>
+    </agents>
+    <agents>
+        <assets>0.992</assets>
+        <cash>1.0117855549793737</cash>
+        <h>0.7128712871287128</h>
+        <loan>-0.01112288724976327</loan>
+        <loanGiven>0.0038041047607350097</loanGiven>
+        <loanTaken>0.01492699201049828</loanTaken>
+    </agents>
+    <agents>
+        <assets>0.9939999999999999</assets>
+        <cash>1.005362085830471</cash>
+        <h>0.7227722772277227</h>
+        <loan>0.0</loan>
+        <loanGiven>0.0</loanGiven>
+        <loanTaken>0.0</loanTaken>
+    </agents>
+    <agents>
+        <assets>0.996</assets>
+        <cash>1.001789728571974</cash>
+        <h>0.7326732673267327</h>
+        <loan>0.0038825537571899344</loan>
+        <loanGiven>0.0038827234668845734</loanGiven>
+        <loanTaken>1.6970969463881285E-7</loanTaken>
+    </agents>
+    <agents>
+        <assets>0.996</assets>
+        <cash>1.0089999315100926</cash>
+        <h>0.7425742574257426</h>
+        <loan>-0.012000863649973676</loan>
+        <loanGiven>0.0</loanGiven>
+        <loanTaken>0.012000863649973676</loanTaken>
+    </agents>
+    <agents>
+        <assets>0.9940000000000001</assets>
+        <cash>1.0036701135702186</cash>
+        <h>0.7524752475247525</h>
+        <loan>0.003861927688832878</loan>
+        <loanGiven>0.003861927688832878</loanGiven>
+        <loanTaken>0.0</loanTaken>
+    </agents>
+    <agents>
+        <assets>0.9940000000000001</assets>
+        <cash>1.0054261132163425</cash>
+        <h>0.7623762376237624</h>
+        <loan>-3.1840797989543534E-4</loan>
+        <loanGiven>0.007681592020104565</loanGiven>
+        <loanTaken>0.0080</loanTaken>
+    </agents>
+    <agents>
+        <assets>1.0</assets>
+        <cash>1.0</cash>
+        <h>0.7722772277227723</h>
+        <loan>0.0</loan>
+        <loanGiven>0.0</loanGiven>
+        <loanTaken>0.0</loanTaken>
+    </agents>
+    <agents>
+        <assets>0.998</assets>
+        <cash>1.0056119276843196</cash>
+        <h>0.7821782178217822</h>
+        <loan>-0.00804331076100557</loan>
+        <loanGiven>0.0</loanGiven>
+        <loanTaken>0.00804331076100557</loanTaken>
+    </agents>
+    <agents>
+        <assets>0.998</assets>
+        <cash>1.0</cash>
+        <h>0.7920792079207921</h>
+        <loan>0.00386655740131702</loan>
+        <loanGiven>0.00386655740131702</loanGiven>
+        <loanTaken>0.0</loanTaken>
+    </agents>
+    <agents>
+        <assets>0.998</assets>
+        <cash>1.0000011540308054</cash>
+        <h>0.801980198019802</h>
+        <loan>0.0038398658205024165</loan>
+        <loanGiven>0.0038423023291365194</loanGiven>
+        <loanTaken>2.4365086341027265E-6</loanTaken>
+    </agents>
+    <agents>
+        <assets>0.996</assets>
+        <cash>1.0036511685632628</cash>
+        <h>0.8118811881188119</h>
+        <loan>-7.18370939635643E-5</loan>
+        <loanGiven>0.003928162906036436</loanGiven>
+        <loanTaken>0.0040</loanTaken>
+    </agents>
+    <agents>
+        <assets>0.998</assets>
+        <cash>1.0018049092412584</cash>
+        <h>0.8217821782178217</h>
+        <loan>0.0</loan>
+        <loanGiven>0.0</loanGiven>
+        <loanTaken>0.0</loanTaken>
+    </agents>
+    <agents>
+        <assets>1.0</assets>
+        <cash>1.0037673489410592</cash>
+        <h>0.8316831683168316</h>
+        <loan>-0.0080</loan>
+        <loanGiven>0.0</loanGiven>
+        <loanTaken>0.0080</loanTaken>
+    </agents>
+    <agents>
+        <assets>1.0</assets>
+        <cash>1.0019022700729747</cash>
+        <h>0.8415841584158416</h>
+        <loan>-0.0040</loan>
+        <loanGiven>0.0</loanGiven>
+        <loanTaken>0.0040</loanTaken>
+    </agents>
+    <agents>
+        <assets>0.998</assets>
+        <cash>1.0019059014131193</cash>
+        <h>0.8514851485148515</h>
+        <loan>0.0</loan>
+        <loanGiven>0.0</loanGiven>
+        <loanTaken>0.0</loanTaken>
+    </agents>
+    <agents>
+        <assets>1.0</assets>
+        <cash>1.0012214073448247</cash>
+        <h>0.8613861386138614</h>
+        <loan>-0.0025059164627459873</loan>
+        <loanGiven>0.0</loanGiven>
+        <loanTaken>0.0025059164627459873</loanTaken>
+    </agents>
+    <agents>
+        <assets>1.0</assets>
+        <cash>1.0</cash>
+        <h>0.8712871287128713</h>
+        <loan>0.0</loan>
+        <loanGiven>0.0</loanGiven>
+        <loanTaken>0.0</loanTaken>
+    </agents>
+    <agents>
+        <assets>0.998</assets>
+        <cash>1.001884438150443</cash>
+        <h>0.8811881188118812</h>
+        <loan>-4.402123952294314E-5</loan>
+        <loanGiven>0.003955978760477057</loanGiven>
+        <loanTaken>0.0040</loanTaken>
+    </agents>
+    <agents>
+        <assets>0.998</assets>
+        <cash>1.0018938570319122</cash>
+        <h>0.8910891089108911</h>
+        <loan>0.0</loan>
+        <loanGiven>0.0</loanGiven>
+        <loanTaken>0.0</loanTaken>
+    </agents>
+    <agents>
+        <assets>1.0</assets>
+        <cash>1.0001576006223436</cash>
+        <h>0.900990099009901</h>
+        <loan>-3.26240627535492E-4</loan>
+        <loanGiven>0.0</loanGiven>
+        <loanTaken>3.26240627535492E-4</loanTaken>
+    </agents>
+    <agents>
+        <assets>1.0</assets>
+        <cash>1.0019828694396102</cash>
+        <h>0.9108910891089109</h>
+        <loan>-0.0040</loan>
+        <loanGiven>0.0</loanGiven>
+        <loanTaken>0.0040</loanTaken>
+    </agents>
+    <agents>
+        <assets>1.0</assets>
+        <cash>1.0038593946969874</cash>
+        <h>0.9207920792079208</h>
+        <loan>-0.0080</loan>
+        <loanGiven>0.0</loanGiven>
+        <loanTaken>0.0080</loanTaken>
+    </agents>
+    <agents>
+        <assets>1.0</assets>
+        <cash>1.0</cash>
+        <h>0.9306930693069307</h>
+        <loan>0.0</loan>
+        <loanGiven>0.0</loanGiven>
+        <loanTaken>0.0</loanTaken>
+    </agents>
+    <agents>
+        <assets>1.0</assets>
+        <cash>1.0</cash>
+        <h>0.9405940594059405</h>
+        <loan>0.0</loan>
+        <loanGiven>0.0</loanGiven>
+        <loanTaken>0.0</loanTaken>
+    </agents>
+    <agents>
+        <assets>1.0</assets>
+        <cash>1.0</cash>
+        <h>0.9504950495049505</h>
+        <loan>0.0</loan>
+        <loanGiven>0.0</loanGiven>
+        <loanTaken>0.0</loanTaken>
+    </agents>
+    <agents>
+        <assets>0.998</assets>
+        <cash>1.0019651362321178</cash>
+        <h>0.9603960396039604</h>
+        <loan>0.0</loan>
+        <loanGiven>0.0</loanGiven>
+        <loanTaken>0.0</loanTaken>
+    </agents>
+    <agents>
+        <assets>1.0</assets>
+        <cash>1.0</cash>
+        <h>0.9702970297029703</h>
+        <loan>0.0</loan>
+        <loanGiven>0.0</loanGiven>
+        <loanTaken>0.0</loanTaken>
+    </agents>
+    <agents>
+        <assets>1.0</assets>
+        <cash>1.001977801798837</cash>
+        <h>0.9801980198019802</h>
+        <loan>-0.0040</loan>
+        <loanGiven>0.0</loanGiven>
+        <loanTaken>0.0040</loanTaken>
+    </agents>
+    <agents>
+        <assets>8.223999999999988</assets>
+        <cash>2.9201803504959213E-8</cash>
+        <h>0.9900990099009901</h>
+        <loan>-8.222838475220348</loan>
+        <loanGiven>1.4888315614290863</loanGiven>
+        <loanTaken>9.711670036649434</loanTaken>
+    </agents>
+    <duration>1662</duration>
+    <endingTime>2015-05-29T08:45:59.770+02:00</endingTime>
+    <equilibriumMean>
+        <assetLoanPrice>1.266539054718982</assetLoanPrice>
+        <assetPrice>0.5579968495792348</assetPrice>
+        <collateralPrice>0.0</collateralPrice>
+        <i0>0.6007920792079209</i0>
+        <i1>0.9900990099009895</i1>
+        <i2>0.5262970297029703</i2>
+        <loanPrice>0.3402051338950882</loanPrice>
+        <medianistWealth>0.0772388806850298</medianistWealth>
+        <optimistWealth>8.223999999999988</optimistWealth>
+        <pessimistWealth>0.1685282639057194</pessimistWealth>
+    </equilibriumMean>
+    <equilibriumVariance>
+        <assetLoanPrice>0.1043449569125694</assetLoanPrice>
+        <assetPrice>0.1111063171367358</assetPrice>
+        <collateralPrice>0.0</collateralPrice>
+        <i0>0.16020459102134765</i0>
+        <i1>0.0</i1>
+        <i2>0.021423935527210433</i2>
+        <loanPrice>0.04167369648231328</loanPrice>
+        <medianistWealth>0.00787165925545668</medianistWealth>
+        <optimistWealth>0.46315686944520706</optimistWealth>
+        <pessimistWealth>0.05343121903300312</pessimistWealth>
+    </equilibriumVariance>
+    <experiment>
+        <agentCount>100</agentCount>
+        <assetLoanMarket>true</assetLoanMarket>
+        <bondsPledgeability>true</bondsPledgeability>
+        <collateralCashMarket>false</collateralCashMarket>
+        <importanceSampling>false</importanceSampling>
+        <loanCashMarket>true</loanCashMarket>
+        <loanType>LOAN_05</loanType>
+        <maxTx>1000</maxTx>
+        <name>Maximum Hub</name>
+        <replications>50</replications>
+        <terminationMode>FAIL_SUCCESSIVE_TX</terminationMode>
+        <topology class="frontend.networkCreators.MaximumHubCreator"/>
+    </experiment>
+    <graph defaultedgetype="UNDIRECTED" mode="STATIC">
+        <nodes>
+            <node label="0.009900990099009901" id="1"/>
+            <node label="0.019801980198019802" id="2"/>
+            <node label="0.0297029702970297" id="3"/>
+            <node label="0.039603960396039604" id="4"/>
+            <node label="0.04950495049504951" id="5"/>
+            <node label="0.0594059405940594" id="6"/>
+            <node label="0.06930693069306931" id="7"/>
+            <node label="0.07920792079207921" id="8"/>
+            <node label="0.0891089108910891" id="9"/>
+            <node label="0.09900990099009901" id="10"/>
+            <node label="0.10891089108910891" id="11"/>
+            <node label="0.1188118811881188" id="12"/>
+            <node label="0.12871287128712872" id="13"/>
+            <node label="0.13861386138613863" id="14"/>
+            <node label="0.1485148514851485" id="15"/>
+            <node label="0.15841584158415842" id="16"/>
+            <node label="0.16831683168316833" id="17"/>
+            <node label="0.1782178217821782" id="18"/>
+            <node label="0.18811881188118812" id="19"/>
+            <node label="0.19801980198019803" id="20"/>
+            <node label="0.2079207920792079" id="21"/>
+            <node label="0.21782178217821782" id="22"/>
+            <node label="0.22772277227722773" id="23"/>
+            <node label="0.2376237623762376" id="24"/>
+            <node label="0.24752475247524752" id="25"/>
+            <node label="0.25742574257425743" id="26"/>
+            <node label="0.26732673267326734" id="27"/>
+            <node label="0.27722772277227725" id="28"/>
+            <node label="0.2871287128712871" id="29"/>
+            <node label="0.297029702970297" id="30"/>
+            <node label="0.3069306930693069" id="31"/>
+            <node label="0.31683168316831684" id="32"/>
+            <node label="0.32673267326732675" id="33"/>
+            <node label="0.33663366336633666" id="34"/>
+            <node label="0.3465346534653465" id="35"/>
+            <node label="0.3564356435643564" id="36"/>
+            <node label="0.36633663366336633" id="37"/>
+            <node label="0.37623762376237624" id="38"/>
+            <node label="0.38613861386138615" id="39"/>
+            <node label="0.39603960396039606" id="40"/>
+            <node label="0.40594059405940597" id="41"/>
+            <node label="0.4158415841584158" id="42"/>
+            <node label="0.42574257425742573" id="43"/>
+            <node label="0.43564356435643564" id="44"/>
+            <node label="0.44554455445544555" id="45"/>
+            <node label="0.45544554455445546" id="46"/>
+            <node label="0.46534653465346537" id="47"/>
+            <node label="0.4752475247524752" id="48"/>
+            <node label="0.48514851485148514" id="49"/>
+            <node label="0.49504950495049505" id="50"/>
+            <node label="0.504950495049505" id="51"/>
+            <node label="0.5148514851485149" id="52"/>
+            <node label="0.5247524752475248" id="53"/>
+            <node label="0.5346534653465347" id="54"/>
+            <node label="0.5445544554455446" id="55"/>
+            <node label="0.5544554455445545" id="56"/>
+            <node label="0.5643564356435643" id="57"/>
+            <node label="0.5742574257425742" id="58"/>
+            <node label="0.5841584158415841" id="59"/>
+            <node label="0.594059405940594" id="60"/>
+            <node label="0.6039603960396039" id="61"/>
+            <node label="0.6138613861386139" id="62"/>
+            <node label="0.6237623762376238" id="63"/>
+            <node label="0.6336633663366337" id="64"/>
+            <node label="0.6435643564356436" id="65"/>
+            <node label="0.6534653465346535" id="66"/>
+            <node label="0.6633663366336634" id="67"/>
+            <node label="0.6732673267326733" id="68"/>
+            <node label="0.6831683168316832" id="69"/>
+            <node label="0.693069306930693" id="70"/>
+            <node label="0.7029702970297029" id="71"/>
+            <node label="0.7128712871287128" id="72"/>
+            <node label="0.7227722772277227" id="73"/>
+            <node label="0.7326732673267327" id="74"/>
+            <node label="0.7425742574257426" id="75"/>
+            <node label="0.7524752475247525" id="76"/>
+            <node label="0.7623762376237624" id="77"/>
+            <node label="0.7722772277227723" id="78"/>
+            <node label="0.7821782178217822" id="79"/>
+            <node label="0.7920792079207921" id="80"/>
+            <node label="0.801980198019802" id="81"/>
+            <node label="0.8118811881188119" id="82"/>
+            <node label="0.8217821782178217" id="83"/>
+            <node label="0.8316831683168316" id="84"/>
+            <node label="0.8415841584158416" id="85"/>
+            <node label="0.8514851485148515" id="86"/>
+            <node label="0.8613861386138614" id="87"/>
+            <node label="0.8712871287128713" id="88"/>
+            <node label="0.8811881188118812" id="89"/>
+            <node label="0.8910891089108911" id="90"/>
+            <node label="0.900990099009901" id="91"/>
+            <node label="0.9108910891089109" id="92"/>
+            <node label="0.9207920792079208" id="93"/>
+            <node label="0.9306930693069307" id="94"/>
+            <node label="0.9405940594059405" id="95"/>
+            <node label="0.9504950495049505" id="96"/>
+            <node label="0.9603960396039604" id="97"/>
+            <node label="0.9702970297029703" id="98"/>
+            <node label="0.9801980198019802" id="99"/>
+            <node label="0.9900990099009901" id="100"/>
+        </nodes>
+        <edges>
+            <edge target="100" source="1" id="0"/>
+            <edge target="100" source="2" id="1"/>
+            <edge target="100" source="3" id="2"/>
+            <edge target="100" source="4" id="3"/>
+            <edge target="100" source="5" id="4"/>
+            <edge target="100" source="6" id="5"/>
+            <edge target="100" source="7" id="6"/>
+            <edge target="100" source="8" id="7"/>
+            <edge target="100" source="9" id="8"/>
+            <edge target="100" source="10" id="9"/>
+            <edge target="100" source="11" id="10"/>
+            <edge target="100" source="12" id="11"/>
+            <edge target="100" source="13" id="12"/>
+            <edge target="100" source="14" id="13"/>
+            <edge target="100" source="15" id="14"/>
+            <edge target="100" source="16" id="15"/>
+            <edge target="100" source="17" id="16"/>
+            <edge target="100" source="18" id="17"/>
+            <edge target="100" source="19" id="18"/>
+            <edge target="100" source="20" id="19"/>
+            <edge target="100" source="21" id="20"/>
+            <edge target="100" source="22" id="21"/>
+            <edge target="100" source="23" id="22"/>
+            <edge target="100" source="24" id="23"/>
+            <edge target="100" source="25" id="24"/>
+            <edge target="100" source="26" id="25"/>
+            <edge target="100" source="27" id="26"/>
+            <edge target="100" source="28" id="27"/>
+            <edge target="100" source="29" id="28"/>
+            <edge target="100" source="30" id="29"/>
+            <edge target="100" source="31" id="30"/>
+            <edge target="100" source="32" id="31"/>
+            <edge target="100" source="33" id="32"/>
+            <edge target="100" source="34" id="33"/>
+            <edge target="100" source="35" id="34"/>
+            <edge target="100" source="36" id="35"/>
+            <edge target="100" source="37" id="36"/>
+            <edge target="100" source="38" id="37"/>
+            <edge target="100" source="39" id="38"/>
+            <edge target="100" source="40" id="39"/>
+            <edge target="100" source="41" id="40"/>
+            <edge target="100" source="42" id="41"/>
+            <edge target="100" source="43" id="42"/>
+            <edge target="100" source="44" id="43"/>
+            <edge target="100" source="45" id="44"/>
+            <edge target="100" source="46" id="45"/>
+            <edge target="100" source="47" id="46"/>
+            <edge target="100" source="48" id="47"/>
+            <edge target="100" source="49" id="48"/>
+            <edge target="100" source="50" id="49"/>
+            <edge target="100" source="51" id="50"/>
+            <edge target="100" source="52" id="51"/>
+            <edge target="100" source="53" id="52"/>
+            <edge target="100" source="54" id="53"/>
+            <edge target="100" source="55" id="54"/>
+            <edge target="100" source="56" id="55"/>
+            <edge target="100" source="57" id="56"/>
+            <edge target="100" source="58" id="57"/>
+            <edge target="100" source="59" id="58"/>
+            <edge target="100" source="60" id="59"/>
+            <edge target="100" source="61" id="60"/>
+            <edge target="100" source="62" id="61"/>
+            <edge target="100" source="63" id="62"/>
+            <edge target="100" source="64" id="63"/>
+            <edge target="100" source="65" id="64"/>
+            <edge target="100" source="66" id="65"/>
+            <edge target="100" source="67" id="66"/>
+            <edge target="100" source="68" id="67"/>
+            <edge target="100" source="69" id="68"/>
+            <edge target="100" source="70" id="69"/>
+            <edge target="100" source="71" id="70"/>
+            <edge target="100" source="72" id="71"/>
+            <edge target="100" source="73" id="72"/>
+            <edge target="100" source="74" id="73"/>
+            <edge target="100" source="75" id="74"/>
+            <edge target="100" source="76" id="75"/>
+            <edge target="100" source="77" id="76"/>
+            <edge target="100" source="78" id="77"/>
+            <edge target="100" source="79" id="78"/>
+            <edge target="100" source="80" id="79"/>
+            <edge target="100" source="81" id="80"/>
+            <edge target="100" source="82" id="81"/>
+            <edge target="100" source="83" id="82"/>
+            <edge target="100" source="84" id="83"/>
+            <edge target="100" source="85" id="84"/>
+            <edge target="100" source="86" id="85"/>
+            <edge target="100" source="87" id="86"/>
+            <edge target="100" source="88" id="87"/>
+            <edge target="100" source="89" id="88"/>
+            <edge target="100" source="90" id="89"/>
+            <edge target="100" source="91" id="90"/>
+            <edge target="100" source="92" id="91"/>
+            <edge target="100" source="93" id="92"/>
+            <edge target="100" source="94" id="93"/>
+            <edge target="100" source="95" id="94"/>
+            <edge target="100" source="96" id="95"/>
+            <edge target="100" source="97" id="96"/>
+            <edge target="100" source="98" id="97"/>
+            <edge target="100" source="99" id="98"/>
+            <edge target="4" source="100" id="99"/>
+            <edge target="65" source="100" id="100"/>
+            <edge target="17" source="100" id="101"/>
+            <edge target="39" source="100" id="102"/>
+            <edge target="91" source="100" id="103"/>
+            <edge target="78" source="100" id="104"/>
+            <edge target="93" source="100" id="105"/>
+            <edge target="2" source="100" id="106"/>
+            <edge target="25" source="100" id="107"/>
+            <edge target="63" source="100" id="108"/>
+            <edge target="12" source="100" id="109"/>
+            <edge target="95" source="100" id="110"/>
+            <edge target="71" source="100" id="111"/>
+            <edge target="11" source="100" id="112"/>
+            <edge target="62" source="100" id="113"/>
+            <edge target="80" source="100" id="114"/>
+            <edge target="51" source="100" id="115"/>
+            <edge target="6" source="100" id="116"/>
+            <edge target="54" source="100" id="117"/>
+            <edge target="27" source="100" id="118"/>
+            <edge target="7" source="100" id="119"/>
+            <edge target="60" source="100" id="120"/>
+            <edge target="28" source="100" id="121"/>
+            <edge target="21" source="100" id="122"/>
+            <edge target="32" source="100" id="123"/>
+            <edge target="90" source="100" id="124"/>
+            <edge target="22" source="100" id="125"/>
+            <edge target="9" source="100" id="126"/>
+            <edge target="53" source="100" id="127"/>
+            <edge target="14" source="100" id="128"/>
+            <edge target="73" source="100" id="129"/>
+            <edge target="68" source="100" id="130"/>
+            <edge target="85" source="100" id="131"/>
+            <edge target="20" source="100" id="132"/>
+            <edge target="10" source="100" id="133"/>
+            <edge target="43" source="100" id="134"/>
+            <edge target="97" source="100" id="135"/>
+            <edge target="69" source="100" id="136"/>
+            <edge target="8" source="100" id="137"/>
+            <edge target="13" source="100" id="138"/>
+            <edge target="23" source="100" id="139"/>
+            <edge target="33" source="100" id="140"/>
+            <edge target="47" source="100" id="141"/>
+            <edge target="79" source="100" id="142"/>
+            <edge target="48" source="100" id="143"/>
+            <edge target="66" source="100" id="144"/>
+            <edge target="44" source="100" id="145"/>
+            <edge target="57" source="100" id="146"/>
+            <edge target="3" source="100" id="147"/>
+            <edge target="83" source="100" id="148"/>
+            <edge target="58" source="100" id="149"/>
+            <edge target="72" source="100" id="150"/>
+            <edge target="49" source="100" id="151"/>
+            <edge target="16" source="100" id="152"/>
+            <edge target="19" source="100" id="153"/>
+            <edge target="26" source="100" id="154"/>
+            <edge target="42" source="100" id="155"/>
+            <edge target="38" source="100" id="156"/>
+            <edge target="56" source="100" id="157"/>
+            <edge target="82" source="100" id="158"/>
+            <edge target="52" source="100" id="159"/>
+            <edge target="88" source="100" id="160"/>
+            <edge target="67" source="100" id="161"/>
+            <edge target="89" source="100" id="162"/>
+            <edge target="29" source="100" id="163"/>
+            <edge target="61" source="100" id="164"/>
+            <edge target="94" source="100" id="165"/>
+            <edge target="18" source="100" id="166"/>
+            <edge target="59" source="100" id="167"/>
+            <edge target="74" source="100" id="168"/>
+            <edge target="30" source="100" id="169"/>
+            <edge target="45" source="100" id="170"/>
+            <edge target="84" source="100" id="171"/>
+            <edge target="87" source="100" id="172"/>
+            <edge target="24" source="100" id="173"/>
+            <edge target="99" source="100" id="174"/>
+            <edge target="40" source="100" id="175"/>
+            <edge target="76" source="100" id="176"/>
+            <edge target="34" source="100" id="177"/>
+            <edge target="31" source="100" id="178"/>
+            <edge target="55" source="100" id="179"/>
+            <edge target="41" source="100" id="180"/>
+            <edge target="86" source="100" id="181"/>
+            <edge target="96" source="100" id="182"/>
+            <edge target="36" source="100" id="183"/>
+            <edge target="64" source="100" id="184"/>
+            <edge target="5" source="100" id="185"/>
+            <edge target="70" source="100" id="186"/>
+            <edge target="81" source="100" id="187"/>
+            <edge target="1" source="100" id="188"/>
+            <edge target="37" source="100" id="189"/>
+            <edge target="46" source="100" id="190"/>
+            <edge target="35" source="100" id="191"/>
+            <edge target="98" source="100" id="192"/>
+            <edge target="77" source="100" id="193"/>
+            <edge target="15" source="100" id="194"/>
+            <edge target="75" source="100" id="195"/>
+            <edge target="50" source="100" id="196"/>
+            <edge target="92" source="100" id="197"/>
+        </edges>
+    </graph>
+    <meanDuration>825.92804</meanDuration>
+    <meanFailedTransactions>1001.72</meanFailedTransactions>
+    <meanSuccessfulTransactions>83.58</meanSuccessfulTransactions>
+    <meanTotalTransactions>1085.3</meanTotalTransactions>
+    <medianMarkets>
+        <item>0.46</item>
+        <item>0.46</item>
+        <item>0.08</item>
+        <item>0.0</item>
+    </medianMarkets>
+    <medianMarkets>
+        <item>0.44</item>
+        <item>0.46</item>
+        <item>0.1</item>
+        <item>0.0</item>
+    </medianMarkets>
+    <medianMarkets>
+        <item>0.46</item>
+        <item>0.48</item>
+        <item>0.06</item>
+        <item>0.0</item>
+    </medianMarkets>
+    <medianMarkets>
+        <item>0.42</item>
+        <item>0.5</item>
+        <item>0.08</item>
+        <item>0.0</item>
+    </medianMarkets>
+    <medianMarkets>
+        <item>0.42</item>
+        <item>0.54</item>
+        <item>0.04</item>
+        <item>0.0</item>
+    </medianMarkets>
+    <medianMarkets>
+        <item>0.48</item>
+        <item>0.46</item>
+        <item>0.06</item>
+        <item>0.0</item>
+    </medianMarkets>
+    <medianMarkets>
+        <item>0.44</item>
+        <item>0.44</item>
+        <item>0.12</item>
+        <item>0.0</item>
+    </medianMarkets>
+    <medianMarkets>
+        <item>0.54</item>
+        <item>0.44</item>
+        <item>0.02</item>
+        <item>0.0</item>
+    </medianMarkets>
+    <medianMarkets>
+        <item>0.6</item>
+        <item>0.34</item>
+        <item>0.06</item>
+        <item>0.0</item>
+    </medianMarkets>
+    <medianMarkets>
+        <item>0.62</item>
+        <item>0.34</item>
+        <item>0.04</item>
+        <item>0.0</item>
+    </medianMarkets>
+    <medianMarkets>
+        <item>0.5</item>
+        <item>0.42</item>
+        <item>0.08</item>
+        <item>0.0</item>
+    </medianMarkets>
+    <medianMarkets>
+        <item>0.54</item>
+        <item>0.36</item>
+        <item>0.1</item>
+        <item>0.0</item>
+    </medianMarkets>
+    <medianMarkets>
+        <item>0.46</item>
+        <item>0.46</item>
+        <item>0.08</item>
+        <item>0.0</item>
+    </medianMarkets>
+    <medianMarkets>
+        <item>0.3</item>
+        <item>0.62</item>
+        <item>0.08</item>
+        <item>0.0</item>
+    </medianMarkets>
+    <medianMarkets>
+        <item>0.22</item>
+        <item>0.7</item>
+        <item>0.08</item>
+        <item>0.0</item>
+    </medianMarkets>
+    <medianMarkets>
+        <item>0.1</item>
+        <item>0.76</item>
+        <item>0.14</item>
+        <item>0.0</item>
+    </medianMarkets>
+    <medianMarkets>
+        <item>0.08</item>
+        <item>0.82</item>
+        <item>0.1</item>
+        <item>0.0</item>
+    </medianMarkets>
+    <medianMarkets>
+        <item>0.12</item>
+        <item>0.66</item>
+        <item>0.22</item>
+        <item>0.0</item>
+    </medianMarkets>
+    <medianMarkets>
+        <item>0.02</item>
+        <item>0.64</item>
+        <item>0.34</item>
+        <item>0.0</item>
+    </medianMarkets>
+    <medianMarkets>
+        <item>0.02</item>
+        <item>0.52</item>
+        <item>0.46</item>
+        <item>0.0</item>
+    </medianMarkets>
+    <medianMarkets>
+        <item>0.02</item>
+        <item>0.3</item>
+        <item>0.68</item>
+        <item>0.0</item>
+    </medianMarkets>
+    <medianMarkets>
+        <item>0.02</item>
+        <item>0.26</item>
+        <item>0.72</item>
+        <item>0.0</item>
+    </medianMarkets>
+    <medianMarkets>
+        <item>0.0</item>
+        <item>0.16</item>
+        <item>0.84</item>
+        <item>0.0</item>
+    </medianMarkets>
+    <medianMarkets>
+        <item>0.02</item>
+        <item>0.04</item>
+        <item>0.94</item>
+        <item>0.0</item>
+    </medianMarkets>
+    <medianMarkets>
+        <item>0.0</item>
+        <item>0.04</item>
+        <item>0.96</item>
+        <item>0.0</item>
+    </medianMarkets>
+    <medianMarkets>
+        <item>0.0</item>
+        <item>0.04</item>
+        <item>0.96</item>
+        <item>0.0</item>
+    </medianMarkets>
+    <medianMarkets>
+        <item>0.0</item>
+        <item>0.02</item>
+        <item>0.98</item>
+        <item>0.0</item>
+    </medianMarkets>
+    <medianMarkets>
+        <item>0.0</item>
+        <item>0.0</item>
+        <item>1.0</item>
+        <item>0.0</item>
+    </medianMarkets>
+    <medianMarkets>
+        <item>0.0</item>
+        <item>0.02</item>
+        <item>0.98</item>
+        <item>0.0</item>
+    </medianMarkets>
+    <medianMarkets>
+        <item>0.0</item>
+        <item>0.0</item>
+        <item>1.0</item>
+        <item>0.0</item>
+    </medianMarkets>
+    <medianMarkets>
+        <item>0.0</item>
+        <item>0.02</item>
+        <item>0.98</item>
+        <item>0.0</item>
+    </medianMarkets>
+    <medianMarkets>
+        <item>0.0</item>
+        <item>0.02</item>
+        <item>0.98</item>
+        <item>0.0</item>
+    </medianMarkets>
+    <medianMarkets>
+        <item>0.0</item>
+        <item>0.0</item>
+        <item>1.0</item>
+        <item>0.0</item>
+    </medianMarkets>
+    <medianMarkets>
+        <item>0.0</item>
+        <item>0.0</item>
+        <item>1.0</item>
+        <item>0.0</item>
+    </medianMarkets>
+    <medianMarkets>
+        <item>0.0</item>
+        <item>0.0</item>
+        <item>1.0</item>
+        <item>0.0</item>
+    </medianMarkets>
+    <medianMarkets>
+        <item>0.0</item>
+        <item>0.0</item>
+        <item>1.0</item>
+        <item>0.0</item>
+    </medianMarkets>
+    <medianMarkets>
+        <item>0.0</item>
+        <item>0.0</item>
+        <item>1.0</item>
+        <item>0.0</item>
+    </medianMarkets>
+    <medianMarkets>
+        <item>0.0</item>
+        <item>0.0</item>
+        <item>1.0</item>
+        <item>0.0</item>
+    </medianMarkets>
+    <medianMarkets>
+        <item>0.0</item>
+        <item>0.0</item>
+        <item>1.0</item>
+        <item>0.0</item>
+    </medianMarkets>
+    <medianMarkets>
+        <item>0.0</item>
+        <item>0.0</item>
+        <item>1.0</item>
+        <item>0.0</item>
+    </medianMarkets>
+    <medianMarkets>
+        <item>0.0</item>
+        <item>0.0</item>
+        <item>1.0</item>
+        <item>0.0</item>
+    </medianMarkets>
+    <medianMarkets>
+        <item>0.0</item>
+        <item>0.0</item>
+        <item>1.0</item>
+        <item>0.0</item>
+    </medianMarkets>
+    <medianMarkets>
+        <item>0.0</item>
+        <item>0.0</item>
+        <item>1.0</item>
+        <item>0.0</item>
+    </medianMarkets>
+    <medianMarkets>
+        <item>0.0</item>
+        <item>0.0</item>
+        <item>1.0</item>
+        <item>0.0</item>
+    </medianMarkets>
+    <medianMarkets>
+        <item>0.0</item>
+        <item>0.0</item>
+        <item>1.0</item>
+        <item>0.0</item>
+    </medianMarkets>
+    <medianMarkets>
+        <item>0.0</item>
+        <item>0.0</item>
+        <item>1.0</item>
+        <item>0.0</item>
+    </medianMarkets>
+    <medianMarkets>
+        <item>0.0</item>
+        <item>0.0</item>
+        <item>1.0</item>
+        <item>0.0</item>
+    </medianMarkets>
+    <medianMarkets>
+        <item>0.0</item>
+        <item>0.0</item>
+        <item>1.0</item>
+        <item>0.0</item>
+    </medianMarkets>
+    <medianMarkets>
+        <item>0.0</item>
+        <item>0.0</item>
+        <item>1.0</item>
+        <item>0.0</item>
+    </medianMarkets>
+    <medianMarkets>
+        <item>0.0</item>
+        <item>0.0</item>
+        <item>1.0</item>
+        <item>0.0</item>
+    </medianMarkets>
+    <medianMarkets>
+        <item>0.0</item>
+        <item>0.0</item>
+        <item>1.0</item>
+        <item>0.0</item>
+    </medianMarkets>
+    <medianMarkets>
+        <item>0.0</item>
+        <item>0.0</item>
+        <item>1.0</item>
+        <item>0.0</item>
+    </medianMarkets>
+    <medianMarkets>
+        <item>0.0</item>
+        <item>0.0</item>
+        <item>1.0</item>
+        <item>0.0</item>
+    </medianMarkets>
+    <medianMarkets>
+        <item>0.0</item>
+        <item>0.0</item>
+        <item>1.0</item>
+        <item>0.0</item>
+    </medianMarkets>
+    <medianMarkets>
+        <item>0.0</item>
+        <item>0.0</item>
+        <item>1.0</item>
+        <item>0.0</item>
+    </medianMarkets>
+    <medianMarkets>
+        <item>0.0</item>
+        <item>0.0</item>
+        <item>1.0</item>
+        <item>0.0</item>
+    </medianMarkets>
+    <medianMarkets>
+        <item>0.0</item>
+        <item>0.0</item>
+        <item>1.0</item>
+        <item>0.0</item>
+    </medianMarkets>
+    <medianMarkets>
+        <item>0.0</item>
+        <item>0.0</item>
+        <item>1.0</item>
+        <item>0.0</item>
+    </medianMarkets>
+    <medianMarkets>
+        <item>0.0</item>
+        <item>0.0</item>
+        <item>1.0</item>
+        <item>0.0</item>
+    </medianMarkets>
+    <medianMarkets>
+        <item>0.0</item>
+        <item>0.0</item>
+        <item>1.0</item>
+        <item>0.0</item>
+    </medianMarkets>
+    <medianMarkets>
+        <item>0.0</item>
+        <item>0.0</item>
+        <item>1.0</item>
+        <item>0.0</item>
+    </medianMarkets>
+    <medianMarkets>
+        <item>0.0</item>
+        <item>0.0</item>
+        <item>1.0</item>
+        <item>0.0</item>
+    </medianMarkets>
+    <medianMarkets>
+        <item>0.0</item>
+        <item>0.0</item>
+        <item>1.0</item>
+        <item>0.0</item>
+    </medianMarkets>
+    <medianMarkets>
+        <item>0.0</item>
+        <item>0.0</item>
+        <item>1.0</item>
+        <item>0.0</item>
+    </medianMarkets>
+    <medianMarkets>
+        <item>0.0</item>
+        <item>0.0</item>
+        <item>1.0</item>
+        <item>0.0</item>
+    </medianMarkets>
+    <medianMarkets>
+        <item>0.0</item>
+        <item>0.0</item>
+        <item>1.0</item>
+        <item>0.0</item>
+    </medianMarkets>
+    <medianMarkets>
+        <item>0.0</item>
+        <item>0.0</item>
+        <item>1.0</item>
+        <item>0.0</item>
+    </medianMarkets>
+    <medianMarkets>
+        <item>0.0</item>
+        <item>0.0</item>
+        <item>1.0</item>
+        <item>0.0</item>
+    </medianMarkets>
+    <medianMarkets>
+        <item>0.0</item>
+        <item>0.0</item>
+        <item>1.0</item>
+        <item>0.0</item>
+    </medianMarkets>
+    <medianMarkets>
+        <item>0.0</item>
+        <item>0.0</item>
+        <item>0.98</item>
+        <item>0.0</item>
+    </medianMarkets>
+    <medianMarkets>
+        <item>0.0</item>
+        <item>0.0</item>
+        <item>0.98</item>
+        <item>0.0</item>
+    </medianMarkets>
+    <medianMarkets>
+        <item>0.0</item>
+        <item>0.0</item>
+        <item>0.96</item>
+        <item>0.0</item>
+    </medianMarkets>
+    <medianMarkets>
+        <item>0.0</item>
+        <item>0.0</item>
+        <item>0.96</item>
+        <item>0.0</item>
+    </medianMarkets>
+    <medianMarkets>
+        <item>0.0</item>
+        <item>0.0</item>
+        <item>0.96</item>
+        <item>0.0</item>
+    </medianMarkets>
+    <medianMarkets>
+        <item>0.0</item>
+        <item>0.0</item>
+        <item>0.94</item>
+        <item>0.0</item>
+    </medianMarkets>
+    <medianMarkets>
+        <item>0.0</item>
+        <item>0.0</item>
+        <item>0.94</item>
+        <item>0.0</item>
+    </medianMarkets>
+    <medianMarkets>
+        <item>0.0</item>
+        <item>0.0</item>
+        <item>0.94</item>
+        <item>0.0</item>
+    </medianMarkets>
+    <medianMarkets>
+        <item>0.0</item>
+        <item>0.0</item>
+        <item>0.88</item>
+        <item>0.0</item>
+    </medianMarkets>
+    <medianMarkets>
+        <item>0.0</item>
+        <item>0.0</item>
+        <item>0.84</item>
+        <item>0.0</item>
+    </medianMarkets>
+    <medianMarkets>
+        <item>0.0</item>
+        <item>0.0</item>
+        <item>0.74</item>
+        <item>0.0</item>
+    </medianMarkets>
+    <medianMarkets>
+        <item>0.0</item>
+        <item>0.0</item>
+        <item>0.68</item>
+        <item>0.0</item>
+    </medianMarkets>
+    <medianMarkets>
+        <item>0.0</item>
+        <item>0.0</item>
+        <item>0.62</item>
+        <item>0.0</item>
+    </medianMarkets>
+    <medianMarkets>
+        <item>0.0</item>
+        <item>0.0</item>
+        <item>0.62</item>
+        <item>0.0</item>
+    </medianMarkets>
+    <medianMarkets>
+        <item>0.0</item>
+        <item>0.0</item>
+        <item>0.52</item>
+        <item>0.0</item>
+    </medianMarkets>
+    <medianMarkets>
+        <item>0.0</item>
+        <item>0.0</item>
+        <item>0.46</item>
+        <item>0.0</item>
+    </medianMarkets>
+    <medianMarkets>
+        <item>0.0</item>
+        <item>0.0</item>
+        <item>0.4</item>
+        <item>0.0</item>
+    </medianMarkets>
+    <medianMarkets>
+        <item>0.0</item>
+        <item>0.0</item>
+        <item>0.28</item>
+        <item>0.0</item>
+    </medianMarkets>
+    <medianMarkets>
+        <item>0.0</item>
+        <item>0.0</item>
+        <item>0.22</item>
+        <item>0.0</item>
+    </medianMarkets>
+    <medianMarkets>
+        <item>0.0</item>
+        <item>0.0</item>
+        <item>0.2</item>
+        <item>0.0</item>
+    </medianMarkets>
+    <medianMarkets>
+        <item>0.0</item>
+        <item>0.0</item>
+        <item>0.18</item>
+        <item>0.0</item>
+    </medianMarkets>
+    <medianMarkets>
+        <item>0.0</item>
+        <item>0.0</item>
+        <item>0.1</item>
+        <item>0.0</item>
+    </medianMarkets>
+    <medianMarkets>
+        <item>0.0</item>
+        <item>0.0</item>
+        <item>0.06</item>
+        <item>0.0</item>
+    </medianMarkets>
+    <medianMarkets>
+        <item>0.0</item>
+        <item>0.0</item>
+        <item>0.04</item>
+        <item>0.0</item>
+    </medianMarkets>
+    <medianMarkets>
+        <item>0.0</item>
+        <item>0.0</item>
+        <item>0.04</item>
+        <item>0.0</item>
+    </medianMarkets>
+    <medianMarkets>
+        <item>0.0</item>
+        <item>0.0</item>
+        <item>0.02</item>
+        <item>0.0</item>
+    </medianMarkets>
+    <medianMarkets>
+        <item>0.0</item>
+        <item>0.0</item>
+        <item>0.02</item>
+        <item>0.0</item>
+    </medianMarkets>
+    <replications>
+        <canceled>false</canceled>
+        <endingTime>2015-05-29T08:31:46.674+02:00</endingTime>
+        <equilibrium>
+            <assetLoanPrice>1.2810264898073653</assetLoanPrice>
+            <assetPrice>0.6190460851563426</assetPrice>
+            <collateralPrice>0.0</collateralPrice>
+            <i0>0.8217821782178217</i0>
+            <i1>0.9900990099009901</i1>
+            <i2>0.5188118811881188</i2>
+            <loanPrice>0.3362541176727683</loanPrice>
+            <medianistWealth>0.07719345968873802</medianistWealth>
+            <optimistWealth>7.099999999999992</optimistWealth>
+            <pessimistWealth>0.1297198238695858</pessimistWealth>
+        </equilibrium>
+        <failedTransactions>1000</failedTransactions>
+        <replication>19</replication>
+        <startingTime>2015-05-29T08:18:17.958+02:00</startingTime>
+        <task>17</task>
+        <totalTransactions>1071</totalTransactions>
+        <tradingHalted>false</tradingHalted>
+    </replications>
+    <replications>
+        <canceled>false</canceled>
+        <endingTime>2015-05-29T08:31:54.183+02:00</endingTime>
+        <equilibrium>
+            <assetLoanPrice>1.3057115402579509</assetLoanPrice>
+            <assetPrice>0.7095970868445164</assetPrice>
+            <collateralPrice>0.0</collateralPrice>
+            <i0>0.6237623762376238</i0>
+            <i1>0.9900990099009901</i1>
+            <i2>0.5495049504950495</i2>
+            <loanPrice>0.26139369018827524</loanPrice>
+            <medianistWealth>0.07351000096141873</medianistWealth>
+            <optimistWealth>7.299999999999991</optimistWealth>
+            <pessimistWealth>0.20430862630409732</pessimistWealth>
+        </equilibrium>
+        <failedTransactions>1000</failedTransactions>
+        <replication>21</replication>
+        <startingTime>2015-05-29T08:18:18.314+02:00</startingTime>
+        <task>20</task>
+        <totalTransactions>1069</totalTransactions>
+        <tradingHalted>false</tradingHalted>
+    </replications>
+    <replications>
+        <canceled>false</canceled>
+        <endingTime>2015-05-29T08:31:54.801+02:00</endingTime>
+        <equilibrium>
+            <assetLoanPrice>1.3188691898369127</assetLoanPrice>
+            <assetPrice>0.5401778307942837</assetPrice>
+            <collateralPrice>0.0</collateralPrice>
+            <i0>0.7425742574257426</i0>
+            <i1>0.9900990099009901</i1>
+            <i2>0.5346534653465347</i2>
+            <loanPrice>0.33208229146426343</loanPrice>
+            <medianistWealth>0.08025354261676872</medianistWealth>
+            <optimistWealth>8.399999999999988</optimistWealth>
+            <pessimistWealth>0.10303024153866772</pessimistWealth>
+        </equilibrium>
+        <failedTransactions>1000</failedTransactions>
+        <replication>1</replication>
+        <startingTime>2015-05-29T08:18:17.275+02:00</startingTime>
+        <task>0</task>
+        <totalTransactions>1083</totalTransactions>
+        <tradingHalted>false</tradingHalted>
+    </replications>
+    <replications>
+        <canceled>false</canceled>
+        <endingTime>2015-05-29T08:31:55.153+02:00</endingTime>
+        <equilibrium>
+            <assetLoanPrice>1.1360870048385028</assetLoanPrice>
+            <assetPrice>0.6022887635869594</assetPrice>
+            <collateralPrice>0.0</collateralPrice>
+            <i0>0.7128712871287128</i0>
+            <i1>0.9900990099009901</i1>
+            <i2>0.5089108910891089</i2>
+            <loanPrice>0.37404412089019135</loanPrice>
+            <medianistWealth>0.08389279338018017</medianistWealth>
+            <optimistWealth>8.299999999999988</optimistWealth>
+            <pessimistWealth>0.13373796700019114</pessimistWealth>
+        </equilibrium>
+        <failedTransactions>1000</failedTransactions>
+        <replication>7</replication>
+        <startingTime>2015-05-29T08:18:17.283+02:00</startingTime>
+        <task>6</task>
+        <totalTransactions>1083</totalTransactions>
+        <tradingHalted>false</tradingHalted>
+    </replications>
+    <replications>
+        <canceled>false</canceled>
+        <endingTime>2015-05-29T08:31:56.700+02:00</endingTime>
+        <equilibrium>
+            <assetLoanPrice>1.1935208824440713</assetLoanPrice>
+            <assetPrice>0.6143189991129989</assetPrice>
+            <collateralPrice>0.0</collateralPrice>
+            <i0>0.8118811881188119</i0>
+            <i1>0.9900990099009901</i1>
+            <i2>0.504950495049505</i2>
+            <loanPrice>0.4092621275387899</loanPrice>
+            <medianistWealth>0.0782589873145916</medianistWealth>
+            <optimistWealth>7.799999999999989</optimistWealth>
+            <pessimistWealth>0.07883631081359813</pessimistWealth>
+        </equilibrium>
+        <failedTransactions>1000</failedTransactions>
+        <replication>16</replication>
+        <startingTime>2015-05-29T08:18:17.738+02:00</startingTime>
+        <task>15</task>
+        <totalTransactions>1079</totalTransactions>
+        <tradingHalted>false</tradingHalted>
+    </replications>
+    <replications>
+        <canceled>false</canceled>
+        <endingTime>2015-05-29T08:31:57.057+02:00</endingTime>
+        <equilibrium>
+            <assetLoanPrice>1.1478614885266054</assetLoanPrice>
+            <assetPrice>0.7046513159388305</assetPrice>
+            <collateralPrice>0.0</collateralPrice>
+            <i0>0.7524752475247525</i0>
+            <i1>0.9900990099009901</i1>
+            <i2>0.5148514851485149</i2>
+            <loanPrice>0.37647021772157363</loanPrice>
+            <medianistWealth>0.08640987652143615</medianistWealth>
+            <optimistWealth>8.099999999999989</optimistWealth>
+            <pessimistWealth>0.10071467441376714</pessimistWealth>
+        </equilibrium>
+        <failedTransactions>1000</failedTransactions>
+        <replication>10</replication>
+        <startingTime>2015-05-29T08:18:17.303+02:00</startingTime>
+        <task>9</task>
+        <totalTransactions>1080</totalTransactions>
+        <tradingHalted>false</tradingHalted>
+    </replications>
+    <replications>
+        <canceled>false</canceled>
+        <endingTime>2015-05-29T08:31:57.564+02:00</endingTime>
+        <equilibrium>
+            <assetLoanPrice>1.4111610968207946</assetLoanPrice>
+            <assetPrice>0.6449140000497693</assetPrice>
+            <collateralPrice>0.0</collateralPrice>
+            <i0>0.693069306930693</i0>
+            <i1>0.9900990099009901</i1>
+            <i2>0.5267326732673268</i2>
+            <loanPrice>0.36468605125517944</loanPrice>
+            <medianistWealth>0.07738181802476003</medianistWealth>
+            <optimistWealth>7.59999999999999</optimistWealth>
+            <pessimistWealth>0.1688647596747653</pessimistWealth>
+        </equilibrium>
+        <failedTransactions>1000</failedTransactions>
+        <replication>8</replication>
+        <startingTime>2015-05-29T08:18:17.285+02:00</startingTime>
+        <task>7</task>
+        <totalTransactions>1077</totalTransactions>
+        <tradingHalted>false</tradingHalted>
+    </replications>
+    <replications>
+        <canceled>false</canceled>
+        <endingTime>2015-05-29T08:32:00.272+02:00</endingTime>
+        <equilibrium>
+            <assetLoanPrice>1.3346835829729227</assetLoanPrice>
+            <assetPrice>0.718037182551161</assetPrice>
+            <collateralPrice>0.0</collateralPrice>
+            <i0>0.7524752475247525</i0>
+            <i1>0.9900990099009901</i1>
+            <i2>0.5623762376237623</i2>
+            <loanPrice>0.36529213824117746</loanPrice>
+            <medianistWealth>0.06958090148304587</medianistWealth>
+            <optimistWealth>8.399999999999988</optimistWealth>
+            <pessimistWealth>0.15551640594365385</pessimistWealth>
+        </equilibrium>
+        <failedTransactions>1000</failedTransactions>
+        <replication>3</replication>
+        <startingTime>2015-05-29T08:18:17.278+02:00</startingTime>
+        <task>2</task>
+        <totalTransactions>1084</totalTransactions>
+        <tradingHalted>false</tradingHalted>
+    </replications>
+    <replications>
+        <canceled>false</canceled>
+        <endingTime>2015-05-29T08:32:01.143+02:00</endingTime>
+        <equilibrium>
+            <assetLoanPrice>1.1838428629125715</assetLoanPrice>
+            <assetPrice>0.36829669246582664</assetPrice>
+            <collateralPrice>0.0</collateralPrice>
+            <i0>0.33663366336633666</i0>
+            <i1>0.9900990099009901</i1>
+            <i2>0.503960396039604</i2>
+            <loanPrice>0.39012954924181037</loanPrice>
+            <medianistWealth>0.08806536548996953</medianistWealth>
+            <optimistWealth>8.199999999999989</optimistWealth>
+            <pessimistWealth>0.22352912520546403</pessimistWealth>
+        </equilibrium>
+        <failedTransactions>1000</failedTransactions>
+        <replication>14</replication>
+        <startingTime>2015-05-29T08:18:17.719+02:00</startingTime>
+        <task>13</task>
+        <totalTransactions>1085</totalTransactions>
+        <tradingHalted>false</tradingHalted>
+    </replications>
+    <replications>
+        <canceled>false</canceled>
+        <endingTime>2015-05-29T08:32:04.413+02:00</endingTime>
+        <equilibrium>
+            <assetLoanPrice>1.2552220130292768</assetLoanPrice>
+            <assetPrice>0.4990145923271353</assetPrice>
+            <collateralPrice>0.0</collateralPrice>
+            <i0>0.5247524752475248</i0>
+            <i1>0.9900990099009901</i1>
+            <i2>0.5069306930693069</i2>
+            <loanPrice>0.31716512004895436</loanPrice>
+            <medianistWealth>0.0830060120847438</medianistWealth>
+            <optimistWealth>8.499999999999988</optimistWealth>
+            <pessimistWealth>0.18158921501276395</pessimistWealth>
+        </equilibrium>
+        <failedTransactions>1000</failedTransactions>
+        <replication>22</replication>
+        <startingTime>2015-05-29T08:18:18.316+02:00</startingTime>
+        <task>21</task>
+        <totalTransactions>1086</totalTransactions>
+        <tradingHalted>false</tradingHalted>
+    </replications>
+    <replications>
+        <canceled>false</canceled>
+        <endingTime>2015-05-29T08:32:05.995+02:00</endingTime>
+        <equilibrium>
+            <assetLoanPrice>1.2086600442740016</assetLoanPrice>
+            <assetPrice>0.41216578393131664</assetPrice>
+            <collateralPrice>0.0</collateralPrice>
+            <i0>0.38613861386138615</i0>
+            <i1>0.9900990099009901</i1>
+            <i2>0.5316831683168317</i2>
+            <loanPrice>0.3357188647647449</loanPrice>
+            <medianistWealth>0.07976276064959</medianistWealth>
+            <optimistWealth>8.199999999999989</optimistWealth>
+            <pessimistWealth>0.16446629053882578</pessimistWealth>
+        </equilibrium>
+        <failedTransactions>1000</failedTransactions>
+        <replication>11</replication>
+        <startingTime>2015-05-29T08:18:17.305+02:00</startingTime>
+        <task>10</task>
+        <totalTransactions>1084</totalTransactions>
+        <tradingHalted>false</tradingHalted>
+    </replications>
+    <replications>
+        <canceled>false</canceled>
+        <endingTime>2015-05-29T08:32:06.231+02:00</endingTime>
+        <equilibrium>
+            <assetLoanPrice>1.144996124549736</assetLoanPrice>
+            <assetPrice>0.5498129399031823</assetPrice>
+            <collateralPrice>0.0</collateralPrice>
+            <i0>0.594059405940594</i0>
+            <i1>0.9900990099009901</i1>
+            <i2>0.505940594059406</i2>
+            <loanPrice>0.4101221670482705</loanPrice>
+            <medianistWealth>0.09144007657842436</medianistWealth>
+            <optimistWealth>8.299999999999988</optimistWealth>
+            <pessimistWealth>0.12649855832494503</pessimistWealth>
+        </equilibrium>
+        <failedTransactions>1001</failedTransactions>
+        <replication>5</replication>
+        <startingTime>2015-05-29T08:18:17.281+02:00</startingTime>
+        <task>4</task>
+        <totalTransactions>1088</totalTransactions>
+        <tradingHalted>false</tradingHalted>
+    </replications>
+    <replications>
+        <canceled>false</canceled>
+        <endingTime>2015-05-29T08:32:07.776+02:00</endingTime>
+        <equilibrium>
+            <assetLoanPrice>1.2378568141790156</assetLoanPrice>
+            <assetPrice>0.5600025221258994</assetPrice>
+            <collateralPrice>0.0</collateralPrice>
+            <i0>0.5643564356435643</i0>
+            <i1>0.9900990099009901</i1>
+            <i2>0.5079207920792079</i2>
+            <loanPrice>0.33618502347776325</loanPrice>
+            <medianistWealth>0.0820054386404089</medianistWealth>
+            <optimistWealth>8.599999999999987</optimistWealth>
+            <pessimistWealth>0.13165926444807136</pessimistWealth>
+        </equilibrium>
+        <failedTransactions>1000</failedTransactions>
+        <replication>18</replication>
+        <startingTime>2015-05-29T08:18:17.856+02:00</startingTime>
+        <task>18</task>
+        <totalTransactions>1090</totalTransactions>
+        <tradingHalted>false</tradingHalted>
+    </replications>
+    <replications>
+        <canceled>false</canceled>
+        <endingTime>2015-05-29T08:32:13.006+02:00</endingTime>
+        <equilibrium>
+            <assetLoanPrice>1.271171146670528</assetLoanPrice>
+            <assetPrice>0.7022992234307854</assetPrice>
+            <collateralPrice>0.0</collateralPrice>
+            <i0>0.7623762376237624</i0>
+            <i1>0.9900990099009901</i1>
+            <i2>0.5257425742574258</i2>
+            <loanPrice>0.3901135218680645</loanPrice>
+            <medianistWealth>0.07649376641852912</medianistWealth>
+            <optimistWealth>7.9999999999999885</optimistWealth>
+            <pessimistWealth>0.12627906801886155</pessimistWealth>
+        </equilibrium>
+        <failedTransactions>1001</failedTransactions>
+        <replication>25</replication>
+        <startingTime>2015-05-29T08:18:18.324+02:00</startingTime>
+        <task>24</task>
+        <totalTransactions>1079</totalTransactions>
+        <tradingHalted>false</tradingHalted>
+    </replications>
+    <replications>
+        <canceled>false</canceled>
+        <endingTime>2015-05-29T08:32:13.291+02:00</endingTime>
+        <equilibrium>
+            <assetLoanPrice>1.1549202986991118</assetLoanPrice>
+            <assetPrice>0.4438047607396212</assetPrice>
+            <collateralPrice>0.0</collateralPrice>
+            <i0>0.5544554455445545</i0>
+            <i1>0.9900990099009901</i1>
+            <i2>0.504950495049505</i2>
+            <loanPrice>0.298056126502179</loanPrice>
+            <medianistWealth>0.09115108768745223</medianistWealth>
+            <optimistWealth>9.399999999999984</optimistWealth>
+            <pessimistWealth>0.17315598820265515</pessimistWealth>
+        </equilibrium>
+        <failedTransactions>1000</failedTransactions>
+        <replication>12</replication>
+        <startingTime>2015-05-29T08:18:17.305+02:00</startingTime>
+        <task>11</task>
+        <totalTransactions>1096</totalTransactions>
+        <tradingHalted>false</tradingHalted>
+    </replications>
+    <replications>
+        <canceled>false</canceled>
+        <endingTime>2015-05-29T08:32:13.398+02:00</endingTime>
+        <equilibrium>
+            <assetLoanPrice>1.1069440877956387</assetLoanPrice>
+            <assetPrice>0.36116117783800294</assetPrice>
+            <collateralPrice>0.0</collateralPrice>
+            <i0>0.5544554455445545</i0>
+            <i1>0.9900990099009901</i1>
+            <i2>0.504950495049505</i2>
+            <loanPrice>0.36225099169432795</loanPrice>
+            <medianistWealth>0.06149891233515319</medianistWealth>
+            <optimistWealth>8.199999999999989</optimistWealth>
+            <pessimistWealth>0.17547682215118837</pessimistWealth>
+        </equilibrium>
+        <failedTransactions>1000</failedTransactions>
+        <replication>20</replication>
+        <startingTime>2015-05-29T08:18:18.313+02:00</startingTime>
+        <task>19</task>
+        <totalTransactions>1086</totalTransactions>
+        <tradingHalted>false</tradingHalted>
+    </replications>
+    <replications>
+        <canceled>false</canceled>
+        <endingTime>2015-05-29T08:32:13.883+02:00</endingTime>
+        <equilibrium>
+            <assetLoanPrice>1.1863494912796864</assetLoanPrice>
+            <assetPrice>0.5146564585623462</assetPrice>
+            <collateralPrice>0.0</collateralPrice>
+            <i0>0.5346534653465347</i0>
+            <i1>0.9900990099009901</i1>
+            <i2>0.5148514851485149</i2>
+            <loanPrice>0.4057057176646651</loanPrice>
+            <medianistWealth>0.07999643364914809</medianistWealth>
+            <optimistWealth>7.899999999999989</optimistWealth>
+            <pessimistWealth>0.1579292381350538</pessimistWealth>
+        </equilibrium>
+        <failedTransactions>1000</failedTransactions>
+        <replication>2</replication>
+        <startingTime>2015-05-29T08:18:17.276+02:00</startingTime>
+        <task>1</task>
+        <totalTransactions>1081</totalTransactions>
+        <tradingHalted>false</tradingHalted>
+    </replications>
+    <replications>
+        <canceled>false</canceled>
+        <endingTime>2015-05-29T08:32:14.963+02:00</endingTime>
+        <equilibrium>
+            <assetLoanPrice>1.2193467271780298</assetLoanPrice>
+            <assetPrice>0.4117938960116533</assetPrice>
+            <collateralPrice>0.0</collateralPrice>
+            <i0>0.6831683168316832</i0>
+            <i1>0.9900990099009901</i1>
+            <i2>0.5108910891089109</i2>
+            <loanPrice>0.3585112070785628</loanPrice>
+            <medianistWealth>0.07261502496910692</medianistWealth>
+            <optimistWealth>8.099999999999989</optimistWealth>
+            <pessimistWealth>0.10894096516027006</pessimistWealth>
+        </equilibrium>
+        <failedTransactions>1000</failedTransactions>
+        <replication>24</replication>
+        <startingTime>2015-05-29T08:18:18.318+02:00</startingTime>
+        <task>23</task>
+        <totalTransactions>1083</totalTransactions>
+        <tradingHalted>false</tradingHalted>
+    </replications>
+    <replications>
+        <canceled>false</canceled>
+        <endingTime>2015-05-29T08:32:16.532+02:00</endingTime>
+        <equilibrium>
+            <assetLoanPrice>1.2134557704502857</assetLoanPrice>
+            <assetPrice>0.6645057771861617</assetPrice>
+            <collateralPrice>0.0</collateralPrice>
+            <i0>0.7227722772277227</i0>
+            <i1>0.9900990099009901</i1>
+            <i2>0.502970297029703</i2>
+            <loanPrice>0.26738188953015934</loanPrice>
+            <medianistWealth>0.08746974185791732</medianistWealth>
+            <optimistWealth>8.499999999999988</optimistWealth>
+            <pessimistWealth>0.1334323333083889</pessimistWealth>
+        </equilibrium>
+        <failedTransactions>1000</failedTransactions>
+        <replication>9</replication>
+        <startingTime>2015-05-29T08:18:17.302+02:00</startingTime>
+        <task>8</task>
+        <totalTransactions>1085</totalTransactions>
+        <tradingHalted>false</tradingHalted>
+    </replications>
+    <replications>
+        <canceled>false</canceled>
+        <endingTime>2015-05-29T08:32:17.294+02:00</endingTime>
+        <equilibrium>
+            <assetLoanPrice>1.253922505713582</assetLoanPrice>
+            <assetPrice>0.5200467657717346</assetPrice>
+            <collateralPrice>0.0</collateralPrice>
+            <i0>0.5247524752475248</i0>
+            <i1>0.9900990099009901</i1>
+            <i2>0.5188118811881188</i2>
+            <loanPrice>0.28987116496045817</loanPrice>
+            <medianistWealth>0.0653005239889334</medianistWealth>
+            <optimistWealth>7.899999999999989</optimistWealth>
+            <pessimistWealth>0.22070300774658544</pessimistWealth>
+        </equilibrium>
+        <failedTransactions>1000</failedTransactions>
+        <replication>23</replication>
+        <startingTime>2015-05-29T08:18:18.317+02:00</startingTime>
+        <task>22</task>
+        <totalTransactions>1081</totalTransactions>
+        <tradingHalted>false</tradingHalted>
+    </replications>
+    <replications>
+        <canceled>false</canceled>
+        <endingTime>2015-05-29T08:32:20.508+02:00</endingTime>
+        <equilibrium>
+            <assetLoanPrice>1.2724175339286097</assetLoanPrice>
+            <assetPrice>0.6119435240440382</assetPrice>
+            <collateralPrice>0.0</collateralPrice>
+            <i0>0.7128712871287128</i0>
+            <i1>0.9900990099009901</i1>
+            <i2>0.5386138613861386</i2>
+            <loanPrice>0.3093909238475958</loanPrice>
+            <medianistWealth>0.07276180780583398</medianistWealth>
+            <optimistWealth>7.59999999999999</optimistWealth>
+            <pessimistWealth>0.13456592480386634</pessimistWealth>
+        </equilibrium>
+        <failedTransactions>1008</failedTransactions>
+        <replication>15</replication>
+        <startingTime>2015-05-29T08:18:17.725+02:00</startingTime>
+        <task>14</task>
+        <totalTransactions>1086</totalTransactions>
+        <tradingHalted>false</tradingHalted>
+    </replications>
+    <replications>
+        <canceled>false</canceled>
+        <endingTime>2015-05-29T08:32:22.388+02:00</endingTime>
+        <equilibrium>
+            <assetLoanPrice>1.4305472551947307</assetLoanPrice>
+            <assetPrice>0.5254329009897971</assetPrice>
+            <collateralPrice>0.0</collateralPrice>
+            <i0>0.45544554455445546</i0>
+            <i1>0.9900990099009901</i1>
+            <i2>0.5326732673267327</i2>
+            <loanPrice>0.323822327223309</loanPrice>
+            <medianistWealth>0.07705579359018694</medianistWealth>
+            <optimistWealth>8.499999999999988</optimistWealth>
+            <pessimistWealth>0.2993785269278308</pessimistWealth>
+        </equilibrium>
+        <failedTransactions>1000</failedTransactions>
+        <replication>13</replication>
+        <startingTime>2015-05-29T08:18:17.718+02:00</startingTime>
+        <task>12</task>
+        <totalTransactions>1086</totalTransactions>
+        <tradingHalted>false</tradingHalted>
+    </replications>
+    <replications>
+        <canceled>false</canceled>
+        <endingTime>2015-05-29T08:32:24.352+02:00</endingTime>
+        <equilibrium>
+            <assetLoanPrice>1.1595610153975087</assetLoanPrice>
+            <assetPrice>0.32011013198102706</assetPrice>
+            <collateralPrice>0.0</collateralPrice>
+            <i0>0.8514851485148515</i0>
+            <i1>0.9900990099009901</i1>
+            <i2>0.5089108910891089</i2>
+            <loanPrice>0.3576715725385567</loanPrice>
+            <medianistWealth>0.07542647626040123</medianistWealth>
+            <optimistWealth>8.499999999999988</optimistWealth>
+            <pessimistWealth>0.10086713058014567</pessimistWealth>
+        </equilibrium>
+        <failedTransactions>1000</failedTransactions>
+        <replication>17</replication>
+        <startingTime>2015-05-29T08:18:17.750+02:00</startingTime>
+        <task>16</task>
+        <totalTransactions>1090</totalTransactions>
+        <tradingHalted>false</tradingHalted>
+    </replications>
+    <replications>
+        <canceled>false</canceled>
+        <endingTime>2015-05-29T08:32:26.880+02:00</endingTime>
+        <equilibrium>
+            <assetLoanPrice>1.1405084035579145</assetLoanPrice>
+            <assetPrice>0.6859315398334648</assetPrice>
+            <collateralPrice>0.0</collateralPrice>
+            <i0>0.4158415841584158</i0>
+            <i1>0.9900990099009901</i1>
+            <i2>0.5138613861386139</i2>
+            <loanPrice>0.3931529460331637</loanPrice>
+            <medianistWealth>0.07972306015858337</medianistWealth>
+            <optimistWealth>8.199999999999989</optimistWealth>
+            <pessimistWealth>0.20237383660589958</pessimistWealth>
+        </equilibrium>
+        <failedTransactions>1001</failedTransactions>
+        <replication>6</replication>
+        <startingTime>2015-05-29T08:18:17.283+02:00</startingTime>
+        <task>5</task>
+        <totalTransactions>1084</totalTransactions>
+        <tradingHalted>false</tradingHalted>
+    </replications>
+    <replications>
+        <canceled>false</canceled>
+        <endingTime>2015-05-29T08:32:39.070+02:00</endingTime>
+        <equilibrium>
+            <assetLoanPrice>1.249049051986109</assetLoanPrice>
+            <assetPrice>0.47698654618076775</assetPrice>
+            <collateralPrice>0.0</collateralPrice>
+            <i0>0.5247524752475248</i0>
+            <i1>0.9900990099009901</i1>
+            <i2>0.5316831683168317</i2>
+            <loanPrice>0.33519101870251555</loanPrice>
+            <medianistWealth>0.0897898186960493</medianistWealth>
+            <optimistWealth>8.799999999999986</optimistWealth>
+            <pessimistWealth>0.1852319115014347</pessimistWealth>
+        </equilibrium>
+        <failedTransactions>1031</failedTransactions>
+        <replication>4</replication>
+        <startingTime>2015-05-29T08:18:17.280+02:00</startingTime>
+        <task>3</task>
+        <totalTransactions>1123</totalTransactions>
+        <tradingHalted>false</tradingHalted>
+    </replications>
+    <replications>
+        <canceled>false</canceled>
+        <endingTime>2015-05-29T08:45:26.468+02:00</endingTime>
+        <equilibrium>
+            <assetLoanPrice>1.376319679686577</assetLoanPrice>
+            <assetPrice>0.6057943623826024</assetPrice>
+            <collateralPrice>0.0</collateralPrice>
+            <i0>0.44554455445544555</i0>
+            <i1>0.9900990099009901</i1>
+            <i2>0.5514851485148515</i2>
+            <loanPrice>0.307242636962209</loanPrice>
+            <medianistWealth>0.07436013963553222</medianistWealth>
+            <optimistWealth>7.6999999999999895</optimistWealth>
+            <pessimistWealth>0.1901917269828406</pessimistWealth>
+        </equilibrium>
+        <failedTransactions>1000</failedTransactions>
+        <replication>29</replication>
+        <startingTime>2015-05-29T08:31:55.154+02:00</startingTime>
+        <task>6</task>
+        <totalTransactions>1077</totalTransactions>
+        <tradingHalted>false</tradingHalted>
+    </replications>
+    <replications>
+        <canceled>false</canceled>
+        <endingTime>2015-05-29T08:45:36.981+02:00</endingTime>
+        <equilibrium>
+            <assetLoanPrice>1.1196077427229965</assetLoanPrice>
+            <assetPrice>0.6455933396742172</assetPrice>
+            <collateralPrice>0.0</collateralPrice>
+            <i0>0.6633663366336634</i0>
+            <i1>0.9900990099009901</i1>
+            <i2>0.500990099009901</i2>
+            <loanPrice>0.35380703136707875</loanPrice>
+            <medianistWealth>0.07158247084226199</medianistWealth>
+            <optimistWealth>7.799999999999989</optimistWealth>
+            <pessimistWealth>0.15930070218240167</pessimistWealth>
+        </equilibrium>
+        <failedTransactions>1000</failedTransactions>
+        <replication>28</replication>
+        <startingTime>2015-05-29T08:31:54.803+02:00</startingTime>
+        <task>0</task>
+        <totalTransactions>1077</totalTransactions>
+        <tradingHalted>false</tradingHalted>
+    </replications>
+    <replications>
+        <canceled>false</canceled>
+        <endingTime>2015-05-29T08:45:39.786+02:00</endingTime>
+        <equilibrium>
+            <assetLoanPrice>1.133360374678319</assetLoanPrice>
+            <assetPrice>0.39542782001470556</assetPrice>
+            <collateralPrice>0.0</collateralPrice>
+            <i0>0.6435643564356436</i0>
+            <i1>0.9900990099009901</i1>
+            <i2>0.5148514851485149</i2>
+            <loanPrice>0.4286820547880819</loanPrice>
+            <medianistWealth>0.06944033869608979</medianistWealth>
+            <optimistWealth>8.099999999999989</optimistWealth>
+            <pessimistWealth>0.16496824767927123</pessimistWealth>
+        </equilibrium>
+        <failedTransactions>1000</failedTransactions>
+        <replication>31</replication>
+        <startingTime>2015-05-29T08:31:57.058+02:00</startingTime>
+        <task>9</task>
+        <totalTransactions>1083</totalTransactions>
+        <tradingHalted>false</tradingHalted>
+    </replications>
+    <replications>
+        <canceled>false</canceled>
+        <endingTime>2015-05-29T08:45:41.347+02:00</endingTime>
+        <equilibrium>
+            <assetLoanPrice>1.3064043369675873</assetLoanPrice>
+            <assetPrice>0.4618858955390047</assetPrice>
+            <collateralPrice>0.0</collateralPrice>
+            <i0>0.43564356435643564</i0>
+            <i1>0.9900990099009901</i1>
+            <i2>0.5069306930693069</i2>
+            <loanPrice>0.3235197761378233</loanPrice>
+            <medianistWealth>0.08087059605627622</medianistWealth>
+            <optimistWealth>8.999999999999986</optimistWealth>
+            <pessimistWealth>0.24302598094520506</pessimistWealth>
+        </equilibrium>
+        <failedTransactions>1000</failedTransactions>
+        <replication>27</replication>
+        <startingTime>2015-05-29T08:31:54.285+02:00</startingTime>
+        <task>20</task>
+        <totalTransactions>1094</totalTransactions>
+        <tradingHalted>false</tradingHalted>
+    </replications>
+    <replications>
+        <canceled>false</canceled>
+        <endingTime>2015-05-29T08:45:42.101+02:00</endingTime>
+        <equilibrium>
+            <assetLoanPrice>1.3015379667349294</assetLoanPrice>
+            <assetPrice>0.7345041382628581</assetPrice>
+            <collateralPrice>0.0</collateralPrice>
+            <i0>0.7227722772277227</i0>
+            <i1>0.9900990099009901</i1>
+            <i2>0.5326732673267327</i2>
+            <loanPrice>0.24278565107801786</loanPrice>
+            <medianistWealth>0.07580633410007692</medianistWealth>
+            <optimistWealth>8.099999999999989</optimistWealth>
+            <pessimistWealth>0.16327772119102585</pessimistWealth>
+        </equilibrium>
+        <failedTransactions>1000</failedTransactions>
+        <replication>34</replication>
+        <startingTime>2015-05-29T08:32:01.145+02:00</startingTime>
+        <task>13</task>
+        <totalTransactions>1079</totalTransactions>
+        <tradingHalted>false</tradingHalted>
+    </replications>
+    <replications>
+        <canceled>false</canceled>
+        <endingTime>2015-05-29T08:45:43.879+02:00</endingTime>
+        <equilibrium>
+            <assetLoanPrice>1.4595882576713293</assetLoanPrice>
+            <assetPrice>0.5398173551376896</assetPrice>
+            <collateralPrice>0.0</collateralPrice>
+            <i0>0.6237623762376238</i0>
+            <i1>0.9900990099009901</i1>
+            <i2>0.5603960396039604</i2>
+            <loanPrice>0.3040533777077352</loanPrice>
+            <medianistWealth>0.08236673172540857</medianistWealth>
+            <optimistWealth>9.199999999999985</optimistWealth>
+            <pessimistWealth>0.16996552270830603</pessimistWealth>
+        </equilibrium>
+        <failedTransactions>1001</failedTransactions>
+        <replication>37</replication>
+        <startingTime>2015-05-29T08:32:06.233+02:00</startingTime>
+        <task>4</task>
+        <totalTransactions>1092</totalTransactions>
+        <tradingHalted>false</tradingHalted>
+    </replications>
+    <replications>
+        <canceled>false</canceled>
+        <endingTime>2015-05-29T08:45:45.056+02:00</endingTime>
+        <equilibrium>
+            <assetLoanPrice>1.3031001350141251</assetLoanPrice>
+            <assetPrice>0.5853536043057582</assetPrice>
+            <collateralPrice>0.0</collateralPrice>
+            <i0>0.8910891089108911</i0>
+            <i1>0.9900990099009901</i1>
+            <i2>0.5425742574257426</i2>
+            <loanPrice>0.28165637459651005</loanPrice>
+            <medianistWealth>0.08396413926330223</medianistWealth>
+            <optimistWealth>8.499999999999988</optimistWealth>
+            <pessimistWealth>0.10677266871838265</pessimistWealth>
+        </equilibrium>
+        <failedTransactions>1000</failedTransactions>
+        <replication>33</replication>
+        <startingTime>2015-05-29T08:32:00.273+02:00</startingTime>
+        <task>2</task>
+        <totalTransactions>1087</totalTransactions>
+        <tradingHalted>false</tradingHalted>
+    </replications>
+    <replications>
+        <canceled>false</canceled>
+        <endingTime>2015-05-29T08:45:46.599+02:00</endingTime>
+        <equilibrium>
+            <assetLoanPrice>1.3369413314069156</assetLoanPrice>
+            <assetPrice>0.499488078338512</assetPrice>
+            <collateralPrice>0.0</collateralPrice>
+            <i0>0.6435643564356436</i0>
+            <i1>0.9900990099009901</i1>
+            <i2>0.5495049504950495</i2>
+            <loanPrice>0.36688431338031313</loanPrice>
+            <medianistWealth>0.08849356117273147</medianistWealth>
+            <optimistWealth>8.099999999999989</optimistWealth>
+            <pessimistWealth>0.09906575057010666</pessimistWealth>
+        </equilibrium>
+        <failedTransactions>1000</failedTransactions>
+        <replication>36</replication>
+        <startingTime>2015-05-29T08:32:05.997+02:00</startingTime>
+        <task>10</task>
+        <totalTransactions>1084</totalTransactions>
+        <tradingHalted>false</tradingHalted>
+    </replications>
+    <replications>
+        <canceled>false</canceled>
+        <endingTime>2015-05-29T08:45:46.750+02:00</endingTime>
+        <equilibrium>
+            <assetLoanPrice>1.441654790107928</assetLoanPrice>
+            <assetPrice>0.47956804905137346</assetPrice>
+            <collateralPrice>0.0</collateralPrice>
+            <i0>0.6534653465346535</i0>
+            <i1>0.9900990099009901</i1>
+            <i2>0.5910891089108911</i2>
+            <loanPrice>0.32466415045658736</loanPrice>
+            <medianistWealth>0.076044386140916</medianistWealth>
+            <optimistWealth>8.999999999999986</optimistWealth>
+            <pessimistWealth>0.14559296105658295</pessimistWealth>
+        </equilibrium>
+        <failedTransactions>1000</failedTransactions>
+        <replication>32</replication>
+        <startingTime>2015-05-29T08:31:57.565+02:00</startingTime>
+        <task>7</task>
+        <totalTransactions>1090</totalTransactions>
+        <tradingHalted>false</tradingHalted>
+    </replications>
+    <replications>
+        <canceled>false</canceled>
+        <endingTime>2015-05-29T08:45:47.728+02:00</endingTime>
+        <equilibrium>
+            <assetLoanPrice>1.3891524482158182</assetLoanPrice>
+            <assetPrice>0.6444725691517811</assetPrice>
+            <collateralPrice>0.0</collateralPrice>
+            <i0>0.7227722772277227</i0>
+            <i1>0.9900990099009901</i1>
+            <i2>0.5455445544554456</i2>
+            <loanPrice>0.30923612354433366</loanPrice>
+            <medianistWealth>0.07416046669221003</medianistWealth>
+            <optimistWealth>8.099999999999989</optimistWealth>
+            <pessimistWealth>0.14816387036919337</pessimistWealth>
+        </equilibrium>
+        <failedTransactions>1000</failedTransactions>
+        <replication>41</replication>
+        <startingTime>2015-05-29T08:32:13.399+02:00</startingTime>
+        <task>19</task>
+        <totalTransactions>1081</totalTransactions>
+        <tradingHalted>false</tradingHalted>
+    </replications>
+    <replications>
+        <canceled>false</canceled>
+        <endingTime>2015-05-29T08:45:48.874+02:00</endingTime>
+        <equilibrium>
+            <assetLoanPrice>1.5599414394768056</assetLoanPrice>
+            <assetPrice>0.6964735110563425</assetPrice>
+            <collateralPrice>0.0</collateralPrice>
+            <i0>0.5445544554455446</i0>
+            <i1>0.9900990099009901</i1>
+            <i2>0.5514851485148515</i2>
+            <loanPrice>0.3906347313676334</loanPrice>
+            <medianistWealth>0.059079523365147615</medianistWealth>
+            <optimistWealth>7.6999999999999895</optimistWealth>
+            <pessimistWealth>0.15584662432520108</pessimistWealth>
+        </equilibrium>
+        <failedTransactions>1000</failedTransactions>
+        <replication>38</replication>
+        <startingTime>2015-05-29T08:32:07.777+02:00</startingTime>
+        <task>18</task>
+        <totalTransactions>1079</totalTransactions>
+        <tradingHalted>false</tradingHalted>
+    </replications>
+    <replications>
+        <canceled>false</canceled>
+        <endingTime>2015-05-29T08:45:49.136+02:00</endingTime>
+        <equilibrium>
+            <assetLoanPrice>1.1975363548997955</assetLoanPrice>
+            <assetPrice>0.5865591513263418</assetPrice>
+            <collateralPrice>0.0</collateralPrice>
+            <i0>0.36633663366336633</i0>
+            <i1>0.9900990099009901</i1>
+            <i2>0.505940594059406</i2>
+            <loanPrice>0.3432805308924897</loanPrice>
+            <medianistWealth>0.08077101875776442</medianistWealth>
+            <optimistWealth>8.199999999999989</optimistWealth>
+            <pessimistWealth>0.2325573579210988</pessimistWealth>
+        </equilibrium>
+        <failedTransactions>1000</failedTransactions>
+        <replication>44</replication>
+        <startingTime>2015-05-29T08:32:16.533+02:00</startingTime>
+        <task>8</task>
+        <totalTransactions>1086</totalTransactions>
+        <tradingHalted>false</tradingHalted>
+    </replications>
+    <replications>
+        <canceled>false</canceled>
+        <endingTime>2015-05-29T08:45:50.210+02:00</endingTime>
+        <equilibrium>
+            <assetLoanPrice>1.1168706934829984</assetLoanPrice>
+            <assetPrice>0.37910856268145593</assetPrice>
+            <collateralPrice>0.0</collateralPrice>
+            <i0>0.45544554455445546</i0>
+            <i1>0.9900990099009901</i1>
+            <i2>0.5079207920792079</i2>
+            <loanPrice>0.3501481954276454</loanPrice>
+            <medianistWealth>0.0755900524473754</medianistWealth>
+            <optimistWealth>8.599999999999987</optimistWealth>
+            <pessimistWealth>0.25598869218030107</pessimistWealth>
+        </equilibrium>
+        <failedTransactions>1004</failedTransactions>
+        <replication>30</replication>
+        <startingTime>2015-05-29T08:31:56.701+02:00</startingTime>
+        <task>15</task>
+        <totalTransactions>1095</totalTransactions>
+        <tradingHalted>false</tradingHalted>
+    </replications>
+    <replications>
+        <canceled>false</canceled>
+        <endingTime>2015-05-29T08:45:52.721+02:00</endingTime>
+        <equilibrium>
+            <assetLoanPrice>1.209871350079422</assetLoanPrice>
+            <assetPrice>0.47832627062632604</assetPrice>
+            <collateralPrice>0.0</collateralPrice>
+            <i0>0.38613861386138615</i0>
+            <i1>0.9900990099009901</i1>
+            <i2>0.5198019801980198</i2>
+            <loanPrice>0.33871411514684463</loanPrice>
+            <medianistWealth>0.06695402676446117</medianistWealth>
+            <optimistWealth>8.499999999999988</optimistWealth>
+            <pessimistWealth>0.27589688971215565</pessimistWealth>
+        </equilibrium>
+        <failedTransactions>1000</failedTransactions>
+        <replication>39</replication>
+        <startingTime>2015-05-29T08:32:13.007+02:00</startingTime>
+        <task>24</task>
+        <totalTransactions>1088</totalTransactions>
+        <tradingHalted>false</tradingHalted>
+    </replications>
+    <replications>
+        <canceled>false</canceled>
+        <endingTime>2015-05-29T08:45:53.438+02:00</endingTime>
+        <equilibrium>
+            <assetLoanPrice>1.194931952962886</assetLoanPrice>
+            <assetPrice>0.49782357987827164</assetPrice>
+            <collateralPrice>0.0</collateralPrice>
+            <i0>0.31683168316831684</i0>
+            <i1>0.9900990099009901</i1>
+            <i2>0.5128712871287129</i2>
+            <loanPrice>0.30325296648893274</loanPrice>
+            <medianistWealth>0.06436039246414929</medianistWealth>
+            <optimistWealth>7.6999999999999895</optimistWealth>
+            <pessimistWealth>0.2690187856574682</pessimistWealth>
+        </equilibrium>
+        <failedTransactions>1000</failedTransactions>
+        <replication>43</replication>
+        <startingTime>2015-05-29T08:32:14.965+02:00</startingTime>
+        <task>23</task>
+        <totalTransactions>1080</totalTransactions>
+        <tradingHalted>false</tradingHalted>
+    </replications>
+    <replications>
+        <canceled>false</canceled>
+        <endingTime>2015-05-29T08:45:53.510+02:00</endingTime>
+        <equilibrium>
+            <assetLoanPrice>1.261993793532058</assetLoanPrice>
+            <assetPrice>0.4814279273701942</assetPrice>
+            <collateralPrice>0.0</collateralPrice>
+            <i0>0.38613861386138615</i0>
+            <i1>0.9900990099009901</i1>
+            <i2>0.5465346534653466</i2>
+            <loanPrice>0.35352879973340645</loanPrice>
+            <medianistWealth>0.07235092515762345</medianistWealth>
+            <optimistWealth>8.299999999999988</optimistWealth>
+            <pessimistWealth>0.2166543754607619</pessimistWealth>
+        </equilibrium>
+        <failedTransactions>1000</failedTransactions>
+        <replication>35</replication>
+        <startingTime>2015-05-29T08:32:04.415+02:00</startingTime>
+        <task>21</task>
+        <totalTransactions>1086</totalTransactions>
+        <tradingHalted>false</tradingHalted>
+    </replications>
+    <replications>
+        <canceled>false</canceled>
+        <endingTime>2015-05-29T08:45:54.705+02:00</endingTime>
+        <equilibrium>
+            <assetLoanPrice>1.1958903169917658</assetLoanPrice>
+            <assetPrice>0.4862531845636042</assetPrice>
+            <collateralPrice>0.0</collateralPrice>
+            <i0>0.6633663366336634</i0>
+            <i1>0.9900990099009901</i1>
+            <i2>0.505940594059406</i2>
+            <loanPrice>0.3378902315101643</loanPrice>
+            <medianistWealth>0.09224045556549063</medianistWealth>
+            <optimistWealth>8.599999999999987</optimistWealth>
+            <pessimistWealth>0.17548345551127695</pessimistWealth>
+        </equilibrium>
+        <failedTransactions>1000</failedTransactions>
+        <replication>40</replication>
+        <startingTime>2015-05-29T08:32:13.292+02:00</startingTime>
+        <task>11</task>
+        <totalTransactions>1086</totalTransactions>
+        <tradingHalted>false</tradingHalted>
+    </replications>
+    <replications>
+        <canceled>false</canceled>
+        <endingTime>2015-05-29T08:45:55.586+02:00</endingTime>
+        <equilibrium>
+            <assetLoanPrice>1.2492369207710217</assetLoanPrice>
+            <assetPrice>0.7136957063005315</assetPrice>
+            <collateralPrice>0.0</collateralPrice>
+            <i0>0.7821782178217822</i0>
+            <i1>0.9900990099009901</i1>
+            <i2>0.5118811881188119</i2>
+            <loanPrice>0.3687860092548349</loanPrice>
+            <medianistWealth>0.07402551432251162</medianistWealth>
+            <optimistWealth>8.699999999999987</optimistWealth>
+            <pessimistWealth>0.12239639561384028</pessimistWealth>
+        </equilibrium>
+        <failedTransactions>1034</failedTransactions>
+        <replication>26</replication>
+        <startingTime>2015-05-29T08:31:47.023+02:00</startingTime>
+        <task>17</task>
+        <totalTransactions>1123</totalTransactions>
+        <tradingHalted>false</tradingHalted>
+    </replications>
+    <replications>
+        <canceled>false</canceled>
+        <endingTime>2015-05-29T08:45:55.885+02:00</endingTime>
+        <equilibrium>
+            <assetLoanPrice>1.3095563909178571</assetLoanPrice>
+            <assetPrice>0.39103749786248887</assetPrice>
+            <collateralPrice>0.0</collateralPrice>
+            <i0>0.31683168316831684</i0>
+            <i1>0.9900990099009901</i1>
+            <i2>0.5683168316831684</i2>
+            <loanPrice>0.30381329354543585</loanPrice>
+            <medianistWealth>0.07232002388323172</medianistWealth>
+            <optimistWealth>8.599999999999987</optimistWealth>
+            <pessimistWealth>0.20292038776220367</pessimistWealth>
+        </equilibrium>
+        <failedTransactions>1005</failedTransactions>
+        <replication>42</replication>
+        <startingTime>2015-05-29T08:32:13.885+02:00</startingTime>
+        <task>1</task>
+        <totalTransactions>1095</totalTransactions>
+        <tradingHalted>false</tradingHalted>
+    </replications>
+    <replications>
+        <canceled>false</canceled>
+        <endingTime>2015-05-29T08:45:56.064+02:00</endingTime>
+        <equilibrium>
+            <assetLoanPrice>1.3336650143075641</assetLoanPrice>
+            <assetPrice>0.585975255191914</assetPrice>
+            <collateralPrice>0.0</collateralPrice>
+            <i0>0.36633663366336633</i0>
+            <i1>0.9900990099009901</i1>
+            <i2>0.5386138613861386</i2>
+            <loanPrice>0.348853815508098</loanPrice>
+            <medianistWealth>0.06756412095876178</medianistWealth>
+            <optimistWealth>8.399999999999988</optimistWealth>
+            <pessimistWealth>0.2588438487514763</pessimistWealth>
+        </equilibrium>
+        <failedTransactions>1000</failedTransactions>
+        <replication>49</replication>
+        <startingTime>2015-05-29T08:32:26.882+02:00</startingTime>
+        <task>5</task>
+        <totalTransactions>1085</totalTransactions>
+        <tradingHalted>false</tradingHalted>
+    </replications>
+    <replications>
+        <canceled>false</canceled>
+        <endingTime>2015-05-29T08:45:57.135+02:00</endingTime>
+        <equilibrium>
+            <assetLoanPrice>1.2252967915052877</assetLoanPrice>
+            <assetPrice>0.6918580294901376</assetPrice>
+            <collateralPrice>0.0</collateralPrice>
+            <i0>0.5742574257425742</i0>
+            <i1>0.9900990099009901</i1>
+            <i2>0.5108910891089109</i2>
+            <loanPrice>0.30937743606149326</loanPrice>
+            <medianistWealth>0.0793346053679384</medianistWealth>
+            <optimistWealth>8.099999999999989</optimistWealth>
+            <pessimistWealth>0.18486570119130993</pessimistWealth>
+        </equilibrium>
+        <failedTransactions>1000</failedTransactions>
+        <replication>45</replication>
+        <startingTime>2015-05-29T08:32:17.295+02:00</startingTime>
+        <task>22</task>
+        <totalTransactions>1080</totalTransactions>
+        <tradingHalted>false</tradingHalted>
+    </replications>
+    <replications>
+        <canceled>false</canceled>
+        <endingTime>2015-05-29T08:45:57.336+02:00</endingTime>
+        <equilibrium>
+            <assetLoanPrice>1.3027364464725035</assetLoanPrice>
+            <assetPrice>0.6404822082575363</assetPrice>
+            <collateralPrice>0.0</collateralPrice>
+            <i0>0.5445544554455446</i0>
+            <i1>0.9900990099009901</i1>
+            <i2>0.5237623762376238</i2>
+            <loanPrice>0.37636839773797964</loanPrice>
+            <medianistWealth>0.06422717570544544</medianistWealth>
+            <optimistWealth>7.799999999999989</optimistWealth>
+            <pessimistWealth>0.17583158823263462</pessimistWealth>
+        </equilibrium>
+        <failedTransactions>1000</failedTransactions>
+        <replication>48</replication>
+        <startingTime>2015-05-29T08:32:24.354+02:00</startingTime>
+        <task>16</task>
+        <totalTransactions>1079</totalTransactions>
+        <tradingHalted>false</tradingHalted>
+    </replications>
+    <replications>
+        <canceled>false</canceled>
+        <endingTime>2015-05-29T08:45:58.296+02:00</endingTime>
+        <equilibrium>
+            <assetLoanPrice>1.3579615519281347</assetLoanPrice>
+            <assetPrice>0.6761530155350998</assetPrice>
+            <collateralPrice>0.0</collateralPrice>
+            <i0>0.5742574257425742</i0>
+            <i1>0.9900990099009901</i1>
+            <i2>0.5722772277227722</i2>
+            <loanPrice>0.2614658403540324</loanPrice>
+            <medianistWealth>0.07367999870283354</medianistWealth>
+            <optimistWealth>7.9999999999999885</optimistWealth>
+            <pessimistWealth>0.20238114859463752</pessimistWealth>
+        </equilibrium>
+        <failedTransactions>1000</failedTransactions>
+        <replication>46</replication>
+        <startingTime>2015-05-29T08:32:20.510+02:00</startingTime>
+        <task>14</task>
+        <totalTransactions>1079</totalTransactions>
+        <tradingHalted>false</tradingHalted>
+    </replications>
+    <replications>
+        <canceled>false</canceled>
+        <endingTime>2015-05-29T08:45:59.349+02:00</endingTime>
+        <equilibrium>
+            <assetLoanPrice>1.3584697387225175</assetLoanPrice>
+            <assetPrice>0.616012410417453</assetPrice>
+            <collateralPrice>0.0</collateralPrice>
+            <i0>0.9603960396039604</i0>
+            <i1>0.9900990099009901</i1>
+            <i2>0.5198019801980198</i2>
+            <loanPrice>0.32601790741697834</loanPrice>
+            <medianistWealth>0.08230333271118591</medianistWealth>
+            <optimistWealth>8.499999999999988</optimistWealth>
+            <pessimistWealth>0.05572930084202723</pessimistWealth>
+        </equilibrium>
+        <failedTransactions>1000</failedTransactions>
+        <replication>50</replication>
+        <startingTime>2015-05-29T08:32:39.072+02:00</startingTime>
+        <task>3</task>
+        <totalTransactions>1087</totalTransactions>
+        <tradingHalted>false</tradingHalted>
+    </replications>
+    <replications>
+        <canceled>false</canceled>
+        <endingTime>2015-05-29T08:45:59.769+02:00</endingTime>
+        <equilibrium>
+            <assetLoanPrice>1.467634494390503</assetLoanPrice>
+            <assetPrice>0.6057544591879149</assetPrice>
+            <collateralPrice>0.0</collateralPrice>
+            <i0>0.7425742574257426</i0>
+            <i1>0.9900990099009901</i1>
+            <i2>0.5366336633663367</i2>
+            <loanPrice>0.35566804709242755</loanPrice>
+            <medianistWealth>0.08001022290139234</medianistWealth>
+            <optimistWealth>7.49999999999999</optimistWealth>
+            <pessimistWealth>0.13086747489568484</pessimistWealth>
+        </equilibrium>
+        <failedTransactions>1000</failedTransactions>
+        <replication>47</replication>
+        <startingTime>2015-05-29T08:32:22.389+02:00</startingTime>
+        <task>12</task>
+        <totalTransactions>1074</totalTransactions>
+        <tradingHalted>false</tradingHalted>
+    </replications>
+    <startingTime>2015-05-29T08:18:17.274+02:00</startingTime>
+    <stdFailedTransactions>6.51228039310097</stdFailedTransactions>
+    <stdSuccessfulTransactions>5.631869954435513</stdSuccessfulTransactions>
+    <stdTotalTransactions>9.653697610295263</stdTotalTransactions>
+</result>
