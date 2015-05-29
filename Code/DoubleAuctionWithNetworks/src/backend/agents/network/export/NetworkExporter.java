@@ -14,27 +14,22 @@ public class NetworkExporter {
 
 	public static GraphBean createGraphBean( AgentNetwork network ) {
 		GraphBean graphBean = new GraphBean();
-		
+
+		int edgeId = 0;
 		Iterator<Agent> nodesIter = network.iterator();
 		while( nodesIter.hasNext() ) {
-			Agent a = nodesIter.next();
+			Agent source = nodesIter.next();
 			
 			NodeBean node = new NodeBean();
-			node.setId( a.getId() );
-			node.setLabel( a.getH() );
+			node.setId( source.getId() );
+			node.setLabel( source.getH() );
 		
 			graphBean.getNodes().add( node );
-		}
-		
-		int edgeId = 0;
-		nodesIter = network.iterator();
-		while( nodesIter.hasNext() ) {
-			Agent source = nodesIter.next();
 			
 			Iterator<Agent> neighborsIter = network.getNeighbors( source );
 			while( neighborsIter.hasNext() ) {
 				Agent target = neighborsIter.next();
-				
+	
 				EdgeBean edge = new EdgeBean();
 				edge.setId( edgeId );
 				edge.setSource( source.getId() );
@@ -64,54 +59,5 @@ public class NetworkExporter {
 		} catch (JAXBException e) {
 			e.printStackTrace();
 		}
-		
-		/*
-		BufferedWriter out = null;
-
-		try {
-			out = new BufferedWriter( new FileWriter( new File( fileName ) ) );
-			out.write( "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" );
-			out.write( "<gexf xmlns=\"http://www.gexf.net/1.2draft\" version=\"1.2\">" );
-			out.write( "<graph mode=\"static\" defaultedgetype=\"undirected\">");
-			
-			out.write( "<nodes>");
-			Iterator<Agent> nodesIter = network.iterator();
-			while( nodesIter.hasNext() ) {
-				Agent a = nodesIter.next();
-				out.write( "<node id=\"" + a.getId() + "\" label=\"" + Utils.DECIMAL_3_DIGITS_FORMATTER.format( a.getH() ) + "\" />" );
-			}
-			out.write( "</nodes>");
-			
-			out.write( "<edges>");
-			int edgeId = 0;
-			nodesIter = network.iterator();
-			while( nodesIter.hasNext() ) {
-				Agent source = nodesIter.next();
-				
-				Iterator<Agent> neighborsIter = network.getNeighbors( source );
-				while( neighborsIter.hasNext() ) {
-					Agent target = neighborsIter.next();
-					out.write( "<edge id=\"" + edgeId + "\" source=\"" + source.getId() + "\" target=\"" + target.getId() + "\" />" );
-					edgeId++;
-				}
-			}
-			out.write( "</edges>");
-			
-			out.write( "</graph>");
-			out.write( "</gexf>");
-			out.flush();
-			
-		} catch (IOException e) {
-			e.printStackTrace();
-			
-		} finally {
-			if ( out != null ) {
-				try {
-					out.close();
-				} catch (IOException e) {
-				}
-			}
-		}
-		*/
 	}
 }

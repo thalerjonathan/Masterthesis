@@ -7,6 +7,13 @@ In this Chapter the results of the experiments are given. Each topology-type is 
 In all experiments 100 Agents were used, all Markets were enabled, the bond-type 0.5 was selected and if replications were used the number of runs over which was averaged was always 50.
 As Termination-Mode "Failed successive Transactions" is selected with the number of failed transactions in a row is 1000. Please note that if trading is not possible anymore bevore these 1000 failed transactions have been reached, the simulation is halted and thus it is possible that it terminates earlier.
 
+100 agents were chosen because \cite{Breuer2015} showed that equilibrium can be reached already with 30 agents so this was the minimum number of agents to start with. For a finer "resolution" of the visual results 100 were chosen also because its a good match between too much processing power required and nice visual results.
+The 0.5 Bond was selected because its a risky one and only when a risky bond is traded then will this equilibirum show up as for unrisky bonds with Facevalue <= 0.2 the results are indifferent.
+Obviously the whole simulation-process is a random-process with an equilibrium (different for each topology) as the fixed-point solution thus one needs replications to reduce noise. The number of 50 Replications was chosen because its a good match between run-time duration and overall reduction of noise - increasing the number e.g. to 100 or 200 would not result in very much better results but would need much longer to run. All facts can be seen and derived when using 50 replications.
+
+The theoretical equilibrium for this parameters is:
+TODO: table with i0, i1, P, M, Q and final prices: p,q,pq
+
 \section{Fully-Connected Topology}
 To demonstrate the ability of the software to produce the results given in the paper of \cite{Breuer2015} the results of a single run and in addition with a replication run of a Fully-Connected Topology is given.
 

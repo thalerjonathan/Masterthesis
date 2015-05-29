@@ -389,6 +389,10 @@ public class ReplicationPanel extends JPanel {
         }
         
         File file = this.fileChooser.getSelectedFile();
+        if ( false == file.getName().endsWith( ".xml" ) ) {
+        	file = new File( this.fileChooser.getSelectedFile() + ".xml" );
+        }
+        
         String name = JOptionPane.showInputDialog( "Name of experiment: " );
         
         ExperimentListBean experimentList = null;

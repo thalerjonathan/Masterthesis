@@ -17,6 +17,7 @@ public class Utils {
 	public final static File EXPERIMENTS_DIRECTORY = new File( System.getProperty( "user.dir" ) + File.separator + "experiments" );
 	public final static File RESULTS_DIRECTORY = new File( System.getProperty( "user.dir" ) + File.separator + "results" );
 	public final static File NETWORKS_DIRECTORY = new File( System.getProperty( "user.dir" ) + File.separator + "networks" );
+	public final static File VISUALS_DIRECTORY = new File( System.getProperty( "user.dir" ) + File.separator + "visuals" );
 	
 	// for java 6 compliance use home-built THREADLOCAL_RANDOM
 	public static final ThreadLocal<Random> THREADLOCAL_RANDOM = new ThreadLocal<Random>() {

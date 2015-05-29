@@ -8,12 +8,10 @@ import java.awt.Graphics2D;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.JPanel;
-
 import backend.agents.Agent;
 
 @SuppressWarnings("serial")
-public class WealthVisualizer extends JPanel {
+public class WealthVisualizer extends Visualizer {
 	private final static int X_ACHSIS_GRID = 10;
 	private final static int Y_ACHSIS_GRID = 10;
 	

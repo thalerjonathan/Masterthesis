@@ -52,6 +52,7 @@ public class AgentNetwork {
 			Agent a = new Agent( node.getId(), h );
 			
 			agentsById.put( a.getId(), a );
+			
 			network.orderedAgents.add( a );
 			
 			network.graph.addVertex( a );
@@ -64,7 +65,10 @@ public class AgentNetwork {
 			Agent source = agentsById.get( edge.getSource() );
 			Agent target = agentsById.get( edge.getTarget() );
 			
-			network.graph.addEdge( new AgentConnection(), source, target );
+			// only add if not already neighbours (undirected graph)
+			if ( false == network.graph.isNeighbor( source, target ) ) {
+				network.graph.addEdge( new AgentConnection(), source, target );
+			}
 		}
 		
 		return network;

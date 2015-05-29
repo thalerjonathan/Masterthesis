@@ -6,12 +6,10 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 
-import javax.swing.JPanel;
-
 import backend.markets.MarketType;
 
 @SuppressWarnings("serial")
-public abstract class MarketsVisualizer extends JPanel {
+public abstract class MarketsVisualizer extends Visualizer {
 
 	protected final static int SCALA_X_WIDTH = 60;
 	protected final static int SCALA_Y_WIDTH = 30;
