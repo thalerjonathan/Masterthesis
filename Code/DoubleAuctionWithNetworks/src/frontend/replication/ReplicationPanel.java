@@ -132,6 +132,7 @@ public class ReplicationPanel extends JPanel {
 		this.markets.setLoanMarket( bean.isLoanCashMarket() );
 		this.markets.setBP( bean.isBondsPledgeability() );
 		this.markets.setLoanType( bean.getLoanType() );
+		this.markets.setCollateralMarket( bean.isCollateralCashMarket() );
 		
 		this.setLayout( new BorderLayout() );
 		
