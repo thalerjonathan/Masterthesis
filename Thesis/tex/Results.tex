@@ -1,11 +1,98 @@
 \documentclass[Bachelorarbeit.tex]{subfiles}
 \begin{document}
+
+\graphicspath{{./figures/results/}}	%specifying the folder for the figures
+
 \chapter{Results}
 
 In this Chapter the results of the experiments are given. Each topology-type is handled in a separate section where the hypothesis was put to test in the section regarding the Ascending-Connected Topologies.
 
-In all experiments 100 Agents were used, all markets were enabled, the bond-type 0.5 was selected and if replications were used the number of runs over which was averaged was always 50.
-As Termination-Mode "Failed successive Transactions" is selected with the number of failed transactions in a row is 1000. Note that if trading is not possible anymore bevore these 1000 failed transactions have been reached, the simulation is halted and thus it is possible that it terminates earlier.
+Note: Numbers in parentheses resemble the standard-deviation of the preceding number.
+
+\section{Reproducting theoretical equilibrium}
+As  a point of reference and as an experimental proof for the correctness of the implementation of the simulation the results are given for reproducing the theoretical equilibrium and the equilibrium found in \cite{Breuer2015}.
+Because equilibrium differs across the number of agents and the type of bond traded to be comparable the same amount of agents and the same bond-type has to be used in the experiments which is 1000 Agents and a 0.5 Bond because \cite{Breuer2015} report their equilibrias only for a count of 1000 Agents and Bonds between 0.1 to 0.5.
+
+\begin{table}[h]
+	\centering
+	\caption{Theoretical Equilibrium for 1000 Agents}
+	\begin{tabular} { l c r }
+		\hline
+		Asset-Price p & 0.715 \\
+		Loan-Price q & 0.374 \\
+		Marginal Buyer i0 & 0.583 \\
+		Marginal Seller i1 & 0.802 \\
+		\hline
+	\end{tabular}
+\end{table}
+
+
+\begin{figure}[!htbp]
+	\centering
+  \includegraphics[width=1.0\textwidth, angle=0]{FULLYCONNECTED_1000_NOCOLLATERALMARKET_SINGLE.png}
+	\caption{Thesis-Implementation of Fully-Connected topology wealth-distribution after single run}
+	\label{fig1}
+\end{figure}
+
+\begin{figure}[!htbp]
+	\centering
+  \includegraphics[width=1.0\textwidth, angle=0]{FULLYCONNECTED_1000_NOCOLLATERALMARKET_SINGLE.png}
+	\caption{Thesis-Implementation of Fully-Connected topology wealth-distribution after 50 replications}
+	\label{fig1}
+\end{figure}
+
+\begin{table}[h]
+	\centering
+	\caption{Equilibrium of thesis-implementation}
+	\begin{tabular} { l c r }
+		\hline
+		Asset-Price & TODO (TODO) \\
+		Loan-Price & TODO (TODO) \\
+		i0 (Marginal Buyer) & TODO (TODO) \\
+		i1 (Marginal Seller) & 0.803 (TODO) \\
+		Pessimist Wealth & TODO (TODO) \\
+		Medianist Wealth & TODO (TODO) \\
+		Optimist Wealth & TODO (TODO) \\
+		\hline
+	\end{tabular}
+\end{table}
+
+
+
+\begin{table}[h]
+	\centering
+	\caption{Performance of thesis-implementation with 1000 Agents and 0.5 Bond}
+	\begin{tabular} { l c r }
+		\hline
+		Successful TX & TODO (TODO) \\
+		Total TX & TODO (TODO) \\
+		Failed TX & TODO (TODO) \\
+		\hline
+	\end{tabular}
+\end{table}
+
+\begin{table}[h]
+	\centering
+	\caption{Equilibrium in \cite{Breuer2015} with 1000 Agents and 0.5 Bond }
+	\begin{tabular} { l c r }
+		\hline
+		Asset-Price p & 0.716 \\
+		Loan-Price q & 0.375 \\
+		Marginal Buyer i0 & 0.583 \\
+		Marginal Seller i1 & 0.801 \\
+		Pessimist Wealth & 1.716 \\
+		Medianist Wealth & 4.578 \\
+		Optimist Wealth & 5.032 \\
+		\hline
+	\end{tabular}
+\end{table}
+
+// TODO: difference to breuer 
+// TODO: difference to theoretical equilibrium
+
+\section{Experiments configuration}
+In the following experiments 100 Agents were used, all markets were enabled, the bond-type 0.5 was selected and if replications were used always 50 were run.
+As Termination-Mode "Failed successive Transactions" is selected with the number of failed transactions in a row is 1000. Note that if trading is not possible any more before these 1000 failed transactions have been reached, the simulation is halted and thus it is possible that it terminates earlier.
 
 100 agents were chosen because \cite{Breuer2015} showed that equilibrium can be reached already with 30 agents so this was the minimum number of agents to start with. For a finer "resolution" of the visual results 100 were chosen also because its a good match between too much processing power required and nice visual results.
 The 0.5 Bond was selected because its a risky one and only when a risky bond is traded then will this equilibirum show up as for unrisky bonds with Facevalue <= 0.2 the results are indifferent.
@@ -13,72 +100,386 @@ Obviously the whole simulation-process is a random-process with an equilibrium (
 
 Theoretical equilibrium for i0, i1, asset price and loan price can be calculated and are as follows:
 
-\begin{tabular} { l c r }
-	Asset-Price (p) & 0.716 \\
-	Loan-Price (q) & 0.384 \\
-	Asset/Loan Price (pq) & ? \\
-	Marginal Buyer i0 & 0.584 \\
-	Marginal Seller i1 & 0.801 \\
-\end{tabular}
+\begin{table}[h]
+	\centering
+	\caption{Theoretical Equilibrium for 100 Agents}
+	\begin{tabular} { l c r }
+		\hline
+		Asset-Price p & 0.716 \\
+		Loan-Price q & 0.384 \\
+		Marginal Buyer i0 & 0.584 \\
+		Marginal Seller i1 & 0.801 \\
+		\hline
+	\end{tabular}
+\end{table}
+
+
 
 
 
 \section{Fully-Connected Topology}
-To demonstrate the ability of the software to produce the results given in the paper of \cite{Breuer2015} the results of a single run and in addition with a replication run of a Fully-Connected Topology is given.
+
 
 It is also a point-of-reference for the other experiments as this fully-connected topology gives a good point of visual information which can be applied to the other topologies to give a visual clue whether they could have actually reached the equilibrium.
 
-\begin{figure}[ht]
+\begin{figure}[!htbp]
 	\centering
   \includegraphics[width=1.0\textwidth, angle=0]{FULLYCONNECTED_100_NOCOLLATERALMARKET_SINGLE.png}
 	\caption{Fully-Connected topology wealth-distribution after single run}
 	\label{fig1}
 \end{figure}
 
-\begin{figure}[ht]
+\begin{figure}[!htbp]
 	\centering
   \includegraphics[width=1.0\textwidth, angle=0]{FULLYCONNECTED_100_NOCOLLATERALMARKET_REPL.png}
 	\caption{Fully-Connected topology wealth-distribution after 50 replications}
 	\label{fig1}
 \end{figure}
 
-Equilibrium (Standard-deviations are given in parantheses)
+\begin{table}[h]
+	\caption{Equilibrium for 100 Agents}
+	\centering
+	\begin{tabular} { l c r }
+		\hline
+		Asset-Price & 0.689 (0.010) \\
+		Loan-Price & 0.384 (0.004) \\
+		i0 (Marginal Buyer) & 0.603 (0.007) \\
+		i1 (Marginal Seller) & 0.803 (0.003) \\
+		Pessimist Wealth & 1.597 (0.015) \\
+		Medianist Wealth & 4.565 (0.113) \\
+		Optimist Wealth & 5.021 (0.064) \\
+		\hline
+	\end{tabular}
+\end{table} 
 
-\begin{tabular} { l c r }
-	Asset-Price & 0.689 (0.010) \\
-	Loan-Price & 0.384 (0.004) \\
-	Asset/Loan Price & 1.911 (0.001) \\
-	i0 (Marginal Buyer) & 0.603 (0.007) \\
-	i1 (Marginal Seller) & 0.803 (0.003) \\
-	Pessimist Wealth & 1.597 (0.015) \\
-	Medianist Wealth & 4.565 (0.113) \\
-	Optimist Wealth & 5.021 (0.064) \\
-\end{tabular}
-
-Performance (Standard-deviations are given in parantheses)
-
-\begin{tabular} { l c r }
-	Successful TX & 1916.14 (31.42) \\
-	Total TX & 6364.8 (1679.21) \\
-	Failed TX & 4448.66 (1668.93) \\
-\end{tabular}
-
+\begin{table}[h]
+	\caption{Performance of 100 Agents}
+	\centering
+	\begin{tabular} { l c r }
+		\hline
+		Successful TX & 1916.14 (31.42) \\
+		Total TX & 6364.8 (1679.21) \\
+		Failed TX & 4448.66 (1668.93) \\
+		\hline
+	\end{tabular}
+\end{table}
 
 
 \section{Ascending-Connected Topologies} 
 
 \subsection{Ascending-Connected}
+\begin{figure}[!htbp]
+	\centering
+  \includegraphics[width=1.0\textwidth, angle=0]{ASCENDINGCONNECTED_100_NOCOLLATERALMARKET_SINGLE.png}
+	\caption{Ascending-Connected topology wealth-distribution after single run}
+	\label{fig1}
+\end{figure}
+
+\begin{figure}[!htbp]
+	\centering
+  \includegraphics[width=1.0\textwidth, angle=0]{ASCENDINGCONNECTED_100_NOCOLLATERALMARKET_REPL.png}
+	\caption{Ascending-Connected topology wealth-distribution after 50 replications}
+	\label{fig1}
+\end{figure}
+
+\begin{table}[h]
+	\caption{Ascending-Connected equilibrium for 100 Agents}
+	\centering
+	\begin{tabular} { l c r }
+		\hline
+		Asset-Price & 0.711 (0.016) \\
+		Loan-Price & 0.391 (0.005) \\
+		i0 (Marginal Buyer) & 0.646(0.012) \\
+		i1 (Marginal Seller) & 0.850 (0.008) \\
+		Pessimist Wealth & 1.166 (0.072) \\
+		Medianist Wealth & 1.869 (0.243) \\
+		Optimist Wealth & 4.307 (0.070) \\
+		\hline
+	\end{tabular}
+\end{table} 
+
+\begin{table}[h]
+	\caption{Ascending-Connected performance of 100 Agents}
+	\centering
+	\begin{tabular} { l c r }
+		\hline
+		Successful TX & 36,940.96 (1948.69) \\
+		Total TX & 38,117.04 (1934.06) \\
+		Failed TX & 1176.08 (98.01) \\
+		\hline
+	\end{tabular}
+\end{table}
+
+TODO: move to interpretation: As can be clearly seen the equilibrium is fundamentally different than the fully-connected one and thus the hypothesis is not satisfied.
 
 \subsection{Ascending-Connected Importance Sampling}
+\begin{figure}[!htbp]
+	\centering
+  \includegraphics[width=1.0\textwidth, angle=0]{ASCENDINGCONNECTED_IS_100_NOCOLLATERALMARKET_SINGLE.png}
+	\caption{Ascending-Connected Importance Sampling topology wealth-distribution after single run}
+	\label{fig1}
+\end{figure}
+
+\begin{figure}[!htbp]
+	\centering
+  \includegraphics[width=1.0\textwidth, angle=0]{ASCENDINGCONNECTED_IS_100_NOCOLLATERALMARKET_REPL.png}
+	\caption{Ascending-Connected Importance Sampling topology wealth-distribution after 50 replications}
+	\label{fig1}
+\end{figure}
+
+\begin{table}[h]
+	\caption{Ascending-Connected Importance Sampling equilibrium for 100 Agents}
+	\centering
+	\begin{tabular} { l c r }
+		\hline
+		Asset-Price & 0.691 (0.009) \\
+		Loan-Price & 0.383 (0.004) \\
+		i0 (Marginal Buyer) & 0.614 (0.009) \\
+		i1 (Marginal Seller) & 0.799 (0.006) \\
+		Pessimist Wealth & 1.497 (0.072) \\
+		Medianist Wealth & 3.934 (0.505) \\
+		Optimist Wealth & 4.519 (0.051) \\
+		\hline
+	\end{tabular}
+\end{table} 
+
+\begin{table}[h]
+	\caption{Ascending-Connected Importance Sampling performance of 100 Agents}
+	\centering
+	\begin{tabular} { l c r }
+		\hline
+		Successful TX & 49,881.6 (1733.33) \\
+		Total TX & 49,882.6 (1733.33) \\
+		Failed TX & 1.0 (0.00) \\
+		\hline
+	\end{tabular}
+\end{table}
+
+Note that in this case the matching-probabilities are such that upon the first failed transaction the equilibrium has reached as no agent can trade with each other anymore which results in just on single failed transaction.
+
+TODO: move to interpretation: As can be clearly seen the equilibrium is fundamentally different than the fully-connected one and thus the hypothesis is not satisfied.
 
 \subsection{Ascending-Connected 5 full Short-cuts }
+\begin{figure}[!htbp]
+	\centering
+  \includegraphics[width=1.0\textwidth, angle=0]{ASCENDINGCONNECTED_5FullSC_100_NOCOLLATERALMARKET_REPL.png}
+	\caption{Ascending-Connected 5 full short-cuts topology wealth-distribution after 50 replications}
+	\label{fig1}
+\end{figure}
+
+\begin{table}[h]
+	\caption{Ascending-Connected 5 full short-cuts equilibrium for 100 Agents}
+	\centering
+	\begin{tabular} { l c r }
+		\hline
+		Asset-Price & 0.656 (0.019) \\
+		Loan-Price & 0.371 (0.003) \\
+		i0 (Marginal Buyer) & 0.594 (0.0) \\
+		i1 (Marginal Seller) & 0.792 (0.0) \\
+		Pessimist Wealth & 1.649 (0.002) \\
+		Medianist Wealth & 5.013 (0.018) \\
+		Optimist Wealth & 4.746 (0.011) \\
+		\hline
+	\end{tabular}
+\end{table} 
+
+\begin{table}[h]
+	\caption{Ascending-Connected 5 full short-cuts performance of 100 Agents}
+	\centering
+	\begin{tabular} { l c r }
+		\hline
+		Successful TX & 16,971.34 (228.0) \\
+		Total TX & 17,998.26 (225.23) \\
+		Failed TX & 1026.92 (22.68) \\
+		\hline
+	\end{tabular}
+\end{table}
+
+TODO: move to interpretation: As can be clearly seen 5 full shortcuts seem to be already enough to solve the inefficencies seen in Ascending-Connected with/without Importance Sampling.
+
 \subsection{Ascending-Connected 15 full Short-cuts }
+\begin{figure}[!htbp]
+	\centering
+  \includegraphics[width=1.0\textwidth, angle=0]{ASCENDINGCONNECTED_15FullSC_100_NOCOLLATERALMARKET_REPL.png}
+	\caption{Ascending-Connected 15 full short-cuts topology wealth-distribution after 50 replications}
+	\label{fig1}
+\end{figure}
+
+\begin{table}[h]
+	\caption{Ascending-Connected 15 full short-cuts equilibrium for 100 Agents}
+	\centering
+	\begin{tabular} { l c r }
+		\hline
+		Asset-Price & 0.658 (0.024) \\
+		Loan-Price & 0.366 (0.009) \\
+		i0 (Marginal Buyer) & 0.601 (0.004) \\
+		i1 (Marginal Seller) & 0.802 (0.0) \\
+		Pessimist Wealth & 1.649 (0.004) \\
+		Medianist Wealth & 4.811 (0.092) \\
+		Optimist Wealth & 4.957 (0.021) \\
+		\hline
+	\end{tabular}
+\end{table} 
+
+\begin{table}[!htbp]
+	\caption{Ascending-Connected 15 full short-cuts performance of 100 Agents}
+	\centering
+	\begin{tabular} { l c r }
+		\hline
+		Successful TX & 4498.08 (58.67) \\
+		Total TX & 5522.860 (64.72) \\
+		Failed TX & 1024.78 (17.3) \\
+		\hline
+	\end{tabular}
+\end{table}
+
 \subsection{Ascending-Connected 30 full Short-cuts }
+\begin{figure}[!htbp]
+	\centering
+  \includegraphics[width=1.0\textwidth, angle=0]{ASCENDINGCONNECTED_30FullSC_100_NOCOLLATERALMARKET_REPL.png}
+	\caption{Ascending-Connected 30 full short-cuts topology wealth-distribution after 50 replications}
+	\label{fig1}
+\end{figure}
+
+\begin{table}[!htbp]
+	\caption{Ascending-Connected 30 full short-cuts equilibrium for 100 Agents}
+	\centering
+	\begin{tabular} { l c r }
+		\hline
+		Asset-Price & 0.681 (0.012) \\
+		Loan-Price & 0.378 (0.006) \\
+		i0 (Marginal Buyer) & 0.603 (0.006) \\
+		i1 (Marginal Seller) & 0.802 (0.1) \\
+		Pessimist Wealth & 1.649 (0.009) \\
+		Medianist Wealth & 4.702 (0.112) \\
+		Optimist Wealth & 5.004 (0.025) \\
+		\hline
+	\end{tabular}
+\end{table} 
+
+\begin{table}[!htbp]
+	\caption{Ascending-Connected 30 full short-cuts performance of 100 Agents}
+	\centering
+	\begin{tabular} { l c r }
+		\hline
+		Successful TX & 2211.08 (35.88) \\
+		Total TX & 3225.76 (40.18) \\
+		Failed TX & 1014.68 (10.55) \\
+		\hline
+	\end{tabular}
+\end{table}
+
 
 \subsection{Ascending-Connected 5 regular Short-cuts }
-\subsection{Ascending-Connected 15 regular Short-cuts }
-\subsection{Ascending-Connected 30 regular Short-cuts }
+\begin{figure}[!htbp]
+	\centering
+  \includegraphics[width=1.0\textwidth, angle=0]{ASCENDINGCONNECTED_5RegSC_100_NOCOLLATERALMARKET_REPL.png}
+	\caption{Ascending-Connected 5 regular short-cuts topology wealth-distribution after 50 replications}
+	\label{fig1}
+\end{figure}
 
+\begin{table}[!htbp]
+	\caption{Ascending-Connected 5 regular short-cuts equilibrium for 100 Agents}
+	\centering
+	\begin{tabular} { l c r }
+		\hline
+		Asset-Price & 0.665 (0.016) \\
+		Loan-Price & 0.364 (0.007) \\
+		i0 (Marginal Buyer) & 0.595 (0.003) \\
+		i1 (Marginal Seller) & 0.792 (0.0) \\
+		Pessimist Wealth & 1.649 (0.003) \\
+		Medianist Wealth & 4.991 (0.045) \\
+		Optimist Wealth & 4.727 (0.011) \\
+		\hline
+	\end{tabular}
+\end{table} 
+
+\begin{table}[!htbp]
+	\caption{Ascending-Connected 5 regular short-cuts performance of 100 Agents}
+	\centering
+	\begin{tabular} { l c r }
+		\hline
+		Successful TX & 14,570.44 (157.61) \\
+		Total TX & 15,634.68 (166.21) \\
+		Failed TX & 1064.24 (29.88) \\
+		\hline
+	\end{tabular}
+\end{table}
+
+\subsection{Ascending-Connected 15 regular Short-cuts }
+\begin{figure}[!htbp]
+	\centering
+  \includegraphics[width=1.0\textwidth, angle=0]{ASCENDINGCONNECTED_15RegSC_100_NOCOLLATERALMARKET_REPL.png}
+	\caption{Ascending-Connected 15 regular short-cuts topology wealth-distribution after 50 replications}
+	\label{fig1}
+\end{figure}
+
+\begin{table}[!htbp]
+	\caption{Ascending-Connected 15 regular short-cuts equilibrium for 100 Agents}
+	\centering
+	\begin{tabular} { l c r }
+		\hline
+		Asset-Price & 0.705 (0.020) \\
+		Loan-Price & 0.357 (0.018) \\
+		i0 (Marginal Buyer) & 0.586 (0.023) \\
+		i1 (Marginal Seller) & 0.802 (0.0) \\
+		Pessimist Wealth & 1.649 (0.051) \\
+		Medianist Wealth & 4.146 (0.101) \\
+		Optimist Wealth & 4.997 (0.007) \\
+		\hline
+	\end{tabular}
+\end{table} 
+
+\begin{table}[!htbp]
+	\caption{Ascending-Connected 15 regular short-cuts performance of 100 Agents}
+	\centering
+	\begin{tabular} { l c r }
+		\hline
+		Successful TX & 4373.28 (50.13) \\
+		Total TX & 5502.52 (52.11) \\
+		Failed TX & 1129.24 (19.2) \\
+		\hline
+	\end{tabular}
+\end{table}
+
+\subsection{Ascending-Connected 30 regular Short-cuts }
+\begin{figure}[!htbp]
+	\centering
+  \includegraphics[width=1.0\textwidth, angle=0]{ASCENDINGCONNECTED_30RegSC_100_NOCOLLATERALMARKET_REPL.png}
+	\caption{Ascending-Connected 30 regular short-cuts topology wealth-distribution after 50 replications}
+	\label{fig1}
+\end{figure}
+
+\begin{table}[!htbp]
+	\caption{Ascending-Connected 30 regular short-cuts equilibrium for 100 Agents}
+	\centering
+	\begin{tabular} { l c r }
+		\hline
+		Asset-Price & 0.710 (0.021) \\
+		Loan-Price & 0.398 (0.008) \\
+		i0 (Marginal Buyer) & 0.589 (0.021) \\
+		i1 (Marginal Seller) & 0.802 (0.0) \\
+		Pessimist Wealth & 1.479 (0.049) \\
+		Medianist Wealth & 3.713 (0.125) \\
+		Optimist Wealth & 5.0 (0.0) \\
+		\hline
+	\end{tabular}
+\end{table} 
+
+\begin{table}[!htbp]
+	\caption{Ascending-Connected 30 regular short-cuts performance of 100 Agents}
+	\centering
+	\begin{tabular} { l c r }
+		\hline
+		Successful TX & 5427.02 (90.82) \\
+		Total TX & 6566.06 (96.04) \\
+		Failed TX & 1139.04 (27.74) \\
+		\hline
+	\end{tabular}
+\end{table}
+
+// TODO: Ascending-Connected 2 Short-Cuts
+// TODO: Ascending-Connected 10 Full/regular Short-Cuts
 
 
 \section{Deterministic Hub-Based Topologies} 
