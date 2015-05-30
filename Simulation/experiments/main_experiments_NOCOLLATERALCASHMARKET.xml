@@ -1,0 +1,248 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<experiments>
+    <experiment>
+        <agentCount>100</agentCount>
+        <assetLoanMarket>true</assetLoanMarket>
+        <bondsPledgeability>true</bondsPledgeability>
+        <collateralCashMarket>false</collateralCashMarket>
+        <importanceSampling>false</importanceSampling>
+        <loanCashMarket>true</loanCashMarket>
+        <loanType>LOAN_05</loanType>
+        <maxTx>1000</maxTx>
+        <name>Fully-Connected</name>
+        <replications>50</replications>
+        <terminationMode>FAIL_SUCCESSIVE_TX</terminationMode>
+        <topology class="frontend.networkCreators.FullyConnectedCreator"/>
+    </experiment>
+    <experiment>
+        <agentCount>100</agentCount>
+        <assetLoanMarket>true</assetLoanMarket>
+        <bondsPledgeability>true</bondsPledgeability>
+        <collateralCashMarket>false</collateralCashMarket>
+        <importanceSampling>false</importanceSampling>
+        <loanCashMarket>true</loanCashMarket>
+        <loanType>LOAN_05</loanType>
+        <maxTx>1000</maxTx>
+        <name>Ascending-Connected</name>
+        <replications>50</replications>
+        <terminationMode>FAIL_SUCCESSIVE_TX</terminationMode>
+        <topology class="frontend.networkCreators.AscendingConnectedCreator"/>
+    </experiment>
+    <experiment>
+        <agentCount>100</agentCount>
+        <assetLoanMarket>true</assetLoanMarket>
+        <bondsPledgeability>true</bondsPledgeability>
+        <collateralCashMarket>false</collateralCashMarket>
+        <importanceSampling>true</importanceSampling>
+        <loanCashMarket>true</loanCashMarket>
+        <loanType>LOAN_05</loanType>
+        <maxTx>1000</maxTx>
+        <name>Ascending-Connected IS</name>
+        <replications>50</replications>
+        <terminationMode>FAIL_SUCCESSIVE_TX</terminationMode>
+        <topology class="frontend.networkCreators.AscendingConnectedCreator"/>
+    </experiment>
+    <experiment>
+        <agentCount>100</agentCount>
+        <assetLoanMarket>true</assetLoanMarket>
+        <bondsPledgeability>true</bondsPledgeability>
+        <collateralCashMarket>false</collateralCashMarket>
+        <importanceSampling>false</importanceSampling>
+        <loanCashMarket>true</loanCashMarket>
+        <loanType>LOAN_05</loanType>
+        <maxTx>1000</maxTx>
+        <name>AC Full Shortcuts 5</name>
+        <replications>50</replications>
+        <terminationMode>FAIL_SUCCESSIVE_TX</terminationMode>
+        <topology class="frontend.networkCreators.AscendingFullShortcutsCreator">
+            <params>
+                <entry>
+                    <key>n</key>
+                    <value>5</value>
+                </entry>
+            </params>
+        </topology>
+    </experiment>
+    <experiment>
+        <agentCount>100</agentCount>
+        <assetLoanMarket>true</assetLoanMarket>
+        <bondsPledgeability>true</bondsPledgeability>
+        <collateralCashMarket>false</collateralCashMarket>
+        <importanceSampling>false</importanceSampling>
+        <loanCashMarket>true</loanCashMarket>
+        <loanType>LOAN_05</loanType>
+        <maxTx>1000</maxTx>
+        <name>AC Full Shortcuts 15</name>
+        <replications>50</replications>
+        <terminationMode>FAIL_SUCCESSIVE_TX</terminationMode>
+        <topology class="frontend.networkCreators.AscendingFullShortcutsCreator">
+            <params>
+                <entry>
+                    <key>n</key>
+                    <value>15</value>
+                </entry>
+            </params>
+        </topology>
+    </experiment>
+    <experiment>
+        <agentCount>100</agentCount>
+        <assetLoanMarket>true</assetLoanMarket>
+        <bondsPledgeability>true</bondsPledgeability>
+        <collateralCashMarket>false</collateralCashMarket>
+        <importanceSampling>false</importanceSampling>
+        <loanCashMarket>true</loanCashMarket>
+        <loanType>LOAN_05</loanType>
+        <maxTx>1000</maxTx>
+        <name>AC Full Shortcuts 30</name>
+        <replications>50</replications>
+        <terminationMode>FAIL_SUCCESSIVE_TX</terminationMode>
+        <topology class="frontend.networkCreators.AscendingFullShortcutsCreator">
+            <params>
+                <entry>
+                    <key>n</key>
+                    <value>30</value>
+                </entry>
+            </params>
+        </topology>
+    </experiment>
+    <experiment>
+        <agentCount>100</agentCount>
+        <assetLoanMarket>true</assetLoanMarket>
+        <bondsPledgeability>true</bondsPledgeability>
+        <collateralCashMarket>false</collateralCashMarket>
+        <importanceSampling>false</importanceSampling>
+        <loanCashMarket>true</loanCashMarket>
+        <loanType>LOAN_05</loanType>
+        <maxTx>1000</maxTx>
+        <name>AC Regular Shortcuts 5</name>
+        <replications>50</replications>
+        <terminationMode>FAIL_SUCCESSIVE_TX</terminationMode>
+        <topology class="frontend.networkCreators.AscendingRegularShortcutsCreator">
+            <params>
+                <entry>
+                    <key>n</key>
+                    <value>5</value>
+                </entry>
+            </params>
+        </topology>
+    </experiment>
+    <experiment>
+        <agentCount>100</agentCount>
+        <assetLoanMarket>true</assetLoanMarket>
+        <bondsPledgeability>true</bondsPledgeability>
+        <collateralCashMarket>false</collateralCashMarket>
+        <importanceSampling>false</importanceSampling>
+        <loanCashMarket>true</loanCashMarket>
+        <loanType>LOAN_05</loanType>
+        <maxTx>1000</maxTx>
+        <name>AC Regular Shortcuts 15</name>
+        <replications>50</replications>
+        <terminationMode>FAIL_SUCCESSIVE_TX</terminationMode>
+        <topology class="frontend.networkCreators.AscendingRegularShortcutsCreator">
+            <params>
+                <entry>
+                    <key>n</key>
+                    <value>15</value>
+                </entry>
+            </params>
+        </topology>
+    </experiment>
+    <experiment>
+        <agentCount>100</agentCount>
+        <assetLoanMarket>true</assetLoanMarket>
+        <bondsPledgeability>true</bondsPledgeability>
+        <collateralCashMarket>false</collateralCashMarket>
+        <importanceSampling>false</importanceSampling>
+        <loanCashMarket>true</loanCashMarket>
+        <loanType>LOAN_05</loanType>
+        <maxTx>1000</maxTx>
+        <name>AC Regular Shortcuts 30</name>
+        <replications>50</replications>
+        <terminationMode>FAIL_SUCCESSIVE_TX</terminationMode>
+        <topology class="frontend.networkCreators.AscendingRegularShortcutsCreator">
+            <params>
+                <entry>
+                    <key>n</key>
+                    <value>30</value>
+                </entry>
+            </params>
+        </topology>
+    </experiment>
+    <experiment>
+        <agentCount>100</agentCount>
+        <assetLoanMarket>true</assetLoanMarket>
+        <bondsPledgeability>true</bondsPledgeability>
+        <collateralCashMarket>false</collateralCashMarket>
+        <importanceSampling>false</importanceSampling>
+        <loanCashMarket>true</loanCashMarket>
+        <loanType>LOAN_05</loanType>
+        <maxTx>1000</maxTx>
+        <name>Half-Fully Connected</name>
+        <replications>50</replications>
+        <terminationMode>FAIL_SUCCESSIVE_TX</terminationMode>
+        <topology class="frontend.networkCreators.HalfFullyConnectedCreator"/>
+    </experiment>
+    <experiment>
+        <agentCount>100</agentCount>
+        <assetLoanMarket>true</assetLoanMarket>
+        <bondsPledgeability>true</bondsPledgeability>
+        <collateralCashMarket>false</collateralCashMarket>
+        <importanceSampling>false</importanceSampling>
+        <loanCashMarket>true</loanCashMarket>
+        <loanType>LOAN_05</loanType>
+        <maxTx>1000</maxTx>
+        <name>3 Hubs</name>
+        <replications>50</replications>
+        <terminationMode>FAIL_SUCCESSIVE_TX</terminationMode>
+        <topology class="frontend.networkCreators.HubConnectedCreator">
+            <params>
+                <entry>
+                    <key>n</key>
+                    <value>3</value>
+                </entry>
+            </params>
+        </topology>
+    </experiment>
+    <experiment>
+        <agentCount>100</agentCount>
+        <assetLoanMarket>true</assetLoanMarket>
+        <bondsPledgeability>true</bondsPledgeability>
+        <collateralCashMarket>false</collateralCashMarket>
+        <importanceSampling>false</importanceSampling>
+        <loanCashMarket>true</loanCashMarket>
+        <loanType>LOAN_05</loanType>
+        <maxTx>1000</maxTx>
+        <name>Median Hub</name>
+        <replications>50</replications>
+        <terminationMode>FAIL_SUCCESSIVE_TX</terminationMode>
+        <topology class="frontend.networkCreators.MedianHubCreator"/>
+    </experiment>
+    <experiment>
+        <agentCount>100</agentCount>
+        <assetLoanMarket>true</assetLoanMarket>
+        <bondsPledgeability>true</bondsPledgeability>
+        <collateralCashMarket>false</collateralCashMarket>
+        <importanceSampling>false</importanceSampling>
+        <loanCashMarket>true</loanCashMarket>
+        <loanType>LOAN_05</loanType>
+        <maxTx>1000</maxTx>
+        <name>Maximum Hub</name>
+        <replications>50</replications>
+        <terminationMode>FAIL_SUCCESSIVE_TX</terminationMode>
+        <topology class="frontend.networkCreators.MaximumHubCreator"/>
+    </experiment>
+    <experiment>
+        <agentCount>100</agentCount>
+        <assetLoanMarket>true</assetLoanMarket>
+        <bondsPledgeability>true</bondsPledgeability>
+        <collateralCashMarket>false</collateralCashMarket>
+        <importanceSampling>false</importanceSampling>
+        <loanCashMarket>true</loanCashMarket>
+        <loanType>LOAN_05</loanType>
+        <maxTx>1000</maxTx>
+        <name>3 Median Hubs</name>
+        <replications>50</replications>
+        <terminationMode>FAIL_SUCCESSIVE_TX</terminationMode>
+        <topology class="frontend.networkCreators.ThreeMedianHubsCreator"/>
+    </experiment>
+</experiments>

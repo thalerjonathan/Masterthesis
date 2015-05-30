@@ -9,7 +9,7 @@ In this Chapter the results of the experiments are given. Each topology-type is 
 
 Note: Numbers in parentheses resemble the standard-deviation of the preceding number.
 
-\section{Reproducting theoretical equilibrium}
+\section{Replicating theoretical equilibrium}
 As  a point of reference and as an experimental proof for the correctness of the implementation of the simulation the results are given for reproducing the theoretical equilibrium and the equilibrium found in \cite{Breuer2015}.
 Because equilibrium differs across the number of agents and the type of bond traded to be comparable the same amount of agents and the same bond-type has to be used in the experiments which is 1000 Agents and a 0.5 Bond because \cite{Breuer2015} report their equilibrias only for a count of 1000 Agents and Bonds between 0.1 to 0.5.
 
@@ -30,14 +30,14 @@ Because equilibrium differs across the number of agents and the type of bond tra
 \begin{figure}[!htbp]
 	\centering
   \includegraphics[width=1.0\textwidth, angle=0]{FULLYCONNECTED_1000_NOCOLLATERALMARKET_SINGLE.png}
-	\caption{Thesis-Implementation of Fully-Connected topology wealth-distribution after single run}
+	\caption{Thesis-Implementation wealth-distribution of Fully-Connected topology after single run}
 	\label{fig1}
 \end{figure}
 
 \begin{figure}[!htbp]
 	\centering
   \includegraphics[width=1.0\textwidth, angle=0]{FULLYCONNECTED_1000_NOCOLLATERALMARKET_SINGLE.png}
-	\caption{Thesis-Implementation of Fully-Connected topology wealth-distribution after 50 replications}
+	\caption{Thesis-Implementation wealth-distribution of Fully-Connected topology after 50 replications}
 	\label{fig1}
 \end{figure}
 
@@ -49,7 +49,7 @@ Because equilibrium differs across the number of agents and the type of bond tra
 		Asset-Price & TODO (TODO) \\
 		Loan-Price & TODO (TODO) \\
 		i0 (Marginal Buyer) & TODO (TODO) \\
-		i1 (Marginal Seller) & 0.803 (TODO) \\
+		i1 (Marginal Seller) & TODO (TODO) \\
 		Pessimist Wealth & TODO (TODO) \\
 		Medianist Wealth & TODO (TODO) \\
 		Optimist Wealth & TODO (TODO) \\
@@ -122,17 +122,19 @@ Theoretical equilibrium for i0, i1, asset price and loan price can be calculated
 
 It is also a point-of-reference for the other experiments as this fully-connected topology gives a good point of visual information which can be applied to the other topologies to give a visual clue whether they could have actually reached the equilibrium.
 
+TODO: is a single-run really necessary? seems to be necessary only for ascending-connected 
+
 \begin{figure}[!htbp]
 	\centering
   \includegraphics[width=1.0\textwidth, angle=0]{FULLYCONNECTED_100_NOCOLLATERALMARKET_SINGLE.png}
-	\caption{Fully-Connected topology wealth-distribution after single run}
+	\caption{Fully-Connected wealth-distribution after single run}
 	\label{fig1}
 \end{figure}
 
 \begin{figure}[!htbp]
 	\centering
   \includegraphics[width=1.0\textwidth, angle=0]{FULLYCONNECTED_100_NOCOLLATERALMARKET_REPL.png}
-	\caption{Fully-Connected topology wealth-distribution after 50 replications}
+	\caption{Fully-Connected wealth-distribution after 50 replications}
 	\label{fig1}
 \end{figure}
 
@@ -164,6 +166,41 @@ It is also a point-of-reference for the other experiments as this fully-connecte
 	\end{tabular}
 \end{table}
 
+\subsection{Half-Fully Connected}
+\begin{figure}[!htbp]
+	\centering
+  \includegraphics[width=1.0\textwidth, angle=0]{HALFFULLYCONNECTED_100_NOCOLLATERALMARKET_REPL.png}
+	\caption{Half-Fully connected wealth-distribution after 50 replications}
+	\label{fig1}
+\end{figure}
+
+\begin{table}[!htbp]
+	\caption{Half-Fully connected equilibrium for 100 Agents}
+	\centering
+	\begin{tabular} { l c r }
+		\hline
+		Asset-Price & 0.651 (0.027) \\
+		Loan-Price & 0.362 (0.013) \\
+		i0 (Marginal Buyer) & 0.640 (0.015) \\
+		i1 (Marginal Seller) & 0.833 (0.09) \\
+		Pessimist Wealth & 1.22 (0.096) \\
+		Medianist Wealth & 2.258 (0.409) \\
+		Optimist Wealth & 4.526 (0.071) \\
+		\hline
+	\end{tabular}
+\end{table} 
+
+\begin{table}[!htbp]
+	\caption{Ascending-Connected 30 regular short-cuts performance of 100 Agents}
+	\centering
+	\begin{tabular} { l c r }
+		\hline
+		Successful TX & 14,218.9 (4621.74) \\
+		Total TX & 15,253.02 (4633.44) \\
+		Failed TX & 1034.12 (22.99) \\
+		\hline
+	\end{tabular}
+\end{table}
 
 \section{Ascending-Connected Topologies} 
 
@@ -171,14 +208,14 @@ It is also a point-of-reference for the other experiments as this fully-connecte
 \begin{figure}[!htbp]
 	\centering
   \includegraphics[width=1.0\textwidth, angle=0]{ASCENDINGCONNECTED_100_NOCOLLATERALMARKET_SINGLE.png}
-	\caption{Ascending-Connected topology wealth-distribution after single run}
+	\caption{Ascending-Connected wealth-distribution after single run}
 	\label{fig1}
 \end{figure}
 
 \begin{figure}[!htbp]
 	\centering
   \includegraphics[width=1.0\textwidth, angle=0]{ASCENDINGCONNECTED_100_NOCOLLATERALMARKET_REPL.png}
-	\caption{Ascending-Connected topology wealth-distribution after 50 replications}
+	\caption{Ascending-Connected wealth-distribution after 50 replications}
 	\label{fig1}
 \end{figure}
 
@@ -216,14 +253,14 @@ TODO: move to interpretation: As can be clearly seen the equilibrium is fundamen
 \begin{figure}[!htbp]
 	\centering
   \includegraphics[width=1.0\textwidth, angle=0]{ASCENDINGCONNECTED_IS_100_NOCOLLATERALMARKET_SINGLE.png}
-	\caption{Ascending-Connected Importance Sampling topology wealth-distribution after single run}
+	\caption{Ascending-Connected Importance Sampling wealth-distribution after single run}
 	\label{fig1}
 \end{figure}
 
 \begin{figure}[!htbp]
 	\centering
   \includegraphics[width=1.0\textwidth, angle=0]{ASCENDINGCONNECTED_IS_100_NOCOLLATERALMARKET_REPL.png}
-	\caption{Ascending-Connected Importance Sampling topology wealth-distribution after 50 replications}
+	\caption{Ascending-Connected Importance Sampling wealth-distribution after 50 replications}
 	\label{fig1}
 \end{figure}
 
@@ -263,7 +300,7 @@ TODO: move to interpretation: As can be clearly seen the equilibrium is fundamen
 \begin{figure}[!htbp]
 	\centering
   \includegraphics[width=1.0\textwidth, angle=0]{ASCENDINGCONNECTED_5FullSC_100_NOCOLLATERALMARKET_REPL.png}
-	\caption{Ascending-Connected 5 full short-cuts topology wealth-distribution after 50 replications}
+	\caption{Ascending-Connected 5 full short-cuts wealth-distribution after 50 replications}
 	\label{fig1}
 \end{figure}
 
@@ -295,13 +332,13 @@ TODO: move to interpretation: As can be clearly seen the equilibrium is fundamen
 	\end{tabular}
 \end{table}
 
-TODO: move to interpretation: As can be clearly seen 5 full shortcuts seem to be already enough to solve the inefficencies seen in Ascending-Connected with/without Importance Sampling.
+TODO: move to interpretation: As can be clearly seen 5 full shortcuts seem to be already enough to solve the inefficiencies seen in Ascending-Connected with/without Importance Sampling.
 
 \subsection{Ascending-Connected 15 full Short-cuts }
 \begin{figure}[!htbp]
 	\centering
   \includegraphics[width=1.0\textwidth, angle=0]{ASCENDINGCONNECTED_15FullSC_100_NOCOLLATERALMARKET_REPL.png}
-	\caption{Ascending-Connected 15 full short-cuts topology wealth-distribution after 50 replications}
+	\caption{Ascending-Connected 15 full short-cuts wealth-distribution after 50 replications}
 	\label{fig1}
 \end{figure}
 
@@ -337,7 +374,7 @@ TODO: move to interpretation: As can be clearly seen 5 full shortcuts seem to be
 \begin{figure}[!htbp]
 	\centering
   \includegraphics[width=1.0\textwidth, angle=0]{ASCENDINGCONNECTED_30FullSC_100_NOCOLLATERALMARKET_REPL.png}
-	\caption{Ascending-Connected 30 full short-cuts topology wealth-distribution after 50 replications}
+	\caption{Ascending-Connected 30 full short-cuts wealth-distribution after 50 replications}
 	\label{fig1}
 \end{figure}
 
@@ -374,7 +411,7 @@ TODO: move to interpretation: As can be clearly seen 5 full shortcuts seem to be
 \begin{figure}[!htbp]
 	\centering
   \includegraphics[width=1.0\textwidth, angle=0]{ASCENDINGCONNECTED_5RegSC_100_NOCOLLATERALMARKET_REPL.png}
-	\caption{Ascending-Connected 5 regular short-cuts topology wealth-distribution after 50 replications}
+	\caption{Ascending-Connected 5 regular short-cuts wealth-distribution after 50 replications}
 	\label{fig1}
 \end{figure}
 
@@ -410,7 +447,7 @@ TODO: move to interpretation: As can be clearly seen 5 full shortcuts seem to be
 \begin{figure}[!htbp]
 	\centering
   \includegraphics[width=1.0\textwidth, angle=0]{ASCENDINGCONNECTED_15RegSC_100_NOCOLLATERALMARKET_REPL.png}
-	\caption{Ascending-Connected 15 regular short-cuts topology wealth-distribution after 50 replications}
+	\caption{Ascending-Connected 15 regular short-cuts wealth-distribution after 50 replications}
 	\label{fig1}
 \end{figure}
 
@@ -446,7 +483,7 @@ TODO: move to interpretation: As can be clearly seen 5 full shortcuts seem to be
 \begin{figure}[!htbp]
 	\centering
   \includegraphics[width=1.0\textwidth, angle=0]{ASCENDINGCONNECTED_30RegSC_100_NOCOLLATERALMARKET_REPL.png}
-	\caption{Ascending-Connected 30 regular short-cuts topology wealth-distribution after 50 replications}
+	\caption{Ascending-Connected 30 regular short-cuts wealth-distribution after 50 replications}
 	\label{fig1}
 \end{figure}
 
@@ -483,14 +520,39 @@ TODO: move to interpretation: As can be clearly seen 5 full shortcuts seem to be
 
 
 \section{Deterministic Hub-Based Topologies} 
+The Hub-Based Topologies fail to come even close to equilibrium due to reasons given in Chapter "Topologies and Hypothesis". This can be seen also very clearly in the visual results and thus no performance- and equilibrium-tables are listed as they would not make any sense.
 
-\subsection{Half-Fully Connected}
 \subsection{3-Hubs}
+\begin{figure}[!htbp]
+	\centering
+  \includegraphics[width=1.0\textwidth, angle=0]{3HUBS_100_NOCOLLATERALMARKET_REPL.png}
+	\caption{3-Hubs topology wealth-distribution after 50 replications}
+	\label{fig1}
+\end{figure}
+
 \subsection{1-Median Hub}
-\subsection{3-Median Hub}
+\begin{figure}[!htbp]
+	\centering
+  \includegraphics[width=1.0\textwidth, angle=0]{1MEDIANHUB_100_NOCOLLATERALMARKET_REPL.png}
+	\caption{1 Median-Hub wealth-distribution after 50 replications}
+	\label{fig1}
+\end{figure}
+
+\subsection{3-Median Hubs}
+\begin{figure}[!htbp]
+	\centering
+  \includegraphics[width=1.0\textwidth, angle=0]{3MEDIANHUBS_100_NOCOLLATERALMARKET_REPL.png}
+	\caption{3 Median-Hubs wealth-distribution after 50 replications}
+	\label{fig1}
+\end{figure}
+
 \subsection{Maximum Hub}
-
-
+\begin{figure}[!htbp]
+	\centering
+  \includegraphics[width=1.0\textwidth, angle=0]{MAXIMUMHUB_100_NOCOLLATERALMARKET_REPL.png}
+	\caption{Maximum-Hub wealth-distribution after 50 replications}
+	\label{fig1}
+\end{figure}
 
 \section{Random-, Scale-Free and Small-World Topologies}
 \subsection{Ascending-Connected random Short-cuts}

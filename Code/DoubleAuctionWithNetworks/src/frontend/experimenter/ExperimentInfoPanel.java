@@ -33,7 +33,7 @@ public class ExperimentInfoPanel extends JPanel {
 	
 	public ExperimentInfoPanel( ExperimentBean bean, boolean isResult ) {
 		this.setLayout( new GridBagLayout() );
-		this.setPreferredSize( new Dimension( 1024, 100 ) );
+		this.setPreferredSize( new Dimension( 1224, 100 ) );
 		
 		this.createControls( bean, isResult );
 	}
