@@ -103,7 +103,7 @@ public class AgentNetwork {
 			// 3. selected neighbour MUST BE neighbourless
 			
 			// need to prevent endless-loop through counter. if used up: no neighbour
-			int maxRetries = 10;
+			int maxRetries = 50;
 			
 			while ( maxRetries > 0 ) {
 				double r = Math.random();
