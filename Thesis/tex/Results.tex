@@ -118,8 +118,6 @@ Theoretical equilibrium for i0, i1, asset price and loan price can be calculated
 
 
 \section{Fully-Connected Topology}
-
-
 It is also a point-of-reference for the other experiments as this fully-connected topology gives a good point of visual information which can be applied to the other topologies to give a visual clue whether they could have actually reached the equilibrium.
 
 TODO: is a single-run really necessary? seems to be necessary only for ascending-connected 
@@ -526,7 +524,7 @@ The Hub-Based Topologies fail to come even close to equilibrium due to reasons g
 \begin{figure}[!htbp]
 	\centering
   \includegraphics[width=1.0\textwidth, angle=0]{3HUBS_100_NOCOLLATERALMARKET_REPL.png}
-	\caption{3-Hubs topology wealth-distribution after 50 replications}
+	\caption{3-Hubs wealth-distribution after 50 replications}
 	\label{fig1}
 \end{figure}
 
@@ -555,9 +553,60 @@ The Hub-Based Topologies fail to come even close to equilibrium due to reasons g
 \end{figure}
 
 \section{Random-, Scale-Free and Small-World Topologies}
-\subsection{Ascending-Connected random Short-cuts}
+This topologies fail to come even close to equilibrium too due to reasons given in Chapter "Topologies and Hypothesis". This can be seen also very clearly in the visual results and thus no performance- and equilibrium-tables are listed as they would not make any sense.
+
+\subsection{Ascending-Connected random short-cuts}
+TODO: BUG IN IMPLEMENTATION: NEED TO RE-RUN!
+
+
 \subsection{Erdos-Renyi}
+\begin{figure}[!htbp]
+	\centering
+  \includegraphics[width=1.0\textwidth, angle=0]{ERDOSRENYI_02_100_NOCOLLATERALMARKET_REPL.png}
+	\caption{Erdos-Renyi 0.2 wealth-distribution after 50 replications}
+	\label{fig1}
+\end{figure}
+
+TODO: need to show network too because random
+
+\begin{figure}[!htbp]
+	\centering
+  \includegraphics[width=1.0\textwidth, angle=0]{ERDOSRENYI_01_100_NOCOLLATERALMARKET_REPL.png}
+	\caption{Erdos-Renyi 0.1 wealth-distribution after 50 replications}
+	\label{fig1}
+\end{figure}
+
+TODO: need to show network too because random
+
+\begin{figure}[!htbp]
+	\centering
+  \includegraphics[width=1.0\textwidth, angle=0]{ERDOSRENYI_005_100_NOCOLLATERALMARKET_REPL.png}
+	\caption{Erdos-Renyi 0.05 wealth-distribution after 50 replications}
+	\label{fig1}
+\end{figure}
+
+TODO: need to show network too because random
+
 \subsection{Barbasi-Albert}
+\begin{figure}[!htbp]
+	\centering
+  \includegraphics[width=1.0\textwidth, angle=0]{BARBASIALBERT_m03_m1_100_NOCOLLATERALMARKET_REPL.png}
+	\caption{Barbasi-Albert m0=3, m=1 wealth-distribution after 50 replications}
+	\label{fig1}
+\end{figure}
+
+TODO: need to show network too because random
+
+TODO: a barbasi-albert with m0=6 and m=3
+
 \subsection{Watts-Strogatz}
+\begin{figure}[!htbp]
+	\centering
+  \includegraphics[width=1.0\textwidth, angle=0]{WATTSSTROGATZ_k2_b02_100_NOCOLLATERALMARKET_REPL.png}
+	\caption{Watts-Strogatz k=2, b=0.2 wealth-distribution after 50 replications}
+	\label{fig1}
+\end{figure}
+
+TODO: need to show network too because random
 
 \end{document}
