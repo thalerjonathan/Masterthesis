@@ -97,31 +97,31 @@ public class AgentNetwork {
 			
 			network.graph.addEdge( new AgentConnection(), from, to );
 			
-			// search a random neighbor which:
-			// 1. is different from SELF
-			// 2. no double-edges between the two selected agents
-			// 3. selected neighbour MUST BE neighbourless
-			
-			// need to prevent endless-loop through counter. if used up: no neighbour
-			int maxRetries = 50;
-			
-			while ( maxRetries > 0 ) {
-				double r = Math.random();
-				// the lower p, the more unlikely it should be
-				if ( p >= r ) {
-					int randomForwardIndex = (int) ( r * network.orderedAgents.size() );
+			// search random-neighbor with probability p
+			double r = Math.random();
+			// the lower p, the more unlikely it should be
+			if ( p >= r ) {
+				// random neighbor must satisfy:
+				// 1. is different from SELF
+				// 2. no double-edges between the self and neighbour
+				
+				// need to prevent endless-loop through counter. if used up: no neighbour
+				int maxRetries = 50;
+				
+				while ( maxRetries > 0 ) {
+					int randomForwardIndex = (int) ( Math.random() * network.orderedAgents.size() );
 					to = network.orderedAgents.get( randomForwardIndex );
 					
-					// ommit self-loops AND double-edges AND need to prevent multi-edges
-					if ( to == from || network.graph.isNeighbor( from, to ) || network.graph.getNeighborCount( to ) > 0 ) {
+					// ommit self-loops AND double-edges
+					if ( to == from || network.graph.isNeighbor( from, to ) ) {
 						maxRetries--;
 						continue;
 					}
 					
 					network.graph.addEdge( new AgentConnection(), from, to );
+					
+					break;
 				}
-				
-				break;
 			}
 		}
 		
