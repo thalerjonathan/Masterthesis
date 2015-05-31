@@ -8,8 +8,8 @@ import backend.agents.network.AgentNetwork;
 import backend.markets.Markets;
 
 public class WattStrogatzCreator extends NetworkCreator {
-	private int k = 2;
-	private double b = 0.2;
+	private int k = 4;
+	private double b = 0.5;
 	
 	public AgentNetwork createNetwork( IAgentFactory agentFactory ) {
 		return AgentNetwork.createWattsStrogatzConnected( this.k, this.b, agentFactory);

@@ -92,7 +92,7 @@ public class NetworkVisualisationFrame extends JFrame {
 		controlsPanel.add( this.keepSuccTXHighCheck, BorderLayout.NORTH );
 
 		this.getContentPane().add( controlsPanel, BorderLayout.NORTH );
-		
+
 		this.setDefaultCloseOperation( JFrame.HIDE_ON_CLOSE );
 		this.pack();
 		this.setVisible( true );
