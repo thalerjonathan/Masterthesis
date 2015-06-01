@@ -42,11 +42,9 @@ Because equilibrium differs across the number of agents and the type of loan tra
 	\end{tabular}
 \end{table}
 
-TODO: add replication-image, not single-image!
-
 \begin{figure}[H]
 	\centering
-  \includegraphics[width=1.0\textwidth, angle=0]{FULLYCONNECTED_1000_NOCOLLATERALMARKET_SINGLE.png}
+  \includegraphics[width=1.0\textwidth, angle=0]{FULLYCONNECTED_1000_NOCOLLATERALMARKET_REPL.png}
 	\caption{Wealth-Distribution of thesis-implementation of Fully-Connected topology}
 	\label{fig1}
 \end{figure}
@@ -56,13 +54,13 @@ TODO: add replication-image, not single-image!
 	\caption{Equilibrium of thesis-implementation}
 	\begin{tabular} { l c r }
 		\hline
-		Asset-Price & TODO (TODO) \\
-		Loan-Price & TODO (TODO) \\
-		i0 (Marginal Buyer) & TODO (TODO) \\
-		i1 (Marginal Seller) & TODO (TODO) \\
-		Pessimist Wealth & TODO (TODO) \\
-		Medianist Wealth & TODO (TODO) \\
-		Optimist Wealth & TODO (TODO) \\
+		Asset-Price p & 0.700 (0.005) \\
+		Loan-Price q & 0.389 (0.002) \\
+		Marginal Buyer i0 & 0.616 (0.004) \\
+		Marginal Buyer i1 & 0.805 (0.001) \\
+		Pessimist Wealth & 1.582 (0.01) \\
+		Medianist Wealth & 4.578 (0.031) \\
+		Optimist Wealth & 5.105 (0.025) \\
 		\hline
 	\end{tabular}
 \end{table}
@@ -72,16 +70,15 @@ TODO: add replication-image, not single-image!
 	\caption{Performance of thesis-implementation with 1000 Agents and 0.5 loan}
 	\begin{tabular} { l c r }
 		\hline
-		Successful TX & TODO (TODO) \\
-		Total TX & TODO (TODO) \\
-		Failed TX & TODO (TODO) \\
+		Successful TX & 19,300.04 (101.68) \\
+		Total TX & 29,606.82 (2938.82) \\
+		Failed TX & 10,306.78 (2914.11) \\
 		\hline
 	\end{tabular}
 \end{table}
 
-
-// TODO: difference to breuer 
-// TODO: difference to theoretical equilibrium
+TODO: difference to breuer 
+TODO: difference to theoretical equilibrium
 
 \section{Experiments configuration}
 In the following experiments 100 Agents were used, all markets (Asset/Cash, Loan/Cash, Asset/Loan) were enabled, as loan-type 0.5 was selected and the number of replications run was 50. A replication was terminated after 1000 failed transactions in a row. Note that if trading is not possible any more before  1000 failed transactions have been reached in a row, the simulation is halted and thus it is possible that it terminates earlier as can be seen for the Ascending-Connected Importance Sampling topology.
@@ -297,8 +294,76 @@ TODO: move to interpretation: As can be clearly seen the equilibrium is fundamen
 \subsection{Ascending-Connected with short-cuts}
 
 \subsection{Random short-cuts}
-TODO: BUG IN IMPLEMENTATION: NEED TO RE-RUN!
+\begin{figure}[H]
+	\centering
+  \includegraphics[width=1.0\textwidth, angle=0]{ASCENDINGCONNECTED_RANDSHORTCUTS_100_NOCOLLATERALMARKET_REPL.png}
+	\caption{Wealth-Distribution of Ascending-Connected random short-cuts topology}
+	\label{fig1}
+\end{figure}
 
+\begin{table}[h]
+	\caption{Equilibrium of Ascending-Connected random short-cuts topology}
+	\centering
+	\begin{tabular} { l c r }
+		\hline
+		Asset-Price & 0.731 (0.019) \\
+		Loan-Price & 0.393 (0.009) \\
+		i0 (Marginal Buyer) & 0.649 (0.005) \\
+		i1 (Marginal Seller) & 0.804 (0.004) \\
+		Pessimist Wealth & 1.441 (0.03) \\
+		Medianist Wealth & 4.282 (0.278) \\
+		Optimist Wealth & 4.974 (0.038) \\
+		\hline
+	\end{tabular}
+\end{table} 
+
+\begin{table}[h]
+	\caption{Performance of Ascending-Connected random short-cuts topology}
+	\centering
+	\begin{tabular} { l c r }
+		\hline
+		Successful TX & 8314.78 (229.85) \\
+		Total TX & 9496.84 (228.23) \\
+		Failed TX & 1182.06 (29.23) \\
+		\hline
+	\end{tabular}
+\end{table}
+
+\subsubsection{2 short-cuts}
+\begin{figure}[H]
+	\centering
+  \includegraphics[width=1.0\textwidth, angle=0]{ASCENDINGCONNECTED_2SC_100_NOCOLLATERALMARKET_REPL.png}
+	\caption{Wealth-Distribution of Ascending-Connected 2 short-cuts topology}
+	\label{fig1}
+\end{figure}
+
+\begin{table}[h]
+	\caption{Equilibrium of Ascending-Connected 2 short-cuts topology}
+	\centering
+	\begin{tabular} { l c r }
+		\hline
+		Asset-Price & 0.662 (0.024) \\
+		Loan-Price & 0.376 (0.006) \\
+		i0 (Marginal Buyer) & 0.608 (0.018) \\
+		i1 (Marginal Seller) & 0.805 (0.028) \\
+		Pessimist Wealth & 1.441 (0.21) \\
+		Medianist Wealth & 3.978 (1.442) \\
+		Optimist Wealth & 4.514 (0.063) \\
+		\hline
+	\end{tabular}
+\end{table} 
+
+\begin{table}[h]
+	\caption{Performance of Ascending-Connected random short-cuts topology}
+	\centering
+	\begin{tabular} { l c r }
+		\hline
+		Successful TX & 37,093.64 (12,864.4) \\
+		Total TX & 38,115.54 (12,851.53) \\
+		Failed TX & 1021. (18.85) \\
+		\hline
+	\end{tabular}
+\end{table}
 
 \subsubsection{5 full short-cuts}
 \begin{figure}[H]
@@ -519,10 +584,6 @@ TODO: move to interpretation: As can be clearly seen 5 full shortcuts seem to be
 	\end{tabular}
 \end{table}
 
-// TODO: Ascending-Connected 2 Short-Cuts
-// TODO: Ascending-Connected 10 Full/regular Short-Cuts
-
-
 \section{Hub-Based topologies} 
 The Hub-Based Topologies fail to come even close to equilibrium due to reasons given in Chapter "Topologies and Hypothesis". This can be seen also very clearly in the visual results and thus no performance- and equilibrium-tables are listed as they would not make any sense.
 
@@ -569,7 +630,7 @@ This topologies fail to come even close to equilibrium too due to reasons given 
 	\label{fig1}
 \end{figure}
 
-TODO: need to show network too because random
+need to show network too because random ?
 
 \begin{figure}[H]
 	\centering
@@ -578,7 +639,7 @@ TODO: need to show network too because random
 	\label{fig1}
 \end{figure}
 
-TODO: need to show network too because random
+need to show network too because random ?
 
 \begin{figure}[H]
 	\centering
@@ -587,7 +648,7 @@ TODO: need to show network too because random
 	\label{fig1}
 \end{figure}
 
-TODO: need to show network too because random
+need to show network too because random ?
 
 \subsection{Barbasi-Albert}
 \begin{figure}[H]
@@ -597,9 +658,16 @@ TODO: need to show network too because random
 	\label{fig1}
 \end{figure}
 
-TODO: need to show network too because random
+need to show network too because random ?
 
-TODO: a barbasi-albert with m0=6 and m=3
+\begin{figure}[H]
+	\centering
+  \includegraphics[width=1.0\textwidth, angle=0]{BARBASIALBERT_m09_m3_100_NOCOLLATERALMARKET_REPL.png}
+	\caption{Wealth-Distribution of Barbasi-Albert m0=9, m=3 topology}
+	\label{fig1}
+\end{figure}
+
+need to show network too because random ?
 
 \subsection{Watts-Strogatz}
 \begin{figure}[H]
@@ -609,6 +677,6 @@ TODO: a barbasi-albert with m0=6 and m=3
 	\label{fig1}
 \end{figure}
 
-TODO: need to show network too because random
+need to show network too because random ?
 
 \end{document}
