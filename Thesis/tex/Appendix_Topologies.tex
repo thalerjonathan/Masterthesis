@@ -1,13 +1,13 @@
 \documentclass[Bachelorarbeit.tex]{subfiles}
-\begin{appendix}
+\begin{document}
 
 \graphicspath{{./figures/appendixTopologies/}}	%specifying the folder for the figures
 
-\section{Topologies}
+\chapter{Topologies}
 All Topologies are demonstrated with 30 Agents only for better visibility and übersicht of edges. 
 All topologies have connected-component of 1 (TODO: warum) except Erdos-Renyi can produce connected-component > 1.
 
-\subsection{Fully-Connected}
+\section{Fully-Connected}
 
 \begin{figure}[H]
 	\centering
@@ -30,7 +30,7 @@ All topologies have connected-component of 1 (TODO: warum) except Erdos-Renyi ca
 	\end{tabular}
 \end{table}
 
-\subsection{Half-Fully Connected}
+\section{Half-Fully Connected}
 \begin{figure}[H]
 	\centering
   \includegraphics[width=1.0\textwidth, angle=0]{HALFFULLY_CONNECTED_30.png}
@@ -52,7 +52,7 @@ All topologies have connected-component of 1 (TODO: warum) except Erdos-Renyi ca
 	\end{tabular}
 \end{table}
 
-\subsection{Ascending-Connected}
+\section{Ascending-Connected}
 \begin{figure}[H]
 	\centering
   \includegraphics[width=1.0\textwidth, angle=0]{ASCENDING_CONNECTED_30.png}
@@ -74,8 +74,8 @@ All topologies have connected-component of 1 (TODO: warum) except Erdos-Renyi ca
 	\end{tabular}
 \end{table}
 
-\subsection{Ascending-Connected with short-cuts}
-\subsubsection{Full short-cuts}
+\section{Ascending-Connected with short-cuts}
+\subsection{Full short-cuts}
 \begin{figure}[H]
 	\centering
   \includegraphics[width=1.0\textwidth, angle=0]{ASCENDING_CONNECTED_FULLSHORTCUTS_5_30.png}
@@ -97,7 +97,7 @@ All topologies have connected-component of 1 (TODO: warum) except Erdos-Renyi ca
 	\end{tabular}
 \end{table}
 
-\subsubsection{Regular short-cuts}
+\subsection{Regular short-cuts}
 \begin{figure}[H]
 	\centering
   \includegraphics[width=1.0\textwidth, angle=0]{ASCENDING_CONNECTED_REGULARSHORTCUTS_5_30.png}
@@ -119,7 +119,7 @@ All topologies have connected-component of 1 (TODO: warum) except Erdos-Renyi ca
 	\end{tabular}
 \end{table}
 
-\subsubsection{Random short-cuts}
+\subsection{Random short-cuts}
 \begin{figure}[H]
 	\centering
   \includegraphics[width=1.0\textwidth, angle=0]{ASCENDING_CONNECTED_RANDOMSHORTCUTS_10_30.png}
@@ -141,8 +141,8 @@ All topologies have connected-component of 1 (TODO: warum) except Erdos-Renyi ca
 	\end{tabular}
 \end{table}
 
-\subsection{Hub-based topologies}
-\subsubsection{3 Hubs}
+\section{Hub-based topologies}
+\subsection{3 Hubs}
 \begin{figure}[H]
 	\centering
   \includegraphics[width=1.0\textwidth, angle=0]{3HUBS_30.png}
@@ -164,7 +164,7 @@ All topologies have connected-component of 1 (TODO: warum) except Erdos-Renyi ca
 	\end{tabular}
 \end{table}
 
-\subsubsection{3 Median Hubs}
+\subsection{3 Median Hubs}
 \begin{figure}[H]
 	\centering
   \includegraphics[width=1.0\textwidth, angle=0]{3MEDIANHUB_30.png}
@@ -186,7 +186,7 @@ All topologies have connected-component of 1 (TODO: warum) except Erdos-Renyi ca
 	\end{tabular}
 \end{table}
 
-\subsubsection{Median Hub}
+\subsection{Median Hub}
 \begin{figure}[H]
 	\centering
   \includegraphics[width=1.0\textwidth, angle=0]{1MEDIANHUB_30.png}
@@ -208,12 +208,12 @@ All topologies have connected-component of 1 (TODO: warum) except Erdos-Renyi ca
 	\end{tabular}
 \end{table}
 
-\subsubsection{Maximum Hub}
+\subsection{Maximum Hub}
 Looks the same as 1 Median Hub but all edges are connected to the agent with the highest optimism-value.
 Has thus also the same metrics as the optimism-values have no functional influence on the metrics.
 
-\subsection{Small-World and Scale-Free topologies}
-\subsubsection{Erods-Renyi}
+\section{Small-World and Scale-Free topologies}
+\subsection{Erods-Renyi}
 
 \begin{figure}[H]
 	\centering
@@ -282,7 +282,7 @@ Has thus also the same metrics as the optimism-values have no functional influen
 	\end{tabular}
 \end{table}
 
-\subsubsection{Barbasi-Albert}
+\subsection{Barbasi-Albert}
 \begin{figure}[H]
 	\centering
   \includegraphics[width=1.0\textwidth, angle=0]{BARBASIALBERT_3_1_30.png}
@@ -325,7 +325,7 @@ Has thus also the same metrics as the optimism-values have no functional influen
 	\end{tabular}
 \end{table}
 
-\subsubsection{Watts-Strogatz}
+\subsection{Watts-Strogatz}
 
 Two params: k and p
 Creates N nodes and connects each to k neighbours and rewires each then existing edge with a probability of 0.2 to another node with lower id (younger).
@@ -373,5 +373,4 @@ Creates N nodes and connects each to k neighbours and rewires each then existing
 	\end{tabular}
 \end{table}
 
-
-\end{appendix}
+\end{document}
