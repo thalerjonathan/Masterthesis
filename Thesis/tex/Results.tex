@@ -4,7 +4,10 @@
 \graphicspath{{./figures/results/}}	%specifying the folder for the figures
 
 \chapter{Results}
-In this Chapter the results of the experiments are given. Each topology-type introduced in chapter 4 "Topologies and Hypothesis" is handled in a separate section where the hypothesis is put to test in the section regarding the Ascending-Connected topologies.
+\label{ch:results}
+
+In this Chapter the results of the experiments are given. Each topology-type introduced in appendix \ref{app:topologies} was simulated where in this chapter only fully-connected and Ascending-Connected topologies are handled as the Ascending-Connected topology - both without and with importance sampling - is the most minimal network which satisfies the requirements for the hypothesis. 
+The results for the other topologies can be found in appendix \ref{app:results}.
 
 Note: The numbers in tables resemble always a median-value with the standard-deviation given in parentheses.
 
@@ -46,7 +49,7 @@ Because equilibrium differs across the number of agents and the type of loan tra
 	\centering
   \includegraphics[width=1.0\textwidth, angle=0]{FULLYCONNECTED_1000_NOCOLLATERALMARKET_REPL.png}
 	\caption{Wealth-Distribution of thesis-implementation of Fully-Connected topology}
-	\label{fig1}
+	\label{fig:wealth_FULLYCONNECTED_1000_NOCOLLATERALMARKET_REPL}
 \end{figure}
 
 \begin{table}[h]
@@ -130,7 +133,7 @@ This topology serves as the major point-of-reference for the other experiments a
 	\centering
   \includegraphics[width=1.0\textwidth, angle=0]{FULLYCONNECTED_100_NOCOLLATERALMARKET_REPL.png}
 	\caption{Wealth-Distribution of Fully-Connected topology}
-	\label{fig1}
+	\label{fig:wealth_FULLYCONNECTED_100_NOCOLLATERALMARKET_REPL}
 \end{figure}
 
 \begin{table}[h]
@@ -161,57 +164,14 @@ This topology serves as the major point-of-reference for the other experiments a
 	\end{tabular}
 \end{table}
 
-\subsection{Half-Fully Connected}
-\begin{figure}[H]
-	\centering
-  \includegraphics[width=1.0\textwidth, angle=0]{HALFFULLYCONNECTED_100_NOCOLLATERALMARKET_REPL.png}
-	\caption{Wealth-Distribution of Half-Fully Connected topology }
-	\label{fig1}
-\end{figure}
 
-\begin{table}[H]
-	\caption{Equilibrium of Half-Fully Connected topology}
-	\centering
-	\begin{tabular} { l c r }
-		\hline
-		Asset-Price & 0.651 (0.027) \\
-		Loan-Price & 0.362 (0.013) \\
-		i0 (Marginal Buyer) & 0.640 (0.015) \\
-		i1 (Marginal Seller) & 0.833 (0.09) \\
-		Pessimist Wealth & 1.22 (0.096) \\
-		Medianist Wealth & 2.258 (0.409) \\
-		Optimist Wealth & 4.526 (0.071) \\
-		\hline
-	\end{tabular}
-\end{table} 
+\section{Ascending-Connected Topology} 
 
-\begin{table}[H]
-	\caption{Performance of Half-Fully Connected topology}
-	\centering
-	\begin{tabular} { l c r }
-		\hline
-		Successful TX & 14,218.9 (4621.74) \\
-		Total TX & 15,253.02 (4633.44) \\
-		Failed TX & 1034.12 (22.99) \\
-		\hline
-	\end{tabular}
-\end{table}
-
-\section{Ascending-Connected Topologies} 
-
-\subsection{Ascending-Connected}
 \begin{figure}[H]
 	\centering
   \includegraphics[width=1.0\textwidth, angle=0]{ASCENDINGCONNECTED_100_NOCOLLATERALMARKET_REPL.png}
 	\caption{Wealth-Distribution of Ascending-Connected topology}
-	\label{fig1}
-\end{figure}
-
-\begin{figure}[H]
-	\centering
-  \includegraphics[width=1.0\textwidth, angle=0]{ASCENDINGCONNECTED_100_NOCOLLATERALMARKET_SINGLE.png}
-	\caption{Wealth-Distribution of Ascending-Connected topology after single run}
-	\label{fig1}
+	\label{fig:wealth_ASCENDINGCONNECTED_100_NOCOLLATERALMARKET_REPL}
 \end{figure}
 
 \begin{table}[h]
@@ -249,14 +209,7 @@ TODO: move to interpretation: As can be clearly seen the equilibrium is fundamen
 	\centering
   \includegraphics[width=1.0\textwidth, angle=0]{ASCENDINGCONNECTED_IS_100_NOCOLLATERALMARKET_REPL.png}
 	\caption{Wealth-Distribution of Ascending-Connected Importance Sampling topology}
-	\label{fig1}
-\end{figure}
-
-\begin{figure}[H]
-	\centering
-  \includegraphics[width=1.0\textwidth, angle=0]{ASCENDINGCONNECTED_IS_100_NOCOLLATERALMARKET_SINGLE.png}
-	\caption{Wealth-Distribution of Ascending-Connected Importance Sampling topology after single run}
-	\label{fig1}
+	\label{fig:wealth_ASCENDINGCONNECTED_IS_100_NOCOLLATERALMARKET_REPL}
 \end{figure}
 
 \begin{table}[h]
@@ -290,298 +243,5 @@ TODO: move to interpretation: As can be clearly seen the equilibrium is fundamen
 Note that in this case the matching-probabilities are such that upon the first failed transaction the equilibrium has reached as no agent can trade with each other anymore which results in just on single failed transaction.
 
 TODO: move to interpretation: As can be clearly seen the equilibrium is fundamentally different than the fully-connected one and thus the hypothesis is not satisfied.
-
-\subsection{Ascending-Connected with short-cuts}
-
-\subsection{Random short-cuts}
-\begin{figure}[H]
-	\centering
-  \includegraphics[width=1.0\textwidth, angle=0]{ASCENDINGCONNECTED_RANDSHORTCUTS_100_NOCOLLATERALMARKET_REPL.png}
-	\caption{Wealth-Distribution of Ascending-Connected random short-cuts topology}
-	\label{fig1}
-\end{figure}
-
-\begin{table}[h]
-	\caption{Equilibrium of Ascending-Connected random short-cuts topology}
-	\centering
-	\begin{tabular} { l c r }
-		\hline
-		Asset-Price & 0.731 (0.019) \\
-		Loan-Price & 0.393 (0.009) \\
-		i0 (Marginal Buyer) & 0.649 (0.005) \\
-		i1 (Marginal Seller) & 0.804 (0.004) \\
-		Pessimist Wealth & 1.441 (0.03) \\
-		Medianist Wealth & 4.282 (0.278) \\
-		Optimist Wealth & 4.974 (0.038) \\
-		\hline
-	\end{tabular}
-\end{table} 
-
-\begin{table}[h]
-	\caption{Performance of Ascending-Connected random short-cuts topology}
-	\centering
-	\begin{tabular} { l c r }
-		\hline
-		Successful TX & 8314.78 (229.85) \\
-		Total TX & 9496.84 (228.23) \\
-		Failed TX & 1182.06 (29.23) \\
-		\hline
-	\end{tabular}
-\end{table}
-
-\subsubsection{2 short-cuts}
-\begin{figure}[H]
-	\centering
-  \includegraphics[width=1.0\textwidth, angle=0]{ASCENDINGCONNECTED_2SC_100_NOCOLLATERALMARKET_REPL.png}
-	\caption{Wealth-Distribution of Ascending-Connected 2 short-cuts topology}
-	\label{fig1}
-\end{figure}
-
-\begin{table}[h]
-	\caption{Equilibrium of Ascending-Connected 2 short-cuts topology}
-	\centering
-	\begin{tabular} { l c r }
-		\hline
-		Asset-Price & 0.662 (0.024) \\
-		Loan-Price & 0.376 (0.006) \\
-		i0 (Marginal Buyer) & 0.608 (0.018) \\
-		i1 (Marginal Seller) & 0.805 (0.028) \\
-		Pessimist Wealth & 1.441 (0.21) \\
-		Medianist Wealth & 3.978 (1.442) \\
-		Optimist Wealth & 4.514 (0.063) \\
-		\hline
-	\end{tabular}
-\end{table} 
-
-\begin{table}[h]
-	\caption{Performance of Ascending-Connected random short-cuts topology}
-	\centering
-	\begin{tabular} { l c r }
-		\hline
-		Successful TX & 37,093.64 (12,864.4) \\
-		Total TX & 38,115.54 (12,851.53) \\
-		Failed TX & 1021. (18.85) \\
-		\hline
-	\end{tabular}
-\end{table}
-
-\subsubsection{5 full short-cuts}
-\begin{figure}[H]
-	\centering
-  \includegraphics[width=1.0\textwidth, angle=0]{ASCENDINGCONNECTED_5FullSC_100_NOCOLLATERALMARKET_REPL.png}
-	\caption{Wealth-Distribution of Ascending-Connected 5 full short-cuts topology}
-	\label{fig1}
-\end{figure}
-
-\begin{table}[h]
-	\caption{Equilibrium of Ascending-Connected 5 full short-cuts}
-	\centering
-	\begin{tabular} { l c r }
-		\hline
-		Asset-Price & 0.656 (0.019) \\
-		Loan-Price & 0.371 (0.003) \\
-		i0 (Marginal Buyer) & 0.594 (0.0) \\
-		i1 (Marginal Seller) & 0.792 (0.0) \\
-		Pessimist Wealth & 1.649 (0.002) \\
-		Medianist Wealth & 5.013 (0.018) \\
-		Optimist Wealth & 4.746 (0.011) \\
-		\hline
-	\end{tabular}
-\end{table} 
-
-\begin{table}[h]
-	\caption{Performance of Ascending-Connected 5 full short-cuts topology}
-	\centering
-	\begin{tabular} { l c r }
-		\hline
-		Successful TX & 16,971.34 (228.0) \\
-		Total TX & 17,998.26 (225.23) \\
-		Failed TX & 1026.92 (22.68) \\
-		\hline
-	\end{tabular}
-\end{table}
-
-TODO: move to interpretation: As can be clearly seen 5 full shortcuts seem to be already enough to solve the inefficiencies seen in Ascending-Connected with/without Importance Sampling.
-
-\subsubsection{15 full short-cuts}
-\begin{figure}[H]
-	\centering
-  \includegraphics[width=1.0\textwidth, angle=0]{ASCENDINGCONNECTED_15FullSC_100_NOCOLLATERALMARKET_REPL.png}
-	\caption{Wealth-Distribution of Ascending-Connected 15 full short-cuts topology}
-	\label{fig1}
-\end{figure}
-
-\begin{table}[h]
-	\caption{Equilibrium of Ascending-Connected 15 full short-cuts topology}
-	\centering
-	\begin{tabular} { l c r }
-		\hline
-		Asset-Price & 0.658 (0.024) \\
-		Loan-Price & 0.366 (0.009) \\
-		i0 (Marginal Buyer) & 0.601 (0.004) \\
-		i1 (Marginal Seller) & 0.802 (0.0) \\
-		Pessimist Wealth & 1.649 (0.004) \\
-		Medianist Wealth & 4.811 (0.092) \\
-		Optimist Wealth & 4.957 (0.021) \\
-		\hline
-	\end{tabular}
-\end{table} 
-
-\begin{table}[H]
-	\caption{Performance of Ascending-Connected 15 full short-cuts topology}
-	\centering
-	\begin{tabular} { l c r }
-		\hline
-		Successful TX & 4498.08 (58.67) \\
-		Total TX & 5522.860 (64.72) \\
-		Failed TX & 1024.78 (17.3) \\
-		\hline
-	\end{tabular}
-\end{table}
-
-\subsubsection{30 full short-cuts}
-\begin{figure}[H]
-	\centering
-  \includegraphics[width=1.0\textwidth, angle=0]{ASCENDINGCONNECTED_30FullSC_100_NOCOLLATERALMARKET_REPL.png}
-	\caption{Wealth-Distribution of Ascending-Connected 30 full short-cuts topology}
-	\label{fig1}
-\end{figure}
-
-\begin{table}[H]
-	\caption{Equilibrium of Ascending-Connected 30 full short-cuts topology}
-	\centering
-	\begin{tabular} { l c r }
-		\hline
-		Asset-Price & 0.681 (0.012) \\
-		Loan-Price & 0.378 (0.006) \\
-		i0 (Marginal Buyer) & 0.603 (0.006) \\
-		i1 (Marginal Seller) & 0.802 (0.1) \\
-		Pessimist Wealth & 1.649 (0.009) \\
-		Medianist Wealth & 4.702 (0.112) \\
-		Optimist Wealth & 5.004 (0.025) \\
-		\hline
-	\end{tabular}
-\end{table} 
-
-\begin{table}[H]
-	\caption{Performance of Ascending-Connected 30 full short-cuts topology}
-	\centering
-	\begin{tabular} { l c r }
-		\hline
-		Successful TX & 2211.08 (35.88) \\
-		Total TX & 3225.76 (40.18) \\
-		Failed TX & 1014.68 (10.55) \\
-		\hline
-	\end{tabular}
-\end{table}
-
-
-\subsubsection{5 regular short-cuts}
-\begin{figure}[H]
-	\centering
-  \includegraphics[width=1.0\textwidth, angle=0]{ASCENDINGCONNECTED_5RegSC_100_NOCOLLATERALMARKET_REPL.png}
-	\caption{Wealth-Distribution of Ascending-Connected 5 regular short-cuts topology}
-	\label{fig1}
-\end{figure}
-
-\begin{table}[H]
-	\caption{Equilibrium of Ascending-Connected 5 regular short-cuts topology}
-	\centering
-	\begin{tabular} { l c r }
-		\hline
-		Asset-Price & 0.665 (0.016) \\
-		Loan-Price & 0.364 (0.007) \\
-		i0 (Marginal Buyer) & 0.595 (0.003) \\
-		i1 (Marginal Seller) & 0.792 (0.0) \\
-		Pessimist Wealth & 1.649 (0.003) \\
-		Medianist Wealth & 4.991 (0.045) \\
-		Optimist Wealth & 4.727 (0.011) \\
-		\hline
-	\end{tabular}
-\end{table} 
-
-\begin{table}[H]
-	\caption{Performance of Ascending-Connected 5 regular short-cuts topology}
-	\centering
-	\begin{tabular} { l c r }
-		\hline
-		Successful TX & 14,570.44 (157.61) \\
-		Total TX & 15,634.68 (166.21) \\
-		Failed TX & 1064.24 (29.88) \\
-		\hline
-	\end{tabular}
-\end{table}
-
-\subsubsection{15 regular short-cuts}
-\begin{figure}[H]
-	\centering
-  \includegraphics[width=1.0\textwidth, angle=0]{ASCENDINGCONNECTED_15RegSC_100_NOCOLLATERALMARKET_REPL.png}
-	\caption{Wealth-Distribution of Ascending-Connected 15 regular short-cuts topology}
-	\label{fig1}
-\end{figure}
-
-\begin{table}[H]
-	\caption{Equilibrium Ascending-Connected 15 regular short-cuts topology}
-	\centering
-	\begin{tabular} { l c r }
-		\hline
-		Asset-Price & 0.705 (0.020) \\
-		Loan-Price & 0.357 (0.018) \\
-		i0 (Marginal Buyer) & 0.586 (0.023) \\
-		i1 (Marginal Seller) & 0.802 (0.0) \\
-		Pessimist Wealth & 1.649 (0.051) \\
-		Medianist Wealth & 4.146 (0.101) \\
-		Optimist Wealth & 4.997 (0.007) \\
-		\hline
-	\end{tabular}
-\end{table} 
-
-\begin{table}[H]
-	\caption{Performance of Ascending-Connected 15 regular short-cuts topology}
-	\centering
-	\begin{tabular} { l c r }
-		\hline
-		Successful TX & 4373.28 (50.13) \\
-		Total TX & 5502.52 (52.11) \\
-		Failed TX & 1129.24 (19.2) \\
-		\hline
-	\end{tabular}
-\end{table}
-
-\subsubsection{30 regular short-cuts}
-\begin{figure}[H]
-	\centering
-  \includegraphics[width=1.0\textwidth, angle=0]{ASCENDINGCONNECTED_30RegSC_100_NOCOLLATERALMARKET_REPL.png}
-	\caption{Wealth-Distribution of Ascending-Connected 30 regular short-cuts topology}
-	\label{fig1}
-\end{figure}
-
-\begin{table}[H]
-	\caption{Equilibrium of Ascending-Connected 30 regular short-cuts topology}
-	\centering
-	\begin{tabular} { l c r }
-		\hline
-		Asset-Price & 0.710 (0.021) \\
-		Loan-Price & 0.398 (0.008) \\
-		i0 (Marginal Buyer) & 0.589 (0.021) \\
-		i1 (Marginal Seller) & 0.802 (0.0) \\
-		Pessimist Wealth & 1.479 (0.049) \\
-		Medianist Wealth & 3.713 (0.125) \\
-		Optimist Wealth & 5.0 (0.0) \\
-		\hline
-	\end{tabular}
-\end{table} 
-
-\begin{table}[H]
-	\caption{Performance of Ascending-Connected 30 regular short-cuts topology}
-	\centering
-	\begin{tabular} { l c r }
-		\hline
-		Successful TX & 5427.02 (90.82) \\
-		Total TX & 6566.06 (96.04) \\
-		Failed TX & 1139.04 (27.74) \\
-		\hline
-	\end{tabular}
-\end{table}
 
 \end{document}

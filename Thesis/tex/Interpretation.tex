@@ -3,16 +3,34 @@
 
 \graphicspath{{./figures/interpretation/}}	%specifying the folder for the figures
 
-\chapter{Interpretation and Discussion}
+\chapter{Interpretation}
+In this chapter interpretation of the results of Chapter \ref{ch:results} "Results" are given and discussed. Only the Ascending-Connected topology is handled - both without and with importance sampling - because it is the most minimal network which satisfies the requirements for the hypothesis. The Hub-, Scale-Free and Small-World Topologies are handled in appendix \ref{app:interpretation} as they turn out to fall far from satisfying the hypothesis because and almost all of them do not satisfy the hypothesis. Special treatment is given to Erdos-Renyi and Watts-Strogatz as they satisfy the hypothesis when using specific parameters for their generating algorithms.
 
-In this Chapter interpretation of the results of Chapter 6 are given and discussed.
+\paragraph{Validating the Hypothesis}
+When looking at the results of ascending-connected topology with and without importance sampling from Chapter \ref{ch:results} "Results" of figure \ref{fig:wealth_ASCENDINGCONNECTED_IS_100_NOCOLLATERALMARKET_REPL} and \ref{fig:wealth_ASCENDINGCONNECTED_100_NOCOLLATERALMARKET_REPL} and comparing it with the results of the fully-connected topology of figure \ref{fig:wealth_FULLYCONNECTED_100_NOCOLLATERALMARKET_REPL} it becomes immediately clear that the equilibrium is different from the equilibrium of the fully-connected network and thus theoretical equilibrium is not reached in the case of ascending-connected topology neither with or without importance sampling. Although the visual results come quite close to the fully-connected one - there is a clear distinction between pessimists, medianists and optimists and the wealth-distribution looks about the same as in fully-connected - there remain artefacts in the range of the pessimists. Thus the hypothesis is proven wrong by experiment.
 
-First the Hub-, Scale-Free and Small-World Topologies are handled as they turn out to fall far from satisfying the hypothesis. Then the Ascending-Connected topology is discussed as it is the most interesting one - both without and with importance sampling - because it is the most minimal network which satisfies the requirements for the hypothesis. As will be seen satisfying these requirements is not enough to reach equilibrium but an additional market is required which will be introduced too.
+\paragraph{Analysing pessimists artefacts}
+Obviously the artefacts in the range of the pessimists indicate a miss-allocation of wealth, which are in fact collateralized assets. Pessimists, as noted in Chapter \ref{ch:leverace_cycle} "The Leverage Cycle", are maximally short on assets and bonds and hold only cash, thus it is clearly a miss-allocation. As will be shown it comes from the fact that the pessimists want to sell but no neighbour is able to buy any more - a scenario which is not possible in fully-connected topology and is thus unique to ascending-connected networks with or without importance sampling.
 
-\section{Ascending Connected topology}
+\subparagraph{Dynamics of a single run}
+To better understand how such artefacts arise one needs to investigate the dynamics of a single run of ascending-connected topology. For convenience reasons this is done only with 30 Agents to reduce the noise and have a better, more narrow overview of the process.
+\medskip 
+An important fact to notice is that the artefacts must not necessarily show up. It is possible for a single run to finish without these artefacts showing up. This is due to the random-process of sweeping and matching and thus the artefacts are subject to this random process too. It also becomes immediately clear that the fewer agents, the more likely a single run performs without giving rise to these artefacts which is rooted in the fact that the more agents are in the ascending-connected topology the lower the matching-probabilities between two neighbours will become. This problem is elevated by using importance sampling when running individual runs and thus the investigation is performed with importance sampling activated.  Note that for this purposes the "Inspection"-functionality of the thesis-software is especially suited as it can record the history of a single run and allows to step through each recorded transaction.
 
-Es trifft hypothese offensichtlich nicht zu (resultate zeigen und interpretieren)
-		Gibt es möglicherweise Marktmechanismen, die dies beheben können oder liegt es grundstäzlich in der natur der topologie?
-		Entweder Vollvernetzung notwendig oder neuer markt für theoretisches gleichgewicht
-		
+TODO: notizen über die beobachtung und analyse verwenden, die bereits gemacht wurden. diese einfach genau einarbeiten die nächsten, die handeln können sind diejenigen die positive bonds halten
+	
+\paragraph{Extending the Hypothesis}
+After it has become clear that the hypothesis is wrong the question arises what needs to be done to correct the hypothesis. It is clear that a mechanism needs to be found which prevents or resolves the arising of the artifacts within the pessimist wealth-range. Obviously two solutions are available:
+
+\begin{tabbing}
+Approaching fully connectedness \\
+Re-enabling inactive pessimists to trade \\
+\end{tabbing}
+
+\subparagraph{Approaching fully connectedness}
+	full shortcuts scheint zu helfen, die anzahl scheint aber von der anzahl der agenten abhängig zu sein (matching wahrscheinlichkeiten)
+	
+\subparagraph{Enabling trading}
+	neuer markt: pessimisten haben cash, steckengebliebene können collateralisierte assets gegen cash verkaufen. aber in neuem kapitel genauer ausgeführt
+
 \end{document}
