@@ -6,14 +6,21 @@
 \chapter{Interpretation}
 In this chapter interpretation of the results of Chapter \ref{ch:results} "Results" are given and discussed. Only the Ascending-Connected topology is handled - both without and with importance sampling - because it is the most minimal network which satisfies the requirements for the hypothesis. The Hub-, Scale-Free and Small-World Topologies are handled in appendix \ref{app:interpretation} as they turn out to fall far from satisfying the hypothesis because and almost all of them do not satisfy the hypothesis. Special treatment is given to Erdos-Renyi and Watts-Strogatz as they satisfy the hypothesis when using specific parameters for their generating algorithms.
 
-\paragraph{Validating the Hypothesis}
+\section{Validating the Hypothesis}
 When looking at the results of ascending-connected topology with and without importance sampling from Chapter \ref{ch:results} "Results" of figure \ref{fig:wealth_ASCENDINGCONNECTED_IS_100_NOCOLLATERALMARKET_REPL} and \ref{fig:wealth_ASCENDINGCONNECTED_100_NOCOLLATERALMARKET_REPL} and comparing it with the results of the fully-connected topology of figure \ref{fig:wealth_FULLYCONNECTED_100_NOCOLLATERALMARKET_REPL} it becomes immediately clear that the equilibrium is different from the equilibrium of the fully-connected network and thus theoretical equilibrium is not reached in the case of ascending-connected topology neither with or without importance sampling. Although the visual results come quite close to the fully-connected one - there is a clear distinction between pessimists, medianists and optimists and the wealth-distribution looks about the same as in fully-connected - there remain artefacts in the range of the pessimists. Thus the hypothesis is proven wrong by experiment.
 
-\paragraph{Analysing pessimists artefacts}
+\section{Analysing artefacts}
 Obviously the artefacts in the range of the pessimists indicate a miss-allocation of wealth, which are in fact collateralized assets. Pessimists, as noted in Chapter \ref{ch:leverace_cycle} "The Leverage Cycle", are maximally short on assets and bonds and hold only cash, thus it is clearly a miss-allocation. As will be shown it comes from the fact that the pessimists want to sell but no neighbour is able to buy any more - a scenario which is not possible in fully-connected topology and is thus unique to ascending-connected networks with or without importance sampling.
 
-\subparagraph{Dynamics of a single run}
+\subsection{Dynamics of a single run}
 To better understand how such artefacts arise one needs to investigate the dynamics of a single run of ascending-connected topology.
+
+\begin{figure}[H]
+	\centering
+  \includegraphics[width=1.0\textwidth, angle=0]{ASCENDINGCONNECTED_100_NOCOLLATERALMARKET_SINGLE.png}
+	\caption{Wealth-Distribution of Ascending-Connected topology after a single run}
+	\label{fig:wealth_ASCENDINGCONNECTED_IS_100_NOCOLLATERALMARKET_SINGLE}
+\end{figure}
 
 \medskip 
 
@@ -55,15 +62,10 @@ It is also possible for a group of agents to get cut from its environment throug
 
 An important fact to notice is that the artefacts must not necessarily show up. It is possible for a single run to finish without these artefacts showing up. This is due to the random-process of sweeping and matching and thus the artefacts are subject to this random process too. Importance sampling elevates this problem a bit as it allows for more trades as the matching probabilities are very much increased but fails in the end for the same reason as the simulation without it - the artefacts are just "smaller" but show up almost always.
 
-\paragraph{Extending the Hypothesis}
-After it has become clear that the hypothesis is wrong the question arises what needs to be done to correct the it. It is clear that a mechanism needs to be found which prevents or resolves the arising of the artefacts within the pessimist wealth-range. Obviously two solutions are available:
+\section{Extending the Hypothesis}
+After it has become clear that the hypothesis is wrong the question arises what needs to be done to correct the it. It is clear that a mechanism needs to be found which prevents or resolves the arising of the artefacts within the pessimist wealth-range. Obviously two solutions are available.
 
-\begin{tabbing}
-Approaching fully connectedness \\
-Re-enabling inactive pessimists to trade \\
-\end{tabbing}
-
-\subparagraph{Approaching fully connectedness}
+\subsection{Approaching fully connectedness}
 Increasing the connectedness of the topology increases the probability of global-optimal trades and allows more agents to trade between each other and thus the probability of resolving islands or artefacts of wealth miss-allocation is increased with the density of connectedness.
 The experiments of ascending-connected topology with short-cuts were desigend to get an understanding how the simulation behaves with increasing connectedness and also how the two types fully and regular of connectedness influence the results.
 It seems that full shortcuts seem to help dramatically although the number of full shortcuts seem to be dependent on the number of agents.
@@ -71,7 +73,7 @@ TODO: verweis auf results und interpretation appendixe
 
 Of course in real environments approaching fully connectedness is not always possible and thus only the other mechanism is left as an option to resolve the artefacts.
 
-\subparagraph{Re-Enabling trading}
+\subsection{Re-Enabling trading}
 Another way to look at the arising of the artefacts is because of suboptimal trades. \cite{Breuer2015} were confronted with this circumstance when they introduced the "Asset against Bond" Market where they found that the equilibrium was fundamentally different from theoretical one because agents were trapped in suboptimal trades and couldn't reverse their decisions made earlier. As a solution they introduced the "Bonds-Pledgeability" (BP) mechanism which allows to trade bonds in both ways instead of only gathering them and not being able to sell them - see \ref{ch:leverage_cycle} for a more in-depth discussion of the BP-Mechanism.
 
 \medskip 
