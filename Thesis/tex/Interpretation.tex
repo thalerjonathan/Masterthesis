@@ -13,14 +13,50 @@ When looking at the results of ascending-connected topology with and without imp
 Obviously the artefacts in the range of the pessimists indicate a miss-allocation of wealth, which are in fact collateralized assets. Pessimists, as noted in Chapter \ref{ch:leverace_cycle} "The Leverage Cycle", are maximally short on assets and bonds and hold only cash, thus it is clearly a miss-allocation. As will be shown it comes from the fact that the pessimists want to sell but no neighbour is able to buy any more - a scenario which is not possible in fully-connected topology and is thus unique to ascending-connected networks with or without importance sampling.
 
 \subparagraph{Dynamics of a single run}
-To better understand how such artefacts arise one needs to investigate the dynamics of a single run of ascending-connected topology. For convenience reasons this is done only with 30 Agents to reduce the noise and have a better, more narrow overview of the process.
-\medskip 
-An important fact to notice is that the artefacts must not necessarily show up. It is possible for a single run to finish without these artefacts showing up. This is due to the random-process of sweeping and matching and thus the artefacts are subject to this random process too. It also becomes immediately clear that the fewer agents, the more likely a single run performs without giving rise to these artefacts which is rooted in the fact that the more agents are in the ascending-connected topology the lower the matching-probabilities between two neighbours will become. This problem is elevated by using importance sampling when running individual runs and thus the investigation is performed with importance sampling activated.  Note that for this purposes the "Inspection"-functionality of the thesis-software is especially suited as it can record the history of a single run and allows to step through each recorded transaction.
+To better understand how such artefacts arise one needs to investigate the dynamics of a single run of ascending-connected topology.
 
-TODO: notizen über die beobachtung und analyse verwenden, die bereits gemacht wurden. diese einfach genau einarbeiten die nächsten, die handeln können sind diejenigen die positive bonds halten
-	
+\medskip 
+
+The wealth stabilizes from both the left and the right end of the optimism-scale towards the i1-point where medianists become optimists - around this point the last trades will happen.
+
+\medskip 
+
+Pessimists try to sell all their assets against cash to the neighbour with higher optimism-factor.
+
+\medskip 
+
+Optimists try to buy as much assets as they can get from the neighbour with lower optimism-factor. In the beginning they use cash and after they've ran out of cash they buy assets against bonds.
+
+\medskip 
+
+The medianists serve as connection between the pessimists and optimists, serving in transferring the assets to the optimists by buying from lower optimism and selling to higher ones either through asset against cash or asset against bond.
+
+\medskip 
+
+Thus the assets move from the pessimists through the ascending chain of optimism to the optimists as no direct connection between these two groups exists with the medianists in between. Thus waves of uncollateralized assets can be seen moving from pessimists to optimists.
+
+\medskip 
+
+It is important to understand that all agents despite their optimism factor make offers on all markets if they are able to, e.g. cash, collateral or bond constraints satisfied. This implies that pessimists trade bonds as well as assets against bonds - the agents are not defined exogenous as pessimists/medianist/optimists but this property is emerges during the simulation.
+
+\medskip 
+
+Thus pessimists gain wealth in collateralized assets which can be seen by the green spikes with the same amount of negative bonds as those assets are bought against bond - see Chapter \ref{ch:leverage_cycle}. Of course they try to sell it to neighbours with higher optimism factor but this is only possible if these neighbours are able to buy which they can if they hold enough bonds to buy the offered asset for the offered amount of bonds.
+
+\medskip 
+
+Whether an agent has enough wealth to buy from a seller is more or less random and depends on its trading history. Matching happens randomly and thus it is possible that the neighbourhood of a seller "dries up" as the potential buyers sold all their good to the next agent with higher optimism factor and become thus unable to buy from the potential seller because they have no more bonds to buy assets against bonds. In such a case a potential pessimist seller of collateralized assets is then cut from its environment and becomes unable to trade any more resulting in a miss-allocation in collateralized assets.
+
+\medskip 
+
+It is also possible for a group of agents to get cut from its environment through this random trading-process. In this case this "island" of agents still trades between each other resulting in the uncollateraliziing of assets which immediately are traded towards optimists but as soon as a point is reached where no buyer is available with enough bonds to buy collateralized assets this island is also incapable of trading any more resulting in an island of miss-allocated wealth.
+
+\medskip 
+
+An important fact to notice is that the artefacts must not necessarily show up. It is possible for a single run to finish without these artefacts showing up. This is due to the random-process of sweeping and matching and thus the artefacts are subject to this random process too. Importance sampling elevates this problem a bit as it allows for more trades as the matching probabilities are very much increased but fails in the end for the same reason as the simulation without it - the artefacts are just "smaller" but show up almost always.
+
 \paragraph{Extending the Hypothesis}
-After it has become clear that the hypothesis is wrong the question arises what needs to be done to correct the hypothesis. It is clear that a mechanism needs to be found which prevents or resolves the arising of the artifacts within the pessimist wealth-range. Obviously two solutions are available:
+After it has become clear that the hypothesis is wrong the question arises what needs to be done to correct the it. It is clear that a mechanism needs to be found which prevents or resolves the arising of the artefacts within the pessimist wealth-range. Obviously two solutions are available:
 
 \begin{tabbing}
 Approaching fully connectedness \\
@@ -28,9 +64,22 @@ Re-enabling inactive pessimists to trade \\
 \end{tabbing}
 
 \subparagraph{Approaching fully connectedness}
-	full shortcuts scheint zu helfen, die anzahl scheint aber von der anzahl der agenten abhängig zu sein (matching wahrscheinlichkeiten)
-	
-\subparagraph{Enabling trading}
-	neuer markt: pessimisten haben cash, steckengebliebene können collateralisierte assets gegen cash verkaufen. aber in neuem kapitel genauer ausgeführt
+Increasing the connectedness of the topology increases the probability of global-optimal trades and allows more agents to trade between each other and thus the probability of resolving islands or artefacts of wealth miss-allocation is increased with the density of connectedness.
+The experiments of ascending-connected topology with short-cuts were desigend to get an understanding how the simulation behaves with increasing connectedness and also how the two types fully and regular of connectedness influence the results.
+It seems that full shortcuts seem to help dramatically although the number of full shortcuts seem to be dependent on the number of agents.
+TODO: verweis auf results und interpretation appendixe
+
+Of course in real environments approaching fully connectedness is not always possible and thus only the other mechanism is left as an option to resolve the artefacts.
+
+\subparagraph{Re-Enabling trading}
+Another way to look at the arising of the artefacts is because of suboptimal trades. \cite{Breuer2015} were confronted with this circumstance when they introduced the "Asset against Bond" Market where they found that the equilibrium was fundamentally different from theoretical one because agents were trapped in suboptimal trades and couldn't reverse their decisions made earlier. As a solution they introduced the "Bonds-Pledgeability" (BP) mechanism which allows to trade bonds in both ways instead of only gathering them and not being able to sell them - see \ref{ch:leverage_cycle} for a more in-depth discussion of the BP-Mechanism.
+
+\medskip 
+
+Thus if those artifacts are treated as suboptimal trades one needs to introduce a mechanism similar to BP to allow the reversibility of suboptimal trades in the context of collateralized assets. The only possibility without altering the network-topology is to re-enable the pessimists to trade their collateralized assets against cash as all pessimists hold cash and are thus able to buy and sell collateralized assets against cash. This new mechanism is expected to repair the miss-allocated wealth and to restore the validity of the previously disproved hypothesis.
+
+\medskip 
+
+See Chapter \ref{ch:new_market} "A new Market" for the implementation and discussion of the results of this new mechanism.
 
 \end{document}

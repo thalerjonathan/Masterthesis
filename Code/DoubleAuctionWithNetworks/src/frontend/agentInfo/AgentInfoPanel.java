@@ -44,7 +44,7 @@ public class AgentInfoPanel extends JPanel {
 	
 	public void setAgent( Agent a ) {
 		this.idLabel.setText( "" + a.getId() );
-		this.hLabel.setText( Utils.DECIMAL_2_DIGITS_FORMATTER.format( a.getH() ) );
+		this.hLabel.setText( Utils.DECIMAL_3_DIGITS_FORMATTER.format( a.getH() ) );
 		
 		this.consumEndowLabel.setText( Utils.DECIMAL_4_DIGITS_FORMATTER.format( a.getCash() ) );
 		this.assetEndowLabel.setText( Utils.DECIMAL_4_DIGITS_FORMATTER.format( a.getAssets() ) );
