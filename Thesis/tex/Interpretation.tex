@@ -4,7 +4,7 @@
 \graphicspath{{./figures/interpretation/}}	%specifying the folder for the figures
 
 \chapter{Interpretation}
-In this chapter interpretation of the results of Chapter \ref{ch:results} "Results" are given and discussed. Only the Ascending-Connected topology is handled - both without and with importance sampling - because it is the most minimal network which satisfies the requirements for the hypothesis. The Hub-, Scale-Free and Small-World Topologies are handled in appendix \ref{app:interpretation} as they turn out to fall far from satisfying the hypothesis because and almost all of them do not satisfy the hypothesis. Special treatment is given to Erdos-Renyi and Watts-Strogatz as they satisfy the hypothesis when using specific parameters for their generating algorithms.
+In this chapter interpretation of the results of Chapter \ref{ch:results} "Results" are given and discussed where the central question is whether the ascending-connected topology satisfies the hypothesis or not. Thus only the Ascending-Connected topology is handled - both with and without importance sampling - because it is the most minimal network which satisfies the requirements for the hypothesis. The Hub-, Scale-Free and Small-World Topologies are handled in appendix \ref{app:interpretation} as they turn out to fall far from satisfying the hypothesis because almost all of them do not satisfy the requirements for the hypothesis. Special treatment is given to Erdos-Renyi and Watts-Strogatz as they satisfy the hypothesis when using specific parameters for their generating algorithms.
 
 \section{Validating the Hypothesis}
 When looking at the results of ascending-connected topology with and without importance sampling from Chapter \ref{ch:results} "Results" of figure \ref{fig:wealth_ASCENDINGCONNECTED_IS_100_NOCOLLATERALMARKET_REPL} and \ref{fig:wealth_ASCENDINGCONNECTED_100_NOCOLLATERALMARKET_REPL} and comparing it with the results of the fully-connected topology of figure \ref{fig:wealth_FULLYCONNECTED_100_NOCOLLATERALMARKET_REPL} it becomes immediately clear that the equilibrium is different from the equilibrium of the fully-connected network and thus theoretical equilibrium is not reached in the case of ascending-connected topology neither with or without importance sampling. Although the visual results come quite close to the fully-connected one - there is a clear distinction between pessimists, medianists and optimists and the wealth-distribution looks about the same as in fully-connected - there remain artefacts in the range of the pessimists. Thus the hypothesis is proven wrong by experiment.
@@ -82,6 +82,6 @@ Thus if those artifacts are treated as suboptimal trades one needs to introduce 
 
 \medskip 
 
-See Chapter \ref{ch:new_market} "A new Market" for the implementation and discussion of the results of this new mechanism.
+See Chapter \ref{ch:new_market} "A new Market" for the implementation and results of this new mechanism.
 
 \end{document}

@@ -4,36 +4,92 @@
 \graphicspath{{./figures/newMarket/}}	%specifying the folder for the figures
 
 \chapter{A new Market}
-As already introduced in chapter \ref{ch:interpretation} "Interpretation" a new market in which agents can trade collateralized assets against cash is necessary to elevate the miss-allocation of collateralized assets in the range of the pessimist agents.
+As already introduced in chapter \ref{ch:interpretation} "Interpretation" a new market is necessary to repair the miss-allocation of collateralized assets in the range of the pessimist agents by enabling the agents to trade collateralized assets against cash.
 
 \section{Implementation}
 
 \subsection{Price-Range}
-min, max, limit price
+As for all other 3 Markets the price-ranges of the offers must be defined. Note that all prices must obviously be in the unit of cash.
 
-min = Math.min( 0, this.minAssetPriceInCash - this.maxLoanPriceInCash );
-max = this.maxAssetPriceInCash - this.minLoanPriceInCash;
-limit = this.limitPriceCollateral = this.limitPriceAsset - this.limitPriceLoan;\\
+\paragraph{minimum}
+When calculating the minimum price of a collateralized asset - that is how much is the collateralized asset minimally worth - it is important to include the collateral-aspect of the asset. Thus one starts with the minimum asset-price in cash which is the down-price \textit{pD} and subtracts the maximum possible amount of cash which is bound through a bond as collateral which is the face-value \textit{V}. This value is a constant for all agents.
+
+\begin{center}
+$\textit{min collateralized asset-price} = \min(0, \textit{pD} - \textit{V})$
+\end{center}
+ 
+\paragraph{maximum}
+To calculate the maximum price of a collateralized asset - that is how much is the collateralized asset maximally worth - one needs to include the collateral-aspect of the asset too. Equal to calculating the minimum one starts now with the maximum asset-price in cash which is the up-price \textit{pU} and subtracts the minimum possible amount of cash which is bound through a bond as collateral which is the face-value \textit{pD}. This value is a constant for all agents.
+
+\begin{center}
+$\textit{max collateralized asset-price} = \textit{pU} - \textit{pD}$
+\end{center}
+
+\paragraph{limit}
+Applying the same rules as in minimum and maximum to the limit price calculation one needs to subract the limit-price of loans from the limit-price of asset to receive the limit-price of a collateralized asset. This value is individual for each agent as the limit-prices differ across the agents both for assets and loans.
+
+\begin{center}
+$\textit{limit-price of collateralized asset} = \textit{limit-price of asset} - \textit{limit-price of loan}$
+\end{center}
 
 \subsection{Bid-Offering}
-can make offering only when cash greater epsilon
-give asset-price in cash formula
-give asset-amount formula
-	
+The way bid-offers are generated is very similar to the "Bond against Cash" market. Bid Offerings are generated only when the agent has any cash holdings. The price is drawn randomly between the minimum price and the limit-price because when buying one wants to buy below the expected value to make a profit. As amount one TRADING-UNIT of an asset is selected - in the thesis-implementation 0.1 - but if there is not enough cash left to buy one TRADING-UNIT of assets then the amount of assets is selected which can be bought with the remaining cash holdings.
+
+\begin{table}[h]
+	\centering
+	\caption{Bid-Offering parameters}
+	\begin{tabular} { l c r }
+		\hline
+		Pre-Condition & $\textit{cash holdings} > 0$  \\
+		Asset-Price & $\mathrm{random}(\textit{min coll. asset-price}, \textit{limit-price of coll. asset})$ \\
+		Asset-Amount & $\min ( \frac{ \textit{cash holdings} }{ \textit{Asset-Price} }, \textit{TRADING-UNIT} )$ \\
+		\hline
+	\end{tabular}
+\end{table}
+
+
 \subsection{Ask-Offering}
-can make offering only when there are collateralized assets: currentObligations greater epsilon
-give asset-price in cash-formula
-give asset-amount formula
+The way ask-offers are generated is very similar to the "Bond against Cash" market. Ask Offerings are generated only when the agent has any collateralized assets. The price is drawn randomly between the limit-price and maximum price because when selling one wants to sell above the expected value to make a profit. As amount one TRADING-UNIT of an asset is selected - in the thesis-implementation 0.1 - but if there are fewer collateralized assets left then the remaining amount of collateral is selected.
 
-\subsection{Sell-Match}
-Verkäufer: 	bekommt Cash und gibt Asset und Loan
+See Chapter \ref{ch:implementation} "Implementation" for the equation of collateral holdings.
 
-\subsection{Buy-Match}
-Käufer: bekommt Asset und Loan, zahlt Cash
+\begin{table}[h]
+	\centering
+	\caption{Ask-Offering parameters}
+	\begin{tabular} { l c r }
+		\hline
+		Pre-Condition & $\textit{collateral holdings} > 0$  \\
+		Asset-Price & $\mathrm{random}(\textit{limit-price of coll. asset}, \textit{max coll. asset-price})$ \\
+		Asset-Amount & $\min ( { \textit{collateral holdings} }, \textit{TRADING-UNIT} )$ \\
+		\hline
+	\end{tabular}
+\end{table}
 
-\section{Results with the new market}	
-As experiment-configuration the same as given in Chapter  "Results" is used.
+\subsection{Match}
+Below the wealth-exchange table is given in case of a match between two agents on the new market.
 
+\begin{table}[h]
+	\centering
+	\caption{Wealth-Exchange on match}
+	\begin{tabular} { l c r }
+		& Seller & Buyer \\
+		\hline
+		Loan Given & + matching-amount & N/A \\
+		Loans Taken & N/A & - matching-amount \\
+		Assets holdings & - matching-amount & + matching-amount \\
+		Cash holdings  & + matching-price & - matching-price \\
+		\hline
+	\end{tabular}
+\end{table}
+
+\section{Results}
+Of most importance are the results of the simulation when using the new market. The plain results are given in this section where the interpretation of the results are given in the following section.
+
+\medskip
+
+As experiment-configuration the same is used as given in Chapter \ref{ch:results} "Results" except that the new market is now included in the simulation too.
+
+\subsection{Fully-Connected topology}
 \begin{table}[h]
 	\centering
 	\caption{Configuration for all experiments}
@@ -61,8 +117,9 @@ As experiment-configuration the same as given in Chapter  "Results" is used.
 		\hline
 		Asset-Price & 0.688 (0.008) \\
 		Loan-Price & 0.381 (0.002) \\
-		i0 (Marginal Buyer) & 0.597 (0.005) \\
-		i1 (Marginal Seller) & 0.803 (0.003) \\
+		Marginal Buyer i0 & 0.597 (0.005) \\
+		Marginal Seller i1 & 0.803 (0.003) \\
+		\hline
 		Pessimist Wealth & 1.597 (0.009) \\
 		Medianist Wealth & 4.76 (0.1) \\
 		Optimist Wealth & 4.963 (0.052) \\
@@ -82,6 +139,43 @@ As experiment-configuration the same as given in Chapter  "Results" is used.
 	\end{tabular}
 \end{table}
 
+TODO: ausrechnen und abweichungen in prozent angeben?
+erster wert ist der referenzierte, zweiter wert der mit dem neuen markt
+
+\begin{table}[h]
+	\caption{Difference to theoretical equilibrium as given in Table \ref{tab:theoretical_equilibrium_100Agents_05Bond} of Chapter \ref{ch:results} "Results"}
+	\centering
+	\begin{tabular} { l c c c r }
+		& Reference & New & Absolute Delta & Relative \\
+		\hline
+		Asset-Price & 0.717 & 0.688 & TODO & TODO \\
+		Loan-Price & 0.375 & 0.381 & TODO & TODO \\
+		Marginal Buyer i0 & 0.584 & 0.597 & TODO & TODO \\
+		Marginal Seller i1 & 0.802 & 0.803 & TODO & TODO \\
+		\hline
+	\end{tabular}
+\end{table} 
+
+\begin{table}[h]
+	\caption{Difference to equilibrium without collateral/cash market as given in Table \ref{tab:fullyconnected_equilibrium_100Agents_05Bond} of Chapter \ref{ch:results} "Results"}
+	\centering
+	\begin{tabular} { l c c c r }
+		& Reference & New & Absolute Delta & Relative \\
+		\hline
+		Asset-Price & 0.689 & 0.688 & TODO & TODO \\
+		Loan-Price & 0.384 & 0.381 & TODO & TODO \\
+		Marginal Buyer i0 & 0.603 & 0.597 & TODO & TODO \\
+		Marginal Seller i1 & 0.803 & 0.803 & TODO & TODO \\
+		\hline
+		Pessimist Wealth & 1.597 & 1.597 & TODO & TODO \\
+		Medianist Wealth & 4.565 & 4.76 & TODO & TODO \\
+		Optimist Wealth & 5.021 & 4.963 & TODO & TODO \\
+		\hline
+	\end{tabular}
+\end{table} 
+
+
+\subsection{Ascending-Connected topology}
 \begin{figure}[H]
 	\centering
   \includegraphics[width=1.0\textwidth, angle=0]{ASCENDINGCONNECTED_100_WITHCOLLATERALMARKET_REPL.png}
@@ -96,8 +190,9 @@ As experiment-configuration the same as given in Chapter  "Results" is used.
 		\hline
 		Asset-Price & 0.713 (0.013) \\
 		Loan-Price & 0.383 (0.005) \\
-		i0 (Marginal Buyer) & 0.584(0.0) \\
-		i1 (Marginal Seller) & 0.782 (0.0) \\
+		Marginal Buyer i0 & 0.584(0.0) \\
+		Marginal Seller i1 & 0.782 (0.0) \\
+		\hline
 		Pessimist Wealth & 1.671 (0.0) \\
 		Medianist Wealth & 5.032 (0.013) \\
 		Optimist Wealth & 4.508 (0.006) \\
@@ -117,10 +212,64 @@ As experiment-configuration the same as given in Chapter  "Results" is used.
 	\end{tabular}
 \end{table}
 
-TODO: difference to theoretical equilibrium
+TODO: ausrechnen und abweichungen in prozent angeben? 
+erster wert ist der referenzierte, zweiter wert der mit dem neuen markt
+
+\begin{table}[h]
+	\caption{Difference to theoretical equilibrium as given in Table \ref{tab:theoretical_equilibrium_100Agents_05Bond} of Chapter \ref{ch:results} "Results"}
+	\centering
+	\begin{tabular} { l c c c r }
+		& Reference & New & Absolute Delta & Relative \\
+		\hline
+		Asset-Price & 0.717 & 0.713 & TODO & TODO \\
+		Loan-Price & 0.375 & 0.383 & TODO & TODO \\
+		Marginal Buyer i0 & 0.584 & 0.584 & TODO & TODO \\
+		Marginal Seller i1 & 0.802 & 0.782 & TODO & TODO \\
+		\hline
+	\end{tabular}
+\end{table} 
+
+\begin{table}[h]
+	\caption{Difference to equilibrium without collateral/cash market as given in Table \ref{tab:ascendingconnected_equilibrium_100Agents_05Bond} of Chapter \ref{ch:results} "Results"}
+	\centering
+	\begin{tabular} { l c c c r }
+		& Reference & New & Absolute Delta & Relative \\
+		\hline
+		Asset-Price & 0.711 & 0.713 & TODO & TODO \\
+		Loan-Price & 0.391 & 0.383  & TODO & TODO \\
+		Marginal Buyer i0 & 0.646 & 0.584 & TODO & TODO \\
+		Marginal Seller i1 & 0.85 & 0.782 & TODO & TODO \\
+		\hline
+		Pessimist Wealth & 1.166 & 1.671  & TODO & TODO \\
+		Medianist Wealth & 1.869 & 5.032 & TODO & TODO \\
+		Optimist Wealth & 4.307 & 4.508 & TODO & TODO \\
+		\hline
+	\end{tabular}
+\end{table} 
+
+\section{Interpretation of results}
+When interpreting the results the following questions must be answered
+
+\begin{itemize}
+\item does fully-connected reach its theoretical equilibrium as well?
+\item does the new market repair the miss-allocation of wealth in the pessimists-range?
+\item if no why? if yes, does the ascending-connected topology approach theoretical equilibrium now?
+\item how does trading progresses with this new market? same as in previous one?
+\item how does the new market resolve the miss-allocation (turning on after no more possible)?
+\end{itemize}
+
+TODO nocheinmal die dynamiken untersuchen: wie passiert schlussendlich das unkollateralisieren von assets? die kollateralisierten assets werden ja nicht unkollateralisiert sondern wandern einfach zu den optimisten. unkollateralisiert werden sie ja nicht. die medianisten haben keinen cash mehr und kaufen assets gegen bonds und unkollateralisieren sie. genau erklären.
+
+
 
 \section{Market dynamics}
-In the thesis-software it is possible to run an ascending-connected topology until no more trades are possible and then activate the new market. the collateralized assets are bought and sold by the pessimists and move up the optimism-scale until they end up in the optimists.
+When implementing a new market the market-dynamics are of very importance and thus the following questions must be answered.
+
+\begin{itemize}
+\item When and how much is each market active? 
+\item Can the trading stages 1-4 be identified too as given in \cite{Breuer_2015}?
+\item How do the market-activities change when a new market is introduced?
+\end{itemize}
 
 \begin{figure}[H]
 	\centering
@@ -151,18 +300,16 @@ In the thesis-software it is possible to run an ascending-connected topology unt
 	\label{fig:wealth_ASCENDINGCONNECTED_100_WITHCOLLATERALMARKET_MARKETSACCUM_REPL}
 \end{figure}
 
+In the thesis-software it is possible to simulate an ascending-connected topology until no more trades are happening and then activate the new market. This feature was used to create the following figure.
+
 \begin{figure}[H]
 	\centering
   \includegraphics[width=1.0\textwidth, angle=0]{ASCENDINGCONNECTED_100_WITHCOLLATERALMARKET_DEFERREDACTIVATION_MARKETSTIME_SINGLE.png}
-	\caption{Market-activity over time of Ascending-Connected topology with collateral/cash market activated only after 1000 failed transactions in a row. Previous dynamics the same as figure \ref{fig:wealth_ASCENDINGCONNECTED_100_WITHCOLLATERALMARKET_MARKETSTIME_REPL}}
-	\label{fig:wealth_ASCENDINGCONNECTED_100_WITHCOLLATERALMARKET_DEFERREDACTIVATION_MARKETSTIME_SINGLE}
+	\caption{Market-activity over time of Ascending-Connected topology with collateral/cash market activated after 1000 failed transactions in a row. Dynamics until activation of the new market are the same as figure \ref{fig:wealth_ASCENDINGCONNECTED_100_WITHCOLLATERALMARKET_MARKETSTIME_REPL}}
+		\label{fig:wealth_ASCENDINGCONNECTED_100_WITHCOLLATERALMARKET_DEFERREDACTIVATION_MARKETSTIME_SINGLE}
 \end{figure}
 
-\section{Interpretation of new Market}
-the equilibrium is different than the fully-connected one thus the hypothesis is still wrong.
-rooted in the fundamental different trading dynamics in ascending-connected compared to fully-connected as can be seen in the market-dynamics
-
-TODO: wie passiert schlussendlich das unkollateralisieren von assets? die kollateralisierten assets werden ja nicht unkollateralisiert sondern wandern einfach zu den optimisten. unkollateralisiert werden sie ja nicht. die medianisten haben keinen cash mehr und kaufen assets gegen bonds und unkollateralisieren sie. genau erklären.
-
+\section{Conclusions on new Market}
+The equilibrium of the ascending-connected topology with the new market is different than the fully-connected one which reaches the theoretical equilibrium. Thus the hypothesis is still wrong because it predicted the ascending-connected topology to reach the theoretical equilibrium. This thesis can only speculate on the real reason for this but the reason is most probably rooted in the fundamental different trading dynamics in ascending-connected topology compared to fully-connected as can be seen in the market-dynamics. This thesis leaves this question open for further research.
 
 \end{document}
