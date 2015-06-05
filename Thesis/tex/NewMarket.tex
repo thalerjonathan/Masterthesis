@@ -35,7 +35,7 @@ $\textit{limit-price of collateralized asset} = \textit{limit-price of asset} - 
 \subsection{Bid-Offering}
 The way bid-offers are generated is very similar to the "Bond against Cash" market. Bid Offerings are generated only when the agent has any cash holdings. The price is drawn randomly between the minimum price and the limit-price because when buying one wants to buy below the expected value to make a profit. As amount one TRADING-UNIT of an asset is selected - in the thesis-implementation 0.1 - but if there is not enough cash left to buy one TRADING-UNIT of assets then the amount of assets is selected which can be bought with the remaining cash holdings.
 
-\begin{table}[h]
+\begin{table}[H]
 	\centering
 	\caption{Bid-Offering parameters}
 	\begin{tabular} { l c r }
@@ -53,7 +53,7 @@ The way ask-offers are generated is very similar to the "Bond against Cash" mark
 
 See Chapter \ref{ch:implementation} "Implementation" for the equation of collateral holdings.
 
-\begin{table}[h]
+\begin{table}[H]
 	\centering
 	\caption{Ask-Offering parameters}
 	\begin{tabular} { l c r }
@@ -68,10 +68,10 @@ See Chapter \ref{ch:implementation} "Implementation" for the equation of collate
 \subsection{Match}
 Below the wealth-exchange table is given in case of a match between two agents on the new market.
 
-\begin{table}[h]
+\begin{table}[H]
 	\centering
 	\caption{Wealth-Exchange on match}
-	\begin{tabular} { l c r }
+	\begin{tabular} { l c c }
 		& Seller & Buyer \\
 		\hline
 		Loan Given & + matching-amount & N/A \\
@@ -87,10 +87,10 @@ Of most importance are the results of the simulation when using the new market. 
 
 \medskip
 
-As experiment-configuration the same is used as given in Chapter \ref{ch:results} "Results" except that the new market is now included in the simulation too.
+As experiment-configuration the same is used as given in Chapter \ref{ch:results} "Results" except that the new market is now activated too.
 
 \subsection{Fully-Connected topology}
-\begin{table}[h]
+\begin{table}[H]
 	\centering
 	\caption{Configuration for all experiments}
 	\begin{tabular} { l c r }
@@ -110,7 +110,7 @@ As experiment-configuration the same is used as given in Chapter \ref{ch:results
 	\label{fig:wealth_FULLYCONNECTED_100_WITHCOLLATERALMARKET_REPL}
 \end{figure}
 
-\begin{table}[h]
+\begin{table}[H]
 	\caption{Equilibrium of Fully-Connected topology with collateral/cash market}
 	\centering
 	\begin{tabular} { l c r }
@@ -127,7 +127,7 @@ As experiment-configuration the same is used as given in Chapter \ref{ch:results
 	\end{tabular}
 \end{table} 
 
-\begin{table}[h]
+\begin{table}[H]
 	\caption{Performance of Fully-Connected topology with collateral/cash market}
 	\centering
 	\begin{tabular} { l c r }
@@ -140,13 +140,14 @@ As experiment-configuration the same is used as given in Chapter \ref{ch:results
 \end{table}
 
 TODO: irgendeine statistischer test, der anhand mittelwert und standardabweichung vergleichen lässt?
-T-Test?
+T-Test? konfidenz-interval?
+HV fragen
 
-\begin{table}[h]
-	\caption{Difference to theoretical equilibrium as given in Table \ref{tab:theoretical_equilibrium_100Agents_05Bond} of Chapter \ref{ch:results} "Results"}
+\begin{table}[H]
+	\caption{Difference of Fully-Connected topology to theoretical equilibrium as given in Table \ref{tab:theoretical_equilibrium_100Agents_05Bond} of Chapter \ref{ch:results} "Results"}
 	\centering
 	\begin{tabular} { l c c c r }
-		& Value & Reference & difference to Reference \\
+		& Result & Reference & difference to Reference \\
 		\hline
 		Asset-Price & 0.688 & 0.717 & -4.0\% \\
 		Loan-Price & 0.381 & 0.375 & +1.6\% \\
@@ -156,11 +157,11 @@ T-Test?
 	\end{tabular}
 \end{table} 
 
-\begin{table}[h]
-	\caption{Difference to equilibrium without collateral/cash market as given in Table \ref{tab:fullyconnected_equilibrium_100Agents_05Bond} of Chapter \ref{ch:results} "Results"}
+\begin{table}[H]
+	\caption{Difference of Fully-Connected topology to equilibrium without collateral/cash market as given in Table \ref{tab:fullyconnected_equilibrium_100Agents_05Bond} of Chapter \ref{ch:results} "Results"}
 	\centering
 	\begin{tabular} { l c c c r }
-		& Value & Reference & difference to Reference \\
+		& Result & Reference & difference to Reference \\
 		\hline
 		Asset-Price & 0.688 & 0.689 & -0.1\% \\
 		Loan-Price & 0.381 & 0.384 & -0.7\% \\
@@ -174,7 +175,6 @@ T-Test?
 	\end{tabular}
 \end{table} 
 
-
 \subsection{Ascending-Connected topology}
 \begin{figure}[H]
 	\centering
@@ -183,7 +183,7 @@ T-Test?
 	\label{fig:wealth_ASCENDINGCONNECTED_100_WITHCOLLATERALMARKET_REPL}
 \end{figure}
 
-\begin{table}[h]
+\begin{table}[H]
 	\caption{Equilibrium of Ascending-Connected topology}
 	\centering
 	\begin{tabular} { l c r }
@@ -200,7 +200,7 @@ T-Test?
 	\end{tabular}
 \end{table} 
 
-\begin{table}[h]
+\begin{table}[H]
 	\caption{Performance of Ascending-Connected topology}
 	\centering
 	\begin{tabular} { l c r }
@@ -212,12 +212,11 @@ T-Test?
 	\end{tabular}
 \end{table}
 
-
-\begin{table}[h]
-	\caption{Difference to theoretical equilibrium as given in Table \ref{tab:theoretical_equilibrium_100Agents_05Bond} of Chapter \ref{ch:results} "Results"}
+\begin{table}[H]
+	\caption{Difference of Ascending-Connected topology to theoretical equilibrium as given in Table \ref{tab:theoretical_equilibrium_100Agents_05Bond} of Chapter \ref{ch:results} "Results"}
 	\centering
 	\begin{tabular} { l c c c r }
-		& Value & Reference & difference to Reference \\
+		& Result & Reference & difference to Reference \\
 		\hline
 		Asset-Price & 0.713 & 0.717 & -0.5\% \\
 		Loan-Price & 0.383 & 0.375 & +2.1\% \\
@@ -227,11 +226,11 @@ T-Test?
 	\end{tabular}
 \end{table} 
 
-\begin{table}[h]
-	\caption{Difference to equilibrium without collateral/cash market as given in Table \ref{tab:ascendingconnected_equilibrium_100Agents_05Bond} of Chapter \ref{ch:results} "Results"}
+\begin{table}[H]
+	\caption{Difference of Ascending-Connected topology to equilibrium without collateral/cash market as given in Table \ref{tab:ascendingconnected_equilibrium_100Agents_05Bond} of Chapter \ref{ch:results} "Results"}
 	\centering
 	\begin{tabular} { l c c c r }
-		& Value & Reference & difference to Reference \\
+		& Result & Reference & difference to Reference \\
 		\hline
 		Asset-Price & 0.713 & 0.711 & +0.3\% \\
 		Loan-Price & 0.383 & 0.391 & -2.0\% \\
@@ -247,11 +246,11 @@ T-Test?
 
 todo: difference to fully-connected with market and without
 
-\begin{table}[h]
-	\caption{Difference to equilibrium of fully-connected topology with collateral/cash market as given above}
+\begin{table}[H]
+	\caption{Difference of Ascending-Connected to equilibrium of fully-connected topology with collateral/cash market as given above}
 	\centering
 	\begin{tabular} { l c c c r }
-		& Value & Reference & difference to Reference \\
+		& Result & Reference & difference to Reference \\
 		\hline
 		Asset-Price & 0.713 & 0.688 & +3.6\% \\
 		Loan-Price & 0.383 & 0.381 & +0.5\% \\
@@ -265,11 +264,11 @@ todo: difference to fully-connected with market and without
 	\end{tabular}
 \end{table}
 
-\begin{table}[h]
-	\caption{Difference to equilibrium of fully-connected without collateral/cash market as given in Table \ref{tab:fullyconnected_equilibrium_100Agents_05Bond} of Chapter \ref{ch:results} "Results"}
+\begin{table}[H]
+	\caption{Difference of Ascending-Connected to equilibrium of fully-connected without collateral/cash market as given in Table \ref{tab:fullyconnected_equilibrium_100Agents_05Bond} of Chapter \ref{ch:results} "Results"}
 	\centering
 	\begin{tabular} { l c c c r }
-		& Value & Reference & difference to Reference \\
+		& Result & Reference & difference to Reference \\
 		\hline
 		Asset-Price & 0.713 & 0.689 & +3.5\% \\
 		Loan-Price & 0.383 & 0.384 & -0.3\% \\
@@ -284,18 +283,31 @@ todo: difference to fully-connected with market and without
 \end{table} 
 
 \section{Interpretation of results}
-When interpreting the results the following questions must be answered
+Interpreting the results the following questions must be answered:
 
 \begin{itemize}
-\item does fully-connected reach its theoretical equilibrium as well?
-\item does the new market repair the miss-allocation of wealth in the pessimists-range?
-\item if no why? if yes, does the ascending-connected topology approach theoretical equilibrium now?
-\item how does trading progresses with this new market? same as in previous one?
-\item how does the new market resolve the miss-allocation (turning on after no more possible)?
+\item Does the Fully-Connected topology reach the theoretical equilibrium as well?
+\item Does the new market repair the miss-allocation of wealth in the pessimists-range?
+\item If not why? If yes, does the Ascending-Connected topology approach theoretical equilibrium now?
+\item How does trading progress with this new market? Is it the same as without the new market?
+\item How does the new market resolve the miss-allocation (turning on after no more possible)?
 \end{itemize}
 
-TODO nocheinmal die dynamiken untersuchen: wie passiert schlussendlich das unkollateralisieren von assets? die kollateralisierten assets werden ja nicht unkollateralisiert sondern wandern einfach zu den optimisten. unkollateralisiert werden sie ja nicht. die medianisten haben keinen cash mehr und kaufen assets gegen bonds und unkollateralisieren sie. genau erklären.
+\paragraph{Does the Fully-Connected topology reach the theoretical equilibrium as well?}
+Yes it does. Both visual and statistical results show that it reaches the theoretical equilibrium. The medianist wealth is slightly higher with the new market but that difference, as well as the variations in the other variables are not statistically significant.
 
+\paragraph{Does the new market repair the miss-allocation of wealth in the pessimists-range?}
+Yes it does. The visual results are clear: no more miss-allocations show up within 50 replications.
+
+\paragraph{If yes, does the Ascending-Connected topology approach theoretical equilibrium now?}
+No it does not. Both visual and statistical results show that it misses to reach the theoretical and fully-connected topology with/without new market equilibrium: genauer.
+Clearly the visual and statistical results are different than in the case without the new market but that was expected and is a necessity if the new market repairs the miss-allocation of wealth in the pessimists-range.
+
+\paragraph{How does trading progress with this new market? Is it the same as without the new market?}
+TODO. vermutung: gleich, aber es wird halt auch noch der neue markt verwendet
+
+\paragraph{How does the new market resolve the miss-allocation?}
+TODO nocheinmal die dynamiken untersuchen: wie passiert schlussendlich das unkollateralisieren von assets? die kollateralisierten assets werden ja nicht unkollateralisiert sondern wandern einfach zu den optimisten. unkollateralisiert werden sie ja nicht. die medianisten haben keinen cash mehr und kaufen assets gegen bonds und unkollateralisieren sie. genau erklären.
 
 
 \section{Market dynamics}
@@ -311,14 +323,14 @@ When implementing a new market the market-dynamics are of very importance and th
 	\centering
   \includegraphics[width=1.0\textwidth, angle=0]{FULLYCONNECTED_100_NOCOLLATERALMARKET_MARKETSTIME_SINGLE.png}
   	\caption{Market-activity over time of Fully-Connected topology without collateral/cash market}
-	\label{fig:wealth_FULLYCONNECTED_100_WITHCOLLATERALMARKET_MARKETSTIME_REPL}
+	\label{fig:wealth_FULLYCONNECTED_100_NOCOLLATERALMARKET_MARKETSTIME_SINGLE}
 \end{figure}
 
 \begin{figure}[H]
 	\centering
   \includegraphics[width=1.0\textwidth, angle=0]{FULLYCONNECTED_100_WITHCOLLATERALMARKET_MARKETSTIME_SINGLE.png}
   	\caption{Market-activity over time of Fully-Connected topology with collateral/cash market}
-	\label{fig:wealth_FULLYCONNECTED_100_WITHCOLLATERALMARKET_MARKETSTIME_REPL}
+	\label{fig:wealth_FULLYCONNECTED_100_WITHCOLLATERALMARKET_MARKETSTIME_SINGLE}
 \end{figure}
 
 
@@ -326,14 +338,14 @@ When implementing a new market the market-dynamics are of very importance and th
 	\centering
   \includegraphics[width=1.0\textwidth, angle=0]{ASCENDINGCONNECTED_100_NOCOLLATERALMARKET_MARKETSTIME_SINGLE.png}
 	\caption{Market-activity over time of Ascending-Connected topology without collateral/cash market}
-	\label{fig:wealth_ASCENDINGCONNECTED_100_WITHCOLLATERALMARKET_MARKETSTIME_REPL}
+	\label{fig:wealth_ASCENDINGCONNECTED_100_NOCOLLATERALMARKET_MARKETSTIME_SINGLE}
 \end{figure}
 
 \begin{figure}[H]
 	\centering
   \includegraphics[width=1.0\textwidth, angle=0]{ASCENDINGCONNECTED_100_WITHCOLLATERALMARKET_MARKETSTIME_SINGLE.png}
 	\caption{Market-activity over time of Ascending-Connected topology with collateral/cash market}
-	\label{fig:wealth_ASCENDINGCONNECTED_100_WITHCOLLATERALMARKET_MARKETSACCUM_REPL}
+	\label{fig:wealth_ASCENDINGCONNECTED_100_WITHCOLLATERALMARKET_MARKETSTIME_SINGLE}
 \end{figure}
 
 In the thesis-software it is possible to simulate an ascending-connected topology until no more trades are happening and then activate the new market. This feature was used to create the following figure.

@@ -15,7 +15,7 @@ Note: The numbers in tables resemble always a median-value with the standard-dev
 As  a point-of-reference and as an experimental proof for the correctness of the implementation of the simulation the results of a replication of the theoretical equilibrium and the equilibrium found in \cite{Breuer2015} are given.
 Because equilibrium differs across the number of agents and the type of loan traded to be comparable the same amount of agents and the same loan-type has to be used in the experiments which is 1000 Agents and a 0.5 loan because \cite{Breuer2015} report their equilibria only for a count of 1000 Agents and loans between 0.1 to 0.5.
 
-\begin{table}[h]
+\begin{table}[H]
 	\centering
 	\caption{Theoretical Equilibrium for 1000 Agents and 0.5 loan}
 	\begin{tabular} { l c r }
@@ -29,7 +29,7 @@ Because equilibrium differs across the number of agents and the type of loan tra
 \end{table}
 
 
-\begin{table}[h]
+\begin{table}[H]
 	\centering
 	\caption{Equilibrium in \cite{Breuer2015} for 1000 Agents and 0.5 loan }
 	\begin{tabular} { l c r }
@@ -53,7 +53,7 @@ Because equilibrium differs across the number of agents and the type of loan tra
 	\label{fig:wealth_FULLYCONNECTED_1000_NOCOLLATERALMARKET_REPL}
 \end{figure}
 
-\begin{table}[h]
+\begin{table}[H]
 	\centering
 	\caption{Equilibrium of thesis-implementation}
 	\begin{tabular} { l c r }
@@ -70,7 +70,7 @@ Because equilibrium differs across the number of agents and the type of loan tra
 	\end{tabular}
 \end{table}
 
-\begin{table}[h]
+\begin{table}[H]
 	\centering
 	\caption{Performance of thesis-implementation with 1000 Agents and 0.5 loan}
 	\begin{tabular} { l c r }
@@ -84,6 +84,7 @@ Because equilibrium differs across the number of agents and the type of loan tra
 
 TODO: difference to breuer 
 TODO: difference to theoretical equilibrium
+TODO: use same tables as in "a new market" and use statistical tests after this is solved for "a new market"
 
 \section{Experiments configuration}
 In the following experiments 100 Agents were used, all markets (Asset/Cash, Loan/Cash, Asset/Loan) were enabled, as loan-type 0.5 was selected and the number of replications run was 50. A replication was terminated after 1000 failed transactions in a row. Note that if trading is not possible any more before  1000 failed transactions have been reached in a row, the simulation is halted and thus it is possible that it terminates earlier as can be seen for the Ascending-Connected Importance Sampling topology.
@@ -100,7 +101,7 @@ The 0.5 loan was selected because its a risky one which is important as riskless
 
 Obviously the whole simulation-process is a random-process with an equilibrium (different for each topology) as the fixed-point solution thus one needs replications to reduce noise. The number of 50 replications was chosen because it is a good match between processing-power requirements and overall reduction of noise - increasing the number e.g. to 100 or 200 would not result in much better results but would need much longer to run. All facts can be seen and derived when using 50 replications thus for all figures 50 replications were used unless stated otherwise e.g. a single run.
 
-\begin{table}[h]
+\begin{table}[H]
 	\centering
 	\caption{Configuration for all experiments}
 	\begin{tabular} { l c r }
@@ -113,7 +114,7 @@ Obviously the whole simulation-process is a random-process with an equilibrium (
 	\end{tabular}
 \end{table}
 
-\begin{table}[h]
+\begin{table}[H]
 	\centering
 	\caption{Theoretical Equilibrium for 100 Agents}
 	\begin{tabular} { l c r }
@@ -137,7 +138,7 @@ This topology serves as the major point-of-reference for the other experiments a
 	\label{fig:wealth_FULLYCONNECTED_100_NOCOLLATERALMARKET_REPL}
 \end{figure}
 
-\begin{table}[h]
+\begin{table}[H]
 	\caption{Equilibrium of Fully-Connected topology}
 	\centering
 	\begin{tabular} { l c r }
@@ -155,7 +156,7 @@ This topology serves as the major point-of-reference for the other experiments a
 	\label{tab:fullyconnected_equilibrium_100Agents_05Bond}
 \end{table} 
 
-\begin{table}[h]
+\begin{table}[H]
 	\caption{Performance of Fully-Connected topology}
 	\centering
 	\begin{tabular} { l c r }
@@ -167,6 +168,8 @@ This topology serves as the major point-of-reference for the other experiments a
 	\end{tabular}
 \end{table}
 
+TODO: difference to theoretical equilibrium
+TODO: use same tables as in "a new market" and use statistical tests after this is solved for "a new market"
 
 \section{Ascending-Connected Topology} 
 
@@ -177,7 +180,7 @@ This topology serves as the major point-of-reference for the other experiments a
 	\label{fig:wealth_ASCENDINGCONNECTED_100_NOCOLLATERALMARKET_REPL}
 \end{figure}
 
-\begin{table}[h]
+\begin{table}[H]
 	\caption{Equilibrium of Ascending-Connected topology}
 	\centering
 	\begin{tabular} { l c r }
@@ -195,7 +198,7 @@ This topology serves as the major point-of-reference for the other experiments a
 	\label{tab:ascendingconnected_equilibrium_100Agents_05Bond}
 \end{table} 
 
-\begin{table}[h]
+\begin{table}[H]
 	\caption{Performance of Ascending-Connected topology}
 	\centering
 	\begin{tabular} { l c r }
@@ -207,6 +210,9 @@ This topology serves as the major point-of-reference for the other experiments a
 	\end{tabular}
 \end{table}
 
+TODO: difference to theoretical equilibrium
+TODO: use same tables as in "a new market" and use statistical tests after this is solved for "a new market"
+
 \subsection{Ascending-Connected Importance Sampling}
 \begin{figure}[H]
 	\centering
@@ -215,7 +221,7 @@ This topology serves as the major point-of-reference for the other experiments a
 	\label{fig:wealth_ASCENDINGCONNECTED_IS_100_NOCOLLATERALMARKET_REPL}
 \end{figure}
 
-\begin{table}[h]
+\begin{table}[H]
 	\caption{Equilibrium of Ascending-Connected Importance Sampling topology}
 	\centering
 	\begin{tabular} { l c r }
@@ -232,7 +238,7 @@ This topology serves as the major point-of-reference for the other experiments a
 	\end{tabular}
 \end{table} 
 
-\begin{table}[h]
+\begin{table}[H]
 	\caption{Performance of Ascending-Connected Importance Sampling topology}
 	\centering
 	\begin{tabular} { l c r }
@@ -247,5 +253,7 @@ This topology serves as the major point-of-reference for the other experiments a
 Note that in this case the matching-probabilities are such that upon the first failed transaction the equilibrium has reached as no agent can trade with each other anymore which results in just on single failed transaction.
 
 TODO: difference to fully-connected 
+TODO: difference to theoretical equilibrium
+TODO: use same tables as in "a new market" and use statistical tests after this is solved for "a new market"
 
 \end{document}
