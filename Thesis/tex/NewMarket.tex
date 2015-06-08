@@ -140,8 +140,8 @@ As experiment-configuration the same is used as given in Chapter \ref{ch:results
 \end{table}
 
 TODO: irgendeine statistischer test, der anhand mittelwert und standardabweichung vergleichen lässt?
-T-Test? konfidenz-interval?
-HV fragen
+T-Test und F-Test.
+aber kommen kaum vernünftige werte heraus
 
 \begin{table}[H]
 	\caption{Difference of Fully-Connected topology to theoretical equilibrium as given in Table \ref{tab:theoretical_equilibrium_100Agents_05Bond} of Chapter \ref{ch:results} "Results"}
@@ -174,6 +174,11 @@ HV fragen
 		\hline
 	\end{tabular}
 \end{table} 
+
+TODO: irgendeine statistischer test, der anhand mittelwert und standardabweichung vergleichen lässt?
+T-Test und F-Test.
+aber kommen kaum vernünftige werte heraus
+
 
 \subsection{Ascending-Connected topology}
 \begin{figure}[H]
@@ -226,6 +231,11 @@ HV fragen
 	\end{tabular}
 \end{table} 
 
+TODO: irgendeine statistischer test, der anhand mittelwert und standardabweichung vergleichen lässt?
+T-Test und F-Test.
+aber kommen kaum vernünftige werte heraus
+
+
 \begin{table}[H]
 	\caption{Difference of Ascending-Connected topology to equilibrium without collateral/cash market as given in Table \ref{tab:ascendingconnected_equilibrium_100Agents_05Bond} of Chapter \ref{ch:results} "Results"}
 	\centering
@@ -244,7 +254,9 @@ HV fragen
 	\end{tabular}
 \end{table}
 
-todo: difference to fully-connected with market and without
+TODO: irgendeine statistischer test, der anhand mittelwert und standardabweichung vergleichen lässt?
+T-Test und F-Test.
+aber kommen kaum vernünftige werte heraus
 
 \begin{table}[H]
 	\caption{Difference of Ascending-Connected to equilibrium of fully-connected topology with collateral/cash market as given above}
@@ -264,6 +276,11 @@ todo: difference to fully-connected with market and without
 	\end{tabular}
 \end{table}
 
+TODO: irgendeine statistischer test, der anhand mittelwert und standardabweichung vergleichen lässt?
+T-Test und F-Test.
+aber kommen kaum vernünftige werte heraus
+
+
 \begin{table}[H]
 	\caption{Difference of Ascending-Connected to equilibrium of fully-connected without collateral/cash market as given in Table \ref{tab:fullyconnected_equilibrium_100Agents_05Bond} of Chapter \ref{ch:results} "Results"}
 	\centering
@@ -281,6 +298,11 @@ todo: difference to fully-connected with market and without
 		\hline
 	\end{tabular}
 \end{table} 
+
+TODO: irgendeine statistischer test, der anhand mittelwert und standardabweichung vergleichen lässt?
+T-Test und F-Test.
+aber kommen kaum vernünftige werte heraus
+
 
 \section{Interpretation of results}
 Interpreting the results the following questions must be answered:
@@ -306,17 +328,18 @@ Clearly the visual and statistical results are different than in the case withou
 When implementing a new market the market-dynamics are of very importance and thus the following questions must be answered.
 
 \begin{itemize}
+\item Can the trading stages 1-4 be identified too as given in \cite{Breuer_2015}?
 \item How does trading progress with this new market? Is it the same as without the new market?
 \item How does the new market resolve the miss-allocation (turning on after no more possible)?
 \item When and how much is each market active? 
-\item Can the trading stages 1-4 be identified too as given in \cite{Breuer_2015}?
 \item How do the market-activities change when a new market is introduced?
 \end{itemize}
 
-To answer these questions one must look closely at the market-dynamics.
-There are trading stages but due to the new market or the different topology they are quite different from the ones found in \cite{Breuer_2015}. The method used to find these stages is observation of many single runs and refining the observations over and over again. Replications provide no real value here as one needs to look very carefully into the dynamics of single runs instead of the mean of multiple runs.
+To answer these questions one must look closely at the market-dynamics. There are definitely trading stages but due to the new market or the different topology they are expected to be quite different from the ones found in \cite{Breuer_2015}. The method used to find these stages is through observation of a single run and refining and validating the derived facts over many additional runs. Note that replications provide no real value here as one needs to look very carefully into the dynamics of single runs instead of the mean of multiple runs.
 
 \subsection{Fully-Connected with new Market}
+
+4 Stages were identified which are quite different from the ones given in \cite{Breuer_2015}.
 
 \begin{figure}[H]
 	\centering
@@ -325,43 +348,70 @@ There are trading stages but due to the new market or the different topology the
 	\label{fig:markets_FULLYCONNECTED_100_WITHCOLLATERALMARKET_MARKET_STAGES}
 \end{figure}
 
-Stage 1:
-pessimists visible already, trade teir assets
-optimists visible too but not medianists
+\paragraph{Stage 1}
+In this stage the pessimists become visible rapidly as they sell their assets and increase their cash wealth. One can get also a sense of the more optimistic range of agents as they gather assets both free and collateralized. The medianists are not visible yet.
 
-asset/cash market dominates but goes slowly down
-loan/cash market fluctuates around same point
-collateral/cash market raises
-asset/loan market hardly active
+\medskip
 
-stage 2:
-collateralized assets are traded towards the optimists
-optimists visible too but not medianists
+The asset/cash market dominates but goes down slowly as fewer and fewer pessimists trade assets against cash compared to the very beginning. 
+The loan/cash market fluctuates around the same point as loans are traded more or less equally the same.
+The collateral/cash market begins quite low and raises as more and more collateralized assets are created by pessimists and need to be sold again using the new market.
+The asset/loan market is hardly active as there is no strong need for its features yet.
 
-asset/cash market continues to go down
-loan/cash market fluctuates around same point
-collateral/cash market very active
-asset/loan market hardly active but raises fast
+\begin{figure}[H]
+	\centering
+  \includegraphics[width=1.0\textwidth, angle=0]{fc/FULLYCONNECTED_100_WITHCOLLATERALMARKET_WEALTH_STAGE_1.png}
+  	\caption{Wealth-Distribution of Fully-Connected topology with collateral/cash market during Stage 1}
+	\label{fig:markets_FULLYCONNECTED_100_WITHCOLLATERALMARKET_WEALTH_STAGE_1}
+\end{figure}
 
-stage 3:
-i1-point is emerging
-pessimists inactive
-medianists are emerging
+\paragraph{Stage 2}
+The collateralized assets are traded from the pessimists towards the optimists and the optimists cristalize themselves even more but no medianists are visible yet.
 
-asset/cash market continues to go down and declines completely
-loan/cash market goes down but does not decline
-collateral/cash market goes down an declines too
-asset/loan market raises above others and dominates heavily
+\medskip
 
-stage 4:
-i0-point is finalizing
-pure optimists inactive
-final transactions around i0 point: finalizing medianists
+The asset/cash market continues to go down as the cash holdings of the pessimists begin to decline.
+The loan/cash market fluctuates around the same point.
+Now the collateral/cash market becomes very active as more and more collateralized assets need to be traded towards the optimists.
+At the beginning of this Stage the asset/loan market is hardly active but raises fast towards the end of it as the optimists are out of cash and need to distribute the collateralized assets.
 
-asset/loan market goes down again, why?
-loan/cash market goes up - where does the cash come from?
+\begin{figure}[H]
+	\centering
+  \includegraphics[width=1.0\textwidth, angle=0]{fc/FULLYCONNECTED_100_WITHCOLLATERALMARKET_WEALTH_STAGE_2.png}
+  	\caption{Wealth-Distribution of Fully-Connected topology with collateral/cash market during Stage 2}
+	\label{fig:markets_FULLYCONNECTED_100_WITHCOLLATERALMARKET_WEALTH_STAGE_2}
+\end{figure}
 
+\paragraph{Stage 3}
+The pessimists have gone inactive as they hold no more wealth they can trade. The i0-point is emerging and the medianists and pure optimists begin to show up.
 
+\medskip
+
+Because the pessimists are inactive now and hold no more assets the asset/cash and collateral/cash markets go down and declines completely.
+The loan/cash market goes down but does not decline.
+The medianists and optimists which are emerging have no other possibility than to trade on the asset/loan market to further distribute their collateralized assets among each other which is the reason for the raise of the asset/loan market above all others and its heavy domination.
+
+\begin{figure}[H]
+	\centering
+  \includegraphics[width=1.0\textwidth, angle=0]{fc/FULLYCONNECTED_100_WITHCOLLATERALMARKET_WEALTH_STAGE_3.png}
+  	\caption{Wealth-Distribution of Fully-Connected topology with collateral/cash market during Stage 3}
+	\label{fig:markets_FULLYCONNECTED_100_WITHCOLLATERALMARKET_WEALTH_STAGE_3}
+\end{figure}
+
+\paragraph{Stage 4}
+Finally the i1-point has emerged and both i0 and i1 are finalizing. The only active agents remaining are around these two points where the pure optimists trade with the medianists to finalize i1 and the medianists with the next closest pessimists to finalize i0 where the very last transactions occur around i0.
+
+\medskip
+
+The asset/loan market goes down until i1 has finalized as the collateralized asset allocation has nearly reached its equilibrium.
+The loan/cash market goes up as agents around i0 are still refining the point as the equilibrium of the medianists have not yet reached and thus bonds are traded against cash as i0 is the connecting point between pessimists with cash and medianists with bond which enables the loan/cash market to trade again.
+
+\begin{figure}[H]
+	\centering
+  \includegraphics[width=1.0\textwidth, angle=0]{fc/FULLYCONNECTED_100_WITHCOLLATERALMARKET_WEALTH_STAGE_4.png}
+  	\caption{Wealth-Distribution of Fully-Connected topology with collateral/cash market during Stage 4}
+	\label{fig:markets_FULLYCONNECTED_100_WITHCOLLATERALMARKET_WEALTH_STAGE_4}
+\end{figure}
 
 \subsection{Ascending-Connected without new Market}
 
