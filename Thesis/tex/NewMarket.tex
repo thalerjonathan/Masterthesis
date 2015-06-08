@@ -314,8 +314,54 @@ When implementing a new market the market-dynamics are of very importance and th
 \end{itemize}
 
 To answer these questions one must look closely at the market-dynamics.
+There are trading stages but due to the new market or the different topology they are quite different from the ones found in \cite{Breuer_2015}. The method used to find these stages is observation of many single runs and refining the observations over and over again. Replications provide no real value here as one needs to look very carefully into the dynamics of single runs instead of the mean of multiple runs.
 
 \subsection{Fully-Connected with new Market}
+
+\begin{figure}[H]
+	\centering
+  \includegraphics[width=1.0\textwidth, angle=0]{fc/FULLYCONNECTED_100_WITHCOLLATERALMARKET_MARKET_STAGES.png}
+  	\caption{Market-activity stages of Fully-Connected topology with collateral/cash market}
+	\label{fig:markets_FULLYCONNECTED_100_WITHCOLLATERALMARKET_MARKET_STAGES}
+\end{figure}
+
+Stage 1:
+pessimists visible already, trade teir assets
+optimists visible too but not medianists
+
+asset/cash market dominates but goes slowly down
+loan/cash market fluctuates around same point
+collateral/cash market raises
+asset/loan market hardly active
+
+stage 2:
+collateralized assets are traded towards the optimists
+optimists visible too but not medianists
+
+asset/cash market continues to go down
+loan/cash market fluctuates around same point
+collateral/cash market very active
+asset/loan market hardly active but raises fast
+
+stage 3:
+i1-point is emerging
+pessimists inactive
+medianists are emerging
+
+asset/cash market continues to go down and declines completely
+loan/cash market goes down but does not decline
+collateral/cash market goes down an declines too
+asset/loan market raises above others and dominates heavily
+
+stage 4:
+i0-point is finalizing
+pure optimists inactive
+final transactions around i0 point: finalizing medianists
+
+asset/loan market goes down again, why?
+loan/cash market goes up - where does the cash come from?
+
+
 
 \subsection{Ascending-Connected without new Market}
 
@@ -370,6 +416,38 @@ The asset/cash market lies dormant as well as because the pessimists are no more
 	\label{fig:markets_ASCENDINGCONNECTED_100_NOCOLLATERALMARKET_WEALTH_STAGE_3}
 \end{figure}
 
+\subsection{Ascending-Connected with new Market enabled after 1000 successive failed Transactions}
+Using the thesis-software it is possible to start a simulation-run on ascending-connected topology without the collateral/cash market and enabling it after 1000 successive failed transactions which gives interesting hints about how the spikes of collateralized assets in the pessimists-range are resolved and distributed over the already existing pure optimists.
+
+\medskip
+
+Of course there are the same 3 Stages to be found as above whereas the deferred enabling of the collateral/cash market adds 2 new Stages.
+
+\begin{figure}[H]
+	\centering
+  \includegraphics[width=1.0\textwidth, angle=0]{ac/ASCENDINGCONNECTED_100_DEFERREDCOLLATERALMARKET_MARKET_STAGES.png}
+  	\caption{Market-activity stages of Ascending-Connected topology with deferred activated collateral/cash market}
+	\label{fig:markets_ASCENDINGCONNECTED_100_DEFERREDCOLLATERALMARKET_MARKET_STAGES}
+\end{figure}
+
+\paragraph{Stage 4}
+The collateralized assets are traded against cash and sum up at the i0-point where the first agent has no more cash. 
+
+\begin{figure}[H]
+	\centering
+  \includegraphics[width=1.0\textwidth, angle=0]{ac/ASCENDINGCONNECTED_100_DEFERREDCOLLATERALMARKET_WEALTH_STAGE_4.png}
+  	\caption{Wealth-Distribution of Ascending-Connected topology with deferred activated collateral/cash market during Stage 4}
+	\label{fig:markets_ASCENDINGCONNECTED_100_DEFERREDCOLLATERALMARKET_WEALTH_STAGE_4}
+\end{figure}
+
+\paragraph{Stage 5}
+Now the asset/loan market becomes 100\% dominant again and the collateralized assets are traded through the medianists towards the pure optimists as they have no more cash and can only trade anymore on this remaining active market.
+
+\begin{figure}[H]
+	\centering
+  \includegraphics[width=1.0\textwidth, angle=0]{ac/ASCENDINGCONNECTED_100_DEFERREDCOLLATERALMARKET_WEALTH_STAGE_5.png}
+  	\caption{Wealth-Distribution of Ascending-Connected topology with deferred activated collateral/cash market during Stage 5}	\label{fig:markets_ASCENDINGCONNECTED_100_DEFERREDCOLLATERALMARKET_WEALTH_STAGE_5}
+\end{figure}
 
 \subsection{Ascending-Connected with new Market}
 
@@ -443,7 +521,7 @@ TODO. vermutung: gleich, aber es wird halt auch noch der neue markt verwendet
 TODO nocheinmal die dynamiken untersuchen: wie passiert schlussendlich das unkollateralisieren von assets? die kollateralisierten assets werden ja nicht unkollateralisiert sondern wandern einfach zu den optimisten. unkollateralisiert werden sie ja nicht. die medianisten haben keinen cash mehr und kaufen assets gegen bonds und unkollateralisieren sie. genau erklären.
 
 \paragraph{Can the trading stages 1-4 be identified too as given in \cite{Breuer_2015}?}
-There are trading stages but due to the new market or the different topology they are quite different from the ones found in \cite{Breuer_2015}. The method used to find these stages is observation of many single runs and refining the observations over and over again. Replications provide no real value here as one needs to look very carefully into the dynamics of single runs instead of the mean of multiple runs.
+
 
 
 \section{Conclusions on new Market}
