@@ -4,27 +4,76 @@
 \graphicspath{{./figures/interpretation/}}	%specifying the folder for the figures
 
 \chapter{Interpretation}
-In this chapter interpretation of the results of Chapter \ref{ch:results} "Results" are given and discussed where the central question is whether the ascending-connected topology satisfies the hypothesis or not. Thus only the Ascending-Connected topology is handled - both with and without importance sampling - because it is the most minimal network which satisfies the requirements for the hypothesis. The Hub-, Scale-Free and Small-World Topologies are handled in appendix \ref{app:interpretation} as they turn out to fall far from satisfying the hypothesis because almost all of them do not satisfy the requirements for the hypothesis. Special treatment is given to Erdos-Renyi and Watts-Strogatz as they satisfy the hypothesis when using specific parameters for their generating algorithms.
+
+In this chapter the interpretation of the results of Chapter \ref{ch:results} "Results" are given and discussed where the central question is whether the Ascending-Connected topology satisfies the hypothesis or not. Thus only this topology is handled - both with and without importance sampling - because it is the most minimal network which satisfies the requirements for the hypothesis. The interpretations for the results of Hub-, Scale-Free and Small-World Topologies are handled in appendix \ref{app:results} "Results for Hub-Based, Scale-Free and Small-World" but only to a minimal extent as they turn out to fall far from satisfying the hypothesis and the equilibrium because almost all of them do not meet the requirements.
 
 \section{Validating the Hypothesis}
-When looking at the results of ascending-connected topology with and without importance sampling from Chapter \ref{ch:results} "Results" of figure \ref{fig:wealth_ASCENDINGCONNECTED_IS_100_NOCOLLATERALMARKET_REPL} and \ref{fig:wealth_ASCENDINGCONNECTED_100_NOCOLLATERALMARKET_REPL} and comparing it with the results of the fully-connected topology of figure \ref{fig:wealth_FULLYCONNECTED_100_NOCOLLATERALMARKET_REPL} it becomes immediately clear that the equilibrium is different from the equilibrium of the fully-connected network and thus theoretical equilibrium is not reached in the case of ascending-connected topology neither with or without importance sampling. Although the visual results come quite close to the fully-connected one - there is a clear distinction between pessimists, medianists and optimists and the wealth-distribution looks about the same as in fully-connected - there remain artefacts in the range of the pessimists. Thus the hypothesis is proven wrong by experiment.
+When comparing the results of Ascending-Connected topology with and without importance sampling from Chapter \ref{ch:results} "Results" of figure \ref{fig:wealth_ASCENDINGCONNECTED_IS_100_NOCOLLATERALMARKET_REPL} and \ref{fig:wealth_ASCENDINGCONNECTED_100_NOCOLLATERALMARKET_REPL} with the results of the Fully-Connected topology of figure \ref{fig:wealth_FULLYCONNECTED_100_NOCOLLATERALMARKET_REPL} it becomes immediately clear that the equilibrium is different from the one of the Fully-Connected network and thus theoretical equilibrium is not reached in the case of Ascending-Connected topology neither with or without importance sampling. Although the visual results come quite close to the Fully-Connected one - there is a clear distinction between pessimists, medianists and optimists and the wealth-distribution looks about the same as in fully-connected - there remain serious artefacts in the range of the pessimists. Thus the hypothesis is proven wrong by experiment.
 
 \section{Analysing artefacts}
-Obviously the artefacts in the range of the pessimists indicate a miss-allocation of wealth, which are in fact collateralized assets. Pessimists, as noted in Chapter \ref{ch:leverace_cycle} "The Leverage Cycle", are maximally short on assets and bonds and hold only cash, thus it is clearly a miss-allocation. As will be shown it comes from the fact that the pessimists want to sell but no neighbour is able to buy any more - a scenario which is not possible in fully-connected topology and is thus unique to ascending-connected networks with or without importance sampling.
+Obviously the artefacts in the range of the pessimists indicate a miss-allocation of wealth, which are in fact collateralized assets. Pessimists, as noted in Chapter \ref{ch:leverace_cycle} "The Leverage Cycle", are maximally short on assets and bonds and hold only cash, thus it is clearly a miss-allocation. As will be shown it comes from the fact that the pessimists want to sell but no neighbour is able to buy any more - a scenario which is not possible in Fully-Connected topology and is thus unique to Ascending-Connected networks with and without importance sampling.
 
 \subsection{Dynamics of a single run}
-To better understand how such artefacts arise one needs to investigate the dynamics of a single run of ascending-connected topology.
+\label{sub:dynamics_singlerun}
+To better understand how such artefacts arise one needs to investigate the dynamics of a single run of the Ascending-Connected topology. The tools used  
+are both the market-activity and wealth-distribution diagrams where the former one shows during which points in time - which are the successful matching-rounds - of the simulation each market is active. Being active means a successful match on a given market which implies that in a successful matching-round only one market can be active as only one match on a specific market happens during a successful matching round. Because of this a moving window of size 100 is used to create a moving-average filter over all active markets where the result is normalized and all market-activity sums to 1.0 at each point in time of the diagram. This allows for a very good visual analysis of distinct trading-stages because noise is reduced but the overall trend of a market can be still clearly seen.
+
+\medskip
+
+3 trading-stages can be identified in the market-activity diagram of Ascending-Connected topology.
 
 \begin{figure}[H]
 	\centering
-  \includegraphics[width=1.0\textwidth, angle=0]{ASCENDINGCONNECTED_100_NOCOLLATERALMARKET_SINGLE.png}
-	\caption{Wealth-Distribution of Ascending-Connected topology after a single run}
-	\label{fig:wealth_ASCENDINGCONNECTED_IS_100_NOCOLLATERALMARKET_SINGLE}
+  \includegraphics[width=1.0\textwidth, angle=0]{ASCENDINGCONNECTED_100_NOCOLLATERALMARKET_MARKET_STAGES.png}
+  	\caption{Market-activity stages of Ascending-Connected topology}
+	\label{fig:markets_ASCENDINGCONNECTED_100_NOCOLLATERALMARKET_MARKET_STAGES}
 \end{figure}
 
-\medskip 
+\paragraph{Stage 1}
+The allocations are very chaotic overall but pessimists can be identified already as they sell their free assets against cash thus holding primarily cash but lots of collateralized assets are in the pessimists-range as well. Real distinction of optimists is not yet visible and medianists are far from showing up.
 
-The wealth stabilizes from both the left and the right end of the optimism-scale towards the i1-point where medianists become optimists - around this point the last trades will happen.
+\medskip
+
+The asset/cash and loan/cash markets are very dominant in this stage as the pessimists try to get cash for their free assets where the asset/loan market is hardly active but contributes enough to create the miss-allocation of the collateralized assets in the pessimists-range already.
+
+\begin{figure}[H]
+	\centering
+  \includegraphics[width=1.0\textwidth, angle=0]{ASCENDINGCONNECTED_100_NOCOLLATERALMARKET_WEALTH_STAGE_1.png}
+  	\caption{Wealth-Distribution of Ascending-Connected topology during Stage 1}
+	\label{fig:markets_ASCENDINGCONNECTED_100_NOCOLLATERALMARKET_WEALTH_STAGE_1}
+\end{figure}
+
+\paragraph{Stage 2}
+The pessimists which hold collateralized assets try to trade them up to the optimists which looks like waves when visualisizing it in the thesis-software. The optimists are now about to emerge as most of them are maximally short on cash and hold either free or collateralized assets. The medianists are still not visible yet.
+
+\medskip
+		
+The asset/cash market seems to go down in the long term while the loan/cash and asset/loan markets seems to increase as fewer and fewer assets can be traded against cash and the optimists are already very low on cash thus the asset/loan market is naturally increasing as they can trade only on this market any more.
+		
+\begin{figure}[H]
+	\centering
+  \includegraphics[width=1.0\textwidth, angle=0]{ASCENDINGCONNECTED_100_NOCOLLATERALMARKET_WEALTH_STAGE_2.png}
+  	\caption{Wealth-Distribution of Ascending-Connected topology during Stage 2}
+	\label{fig:markets_ASCENDINGCONNECTED_100_NOCOLLATERALMARKET_WEALTH_STAGE_2}
+\end{figure}
+		
+\paragraph{Stage 3}
+The pessimists lie dormant and are completely inactive. The medianists begin to show up holding only bonds and the real optimists begin to crystallize holding only collateralized assets. These two frontiers move towards each other as only collateralized assets can be traded any more as both medianists and optimists hold only collateralized assets and bonds.
+
+\medskip
+
+The asset/cash market lies dormant because the pessimists are no more able to trade and the optimists are maximally low on cash. The loan/cash market is inactive too whereas the asset/loan market takes over and dominates 100\% as only collateralized assets are traded any more as stated above.
+
+\begin{figure}[H]
+	\centering
+  \includegraphics[width=1.0\textwidth, angle=0]{ASCENDINGCONNECTED_100_NOCOLLATERALMARKET_WEALTH_STAGE_3.png}
+  	\caption{Wealth-Distribution of Ascending-Connected topology during Stage 3}
+	\label{fig:markets_ASCENDINGCONNECTED_100_NOCOLLATERALMARKET_WEALTH_STAGE_3}
+\end{figure}
+
+\paragraph{Deriving the emerging of the artefacts}
+
+The wealth stabilizes from both the left and the right end of the optimism-scale towards the i2-point where medianists become optimists - around this point the last trades will happen.
 
 \medskip 
 
@@ -32,11 +81,11 @@ Pessimists try to sell all their assets against cash to the neighbour with highe
 
 \medskip 
 
-Optimists try to buy as much assets as they can get from the neighbour with lower optimism-factor. In the beginning they use cash and after they've ran out of cash they buy assets against bonds.
+Optimists try to buy as much assets as they can get from the neighbour with lower optimism-factor. In the beginning they use cash and after they've run out of cash they buy assets against bonds.
 
 \medskip 
 
-The medianists serve as connection between the pessimists and optimists, serving in transferring the assets to the optimists by buying from lower optimism and selling to higher ones either through asset against cash or asset against bond.
+The medianists serve as connection between the pessimists and optimists transferring the assets to the optimists by buying from agents with lower optimism and selling to higher ones either through asset against cash or asset against bond.
 
 \medskip 
 
@@ -44,37 +93,44 @@ Thus the assets move from the pessimists through the ascending chain of optimism
 
 \medskip 
 
-It is important to understand that all agents despite their optimism factor make offers on all markets if they are able to, e.g. cash, collateral or bond constraints satisfied. This implies that pessimists trade bonds as well as assets against bonds - the agents are not defined exogenous as pessimists/medianist/optimists but this property is emerges during the simulation.
+It is important to understand that all agents despite their optimism factor make offers on all markets if they are able to and their cash, collateral or bond constraints are satisfied. This implies that pessimists trade bonds as well as assets against bonds although they turn out to be pessimists. Note that the agents are not defined exogenous as pessimists/medianist/optimists but this property emerges during the simulation.
 
 \medskip 
 
-Thus pessimists gain wealth in collateralized assets which can be seen by the green spikes with the same amount of negative bonds as those assets are bought against bond - see Chapter \ref{ch:leverage_cycle}. Of course they try to sell it to neighbours with higher optimism factor but this is only possible if these neighbours are able to buy which they can if they hold enough bonds to buy the offered asset for the offered amount of bonds.
+Thus pessimists gain wealth in collateralized assets too which can be seen by the green spikes with the same amount of negative bonds as those assets are bought against bond. Of course they try to sell it to neighbours with higher optimism factor but this is only possible if these neighbours are able to buy which they can only if they hold enough positive bonds to buy the offered asset for the offered amount of bonds.
 
 \medskip 
 
-Whether an agent has enough wealth to buy from a seller is more or less random and depends on its trading history. Matching happens randomly and thus it is possible that the neighbourhood of a seller "dries up" as the potential buyers sold all their good to the next agent with higher optimism factor and become thus unable to buy from the potential seller because they have no more bonds to buy assets against bonds. In such a case a potential pessimist seller of collateralized assets is then cut from its environment and becomes unable to trade any more resulting in a miss-allocation in collateralized assets.
+Whether an agent has enough wealth to buy from a seller is more or less random and depends on its trading history. Matching happens randomly and thus it is possible that the neighbourhood of a seller "dries up" as the potential buyers sold all their goods to the next agent with higher optimism factor and become thus unable to buy from the potential seller because they have no more positive bonds to buy assets against bonds. In such a case a potential pessimist seller of collateralized assets is then cut from its environment and becomes unable to trade any more resulting in a miss-allocation in collateralized assets.
 
 \medskip 
 
-It is also possible for a group of agents to get cut from its environment through this random trading-process. In this case this "island" of agents still trades between each other resulting in the uncollateraliziing of assets which immediately are traded towards optimists but as soon as a point is reached where no buyer is available with enough bonds to buy collateralized assets this island is also incapable of trading any more resulting in an island of miss-allocated wealth.
+It is also possible for a group of agents to get cut from its environment through this random trading-process. In this case the agents within this "island" still trade between each other resulting in the uncollateraliziing of assets which immediately are traded towards optimists but as soon as a point is reached where no buyer is available with enough bonds to buy collateralized assets this island is also incapable of trading any more resulting in an island of miss-allocated wealth.
 
 \medskip 
 
-An important fact to notice is that the artefacts must not necessarily show up. It is possible for a single run to finish without these artefacts showing up. This is due to the random-process of sweeping and matching and thus the artefacts are subject to this random process too. Importance sampling elevates this problem a bit as it allows for more trades as the matching probabilities are very much increased but fails in the end for the same reason as the simulation without it - the artefacts are just "smaller" but show up almost always.
+An important fact to notice is that the artefacts must not necessarily show up. It is possible for a single run to finish without these artefacts showing up. This is due to the random-process of sweeping and matching and thus the artefacts are subject to this random process too as noted in section \ref{sec:implementation_performanceImprovement} "Sweeping and Matching". Importance sampling elevates this problem a bit as it allows for more trades as the matching probabilities are very much increased but fails in the end for the same reason as the simulation without it - the artefacts are just "smaller" but show up almost always.
+
+\begin{figure}[H]
+	\centering
+  \includegraphics[width=1.0\textwidth, angle=0]{ASCENDINGCONNECTED_100_NOCOLLATERALMARKET_SINGLE.png}
+	\caption{Final wealth-distribution of Ascending-Connected topology after a single run}
+	\label{fig:wealth_ASCENDINGCONNECTED_IS_100_NOCOLLATERALMARKET_SINGLE}
+\end{figure}
 
 \section{Extending the Hypothesis}
-After it has become clear that the hypothesis is wrong the question arises what needs to be done to correct the it. It is clear that a mechanism needs to be found which prevents or resolves the arising of the artefacts within the pessimist wealth-range. Obviously two solutions are available.
+After it has become clear that the hypothesis is wrong the question arises what needs to be done to correct it. It is clear that a mechanism needs to be found which prevents or resolves the arising of the artefacts within the pessimist wealth-range. Obviously two solutions are available.
 
 \subsection{Approaching fully connectedness}
 Increasing the connectedness of the topology increases the probability of global-optimal trades and allows more agents to trade between each other and thus the probability of resolving islands or artefacts of wealth miss-allocation is increased with the density of connectedness.
-The experiments of ascending-connected topology with short-cuts were desigend to get an understanding how the simulation behaves with increasing connectedness and also how the two types fully and regular of connectedness influence the results.
-It seems that full shortcuts seem to help dramatically although the number of full shortcuts seem to be dependent on the number of agents.
-TODO: verweis auf results appendix b und genaue interpretation davon.
-
+The experiments of ascending-connected topology with short-cuts were desigend to develop an understanding how the simulation behaves with increasing connectedness and also how the two types of  fully- and regular-connectedness influence the results.
+It seems that full short-cuts seem to help dramatically in reducing the miss-allocations where the number of full short-cuts seems to be dependent on the number of agents which this thesis leaves for further research. See section \ref{app:results_acShortCuts} "Ascending-Connected with short-cuts" in appendix \ref{app:results} for a short overview of the results and interpretation of short-cut based Ascending-Connected topologies.
+\linebreak
 Of course in real environments approaching fully connectedness is not always possible and thus only the other mechanism is left as an option to resolve the artefacts.
 
 \subsection{Re-Enabling trading}
-Another way to look at the arising of the artefacts is because of suboptimal trades. \cite{Breuer2015} were confronted with this circumstance when they introduced the "Asset against Bond" Market where they found that the equilibrium was fundamentally different from theoretical one because agents were trapped in suboptimal trades and couldn't reverse their decisions made earlier. As a solution they introduced the "Bonds-Pledgeability" (BP) mechanism which allows to trade bonds in both ways instead of only gathering them and not being able to sell them - see \ref{ch:leverage_cycle} for a more in-depth discussion of the BP-Mechanism.
+\label{ch:interpretation_reenablingTrading}
+Another way to look at the arising of the artefacts is because of suboptimal trades. \cite{Breuer2015} were confronted with this circumstance when they introduced the asset/bond Market where they found that the equilibrium was fundamentally different from the theoretical one because agents were trapped in suboptimal trades and couldn't reverse their decisions made earlier. The trades where suboptimal because each agent assigns depending on its optimism factor a different bond-value to each asset. As a solution they introduced the "Bonds-Pledgeability" (BP) mechanism which allows to trade bonds in both ways instead of only gathering them and not being able to sell them - see chapter \ref{ch:leverageCycle} "The Leverage Cycle" for a more in-depth discussion of the BP-Mechanism.
 
 \medskip 
 
@@ -82,6 +138,6 @@ Thus if those artifacts are treated as suboptimal trades one needs to introduce 
 
 \medskip 
 
-See Chapter \ref{ch:new_market} "A new Market" for the implementation and results of this new mechanism.
+See Chapter \ref{ch:newMarket} "A new Market" for the implementation and results of this new mechanism.
 
 \end{document}

@@ -46,7 +46,10 @@
 	\end{tabular}
 \end{table}
 
+The equilibrium is clearly distinct from the theoretical and Fully-Connected one as miss-allocation can be found within the pessimists-range. Also the i1- and i2-points and the wealth-distributions differ both numerically and visually. 
+
 \section{Ascending-Connected with short-cuts}
+\label{app:results_acShortCuts}
 
 \subsection{Random short-cuts}
 \begin{figure}[H]
@@ -88,6 +91,8 @@
 	\end{tabular}
 \end{table}
 
+Random short-cuts seem to reduce the miss-allocation of pessimists-wealth a bit but lead to a fundamental different equilibrium than the theoretical or fully-connected one as can clearly be seen both visually and numerically.
+
 \subsection{2 short-cuts}
 \begin{figure}[H]
 	\centering
@@ -127,6 +132,8 @@
 		\hline
 	\end{tabular}
 \end{table}
+
+This topology reduces the miss-allocation in the pessimists-range dramatically but doesn't solve it yet. Unfortunately it leads to a dramatically different wealth-distribution within the medianists and optimist.
 
 \subsection{5 full short-cuts}
 \begin{figure}[H]
@@ -168,7 +175,7 @@
 	\end{tabular}
 \end{table}
 
-TODO: move to interpretation: As can be clearly seen 5 full shortcuts seem to be already enough to solve the inefficiencies seen in Ascending-Connected with/without Importance Sampling.
+As can be clearly seen this topology seems to be able to solve miss-allocations in the pessimists-range seen in Ascending-Connected topology but is still different than the theoretical and Fully-Connected equilibrium.
 
 \subsection{15 full short-cuts}
 \begin{figure}[H]
@@ -210,6 +217,8 @@ TODO: move to interpretation: As can be clearly seen 5 full shortcuts seem to be
 	\end{tabular}
 \end{table}
 
+This topology comes very close to the theoretical equilibrium but is still a bit different as can be seen in the curved wealth-distributions of the pure optimists.
+
 \subsection{30 full short-cuts}
 \begin{figure}[H]
 	\centering
@@ -250,6 +259,7 @@ TODO: move to interpretation: As can be clearly seen 5 full shortcuts seem to be
 	\end{tabular}
 \end{table}
 
+This topology is very close to the theoretical and Fully-Connected equilibrium although it differs in asset-price p and in the wealth-distributions. Of course with 30 fully short-cuts in a network of 100 agents on is already very close to fully connectedness.
 
 \subsection{5 regular short-cuts}
 \begin{figure}[H]
@@ -291,6 +301,8 @@ TODO: move to interpretation: As can be clearly seen 5 full shortcuts seem to be
 	\end{tabular}
 \end{table}
 
+As can be seen in the visual results this topology shows a different equilibrium than the theoretical and Fully-Connected one.
+
 \subsection{15 regular short-cuts}
 \begin{figure}[H]
 	\centering
@@ -330,6 +342,8 @@ TODO: move to interpretation: As can be clearly seen 5 full shortcuts seem to be
 		\hline
 	\end{tabular}
 \end{table}
+
+The equilibrium of this topology is falls very far from the theoretical and Fully-Connected one.
 
 \subsection{30 regular short-cuts}
 \begin{figure}[H]
@@ -371,7 +385,7 @@ TODO: move to interpretation: As can be clearly seen 5 full shortcuts seem to be
 	\end{tabular}
 \end{table}
 
-
+The equilibrium of this topology is falls very far from the theoretical and Fully-Connected one.
 
 \section{Hub-Based topologies} 
 The Hub-Based Topologies fail to come even close to equilibrium due to reasons given in Chapter "Topologies and Hypothesis". This can be seen also very clearly in the visual results and thus no performance- and equilibrium-tables are listed as they would not make any sense.
@@ -412,7 +426,7 @@ The Hub-Based Topologies fail to come even close to equilibrium due to reasons g
 This topologies fail to come even close to equilibrium too due to reasons given in Chapter "Topologies and Hypothesis". This can be seen also very clearly in the visual results and thus no performance- and equilibrium-tables are listed as they would not make any sense.
 
 \subsection{Erdos-Renyi}
-todo: kann hypothese erfüllen mit entsprechender parameterisierung
+Note that with the correct parametrization this topology could satisfy the hypothesis by pure chance. The result would be a pure random network as a Ascending-Connected topology with random short-cuts but as already showed above this Ascending-Connected random short-cuts network fails from producing the theoretical and Fully-Connected equilibrium.
 
 \begin{figure}[H]
 	\centering
@@ -421,8 +435,6 @@ todo: kann hypothese erfüllen mit entsprechender parameterisierung
 	\label{fig:wealth_ERDOSRENYI_02_100_NOCOLLATERALMARKET_REPL}
 \end{figure}
 
-need to show network too because random ?
-
 \begin{figure}[H]
 	\centering
   \includegraphics[width=1.0\textwidth, angle=0]{ERDOSRENYI_01_100_NOCOLLATERALMARKET_REPL.png}
@@ -430,16 +442,12 @@ need to show network too because random ?
 	\label{fig:wealth_ERDOSRENYI_01_100_NOCOLLATERALMARKET_REPL}
 \end{figure}
 
-need to show network too because random ?
-
 \begin{figure}[H]
 	\centering
   \includegraphics[width=1.0\textwidth, angle=0]{ERDOSRENYI_005_100_NOCOLLATERALMARKET_REPL.png}
 	\caption{Wealth-Distribution of Erdos-Renyi 0.05 topology}
 	\label{fig:wealth_ERDOSRENYI_005_100_NOCOLLATERALMARKET_REPL}
 \end{figure}
-
-need to show network too because random ?
 
 \subsection{Barbasi-Albert}
 \begin{figure}[H]
@@ -449,8 +457,6 @@ need to show network too because random ?
 	\label{fig:wealth_BARBASIALBERT_m03_m1_100_NOCOLLATERALMARKET_REPL}
 \end{figure}
 
-need to show network too because random ?
-
 \begin{figure}[H]
 	\centering
   \includegraphics[width=1.0\textwidth, angle=0]{BARBASIALBERT_m09_m3_100_NOCOLLATERALMARKET_REPL.png}
@@ -458,10 +464,8 @@ need to show network too because random ?
 	\label{fig:wealth_BARBASIALBERT_m09_m3_100_NOCOLLATERALMARKET_REPL}
 \end{figure}
 
-need to show network too because random ?
-
 \subsection{Watts-Strogatz}
-todo: kann hypothese erfüllen mit entsprechender parameterisierung
+Note that with the correct parametrization this topology could satisfy the hypothesis by pure chance too. The result would be a pure random network as a Ascending-Connected topology with random short-cuts but as already showed above this Ascending-Connected random short-cuts network fails from producing the theoretical and Fully-Connected equilibrium.
 
 \begin{figure}[H]
 	\centering
@@ -469,7 +473,5 @@ todo: kann hypothese erfüllen mit entsprechender parameterisierung
 	\caption{Wealth-Distribution of Watts-Strogatz k=2, b=0.2 topology}
 	\label{fig:wealth_WATTSSTROGATZ_k2_b02_100_NOCOLLATERALMARKET_REPL}
 \end{figure}
-
-need to show network too because random ?
 
 \end{document}
