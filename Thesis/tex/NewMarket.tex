@@ -12,7 +12,7 @@ As already introduced in section \ref{ch:interpretation_reenablingTrading} "Re-E
 Collateralized assets are traded against cash. The buyer gets a specific amount of collateralized assets for a given amount of cash where the seller gives away the specific amount of collateralized assets and gets the given amount of cash.
 
 \subsection{Price-Range}
-As within all other 3 Markets the price-ranges of the offers must be defined. Note that all prices must obviously be in the unit of cash.
+As within all other three Markets the price-ranges of the offers must be defined. Note that all prices must according to the previously defined products be obviously in the unit of cash.
 
 \paragraph{minimum}
 When calculating the minimum price of a collateralized asset - that is how much is the collateralized asset minimally worth - it is important to include the collateral-aspect of the asset. Thus one starts with the minimum asset-price in cash which is the down-price \textit{pD} and subtracts the maximum possible amount of cash which is bound through a bond as collateral which is the face-value \textit{V}. This value is a constant for all agents.
@@ -36,7 +36,7 @@ $\textit{limit-price of collateralized asset} = \textit{limit-price of asset} - 
 \end{center}
 
 \subsection{Bid-Offering}
-The way bid-offers are generated is very similar to the "Bond against Cash" market. Bid Offerings are generated only when the agent has any cash holdings. The price is drawn randomly between the minimum price and the limit-price because when buying one wants to buy below the expected value to make a profit. As amount one TRADING-UNIT of an asset is selected - in the thesis-implementation 0.1 - but if there is not enough cash left to buy one TRADING-UNIT of assets then the amount of assets is selected which can be bought with the remaining cash holdings.
+The way bid-offers are generated is very similar to the bond/cash market. Bid offers are generated only when the agent has any cash holdings. The price is drawn randomly between the minimum price and the limit-price because when buying one wants to buy below the expected value to make a profit. As amount one TRADING-UNIT of an asset is selected - in the thesis-implementation 0.1 - but if there is not enough cash left to buy one TRADING-UNIT of assets then the amount of assets is selected which can be bought with the remaining cash holdings.
 
 \begin{table}[H]
 	\centering
@@ -52,8 +52,7 @@ The way bid-offers are generated is very similar to the "Bond against Cash" mark
 
 
 \subsection{Ask-Offering}
-The way ask-offers are generated is very similar to the "Bond against Cash" market. Ask Offerings are generated only when the agent has any collateralized assets. The price is drawn randomly between the limit-price and maximum price because when selling one wants to sell above the expected value to make a profit. As amount one TRADING-UNIT of an asset is selected - in the thesis-implementation 0.1 - but if there are fewer collateralized assets left then the remaining amount of collateral is selected.
-
+The way ask-offers are generated is very similar to the bond/cash market. Ask offers are generated only when the agent has any collateralized assets. The price is drawn randomly between the limit-price and maximum price because when selling one wants to sell above the expected value to make a profit. As amount one TRADING-UNIT of an asset is selected - in the thesis-implementation 0.1 - but if there are fewer collateralized assets left then the remaining amount of collateral is selected.
 See Chapter \ref{ch:implementation} "Implementation" for the equation of collateral holdings.
 
 \begin{table}[H]
@@ -69,8 +68,7 @@ See Chapter \ref{ch:implementation} "Implementation" for the equation of collate
 \end{table}
 
 \subsection{Match}
-Below the wealth-exchange table is given in case of a match between two agents on the new market.
-TODO: the wealth is increased/decreased but not assigned.
+Below the wealth-exchange table is given in case of a match between two agents on the new market. Note that the wealth is increased/decreased as given by the +/- signs.
 
 \begin{table}[H]
 	\centering
@@ -93,7 +91,6 @@ Of most importance are the results of the simulation when using the new market. 
 
 As experiment-configuration the same is used as given in Chapter \ref{ch:results} "Results" except that the new market is now activated too.
 
-\subsection{Fully-Connected topology}
 \begin{table}[H]
 	\centering
 	\caption{Configuration for all experiments}
@@ -107,6 +104,8 @@ As experiment-configuration the same is used as given in Chapter \ref{ch:results
 		\hline
 	\end{tabular}
 \end{table}
+
+\subsection{Fully-Connected topology}
 
 \begin{figure}[H]
 	\centering
@@ -138,8 +137,11 @@ As experiment-configuration the same is used as given in Chapter \ref{ch:results
 	\begin{tabular} { l c r }
 		\hline
 		Successful matching-rounds & 1916.14 (31.42) \\
-		Total matching-rounds & 6364.8 (1679.21) \\
 		Failed matching-rounds & 4448.66 (1668.93) \\
+		Total matching-rounds & 6364.8 (1679.21) \\
+		\hline
+		Ratio successful/total & 0.3 \\
+		Ratio failed/total & 0.7 \\
 		\hline
 	\end{tabular}
 \end{table}
@@ -164,14 +166,14 @@ As experiment-configuration the same is used as given in Chapter \ref{ch:results
 	\begin{tabular} { l c c c r }
 		& Result & Reference & difference to Reference \\
 		\hline
-		Asset-Price & 0.688 (0.008) & 0.689 (0.01) & -0.1\% (TODO\%) \\
-		Loan-Price & 0.381 (0.002) & 0.384 (0.004) & -0.7\% (TODO\%) \\
-		Marginal Buyer i0 & 0.597 (0.005) & 0.603 (0.007) & -1.0\% (TODO\%) \\
-		Marginal Seller i1 & 0.803 (0.003) & 0.803 (0.003) & 0.0\% (TODO\%) \\
+		Asset-Price & 0.688 (0.008) & 0.689 (0.01) & -0.1\% (-20\%) \\
+		Loan-Price & 0.381 (0.002) & 0.384 (0.004) & -0.7\% (-50\%) \\
+		Marginal Buyer i0 & 0.597 (0.005) & 0.603 (0.007) & -1.0\% (-28\%) \\
+		Marginal Seller i1 & 0.803 (0.003) & 0.803 (0.003) & 0.0\% (0\%) \\
 		\hline
-		Pessimist Wealth & 1.597 (0.009) & 1.597 (0.015) & 0.0\% (TODO\%) \\
-		Medianist Wealth & 4.76 (0.1) & 4.565 (0.113) & +4.2\% (TODO\%) \\
-		Optimist Wealth & 4.963 (0.052) & 5.021 (0.064) & -1.1\% (TODO\%) \\
+		Pessimist Wealth & 1.597 (0.009) & 1.597 (0.015) & 0.0\% (-40\%) \\
+		Medianist Wealth & 4.76 (0.1) & 4.565 (0.113) & +4.2\% (-11\%) \\
+		Optimist Wealth & 4.963 (0.052) & 5.021 (0.064) & -1.1\% (-19\%) \\
 		\hline
 	\end{tabular}
 \end{table} 
@@ -207,8 +209,11 @@ As experiment-configuration the same is used as given in Chapter \ref{ch:results
 	\begin{tabular} { l c r }
 		\hline
 		Successful matching-rounds & 51,838.74 (1613.36) \\
-		Total matching-rounds & 52.963.5 (1612.31) \\
 		Failed matching-rounds & 1124.76 (28.31) \\
+		Total matching-rounds & 52,963.5 (1612.31) \\
+		\hline
+		Ratio successful/total & 0.98 \\
+		Ratio failed/total & 0.02 \\
 		\hline
 	\end{tabular}
 \end{table}
@@ -233,14 +238,14 @@ As experiment-configuration the same is used as given in Chapter \ref{ch:results
 	\begin{tabular} { l c c c r }
 		& Result & Reference & difference to Reference \\
 		\hline
-		Asset-Price & 0.713 (0.013) & 0.711 (0.016) & +0.3\% (TODO\%) \\
-		Loan-Price & 0.383 (0.005) & 0.391 (0.005) & -2.0\% (TODO\%) \\
-		Marginal Buyer i0 & 0.584 (0.0) & 0.646 (0.012) & -9.6\% (TODO\%) \\
-		Marginal Seller i1 & 0.782 (0.0) & 0.85 (0.008) & -8.0\% (TODO\%) \\
+		Asset-Price & 0.713 (0.013) & 0.711 (0.016) & +0.3\% (19\%) \\
+		Loan-Price & 0.383 (0.005) & 0.391 (0.005) & -2.0\% (0\%) \\
+		Marginal Buyer i0 & 0.584 (0.0) & 0.646 (0.012) & -9.6\% (-100\%) \\
+		Marginal Seller i1 & 0.782 (0.0) & 0.85 (0.008) & -8.0\% (-100\%) \\
 		\hline
-		Pessimist Wealth & 1.671 (0.0) & 1.166 (0.072) & +43.3\% (TODO\%) \\
-		Medianist Wealth & 5.032 (0.013) & 1.869 (0.243) & +169.2\% (TODO\%) \\
-		Optimist Wealth & 4.508 (0.006) & 4.307 (0.07) & +4.6\% (TODO\%) \\
+		Pessimist Wealth & 1.671 (0.0) & 1.166 (0.072) & +43.3\% (-100\%) \\
+		Medianist Wealth & 5.032 (0.013) & 1.869 (0.243) & +169.2\% (95\%) \\
+		Optimist Wealth & 4.508 (0.006) & 4.307 (0.07) & +4.6\% (-91\%) \\
 		\hline
 	\end{tabular}
 \end{table}
@@ -251,14 +256,14 @@ As experiment-configuration the same is used as given in Chapter \ref{ch:results
 	\begin{tabular} { l c c c r }
 		& Result & Reference & difference to Reference \\
 		\hline
-		Asset-Price & 0.713 (0.013) & 0.688 (0.008) & +3.6\% (TODO\%) \\
-		Loan-Price & 0.383 (0.005) & 0.381 (0.002) & +0.5\% (TODO\%) \\
-		Marginal Buyer i0 & 0.584 (0.0) & 0.597 (0.005) & -2.2\% (TODO\%) \\
-		Marginal Seller i1 & 0.782 (0.0) & 0.803 (0.003) & -2.6\% (TODO\%) \\
+		Asset-Price & 0.713 (0.013) & 0.688 (0.008) & +3.6\% (+62\%) \\
+		Loan-Price & 0.383 (0.005) & 0.381 (0.002) & +0.5\% (+150\%) \\
+		Marginal Buyer i0 & 0.584 (0.0) & 0.597 (0.005) & -2.2\% (-100\%) \\
+		Marginal Seller i1 & 0.782 (0.0) & 0.803 (0.003) & -2.6\% (-100\%) \\
 		\hline
-		Pessimist Wealth & 1.671 (0.0) & 1.597 (0.009) & +4.6\% (TODO\%) \\
-		Medianist Wealth & 5.032 (0.013) & 4.76 (0.1) & +5.7\% (TODO\%) \\
-		Optimist Wealth & 4.508 (0.006) & 4.963 (0.052) & -9.2\% (TODO\%) \\
+		Pessimist Wealth & 1.671 (0.0) & 1.597 (0.009) & +4.6\% (-100\%) \\
+		Medianist Wealth & 5.032 (0.013) & 4.76 (0.1) & +5.7\% (-87\%) \\
+		Optimist Wealth & 4.508 (0.006) & 4.963 (0.052) & -9.2\% (88\%) \\
 		\hline
 	\end{tabular}
 \end{table}
@@ -269,20 +274,20 @@ As experiment-configuration the same is used as given in Chapter \ref{ch:results
 	\begin{tabular} { l c c c r }
 		& Result & Reference & difference to Reference \\
 		\hline
-		Asset-Price & 0.713 (0.013) & 0.689 (0.01) & +3.5\% (TODO\%) \\
-		Loan-Price & 0.383 (0.005) & 0.384 (0.004) & -0.3\% (TODO\%) \\
-		Marginal Buyer i0 & 0.584 (0.0) & 0.603 (0.007) & -3.2\% (TODO\%) \\
-		Marginal Seller i1 & 0.782 (0.0) & 0.803 (0.003) & -2.6\% (TODO\%) \\
+		Asset-Price & 0.713 (0.013) & 0.689 (0.01) & +3.5\% (+30\%) \\
+		Loan-Price & 0.383 (0.005) & 0.384 (0.004) & -0.3\% (+25\%) \\
+		Marginal Buyer i0 & 0.584 (0.0) & 0.603 (0.007) & -3.2\% (-100\%) \\
+		Marginal Seller i1 & 0.782 (0.0) & 0.803 (0.003) & -2.6\% (-100\%) \\
 		\hline
-		Pessimist Wealth & 1.671 (0.0) & 1.597 (0.015) & +4.6\% (TODO\%) \\
-		Medianist Wealth & 5.032 (0.013) & 4.565 (0.113) & +10.23\% (TODO\%) \\
-		Optimist Wealth & 4.508 (0.006) & 5.021 (0.064) & -10.22\% (TODO\%) \\
+		Pessimist Wealth & 1.671 (0.0) & 1.597 (0.015) & +4.6\% (-100\%) \\
+		Medianist Wealth & 5.032 (0.013) & 4.565 (0.113) & +10.23\% (88\%) \\
+		Optimist Wealth & 4.508 (0.006) & 5.021 (0.064) & -10.22\% (91\%) \\
 		\hline
 	\end{tabular}
 \end{table} 
 
 \section{Interpretation of results}
-Interpreting the results the following questions must be answered:
+When interpreting the results the following questions must be answered:
 
 \begin{itemize}
 \item Does the Fully-Connected topology reach the theoretical equilibrium as well?
@@ -291,31 +296,30 @@ Interpreting the results the following questions must be answered:
 \end{itemize}
 
 \paragraph{Does the Fully-Connected topology reach the theoretical equilibrium as well?}
-Yes it does. Both visual and statistical results show that it reaches the theoretical equilibrium. The medianist wealth is slightly higher with the new market but that difference, as well as the variations in the other variables are not statistically significant. TODO: genauer.
+Yes it does. Both visual and statistical results show that it reaches the theoretical equilibrium. The medianist wealth is slightly higher with the new market but that difference, as well as the variations in the other variables are not statistically significant.
 
 \paragraph{Does the new market repair the miss-allocation of wealth in the pessimists-range?}
-Yes it does. The visual results are clear: no more miss-allocations show up within 50 replications.
+Yes it does. The visual results are clear with no miss-allocations showing up within 50 replications. If there would have been miss-allocations within any replication they would show up in the final result.
 
 \paragraph{If yes, does the Ascending-Connected topology approach theoretical equilibrium now?}
-No it does not. Both visual and statistical results show that it misses to reach the theoretical and fully-connected topology with/without new market equilibrium: genauer.
-Clearly the visual and statistical results are different than in the case without the new market but that was expected and is a necessity if the new market repairs the miss-allocation of wealth in the pessimists-range. TODO: genauer.
+The miss-allocations are repaired but it does does not approach theoretical equilibrium. Both visual and statistical results show that it misses to reach the theoretical and Fully-Connected topology with or without new market equilibrium. Because of the way the new market works the wealth-distributions in medianists and pure optimists show a different shape than in Fully-Connected and thus the theoretical equilibrium is not reached. The reason for the different shape of the wealth-distributions is rooted in the way the market-dynamics work which is discussed in the next section.
 
 \section{Simulation and Market dynamics}
 When implementing a new market the market-dynamics are of very importance and thus the following questions must be answered.
 
 \begin{itemize}
-\item Can the trading stages 1-4 be identified too as given in \cite{Breuer_2015}?
-\item How does trading progress with this new market? Is it the same as without the new market?
-\item How does the new market resolve the miss-allocation (turning on after no more possible)?
+\item Can the trading stages 1-4 be identified too as given in \cite{Breuer2015}?
+\item How does trading progresses with this new market? Is it the same as without the new market?
+\item How does the new market resolve the miss-allocation (with and without deferred activation)?
 \item When and how much is each market active? 
 \item How do the market-activities change when a new market is introduced?
 \end{itemize}
 
-To answer these questions one must look closely at the market-dynamics. There are definitely trading stages but due to the new market or the different topology they are expected to be quite different from the ones found in \cite{Breuer_2015}. The method used to find these stages is through observation of a single run and refining and validating the derived facts over many additional runs. Note that replications provide no real value here as one needs to look very carefully into the dynamics of single runs instead of the mean of multiple runs.
+To answer these questions one must look closely at the market-dynamics. There are trading stages to be identified but due to the new market and the different topology they are expected to be quite different from the ones found in \cite{Breuer2015}. The method used to find these stages is through observation of a single run and refining and validating the derived facts over many additional runs. Note that replications provide no real value here as one needs to look very carefully into the dynamics of single runs instead of the mean of multiple runs.
 
 \subsection{Fully-Connected with new Market}
 
-4 Stages were identified which are quite different from the ones given in \cite{Breuer_2015}.
+4 Stages were identified which are quite different from the ones given in \cite{Breuer2015} as the new market makes quite a big impact.
 
 \begin{figure}[H]
 	\centering
@@ -342,14 +346,12 @@ The asset/loan market is hardly active as there is no strong need for its featur
 \end{figure}
 
 \paragraph{Stage 2}
-The collateralized assets are traded from the pessimists towards the optimists and the optimists cristalize themselves even more but no medianists are visible yet.
+The collateralized assets are traded from the pessimists towards the optimists and the optimists crystallize themselves even more but no medianists are visible yet.
 
 \medskip
 
-The asset/cash market continues to go down as the cash holdings of the pessimists begin to decline.
-The loan/cash market fluctuates around the same point.
-Now the collateral/cash market becomes very active as more and more collateralized assets need to be traded towards the optimists.
-At the beginning of this Stage the asset/loan market is hardly active but raises fast towards the end of it as the optimists are out of cash and need to distribute the collateralized assets.
+The asset/cash market continues to go down as the cash holdings of the pessimists begin to decline. The loan/cash market fluctuates around the same point as before. Now the collateral/cash market becomes very active as more and more collateralized assets need to be traded towards the optimists.
+At the beginning of this stage the asset/loan market is hardly active but raises fast towards the end of it as the optimists are then out of cash and need to distribute the collateralized assets between each other and the yet to come medianists.
 
 \begin{figure}[H]
 	\centering
@@ -359,13 +361,11 @@ At the beginning of this Stage the asset/loan market is hardly active but raises
 \end{figure}
 
 \paragraph{Stage 3}
-The pessimists have gone inactive as they hold no more wealth they can trade. The i0-point is emerging and the medianists and pure optimists begin to show up.
+The pessimists have gone inactive as they hold no more wealth they can trade. The i1-point is emerging and the medianists and pure optimists begin to show up.
 
 \medskip
 
-Because the pessimists are inactive now and hold no more assets the asset/cash and collateral/cash markets go down and declines completely.
-The loan/cash market goes down but does not decline.
-The medianists and optimists which are emerging have no other possibility than to trade on the asset/loan market to further distribute their collateralized assets among each other which is the reason for the raise of the asset/loan market above all others and its heavy domination.
+Because the pessimists are inactive now and hold no more assets the asset/cash and collateral/cash markets go down and decline completely. The loan/cash market goes down but does not decline as bonds are still traded because of the emerging of medianists. The medianists and pure optimists which are emerging have no other possibility than to trade on the asset/loan market to further distribute their collateralized assets among each other which is the reason for the raise of the asset/loan market above all others and its heavy domination. Despite the heavy domination of the asset/loan market still a few bonds are traded against cash in the range of the medianists.
 
 \begin{figure}[H]
 	\centering
@@ -375,12 +375,11 @@ The medianists and optimists which are emerging have no other possibility than t
 \end{figure}
 
 \paragraph{Stage 4}
-Finally the i1-point has emerged and both i0 and i1 are finalizing. The only active agents remaining are around these two points where the pure optimists trade with the medianists to finalize i1 and the medianists with the next closest pessimists to finalize i0 where the very last transactions occur around i0.
+Finally the i2-point has emerged and both i1 and i2 are finalizing. The only active agents remaining are around these two points where the pure optimists trade with the medianists to finalize i2 and the medianists with the next closest pessimists to finalize i1 where the very last transactions occur around i1.
 
 \medskip
 
-The asset/loan market goes down until i1 has finalized as the collateralized asset allocation has nearly reached its equilibrium.
-The loan/cash market goes up as agents around i0 are still refining the point as the equilibrium of the medianists have not yet reached and thus bonds are traded against cash as i0 is the connecting point between pessimists with cash and medianists with bond which enables the loan/cash market to trade again.
+The asset/loan market goes down until i2 has finalized as the collateralized asset allocation has nearly reached its equilibrium. The loan/cash market goes up as agents around i1 are still refining the point as the equilibrium of the medianists is not reached yet. Thus bonds are traded against cash as i1 is the connecting point between pessimists with cash and medianists with bonds which enables the loan/cash market to trade again.
 
 \begin{figure}[H]
 	\centering
@@ -389,12 +388,12 @@ The loan/cash market goes up as agents around i0 are still refining the point as
 	\label{fig:markets_FULLYCONNECTED_100_WITHCOLLATERALMARKET_WEALTH_STAGE_4}
 \end{figure}
 
-\subsection{Ascending-Connected with new Market enabled after 1000 successive failed Transactions}
-Using the thesis-software it is possible to start a simulation-run on ascending-connected topology without the collateral/cash market and enabling it after 1000 successive failed transactions which gives interesting hints about how the spikes of collateralized assets in the pessimists-range are resolved and distributed over the already existing pure optimists.
+\subsection{Ascending-Connected with new market enabled after 1,000 successive failed matching-rounds}
+Using the thesis-software it is possible to start a simulation-run on Ascending-cCnnected topology without the collateral/cash market and enabling it after 1,000 successive failed matching-rounds which gives interesting hints about how the spikes of collateralized assets in the pessimists-range are resolved and distributed over the already existing pure optimists.
 
 \medskip
 
-Of course there are the same 3 Stages to be found as described already in section \ref{sub:dynamics_singlerun} "Dynamics of a single run" whereas the deferred enabling of the collateral/cash market adds 2 new Stages.
+Of course there are the same 3 stages to be found as described already in section \ref{sub:dynamics_singlerun} "Dynamics of a single run" whereas the deferred enabling of the collateral/cash market adds 2 new stages.
 
 \begin{figure}[H]
 	\centering
@@ -404,7 +403,7 @@ Of course there are the same 3 Stages to be found as described already in sectio
 \end{figure}
 
 \paragraph{Stage 4}
-The collateralized assets are traded against cash and sum up at the i0-point where the first agent has no more cash. 
+The collateralized assets are traded against cash and sum up at the i1-point where the first agent has no more cash. 
 
 \begin{figure}[H]
 	\centering
@@ -424,7 +423,7 @@ Now the asset/loan market becomes 100\% dominant again and the collateralized as
 
 \subsection{Ascending-Connected with new Market}
 
-4 Stages were identified where only 3 of them can be seen in the Market-Dynamics diagram.
+4 stages were identified where only 3 of them can be seen in the Market-Dynamics diagram.
 
 \begin{figure}[H]
 	\centering
@@ -438,7 +437,7 @@ Pessimists and optimists begin to emerge where the pessimists are gathering cash
 
 \medskip
 
-The asset/cash market and loan/cash market start around 40\% slightly decreasing where the collateral/cash market starts around 10\% with increasing tendency. The asset/loan market is makes 2\% of the total activity. It is clear to see that the collateral/cash market is increasing as the amount of collateralized assets which moves towards the optimists increases.
+The asset/cash market and loan/cash market start around 40\% slightly decreasing because the pessimists are slowly going low on assets. The collateral/cash market starts around 10\% with increasing tendency because the amount of collateralized assets which move towards the optimists increases. The asset/loan market is hardly active as its features are not yet very necessary.
 		
 \begin{figure}[H]
 	\centering
@@ -448,13 +447,13 @@ The asset/cash market and loan/cash market start around 40\% slightly decreasing
 \end{figure}
 
 \paragraph{Stage 2}
-In the pessimist-range large amount of collateralized assets have gathered which are traded now towards the optimists as the pessimists try to get maximally short on any assets and maximally plus on cash. Those collateralized assets are traded towards the i0-point - that is the first agent who holds no more cash - which can be seen by a spike in the wealth-distribution of figure \ref{fig:wealth_ASCENDINGCONNECTED_100_WITHCOLLATERALMARKET_WEALTH_STAGE_2} around 0.65.
+In the pessimist-range large amount of collateralized assets have gathered which are traded now towards the optimists as the pessimists try to get maximally short on any assets and maximally plus on cash. Those collateralized assets are traded towards the i1-point - that is the first agent who holds no more cash - which can be seen by a spike in the wealth-distribution of figure \ref{fig:wealth_ASCENDINGCONNECTED_100_WITHCOLLATERALMARKET_WEALTH_STAGE_2} around 0.65.
 There are no medianists visible yet.
 
 \medskip
 
 The collateral/cash market raises above the asset/cash and loan/cash markets and either fluctuates or stays quite constant. In figure \ref{fig:markets_ASCENDINGCONNECTED_100_WITHCOLLATERALMARKET_MARKET_STAGES} the fluctuating variant is shown. If the market fluctuates the asset/cash and loan/cash fluctuate inverse in that if collateral/cash market raises they go down and vice versa. If the collateral/cash market stays quite constant in this stage it raises above 90\% and asset/cash and loan/cash markets decline to 0\%. Why the collateral/cash market either fluctuates or stays constant is not clear but is most probably dependent on the allocation of collateralized assets in the pessimists-range. The asset/loan market becomes a bit more active as more collateralized assets are traded.
-		
+
 \begin{figure}[H]
 	\centering
   \includegraphics[width=1.0\textwidth, angle=0]{ac/ASCENDINGCONNECTED_100_WITHCOLLATERALMARKET_WEALTH_STAGE_2.png}
@@ -468,7 +467,7 @@ Pessimists are now final and won't change any more. Optimists-range is now clear
 \medskip
 
 Because the pessimists are no more able to trade and the optimists hold no more cash the activity of the collateral/cash market drops rapidly and asset/loan market raises to 100\% activity as only collateralized-assets are tradeable any more.
-		
+
 \begin{figure}[H]
 	\centering
   \includegraphics[width=1.0\textwidth, angle=0]{ac/ASCENDINGCONNECTED_100_WITHCOLLATERALMARKET_WEALTH_STAGE_3.png}
@@ -477,8 +476,8 @@ Because the pessimists are no more able to trade and the optimists hold no more 
 \end{figure}
 
 \paragraph{Stage 4}
-Medianists begin to show up and to distinguish themselves from the pure optimists. This is no more visible on the market-dynamics as only asset/bonds are traded anymore.
-		
+Medianists begin to show up and to distinguish themselves from the pure optimists. This is no more visible on the market-dynamics as only asset/bonds are traded any more and thus only this market is active any more.
+
 \begin{figure}[H]
 	\centering
   \includegraphics[width=1.0\textwidth, angle=0]{ac/ASCENDINGCONNECTED_100_WITHCOLLATERALMARKET_WEALTH_STAGE_4.png}
@@ -486,15 +485,24 @@ Medianists begin to show up and to distinguish themselves from the pure optimist
 	\label{fig:wealth_ASCENDINGCONNECTED_100_WITHCOLLATERALMARKET_WEALTH_STAGE_4}
 \end{figure}
 
-After these observations made on can answer the questions.
+After these observations made one can answer the questions.
 
-\paragraph{Can the trading stages 1-4 be identified too as given in \cite{Breuer_2015}?}
+\paragraph{Can the trading stages 1-4 be identified too as given in \cite{Breuer2015}?}
+There are 4 stages in the case of both Fully-Connected and Ascending-Connected topology with the new market which is most probably pure chance and depends also a bit on the point-of-view on how to separate the stages from each other.
+
 \paragraph{How does trading progress with this new market? Is it the same as without the new market?}
+The progression of the trading is obviously very different with the new market as compared to the market-activities without as the usage of the new market changes the dynamics completely.
+
 \paragraph{How does the new market resolve the miss-allocation (with and without deferred activation)?}
+It becomes active during the formation of the pessimists agents as they gather collateralized assets wealth which must be traded towards the optimists.
+
 \paragraph{When and how much is each market active?}
+This can be seen clearly in the market-activity diagrams.
+
 \paragraph{How do the market-activities change when a new market is introduced?}
+They have less share on the overall activity and thus the new market is quite a heavy competitor in the overall share. The asset/loan market though is still the market on which the final trades occur.
 
 \section{Conclusions on new Market}
-The equilibrium of the ascending-connected topology with the new market is different than the fully-connected one which reaches the theoretical equilibrium. Thus the hypothesis is still wrong because it predicted the ascending-connected topology to reach the theoretical equilibrium. This thesis can only speculate on the real reason for this but the reason is most probably rooted in the fundamental different trading dynamics of ascending-connected topology compared to fully-connected as can be seen in the market-dynamics. This thesis leaves this question open for further research.
+The equilibrium of the Ascending-Connected topology with the new market is different than the Fully-Connected one which reaches the theoretical equilibrium. Thus the hypothesis is still wrong because it predicted the Ascending-Connected topology to reach the theoretical equilibrium. This thesis can only speculate on the real reason for this but the reason is most probably rooted in the fundamental different trading dynamics of Ascending-Connected topology compared to Fully-Connected as can be seen in the market-dynamics. This thesis leaves the question of market-dynamics open for further research.
 
 \end{document}
