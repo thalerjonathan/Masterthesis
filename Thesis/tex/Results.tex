@@ -11,7 +11,7 @@ In this chapter the results of the experiments are given. Each topology-type int
 Note: The numbers in tables resemble always a median-value with the standard-deviation given in parentheses.
 
 \section{Validating simulation results}
-As  a point-of-reference and as an experimental proof for the correctness of the implementation of the thesis-software the results of a validation against both the theoretical equilibrium and the equilibrium found in \cite{Breuer2015} are given. Because equilibrium differs across the number of agents and the type of bond traded to be comparable the same amount of agents and the same bond-type has to be used in the experiments which is 1000 Agents and a bond with face-value of 0.5 because \cite{Breuer2015} report their equilibria only for a count of 1000 agents and bonds with face-value between 0.1 to 0.5.
+As  a point-of-reference and as an experimental proof for the correctness of the implementation of the thesis-software the results of a validation against both the theoretical equilibrium and the equilibrium found in \cite{Breuer2015} are given. Because equilibrium differs across the number of agents and the type of bond traded to be comparable the same amount of agents and the same bond-type has to be used in the experiments. Thus 1000 agents and a bond with face-value of 0.5 were chosen because \cite{Breuer2015} report their equilibria for this number of agents and bonds with face-value between 0.1 to 0.5.
 
 \subsection{References}
 
@@ -75,7 +75,7 @@ As  a point-of-reference and as an experimental proof for the correctness of the
 \end{table}
 
 \begin{table}[H]
-	\caption{Difference of Fully-Connected topology equilibrium as given in table \ref{tab:equilibrium_THESIS_1000_50_REPL} to theoretical equilibrium as given in table \ref{tab:equilibrium_THEORY_1000}}
+	\caption{Difference of Fully-Connected topology price-equilibrium as given in table \ref{tab:equilibrium_THESIS_1000_50_REPL} to theoretical equilibrium as given in table \ref{tab:equilibrium_THEORY_1000}}
 	\centering
 	\begin{tabular} { l c c c r }
 		& Result & Reference & difference to Reference \\
@@ -101,13 +101,14 @@ As  a point-of-reference and as an experimental proof for the correctness of the
 	\end{tabular}
 \end{table} 
 
-Although marginal agent i1 and bond-price q are quite different than from theoretical equilibrium and the pessimists wealth is 7.8\% less than given in \cite{Breuer2015} these results are accepted as reaching the equilibrium. The differences emerge from the reasons that the thesis-simulation runs were terminated earlier than in \cite{Breuer2015} which results in the i1 and i2 edges to be not as sharp as reported in \cite{Breuer2015}. It would be necessary to run the simulation an order of magnitude longer as the matching probabilities are reduced rapidly when only direct neighbours are able to trade any more within a network of 1000 agents. See section \ref{sec:implementation_performanceImprovement} "Performance improvement" for details on matching-probabilities.
+Although marginal agent i1 and bond-price q are quite different than from theoretical equilibrium and the pessimists wealth is 7.8\% less than given in \cite{Breuer2015} these results are nonetheless accepted as reaching the equilibrium. The differences emerge from the reasons that the thesis-simulation runs were terminated earlier than in \cite{Breuer2015} which results in the i1 and i2 edges to be not as sharp as reported in \cite{Breuer2015}. It would be necessary to run the simulation an order of magnitude longer as the matching probabilities are reduced rapidly when only direct neighbours are able to trade any more within a network of 1000 agents. See section \ref{sec:implementation_performanceImprovement} "Performance improvement" for details on matching-probabilities.
 
-\subsection{Performance Measurements}
+\subsection{Performance and termination measurements}
 As noted in section \ref{sec:implementation_sweepingAndMatching} "Sweeping and Matching" a matching-round performs up to 500 offering-rounds where during one round all agents make an offer to find a match. If a match occurs during one offering-round the current matching-round is terminated and marked as successful. If no match occurs during all 500 offering-rounds the current matching-round is terminated too but marked as failed. Thus the following terminology is defined:
 
 \paragraph{Successful matching-round} a match occurred within maximal 500 offering-rounds where in each offering-round all agents make an offer.
 \paragraph{Failed matching-round} no match occurred within 500 offering-rounds where in each offering-round all agents make an offer.
+\paragraph{Termination criteria} after 1,000 successive failed matching-rounds it is expected that no more trading will occur thus the simulation is terminated.
 
 \begin{table}[H]
 	\centering
@@ -126,15 +127,15 @@ As noted in section \ref{sec:implementation_sweepingAndMatching} "Sweeping and M
 
 
 \section{Experiments configuration}
-In the following experiments 100 agents were used, all markets (Asset/Cash, Bond/Cash, Asset/Bond) were enabled, a bond with face-value of 0.5 was selected and the number of replications run was 50. A replication was terminated after 1000 failed matching-rounds in a row. Note that if trading is not possible any more before 1000 failed matching-rounds have been reached in a row, the simulation is terminated too and thus it is possible that it halts earlier as can be seen for the Ascending-Connected Importance Sampling topology.
+In the following experiments 100 agents were used, all markets (Asset/Cash, Bond/Cash, Asset/Bond) were enabled, a bond with face-value of 0.5 was selected and in each experiment 50 replications were run. A replication was terminated after 1000 failed matching-rounds in a row. Note that if trading is not possible any more before this criteria is met the simulation is terminated and thus it is possible that it halts earlier as can be seen for the Ascending-Connected Importance Sampling topology.
 
 \bigskip 
 
-\cite{Breuer2015} showed that equilibrium can be reached already with 30 agents so this was the minimum number of agents to start with but for a smoother visual result 100 were chosen. Also one simulation-run takes not very much time with 100 as compared to the 1000 agents thus it is a very good match between visual accurateness and processing-power requirements.
+\cite{Breuer2015} showed that equilibrium can be reached already with 30 agents so this was the minimum number of agents to start with but for a smoother visual result 100 were chosen. Also one simulation-run takes not very much time with 100 as compared to the 1,000 agents thus it is a very good match between visual accurateness and processing-power requirements.
 
 \medskip
 
-The 0.5 bond was selected because it is a risky one which is important as with risk-less loans which have a face-value less than 0.2 the results are indifferent and not unique and won't show the characteristic distribution of equilibrium.
+The 0.5 bond was selected because it is a risky one which is important as with risk-less loans which have a face-value less than or equal 0.2 the results are indifferent and not unique and won't show the characteristic distribution of equilibrium.
 
 \medskip
 
@@ -149,7 +150,7 @@ As already described in section \ref{sec:implementation_sweepingAndMatching} "Sw
 		Bond-Type & 0.5 \\
 		Replication-Count & 50 \\
 		Matching-Round & max. 500 offering-rounds \\
-		Terminate after & 1000 failed successive matching-rounds \\
+		Terminate after & 1,000 failed successive matching-rounds \\
 		\hline
 	\end{tabular}
 \end{table}
@@ -169,7 +170,7 @@ As already described in section \ref{sec:implementation_sweepingAndMatching} "Sw
 \end{table}
 
 \section{Fully-Connected}
-This topology serves as the major point-of-reference for the other experiments as it reaches the theoretical equilibrium for 1000 agents as demonstrated and explained.
+This topology serves as the major point-of-reference for the other experiments as it reaches the theoretical equilibrium for 1,000 agents as demonstrated and explained.
 
 \begin{figure}[H]
 	\centering
