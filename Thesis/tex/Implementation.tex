@@ -3,58 +3,193 @@
 \chapter{Implementation}
 \label{ch:implementation}
 
+For this thesis a software was written to be able to investigate the behaviour and results of the different types of networks and get visual and numerical results to be embedded in this written text. In this chapter the implementation-details of the software are discussed.
+
 \section{Requirements}
-Wieso Java? Es existierte ja bereits ein "simulationsprogramm" in C++ vom Breuer-Team auf das ich zugriff hatte.
+The author of this thesis had access to the software of \cite{Breuer2015} which was written in C++ therefore the question is why a new software had to be written and why not the original could be used. The reason for it was that the original software supported only a very narrow feature-set focusing only on the numerical results of a fully-connected network. Thus a complete redevelopment in Java was the option used. The following requirements were identified:
 
-arbitrary networks
+\begin{itemize}
+\item Java based.
+\item Comprehensive GUI functionality.
+\item Emulate the functionality of \cite{Breuer2015} and its results.
+\item Represent arbitrary networks in the simulation.
+\item Step-through forward and backwards in a simulation-run.
+\item Run replications of simulations.
+\item Store results of replications to be opened again for later usage.
+\item Command-line mode to run previously defined number of replications.
+\end{itemize}
 
-step-through simulation
-jump to points of simulation
+\paragraph{Java based}
+The original software was written in C++ which offers very much power and highest speed if used correctly but comes with a very high responsibility regarding memory-management. Java offers a much more relaxed programming model regarding memory-management as it is garbage collected. This does not mean that the programmer can waste memory without giving thought to it but that not as many aufwand into it. debugging is easier.
+The most compelling argument for Java are the vast libraries which are included in the JDK which are missing in standard C++. As complete GUI-functionality for the whole software is a requirement Java is the way to go. Although multi-purpose libraries like Boost and GUI-frameworks like Qt are available for C++ too, it takes quite some time to set them up correctly for the target platform one develops for which implies that in C++ the development would always have been for just one platform whereas Java runs on every platform - if not platform-dependent stuff was used - without recompilation. As one will see later in the "Command-line mode"-Feature this is a major requirement to make this feature practical. Thus the reasons for using Java were:
 
-replications
-run replications from command line
+\begin{itemize}
+\item Platform-independence which applies to 3rd party libraries too.
+\item GUI-framework provided by JDK.
+\item Relaxed memory-management which emphasises fast iterations and easy debugging.
+\item Support for smooth XML-Serialization.
+\item 3rd party libraries for network-modelling and -visualization.
+\end{itemize}
 
-store results and open again later
+\paragraph{GUI functionality}
+All functionality should be accessible through a GUI where some features e.g. "Inspection" are only possible to use through a GUI.
+
+\paragraph{Emulate \cite{Breuer2015} functionality}
+Of course the whole software should be a super-set of the functionality of the one found in \cite{Breuer2015} so this was the point to start from.
+
+\paragraph{Arbitrary networks}
+It should be possible to restrict trading between the agents to arbitrary networks. As network-modelling and -visualization library JUNG is used.
+
+\paragraph{Step-through simulation}
+The software should support to go through a simulation-run step-by-step and storing all steps of the simulation to jump back and forth between steps.
+
+\paragraph{Real-time visualisation and information}
+The original C++ software didn't provide real-time information about the current wealth-distribution and market-dynamics and provided the user just with the numerical results in the end through the means of a command-line output. For better understanding of dynamics of both wealth and markets a real-time visualisation of both are necessary together with extensive information on the current state like the offering-book, agent-information, network-activity, history of matches and the current equilibrium. Also the real-time visualisation is necessary to provide this written part of the thesis with diagrams of various results and processes.
+
+\paragraph{Replications}
+Because the whole trading-process includes randomness the results are subject to noise thus replications are an absolute must-have feature to be able to give reliable results. Each replications is independent from all others thus it is a candidate for parallel programming to speed up the already very time-consuming process of running replications. According to the number of CPU-cores the software should spawn threads up to the number of cores and run replications in parallel thus speeding up by a considerable amount of time.
+
+\paragraph{Store results}
+When running a bunch of replications for a given set-up the results of it should be automatically stored as XML to be accessible for later inspection thus conserving state and eliminating the necessity to re-run time-consuming simulation-runs with a high number of replications.
+
+\paragraph{Command-line mode}
+As already described replications are required to be implemented for parallel processing where up to the number of CPU-cores replications can run in parallel. When running a vast number of replications one does not need to GUI-functionality and most probably the machine is so occupied by the heavy work-load that a fließender usage of GUI would be not possible any-more. Thus replications should be runnable through a separate command-line mode of the thesis-software which reads information from a XML-File in which one can specify multiple simulation set-ups for which replications should be run. The command-line mode iterates through all configurations and runs the required replications and writes the result out for a later inspection. Obviously the more CPU-cores the faster a simulation-run with e.g. 50 replications finishes. For this reason most of the final replication-runs were done on a 40-core machine of the FH Vorarlberg which runs on Linux on which the thesis-software could be run easily because of Java's platform-independence.
 
 \section{Functionality}
+In this section the functionality of the thesis-software is explained to get an understanding of the implemented features.
+
+\subsection{Emulate \cite{Breuer2015} functionality}
+TODO markets, bp, abm, equilibrium. not: abbruchbedingung is different, more strict
 
 \subsection{Inspection}
+TODO step-by-step and matching-history
 
 \subsection{Replications}
+TODO 
 
 \subsection{Experiments}
-\subsubsection{GUI}
-\subsubsection{Command-Line}
+TODO results öffnen
+experimente per xml definieren
+über command-line laufen lassen
 
 \section{Architecture}
+In this section the basic architecture of the thesis-software is discussed. It is important to note that this thesis is a fat-client and has its major emphasis not on the software-development aspect but on the visual- and numerical results where the accompanying software is just a tool for the means to calculate theses required results. Thus the architecture is guided by a simple division of layers into front-end, controller and back-end. The front-end is responsible for input and output of the user through GUI or command-line. The controller-layer provides encapsulated chunks of functionality of the back-end to the front-end. It is necessary to abstract, encapsulate and combine the stateful nature of communication with the back-end into a separate layer instead of polluting the front-end with it and creating unnecessary dependencies. The back-end layer provides the functionality where the real work is done e.g. simulation is executed.
+\medskip
+Theoretically the dependencies are top-down where the front-end includes only controller-functionality, the controller includes only back-end functionality and the back-end has no dependencies to the preceding layers. In this thesis-software a more pragmatic approach was chosen so this dogma was not followed where over-engineering and over-complication would have resulted when sticking strictly to the separation of dependencies. Thus in very few cases the controller- and back-end layer include front-end layer functionality to create different types of network topologies in a more convenient way. Also the front-end accesses instances of pure back-end classes for graphical visualisation and information purposes. Despite the seemingly flawed architecture the development-process has proven to be very smooth and expansions and refactorings went quite smoothly and always resulted in a better and clearer structure with reduced code-smell which is always a sign for a good architecture.
+
+TODO: frontend-controller-backend package diagram
+
 \subsection{Frontend}
+TODO
+GUI functionality and visualisation
+emphasis on massive re-use of gui-components thus massive use of sub-classing and pulling into separate class
+
 \subsection{Controller}
+TODO
+steering of the backend through the frontend: holds state and knows what to do next. inspection-controler, replications-controler and experimenter-controler, network-exporter
+
 \subsection{Backend}
+TODO
+where the real simulation happens: auction, markets, network, matching, agents, offerings, transactions
 
 \section{Agents}
-zentrale klasse, die extrem viel kapselt.
+Although agents are used in this software it is not an agent-based simulation in the classical way as these agents are zero-intelligence ones and have no states of behaviour. That is each agent makes bid- and ask-offers on all markets if the constraints allow it where the prices are selected from random ranges which improve the utility of the agent - that means it makes always offers which would result in a profit.
+
+\medskip
+
+Each agent is characterized by its state where the main variables are:
+
+\begin{itemize}
+\item Id - the unique id of the agent in the range of the natural numbers starting with 1.
+\item Optimism-factor - defines how optimistic the agent is in the range of [0..1] where 0 is most pessimistic and 1 is most optimistic. The distribution of the optimism-factor among the agents is linearly ascending with the id and is defined through the following equation: \linebreak $\textit{optimism-factor} = \frac{id}{\textit{number of agents} + 1}$
+\item Cash holdings - the current cash holdings of the agent.
+\item Assets holdings - the current asset holdings of the agent not including the assets granted as securities for giving loans.
+\item Loan given - the amount of loans bought from / granted to other agents. For a given amount of loans the equal amount of assets are granted as security to the buyer of the loan. Thus this variable increases the amount of assets the agent can trade with.
+\item Loan taken - the amount of loans sold to other agents. For a given amount of loans the equal amount of assets the equal amount of assets are granted as security to the buyer of the loan. Thus this variable decreases the amount of assets the agent can trade with as this amount of loans needs to be kept as securities.
+\end{itemize}
+
+\medskip
+
+There are three important derived variables which are calculated from the previous ones:
+
+\begin{itemize}
+\item Collateralized assets - is the amount of assets which are bound through collateral obligations because of taken bonds. \linebreak $\textit{collateralized assets} = max( 0, \textit{loans taken} - \textit{loans given} )$
+\item Free assets - is the amount of assets which are unbound and act not as security and are owned completely by the agent. \linebreak $\textit{free assets} = \textit{Assets holding} - \textit{Collateralized assets}$
+\item Loans - is the net number of loans and calculated through $\textit{loans} = \textit{loans given} - \textit{loans taken}$. Thus this value is positive if the agent has granted more loans to other agents than received and it is negative if the agent has received more loans from other agents than granted.
+\end{itemize}
+
+Note that all variables cannot go negative except loans.
 
 \section{Markets}
+In this section each market and its implementation is described from an implementation point of view.
+
 \subsection{Asset/Cash}
-TODO same as in "A new market"
+\subsubsection{Products}
+Assets (uncollateralized ones) are traded against cash. The buyer gets a specific amount of free assets for a given amount of cash where the seller gives away the specific amount of free assets and gets the given amount of cash.
+
 \subsubsection{Price-Range}
 \subsubsection{Bid-Offering}
 \subsubsection{Ask-Offering}
 \subsubsection{Match}
+Below the wealth-exchange table is given in case of a match between two agents on the Asset/Cash market. Note that the wealth is increased/decreased as given by the +/- signs.
+
+\begin{table}[H]
+	\centering
+	\caption{Wealth-Exchange during a match on Asset/Cash market}
+	\begin{tabular} { l c c }
+		& Seller & Buyer \\
+		\hline
+		Assets holdings & - matching-amount & + matching-amount \\
+		Cash holdings  & + matching-price & - matching-price \\
+		\hline
+	\end{tabular}
+\end{table}
 
 \subsection{Loan/Cash}
-TODO same as in "A new market"
+\subsubsection{Products}
+Loans are traded against cash. The buyer grants the seller a loan in buying a loan from the seller thus the buyer gets a given loan-amount from the seller and gives a given cash-amount to the seller.
+
 \subsubsection{Price-Range}
 \subsubsection{Bid-Offering}
 \subsubsection{Ask-Offering}
 \subsubsection{Match}
+Below the wealth-exchange table is given in case of a match between two agents on the Loan/Cash market. Note that the wealth is increased/decreased as given by the +/- signs.
+
+\begin{table}[H]
+	\centering
+	\caption{Wealth-Exchange during a match on Loan/Cash market}
+	\begin{tabular} { l c c }
+		& Seller & Buyer \\
+		\hline
+		Loan Given & N/A & + matching-amount \\
+		Loans Taken & + matching-amount & N/A \\
+		Cash holdings & + matching-price & - matching-price \\
+		\hline
+	\end{tabular}
+\end{table}
 
 \subsection{Asset/Loan}
-TODO same as in "A new market"
+\subsubsection{Products}
+Assets are traded against loan. The buyer gets a specific amount of free assets for a given amount of loan where the seller gives away the specific amount of free assets and gets the given amount of loan.
+
 \subsubsection{Price-Range}
 \subsubsection{Bid-Offering}
 \subsubsection{Ask-Offering}
 \subsubsection{Match}
+Below the wealth-exchange table is given in case of a match between two agents on the Asset/Loan market. Note that the wealth is increased/decreased as given by the +/- signs.
+
+\begin{table}[H]
+	\centering
+	\caption{Wealth-Exchange during a match on Asset/Loan market}
+	\begin{tabular} { l c c }
+		& Seller & Buyer \\
+		\hline
+		Loan Given & + matching-amount & N/A \\
+		Loans Taken & N/A & + matching-amount \\
+		Asset holdings & - matching-price & + matching-price \\
+		\hline
+	\end{tabular}
+\end{table}
 
 \section{Simulation}
 \subsection{Sweeping and Matching}

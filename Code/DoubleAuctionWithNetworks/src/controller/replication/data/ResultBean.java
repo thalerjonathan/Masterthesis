@@ -6,8 +6,8 @@ import java.util.List;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
-import backend.agents.network.export.GraphBean;
 import controller.experiment.data.ExperimentBean;
+import controller.network.export.GraphBean;
 
 @XmlRootElement( name = "result" )
 public class ResultBean {

@@ -1,4 +1,4 @@
-package backend.agents.network.export;
+package controller.network.export;
 
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;

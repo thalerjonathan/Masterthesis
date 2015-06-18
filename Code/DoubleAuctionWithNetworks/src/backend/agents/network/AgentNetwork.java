@@ -9,12 +9,12 @@ import java.util.List;
 
 import org.apache.commons.collections15.Transformer;
 
+import controller.network.export.EdgeBean;
+import controller.network.export.GraphBean;
+import controller.network.export.NodeBean;
 import utils.Utils;
 import backend.agents.Agent;
 import backend.agents.IAgentFactory;
-import backend.agents.network.export.EdgeBean;
-import backend.agents.network.export.GraphBean;
-import backend.agents.network.export.NodeBean;
 import edu.uci.ics.jung.algorithms.layout.Layout;
 import edu.uci.ics.jung.algorithms.shortestpath.DijkstraShortestPath;
 import edu.uci.ics.jung.graph.Graph;

@@ -13,11 +13,11 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
+import controller.network.export.NetworkExporter;
 import utils.Utils;
 import backend.agents.Agent;
 import backend.agents.network.AgentConnection;
 import backend.agents.network.AgentNetwork;
-import backend.agents.network.export.NetworkExporter;
 import edu.uci.ics.jung.algorithms.layout.CircleLayout;
 import edu.uci.ics.jung.algorithms.layout.KKLayout;
 import edu.uci.ics.jung.algorithms.layout.Layout;

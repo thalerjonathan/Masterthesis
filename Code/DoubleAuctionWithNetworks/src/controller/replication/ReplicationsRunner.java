@@ -20,6 +20,7 @@ import javax.xml.bind.Marshaller;
 import org.apache.commons.math3.stat.StatUtils;
 
 import controller.experiment.data.ExperimentBean;
+import controller.network.export.NetworkExporter;
 import controller.replication.data.AgentBean;
 import controller.replication.data.EquilibriumBean;
 import controller.replication.data.ReplicationBean;
@@ -31,7 +32,6 @@ import backend.Auction.MatchingType;
 import backend.EquilibriumStatistics;
 import backend.agents.Agent;
 import backend.agents.network.AgentNetwork;
-import backend.agents.network.export.NetworkExporter;
 import backend.markets.MarketType;
 import backend.markets.Markets;
 import backend.tx.Transaction;
