@@ -465,7 +465,7 @@ public class Agent {
 			// getting asset from seller, thus increasing uncollateralized assets after trade
 			uncollAssetsAfterTrade += Markets.TRADING_UNIT_ASSET;
 			
-			// cannot go short on assets: uncollateralized assets can NEVER be negative
+			// cannot go short on assets: uncollateralized assets MUST NEVER be negative
 			if ( uncollAssetsAfterTrade >= 0 ) {
 				offerings[ MarketType.ASSET_LOAN.ordinal() ] = new BidOffering( assetPriceInLoans, Markets.TRADING_UNIT_ASSET, this, MarketType.ASSET_LOAN );
 				

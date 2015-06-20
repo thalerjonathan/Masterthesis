@@ -100,8 +100,8 @@ Although agents are used in this software it is not an agent-based simulation in
 Each agent is characterized by its state where the main variables are:
 
 \begin{itemize}
-\item Id - the unique id of the agent in the range of the natural numbers starting with 1.
-\item Optimism-factor - defines how optimistic the agent is in the range of [0..1] where 0 is most pessimistic and 1 is most optimistic. The distribution of the optimism-factor among the agents is linearly ascending with the id and is defined through the following equation: \linebreak $\textit{optimism-factor} = \frac{id}{\textit{number of agents} + 1}$
+\item Id - the unique id of the agent in the range of the natural numbers in the range of [1..number of agents].
+\item Optimism-factor \textit{h} - defines how optimistic the agent is in the range of [0..1] where 0 is most pessimistic and 1 is most optimistic. The distribution of the optimism-factor among the agents is linearly ascending with the id and is defined through the following equation: \linebreak $\textit{optimism-factor} = \frac{id}{\textit{number of agents} + 1}$
 \item Cash holdings - the current cash holdings of the agent.
 \item Assets holdings - the current asset holdings of the agent not including the assets granted as securities for giving loans.
 \item Loan given - the amount of loans bought from / granted to other agents. For a given amount of loans the equal amount of assets are granted as security to the buyer of the loan. Thus this variable increases the amount of assets the agent can trade with.
@@ -121,15 +121,67 @@ There are three important derived variables which are calculated from the previo
 Note that all variables cannot go negative except loans.
 
 \section{Markets}
-In this section each market and its implementation is described from an implementation point of view.
+In this section each market and its implementation is described.
 
 \subsection{Asset/Cash}
 \subsubsection{Products}
-Assets (uncollateralized ones) are traded against cash. The buyer gets a specific amount of free assets for a given amount of cash where the seller gives away the specific amount of free assets and gets the given amount of cash.
+Free assets are traded against cash. The buyer gets a specific amount of free assets for a given amount of cash where the seller gives away the specific amount of free assets and gets the given amount of cash.
 
 \subsubsection{Price-Range}
+For an agent to be able to place profit-making offers on the market the according price-ranges need to be defined. Note that all prices must be obviously in the unit of cash according to the previously defined products.
+
+\paragraph{minimum}
+The minimum value of one asset is the down-value pD tomorrow as defined in chapter \ref{ch:leverageCycle} "The Leverage Cycle". This value is obviously a constant for all agents.
+
+\begin{center}
+$\textit{min asset-price} = \textit{pD}$
+\end{center}
+ 
+\paragraph{maximum}
+The maximum value of one asset is the up-value pU tomorrow as defined in chapter \ref{ch:leverageCycle} "The Leverage Cycle". This value is obviously a constant for all agents.
+
+\begin{center}
+$\textit{max asset-price} = \textit{pU}$
+\end{center}
+
+\paragraph{limit}
+The limit-price of an asset depends on the optimism-factor \textit{h} of the agent where the most optimistic agent assigns pU and the most pessimistic pD as the price. Thus applying linear interpolation one receives the following equation.
+
+\begin{center}
+$\textit{limit-price asset} = h * pU + ( 1.0 - h ) * pD$
+\end{center}
+
 \subsubsection{Bid-Offering}
+The price is drawn randomly between the minimum price and the limit-price because when buying one wants to buy below the expected value to make a profit. As amount one TRADING-UNIT of assets is selected - in the thesis-implementation 0.1 - but if there is not enough cash left to buy one TRADING-UNIT of assets then no bid-offer is made.
+
+\begin{table}[H]
+	\centering
+	\caption{Bid-Offering parameters}
+	\begin{tabular} { l c r }
+		\hline
+		Pre-Condition & $\textit{cash holdings} > \textit{price of TRADING-UNIT assets}$  \\
+		Asset-Price & $\mathrm{random}(\textit{min asset-price}, \textit{limit-price asset})$ \\
+		Asset-Amount & $\textit{TRADING-UNIT}$ \\
+		\hline
+	\end{tabular}
+\end{table}
+
 \subsubsection{Ask-Offering}
+Ask offers are generated only when the agent has at least one TRADING-UNIT of free assets left. The price is drawn randomly between the limit-price and maximum price because when selling one wants to sell above the expected value to make a profit. As amount one TRADING-UNIT of assets is selected - in the thesis-implementation 0.1 - but if there are fewer free assets left then no offer is made.
+
+\begin{table}[H]
+	\centering
+	\caption{Ask-Offering parameters}
+	\begin{tabular} { l c r }
+		\hline
+		Pre-Condition & $\textit{free assets} > \textit{TRADING-UNIT}$  \\
+		Asset-Price & $\mathrm{random}(\textit{limit-price of asset}, \textit{max asset-price})$ \\
+		Asset-Amount & $\textit{TRADING-UNIT}$ \\
+		\hline
+	\end{tabular}
+\end{table}
+
+
 \subsubsection{Match}
 Below the wealth-exchange table is given in case of a match between two agents on the Asset/Cash market. Note that the wealth is increased/decreased as given by the +/- signs.
 
@@ -145,19 +197,70 @@ Below the wealth-exchange table is given in case of a match between two agents o
 	\end{tabular}
 \end{table}
 
-\subsection{Loan/Cash}
+\subsection{Bond/Cash}
 \subsubsection{Products}
-Loans are traded against cash. The buyer grants the seller a loan in buying a loan from the seller thus the buyer gets a given loan-amount from the seller and gives a given cash-amount to the seller.
+Bonds are traded against cash. The buyer grants the seller a loan in buying a bond from the seller thus the buyer gets a given bond-amount from the seller and gives a given cash-amount to the seller. For a given amount of sold bonds the equal amount of assets need to be hold as securities.
 
 \subsubsection{Price-Range}
+For an agent to be able to place profit-making offers on the market the according price-ranges need to be defined. Note that all prices must be obviously in the unit of cash according to the previously defined products.
+
+\paragraph{minimum}
+The minimum value of one bond is the down-value pD tomorrow as defined in chapter \ref{ch:leverageCycle} "The Leverage Cycle". This value is obviously a constant for all agents.
+
+\begin{center}
+$\textit{min bond-price} = \textit{pD}$
+\end{center}
+ 
+\paragraph{maximum}
+The maximum value of one bond is the face-value V tomorrow as defined in chapter \ref{ch:leverageCycle} "The Leverage Cycle". This value is obviously a constant for all agents.
+
+\begin{center}
+$\textit{max bond-price} = \textit{facevalue V}$
+\end{center}
+
+\paragraph{limit}
+The limit-price of a bond depends on the optimism-factor \textit{h} of the agent where the most optimistic agent assigns \textit{facevalue V} and the most pessimistic \textit{pD} as the price. Thus applying linear interpolation one receives the following equation.
+
+\begin{center}
+$\textit{limit-price bond} = h * V + ( 1.0 - h ) * pD$
+\end{center}
+
 \subsubsection{Bid-Offering}
-\subsubsection{Ask-Offering}
-\subsubsection{Match}
-Below the wealth-exchange table is given in case of a match between two agents on the Loan/Cash market. Note that the wealth is increased/decreased as given by the +/- signs.
+Bid offers are generated only when the agent has any cash holdings. The price is drawn randomly between the minimum price and the limit-price because when buying one wants to buy below the expected value to make a profit. As amount one TRADING-UNIT of bonds is selected - in the thesis-implementation 0.2 - but if there is not enough cash left to buy one TRADING-UNIT of bonds then the amount of bonds is selected which can be bought with the remaining cash holdings.
 
 \begin{table}[H]
 	\centering
-	\caption{Wealth-Exchange during a match on Loan/Cash market}
+	\caption{Bid-Offering parameters}
+	\begin{tabular} { l c r }
+		\hline
+		Pre-Condition & $\textit{cash holdings} > 0$  \\
+		Bond-Price & $\mathrm{random}(\textit{min bond-price}, \textit{limit-price of bonds})$ \\
+		Bond-Amount & $\min (\frac{\textit{cash holdings} }{ \textit{Bond-Price} }, \textit{TRADING-UNIT} )$ \\
+		\hline
+	\end{tabular}
+\end{table}
+
+\subsubsection{Ask-Offering}
+Ask offers are generated only when the agent has any free assets because when selling the agent needs to reserve as many free assets as security as bonds sold. The price is drawn randomly between the limit-price and maximum price because when selling one wants to sell above the expected value to make a profit. As amount one TRADING-UNIT of bonds is selected - in the thesis-implementation 0.2 - but if there are fewer free assets left then the remaining amount of free assets is selected.
+
+\begin{table}[H]
+	\centering
+	\caption{Ask-Offering parameters}
+	\begin{tabular} { l c r }
+		\hline
+		Pre-Condition & $\textit{free assets} > 0$  \\
+		Bond-Price & $\mathrm{random}(\textit{limit-price of bonds}, \textit{max bond-price})$ \\
+		Bond-Amount & $\min ({\textit{free assets} }, \textit{TRADING-UNIT} )$ \\
+		\hline
+	\end{tabular}
+\end{table}
+
+\subsubsection{Match}
+Below the wealth-exchange table is given in case of a match between two agents on the Bond/Cash market. Note that the wealth is increased/decreased as given by the +/- signs.
+
+\begin{table}[H]
+	\centering
+	\caption{Wealth-Exchange during a match on Bond/Cash market}
 	\begin{tabular} { l c c }
 		& Seller & Buyer \\
 		\hline
@@ -168,13 +271,80 @@ Below the wealth-exchange table is given in case of a match between two agents o
 	\end{tabular}
 \end{table}
 
-\subsection{Asset/Loan}
+\subsection{Asset/Bond}
 \subsubsection{Products}
-Assets are traded against loan. The buyer gets a specific amount of free assets for a given amount of loan where the seller gives away the specific amount of free assets and gets the given amount of loan.
+Assets are traded against bonds. The buyer gets a specific amount of free assets for a given amount of bonds where the seller gives away the specific amount of free assets and gets the given amount of bonds.
 
 \subsubsection{Price-Range}
+For an agent to be able to place profit-making offers on the market the according price-ranges need to be defined. Note that all prices must be obviously in the unit of bonds according to the previously defined products.
+
+\paragraph{minimum}
+The minimum value of one asset in bonds is defined as the ratio of the minimum asset-price in cash to the maximum bond-price in cash. This value is obviously a constant for all agents.
+
+\begin{center}
+$\textit{min asset/bond price} = \frac{\textit{minimum asset-price}}{\textit{maximum bond-price}} = \frac{pD}{V}$
+\end{center}
+ 
+\paragraph{maximum}
+The maximum value of one asset in bonds is defined in the ratio of the maximum asset-price in cash to the minimum bond-price in cash.
+
+\begin{center}
+$\textit{max asset/bond price} = \frac{\textit{maximum asset-price}}{\textit{minimum bond-price}} = \frac{pU}{pD}$
+\end{center}
+
+\paragraph{limit}
+The limit-price in bonds of an asset depends on the optimism-factor \textit{h} and is just the ratio of the limit-price of the asset to the limit-price of the loans.
+
+\begin{center}
+$\textit{limit-price asset/bond} = \frac{limit-price asset}{limit-price loans}$
+\end{center}
+
 \subsubsection{Bid-Offering}
+Bid offers are generated only when the agent is not negative on free assets after the trade. The price is drawn randomly between the minimum price and the limit-price because when buying one wants to buy below the expected value to make a profit. As amount one TRADING-UNIT of a assets is selected - in the thesis-implementation 0.1. To calculate the free assets after the trade the following steps are performed:
+
+\begin{enumerate}
+\item Start with current free assets holdings.
+\item Subtract current collateral obligations.
+\item Subtract taken loans after trade.
+\item Add assets bought through trade.
+\end{enumerate}
+
+\begin{table}[H]
+	\centering
+	\caption{Bid-Offering parameters}
+	\begin{tabular} { l c r }
+		\hline
+		Pre-Condition & $\textit{free assets} >= \textit{0 after trade}$  \\
+		Asset/Bond-Price & $\mathrm{random}(\textit{min asset/bond price}, \textit{limit-price of asset/bond})$ \\
+		Asset/Bond-Amount & $\textit{TRADING-UNIT}$ \\
+		\hline
+	\end{tabular}
+\end{table}
+
+
 \subsubsection{Ask-Offering}
+Bid offers are generated only when the agent is not negative on free assets after the trade. The price is drawn randomly between the limit-price and maximum price because when selling one wants to sell above the expected value to make a profit. As amount one TRADING-UNIT of bonds is selected - in the thesis-implementation 0.2. To calculate the free assets after the trade the following steps are performed:
+
+
+\begin{enumerate}
+\item Start with current free assets holdings.
+\item Subtract current collateral obligations.
+\item Add given loans after trade.
+\item Subtract assets sold through trade.
+\end{enumerate}
+
+\begin{table}[H]
+	\centering
+	\caption{Bid-Offering parameters}
+	\begin{tabular} { l c r }
+		\hline
+		Pre-Condition & $\textit{free assets} >= \textit{0 after trade}$  \\
+		Asset/Bond-Price & $\mathrm{random}(\textit{limit-price of asset/bond}, \textit{max asset/bond price})$ \\
+		Asset/Bond-Amount & $\textit{TRADING-UNIT}$ \\
+		\hline
+	\end{tabular}
+\end{table}
+
 \subsubsection{Match}
 Below the wealth-exchange table is given in case of a match between two agents on the Asset/Loan market. Note that the wealth is increased/decreased as given by the +/- signs.
 
@@ -192,7 +362,13 @@ Below the wealth-exchange table is given in case of a match between two agents o
 \end{table}
 
 \section{Simulation}
+TODO: discuss the fact that not 1.0 units but small subchunks are traded. always talking about 1.0 units of assets/loans/cash but actually its a continuous double-auction.
+TODO: conserving the wealth
+TODO: explain why with 0.1 assets are traded down to 0.0
+
 \subsection{Sweeping and Matching}
+TODO: matching-amount
+
 \label{sec:implementation_sweepingAndMatching}
 
 \section{Performance improvement}
