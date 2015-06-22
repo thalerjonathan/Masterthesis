@@ -1,5 +1,8 @@
 \documentclass[Bachelorarbeit.tex]{subfiles}
 \begin{document}
+
+\graphicspath{{./figures/implementation/}}	%specifying the folder for the figures
+
 \chapter{Implementation}
 \label{ch:implementation}
 
@@ -77,20 +80,30 @@ In this section the basic architecture of the thesis-software is discussed. It i
 \medskip
 Theoretically the dependencies are top-down where the front-end includes only controller-functionality, the controller includes only back-end functionality and the back-end has no dependencies to the preceding layers. In this thesis-software a more pragmatic approach was chosen so this dogma was not followed where over-engineering and over-complication would have resulted when sticking strictly to the separation of dependencies. Thus in very few cases the controller- and back-end layer include front-end layer functionality to create different types of network topologies in a more convenient way. Also the front-end accesses instances of pure back-end classes for graphical visualisation and information purposes. Despite the seemingly flawed architecture the development-process has proven to be very smooth and expansions and refactorings went quite smoothly and always resulted in a better and clearer structure with reduced code-smell which is always a sign for a good architecture.
 
-TODO: frontend-controller-backend package diagram
+\begin{figure}[H]
+	\centering
+  \includegraphics[width=1.0\textwidth, angle=0]{PACKAGE_DIAGRAM_MINIMAL.png}
+	\caption{Package-diagram with most important classes and associations illustrating the architecture. (Note that the software contains many more classes and associations which are omitted for clarity reasons as this diagram should provide only a basic overview and would contain by far too much information if everything would have been included.)}
+	\label{fig:PACKAGE_DIAGRAM_MINIMAL}
+\end{figure}
 
 \subsection{Frontend}
-TODO
-GUI functionality and visualisation
-emphasis on massive re-use of gui-components thus massive use of sub-classing and pulling into separate class
+The front-end contains the GUI functionality through which the user interacts with the program and the real-time visualisation of wealth-distribution and market-activity. Because data like the offer-book, agent/replication/equilibrium-information and network-visualization is required in different contexts much emphasis was put on massive re-use of GUI components through the use of sub-classing and aggregation already provided by SWING. Thus many small components were implemented and aggregated together to create bigger chunks of logical functionality. In the package-diagram \ref{fig:PACKAGE_DIAGRAM_MINIMAL} only the most important panels are shown. Those provide the main entry-point for the user to the given functionality as indicated by their names.
 
 \subsection{Controller}
-TODO
-steering of the backend through the frontend: holds state and knows what to do next. inspection-controler, replications-controler and experimenter-controler, network-exporter
+The controller package is rather slim and contains the steering functionality to drive inspections, replications and experiments. Inspections are driven by the class \textit{InspectionThread} which allows to advance the simulation step-by-step using the consumer-producer paradigm through lock and wait functionality provided by Java through the use of its monitors. The classes \textit{ReplicationsRunner} and \textit{ReplicationTask} encapsulate functionality to run a number of replications for a given simulation-configuration in parallel, calculating the current median for all important values on-line and writing results to xml-files. Experiments are executed through the use of the class \textit{ExperimentCMDRunner} where it cycles through all simulation-configurations of a experiment-configuration and uses \textit{ReplicationsRunner} to execute it in parallel. 
 
 \subsection{Backend}
-TODO
-where the real simulation happens: auction, markets, network, matching, agents, offerings, transactions
+The back-end contains the domain-specific functionality for the simulation. The important classes can be seen in the package-diagram \ref{fig:PACKAGE_DIAGRAM_MINIMAL} but for better clarity each one is introduced briefly.
+
+\begin{itemize}
+\item Auction - holds the state and operations for a single simulation-run. This class does the sweeping and clearing discussed in section "Simulation", determines whether trading is still possible or not and calculates current equilibrium.  allows to run a matching-round
+\item Agent - encapsulates the functionality and state necessary for the agents in the simulation. See next section "Agents" for a more in-depth discussion.
+\item AgentNetwork - holds the connections between the agents and provides functionality to query neighbourhood, paths and connections between agents and random and sequential in-order iterator over all agents.
+\item Offering - encapsulates the data necessary for offerings where there are two subclasses \textit{BidOffering} and \textit{AskOffering} to differentiate between the two types of offerings. See the section "Markets" on details of offerings.
+\item Match - provides the functionality to create a match out of given offers and returning an instance of \textit{Match} through a factory-method. The \textit{Match} instance holds the price, amount and the offers which have matched. See section "Sweeping and Matching" on more details.
+\item Transaction - encapsulates functionality to search for a match within a given neighbourhood, is used by \textit{Auction} class to sweep through the agents and is returned after a matching-round and provides necessary information about whether it was successful or not.
+\end{itemize}
 
 \section{Agents}
 Although agents are used in this software it is not an agent-based simulation in the classical way as these agents are zero-intelligence ones and have no states of behaviour. That is each agent makes bid- and ask-offers on all markets if the constraints allow it where the prices are selected from random ranges which improve the utility of the agent - that means it makes always offers which would result in a profit.
@@ -121,38 +134,45 @@ There are three important derived variables which are calculated from the previo
 Note that all variables cannot go negative except loans.
 
 \section{Markets}
-In this section each market and its implementation is described.
+In this section all markets and their implementations are described. Each market is completely characterised by the following points:
+
+\begin{itemize}
+\item Products - the products traded on the corresponding market.
+\item Price-ranges - the price-ranges in which an agent places profit-making offers on the market.
+\item Bid- and Ask-Offerings - define the pre-conditions for an agent to make offerings on the market and the amount and the prices generated during an offer. \medskip
+Note that in case of bid-offerings the price of the profit-making offer is drawn randomly between the minimum price and the limit-price because when buying one wants to buy below the expected value to make a profit where in case of ask-offerings the price is drawn randomly between the limit-price and maximum price because when selling one wants to sell above the expected value to make a profit.
+\item Match-Table - In case of a match between two agents the wealth-exchange is declared where the wealth is increased/decreased as indicated by the +/- signs.
+\end{itemize}
 
 \subsection{Asset/Cash}
 \subsubsection{Products}
 Free assets are traded against cash. The buyer gets a specific amount of free assets for a given amount of cash where the seller gives away the specific amount of free assets and gets the given amount of cash.
 
 \subsubsection{Price-Range}
-For an agent to be able to place profit-making offers on the market the according price-ranges need to be defined. Note that all prices must be obviously in the unit of cash according to the previously defined products.
 
 \paragraph{minimum}
-The minimum value of one asset is the down-value pD tomorrow as defined in chapter \ref{ch:leverageCycle} "The Leverage Cycle". This value is obviously a constant for all agents.
+The minimum value of one asset in cash is the down-value pD tomorrow as defined in chapter \ref{ch:leverageCycle} "The Leverage Cycle". This value is obviously a constant for all agents.
 
 \begin{center}
 $\textit{min asset-price} = \textit{pD}$
 \end{center}
  
 \paragraph{maximum}
-The maximum value of one asset is the up-value pU tomorrow as defined in chapter \ref{ch:leverageCycle} "The Leverage Cycle". This value is obviously a constant for all agents.
+The maximum value of one asset in cash is the up-value pU tomorrow as defined in chapter \ref{ch:leverageCycle} "The Leverage Cycle". This value is obviously a constant for all agents.
 
 \begin{center}
 $\textit{max asset-price} = \textit{pU}$
 \end{center}
 
 \paragraph{limit}
-The limit-price of an asset depends on the optimism-factor \textit{h} of the agent where the most optimistic agent assigns pU and the most pessimistic pD as the price. Thus applying linear interpolation one receives the following equation.
+The limit-price of an asset in cash depends on the optimism-factor \textit{h} of the agent where the most optimistic agent assigns pU and the most pessimistic pD as the price. Thus applying linear interpolation one receives the following equation.
 
 \begin{center}
 $\textit{limit-price asset} = h * pU + ( 1.0 - h ) * pD$
 \end{center}
 
 \subsubsection{Bid-Offering}
-The price is drawn randomly between the minimum price and the limit-price because when buying one wants to buy below the expected value to make a profit. As amount one TRADING-UNIT of assets is selected - in the thesis-implementation 0.1 - but if there is not enough cash left to buy one TRADING-UNIT of assets then no bid-offer is made.
+As amount one TRADING-UNIT of assets is selected but if there is not enough cash left to buy one TRADING-UNIT of assets then no bid-offer is made.
 
 \begin{table}[H]
 	\centering
@@ -167,7 +187,7 @@ The price is drawn randomly between the minimum price and the limit-price becaus
 \end{table}
 
 \subsubsection{Ask-Offering}
-Ask offers are generated only when the agent has at least one TRADING-UNIT of free assets left. The price is drawn randomly between the limit-price and maximum price because when selling one wants to sell above the expected value to make a profit. As amount one TRADING-UNIT of assets is selected - in the thesis-implementation 0.1 - but if there are fewer free assets left then no offer is made.
+Ask offers are generated only when the agent has at least one TRADING-UNIT of free assets left. As amount one TRADING-UNIT of assets is selected - in the thesis-implementation 0.1 - but if there are fewer free assets left then no offer is made.
 
 \begin{table}[H]
 	\centering
@@ -183,7 +203,6 @@ Ask offers are generated only when the agent has at least one TRADING-UNIT of fr
 
 
 \subsubsection{Match}
-Below the wealth-exchange table is given in case of a match between two agents on the Asset/Cash market. Note that the wealth is increased/decreased as given by the +/- signs.
 
 \begin{table}[H]
 	\centering
@@ -202,31 +221,30 @@ Below the wealth-exchange table is given in case of a match between two agents o
 Bonds are traded against cash. The buyer grants the seller a loan in buying a bond from the seller thus the buyer gets a given bond-amount from the seller and gives a given cash-amount to the seller. For a given amount of sold bonds the equal amount of assets need to be hold as securities.
 
 \subsubsection{Price-Range}
-For an agent to be able to place profit-making offers on the market the according price-ranges need to be defined. Note that all prices must be obviously in the unit of cash according to the previously defined products.
 
 \paragraph{minimum}
-The minimum value of one bond is the down-value pD tomorrow as defined in chapter \ref{ch:leverageCycle} "The Leverage Cycle". This value is obviously a constant for all agents.
+The minimum value of one bond in cash is the down-value pD tomorrow as defined in chapter \ref{ch:leverageCycle} "The Leverage Cycle". This value is obviously a constant for all agents.
 
 \begin{center}
 $\textit{min bond-price} = \textit{pD}$
 \end{center}
  
 \paragraph{maximum}
-The maximum value of one bond is the face-value V tomorrow as defined in chapter \ref{ch:leverageCycle} "The Leverage Cycle". This value is obviously a constant for all agents.
+The maximum value of one bond in cash is the face-value V tomorrow as defined in chapter \ref{ch:leverageCycle} "The Leverage Cycle". This value is obviously a constant for all agents.
 
 \begin{center}
 $\textit{max bond-price} = \textit{facevalue V}$
 \end{center}
 
 \paragraph{limit}
-The limit-price of a bond depends on the optimism-factor \textit{h} of the agent where the most optimistic agent assigns \textit{facevalue V} and the most pessimistic \textit{pD} as the price. Thus applying linear interpolation one receives the following equation.
+The limit-price of a bond in cash depends on the optimism-factor \textit{h} of the agent where the most optimistic agent assigns \textit{facevalue V} and the most pessimistic \textit{pD} as the price. Thus applying linear interpolation one receives the following equation.
 
 \begin{center}
 $\textit{limit-price bond} = h * V + ( 1.0 - h ) * pD$
 \end{center}
 
 \subsubsection{Bid-Offering}
-Bid offers are generated only when the agent has any cash holdings. The price is drawn randomly between the minimum price and the limit-price because when buying one wants to buy below the expected value to make a profit. As amount one TRADING-UNIT of bonds is selected - in the thesis-implementation 0.2 - but if there is not enough cash left to buy one TRADING-UNIT of bonds then the amount of bonds is selected which can be bought with the remaining cash holdings.
+Bid offers are generated only when the agent has any cash holdings. As amount one TRADING-UNIT of bonds is selected but if there is not enough cash left to buy one TRADING-UNIT of bonds then the amount of bonds is selected which can be bought with the remaining cash holdings.
 
 \begin{table}[H]
 	\centering
@@ -241,7 +259,7 @@ Bid offers are generated only when the agent has any cash holdings. The price is
 \end{table}
 
 \subsubsection{Ask-Offering}
-Ask offers are generated only when the agent has any free assets because when selling the agent needs to reserve as many free assets as security as bonds sold. The price is drawn randomly between the limit-price and maximum price because when selling one wants to sell above the expected value to make a profit. As amount one TRADING-UNIT of bonds is selected - in the thesis-implementation 0.2 - but if there are fewer free assets left then the remaining amount of free assets is selected.
+Ask offers are generated only when the agent has any free assets because when selling the agent needs to reserve as many free assets as security as bonds sold. As amount one TRADING-UNIT of bonds is selected but if there are fewer free assets left then the remaining amount of free assets is selected.
 
 \begin{table}[H]
 	\centering
@@ -256,7 +274,6 @@ Ask offers are generated only when the agent has any free assets because when se
 \end{table}
 
 \subsubsection{Match}
-Below the wealth-exchange table is given in case of a match between two agents on the Bond/Cash market. Note that the wealth is increased/decreased as given by the +/- signs.
 
 \begin{table}[H]
 	\centering
@@ -276,7 +293,6 @@ Below the wealth-exchange table is given in case of a match between two agents o
 Assets are traded against bonds. The buyer gets a specific amount of free assets for a given amount of bonds where the seller gives away the specific amount of free assets and gets the given amount of bonds.
 
 \subsubsection{Price-Range}
-For an agent to be able to place profit-making offers on the market the according price-ranges need to be defined. Note that all prices must be obviously in the unit of bonds according to the previously defined products.
 
 \paragraph{minimum}
 The minimum value of one asset in bonds is defined as the ratio of the minimum asset-price in cash to the maximum bond-price in cash. This value is obviously a constant for all agents.
@@ -293,14 +309,14 @@ $\textit{max asset/bond price} = \frac{\textit{maximum asset-price}}{\textit{min
 \end{center}
 
 \paragraph{limit}
-The limit-price in bonds of an asset depends on the optimism-factor \textit{h} and is just the ratio of the limit-price of the asset to the limit-price of the loans.
+The limit-price in bonds of an asset in bonds depends on the optimism-factor \textit{h} and is just the ratio of the limit-price of the asset to the limit-price of the loans.
 
 \begin{center}
-$\textit{limit-price asset/bond} = \frac{limit-price asset}{limit-price loans}$
+$\textit{limit-price asset/bond} = \frac{\textit{limit-price asset}}{\textit{limit-price loans}}$
 \end{center}
 
 \subsubsection{Bid-Offering}
-Bid offers are generated only when the agent is not negative on free assets after the trade. The price is drawn randomly between the minimum price and the limit-price because when buying one wants to buy below the expected value to make a profit. As amount one TRADING-UNIT of a assets is selected - in the thesis-implementation 0.1. To calculate the free assets after the trade the following steps are performed:
+Bid offers are generated only when the agent is not negative on free assets after the trade. As amount one TRADING-UNIT of a assets is selected. To calculate the free assets after a match the following steps are performed:
 
 \begin{enumerate}
 \item Start with current free assets holdings.
@@ -321,10 +337,8 @@ Bid offers are generated only when the agent is not negative on free assets afte
 	\end{tabular}
 \end{table}
 
-
 \subsubsection{Ask-Offering}
-Bid offers are generated only when the agent is not negative on free assets after the trade. The price is drawn randomly between the limit-price and maximum price because when selling one wants to sell above the expected value to make a profit. As amount one TRADING-UNIT of bonds is selected - in the thesis-implementation 0.2. To calculate the free assets after the trade the following steps are performed:
-
+Bid offers are generated only when the agent is not negative on free assets after the trade. As amount one TRADING-UNIT of bonds is selected. To calculate the free assets after a match the following steps are performed:
 
 \begin{enumerate}
 \item Start with current free assets holdings.
@@ -346,7 +360,6 @@ Bid offers are generated only when the agent is not negative on free assets afte
 \end{table}
 
 \subsubsection{Match}
-Below the wealth-exchange table is given in case of a match between two agents on the Asset/Loan market. Note that the wealth is increased/decreased as given by the +/- signs.
 
 \begin{table}[H]
 	\centering
@@ -365,9 +378,10 @@ Below the wealth-exchange table is given in case of a match between two agents o
 TODO: discuss the fact that not 1.0 units but small subchunks are traded. always talking about 1.0 units of assets/loans/cash but actually its a continuous double-auction.
 TODO: conserving the wealth
 TODO: explain why with 0.1 assets are traded down to 0.0
+TODO: define TRADING-UNIT of assets (0.1) and TRADING-UNIT of bonds (0.2)
 
 \subsection{Sweeping and Matching}
-TODO: matching-amount
+TODO: matching-amount explain: meet half-way price. this guarantees that not more than the previously defined amount is traded (again conserving the wealth). normalized price (depending on the amount)
 
 \label{sec:implementation_sweepingAndMatching}
 
@@ -376,7 +390,7 @@ TODO: matching-amount
 Matching Wahrscheinlichkeiten
 Importance Sampling
 Lokales vs Globales Offerbook
-		
+
 \section{Calculating theoretical Equilibrium}
 TODO analyse matlab-script of martin jandacka
 
