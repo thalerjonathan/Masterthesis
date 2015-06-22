@@ -59,21 +59,35 @@ When running a bunch of replications for a given set-up the results of it should
 As already described replications are required to be implemented for parallel processing where up to the number of CPU-cores replications can run in parallel. When running a vast number of replications one does not need to GUI-functionality and most probably the machine is so occupied by the heavy work-load that a fließender usage of GUI would be not possible any-more. Thus replications should be runnable through a separate command-line mode of the thesis-software which reads information from a XML-File in which one can specify multiple simulation set-ups for which replications should be run. The command-line mode iterates through all configurations and runs the required replications and writes the result out for a later inspection. Obviously the more CPU-cores the faster a simulation-run with e.g. 50 replications finishes. For this reason most of the final replication-runs were done on a 40-core machine of the FH Vorarlberg which runs on Linux on which the thesis-software could be run easily because of Java's platform-independence.
 
 \section{Functionality}
-In this section the functionality of the thesis-software is explained to get an understanding of the implemented features.
+In this section the functionality of the thesis-software is explained to get an understanding of the implemented features. All features are available through the GUI unless stated otherwise. For inspection, replications and experimenter an individual tab is available inside the main window so they can be used in parallel.
 
 \subsection{Emulate \cite{Breuer2015} functionality}
-TODO markets, bp, abm, equilibrium. not: abbruchbedingung is different, more strict
+Of course the starting point was to emulate the features of the \cite{Breuer2015} paper so all three markets were implemented together with "Bonds Pledgeability". In a first iteration the implementation was lacking the BP-feature which resulted in quite chaotic results which didn't come even close to the equilibrium shown in \cite{Breuer2015} which is a proof for the very importance of BP.
 
 \subsection{Inspection}
-TODO step-by-step and matching-history
+Inspection allows for a given simulation-configuration to step through the whole process match-by-match, keep track of the successful matches and the wealth-distribution of the agents at this time and to jump back to each successful match. Through an offer-book the state and current offerings of all agents at a given time of the simulation (including past successful matches) can be inspected and compared by opening multiple offer-book windows. Furthermore this feature provides the user with statistics of successful, failed and total matches and the current equilibrium. Very much attention was paid to the implementation of the real-time visualisation of the agents wealth-distribution and the market-activities as visualisation is of very importance for a successful inspection and interpretation of a dynamic process. To be able to compare the visual results of 2 different simulation-configurations there exist 2 "Inspection" tabs in the main window.
+
+\subsection{Networks}
+This functionality allows to model different kind of network-topologies as described in appendix \ref{app:topologies} "Topologies" to restrict trading only to this kind of neighbourhood. Obviously network-topologies are graphs and thus it would have been required to implement a graph-library but that was not implemented self but the graph-library JUNG was used as it supported all the required features like visualisation, neighbourhood- and path-queries.
 
 \subsection{Replications}
-TODO 
+To get robust results replications are used to reduce the influence of random noise. This feature allows to let run a specific simulation configuration for a given number of replications in parallel. The specific simulation-configuration serves as a template - especially the network-topology - and each replication does a clone of the network together with the agents to be able to run in parallel without the need of synchronization. It was tried to implement the network as a shared network between all replications but because the agents serve as nodes this was not feasible and would have required a very fundamental re-factoring of already existing functionality. Thus the higher requirements in memory and time for cloning was accepted for a more elegant solution.
+When replications are processed running ones can be inspected and information can be queried using the GUI. It is possible to cancel one replication, cancel a whole task which reduces thread-load, inspect wealth-distribution, see the failed and successful matches and statistics of already finished replications. Whenever a replication is finished it is added to the pool of results and the median result is re-calculated and visualized and informations updated. When all replications have finished the results are written to a new XML-file in the results-folder of the software. This result-file can be opened using the experiments-feature which is described next. A simulation-configuration can be saved as a separate new experiment-file or added to an existing experiment-file - see next section for experiments.
 
 \subsection{Experiments}
-TODO results öffnen
-experimente per xml definieren
-über command-line laufen lassen
+The experiments-feature allows to open experiment-files and result-files of replication- and experiment-runs. An experiment-file is just a collection of simulation-configurations to be run for a given number of replications. When an experiment-file is opened all simulation-configurations are displayed in a list an each of them can be opened as a new replication-tab which in turn can be run as explained in section "Replications". To be able to coneveniently run all simulation-configurations of an experiment-file without needing user-interaction a command-line feature was implemented. For this purpose the jar-file LeverageCycleCMD.jar was built. Start an experiment-run by using the following command:
+
+\begin{center}
+\textit{java -jar LeverageCycleCMD.jar PATH-TO-EXPERIMENT-FILE MAX-THREADS-OPTIONAL}
+\end{center}
+
+Note that the number of threads used is optional and when omitted the number of CPU-cores found on the system is used. 
+
+\medskip
+
+Each replication-run of a given simulation-configuration in the experiment-file produces a result-file with the name provided in the configuration. These result-files are dubbed result-files of experiment-runs as previously stated but are the same as the result-file of a replication-run as discussed in the section "Replications"
+When opening a result-file a new tab is added to the main-window and the statistics of the run together with equilibrium-statistics are displayed. Furthermore the wealth-distirbution and market-acitivities are visualized and it is possible to view the statistics of each individual replication. Furthermore the user can display the network-topology used for this simulation-configuration which is important as random networks are different when created new.
+
 
 \section{Architecture}
 In this section the basic architecture of the thesis-software is discussed. It is important to note that this thesis is a fat-client and has its major emphasis not on the software-development aspect but on the visual- and numerical results where the accompanying software is just a tool for the means to calculate theses required results. Thus the architecture is guided by a simple division of layers into front-end, controller and back-end. The front-end is responsible for input and output of the user through GUI or command-line. The controller-layer provides encapsulated chunks of functionality of the back-end to the front-end. It is necessary to abstract, encapsulate and combine the stateful nature of communication with the back-end into a separate layer instead of polluting the front-end with it and creating unnecessary dependencies. The back-end layer provides the functionality where the real work is done e.g. simulation is executed.
@@ -91,7 +105,7 @@ Theoretically the dependencies are top-down where the front-end includes only co
 The front-end contains the GUI functionality through which the user interacts with the program and the real-time visualisation of wealth-distribution and market-activity. Because data like the offer-book, agent/replication/equilibrium-information and network-visualization is required in different contexts much emphasis was put on massive re-use of GUI components through the use of sub-classing and aggregation already provided by SWING. Thus many small components were implemented and aggregated together to create bigger chunks of logical functionality. In the package-diagram \ref{fig:PACKAGE_DIAGRAM_MINIMAL} only the most important panels are shown. Those provide the main entry-point for the user to the given functionality as indicated by their names.
 
 \subsection{Controller}
-The controller package is rather slim and contains the steering functionality to drive inspections, replications and experiments. Inspections are driven by the class \textit{InspectionThread} which allows to advance the simulation step-by-step using the consumer-producer paradigm through lock and wait functionality provided by Java through the use of its monitors. The classes \textit{ReplicationsRunner} and \textit{ReplicationTask} encapsulate functionality to run a number of replications for a given simulation-configuration in parallel, calculating the current median for all important values on-line and writing results to xml-files. Experiments are executed through the use of the class \textit{ExperimentCMDRunner} where it cycles through all simulation-configurations of a experiment-configuration and uses \textit{ReplicationsRunner} to execute it in parallel. 
+The controller package is rather slim and contains the steering functionality to drive inspections, replications and experiments. Inspections are driven by the class \textit{InspectionThread} which allows to advance the simulation step-by-step using the consumer-producer paradigm through lock and wait functionality provided by Java through the use of its monitors. The classes \textit{ReplicationsRunner} and \textit{ReplicationTask} encapsulate functionality to run a number of replications for a given simulation-configuration in parallel, calculating the current median for all important values on-line and writing results to xml-files. Experiments are executed from the command-line through the use of the class \textit{ExperimentCMDRunner} where it cycles through all simulation-configurations of a experiment-configuration and uses \textit{ReplicationsRunner} to execute it in parallel. 
 
 \subsection{Backend}
 The back-end contains the domain-specific functionality for the simulation. The important classes can be seen in the package-diagram \ref{fig:PACKAGE_DIAGRAM_MINIMAL} but for better clarity each one is introduced briefly.
@@ -312,7 +326,7 @@ $\textit{max asset/bond price} = \frac{\textit{maximum asset-price}}{\textit{min
 The limit-price in bonds of an asset in bonds depends on the optimism-factor \textit{h} and is just the ratio of the limit-price of the asset to the limit-price of the loans.
 
 \begin{center}
-$\textit{limit-price asset/bond} = \frac{\textit{limit-price asset}}{\textit{limit-price loans}}$
+$\textit{limit-price asset/bond} = \frac{\textit{limit-price asset}}{\textit{limit-price bonds}}$
 \end{center}
 
 \subsubsection{Bid-Offering}
