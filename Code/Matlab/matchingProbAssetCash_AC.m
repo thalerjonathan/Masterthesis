@@ -41,15 +41,21 @@ function [ individualP, matchingP ] = matchingProbAssetCash_AC( N )
         
         % calculate probabilities that asker AND bider fall both into
         % matching range: bayes theorem, just multiply
-        matchingP( i + 1 ) = pAsk * pBid;
+        matchingP( i + 1 ) = pAsk * pBid * 0.5;
     end
 
+   	fontSizeValue = 14;
+    
     plot( individualP, '-X' );
-    title( 'Askers and Biders INDIVIDUAL probability falling into matching range' );
-    legend( 'Askers', 'Biders' );
-    xlabel( 'Agent' );
-    ylabel( 'Probability' );
+    %title( 'Askers and biders individual probability falling into matching range on Asset/Cash market' );
+    l = legend( 'Askers', 'Biders' );
+    set(l,'FontSize', fontSizeValue);
+    l = xlabel( 'Agent optimism' );
+    set(l,'FontSize', fontSizeValue);
+    l = ylabel( 'Probability' );
+    set(l,'FontSize', fontSizeValue);
     set(gca, 'XTick', 1:length(xLabels)); % Change x-axis ticks
+    set(gca,'FontSize', 12);
     ticLoc = get( gca, 'XTick' );
     ticLab = cellfun(@(x) char( xLabels{ x } ),num2cell(ticLoc),'UniformOutput',false);
     set(gca,'XTickLabel', ceil(agents*1000)/1000); % Change x-axis ticks labels to desired values.
@@ -57,10 +63,14 @@ function [ individualP, matchingP ] = matchingProbAssetCash_AC( N )
     figure
     
     plot( matchingP, '-X' );
-    title( 'Askers and Biders probability to match' );
-    legend( 'Matching-Probability' );
-    xlabel( 'Agent' );
-    ylabel( 'Probability' );
+    %title( 'Askers and biders probability to match on Asset/Cash market' );
+    l = legend( 'Matching-Probability' );
+    set(l,'FontSize', fontSizeValue);
+    l = xlabel( 'Agent optimism' );
+    set(l,'FontSize', fontSizeValue);
+    l = ylabel( 'Probability' );
+    set(l,'FontSize', fontSizeValue);
+    set(gca,'FontSize', 12);
     set(gca, 'XTick', 1:length(agents)); % Change x-axis ticks
     set( gca,'XTickLabel', ceil(agents*1000)/1000); % Change x-axis ticks labels to desired values.
 
