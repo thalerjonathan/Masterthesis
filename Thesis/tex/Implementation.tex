@@ -190,7 +190,7 @@ As amount one TRADING-UNIT of assets is selected but if there is not enough cash
 
 \begin{table}[H]
 	\centering
-	\caption{Bid-Offering parameters}
+	\caption{Bid-Offering parameters of Asset/Cash market}
 	\begin{tabular} { l c r }
 		\hline
 		Pre-Condition & $\textit{cash holdings} > \textit{price of TRADING-UNIT assets}$  \\
@@ -205,7 +205,7 @@ Ask offers are generated only when the agent has at least one TRADING-UNIT of fr
 
 \begin{table}[H]
 	\centering
-	\caption{Ask-Offering parameters}
+	\caption{Ask-Offering parameters of Asset/Cash market}
 	\begin{tabular} { l c r }
 		\hline
 		Pre-Condition & $\textit{free assets} > \textit{TRADING-UNIT}$  \\
@@ -262,7 +262,7 @@ Bid offers are generated only when the agent has any cash holdings. As amount on
 
 \begin{table}[H]
 	\centering
-	\caption{Bid-Offering parameters}
+	\caption{Bid-Offering parameters of Bond/Cash market}
 	\begin{tabular} { l c r }
 		\hline
 		Pre-Condition & $\textit{cash holdings} > 0$  \\
@@ -277,7 +277,7 @@ Ask offers are generated only when the agent has any free assets because when se
 
 \begin{table}[H]
 	\centering
-	\caption{Ask-Offering parameters}
+	\caption{Ask-Offering parameters of Bond/Cash market}
 	\begin{tabular} { l c r }
 		\hline
 		Pre-Condition & $\textit{free assets} > 0$  \\
@@ -341,7 +341,7 @@ Bid offers are generated only when the agent is not negative on free assets afte
 
 \begin{table}[H]
 	\centering
-	\caption{Bid-Offering parameters}
+	\caption{Bid-Offering parameters of Asset/Bond market}
 	\begin{tabular} { l c r }
 		\hline
 		Pre-Condition & $\textit{free assets} >= \textit{0 after trade}$  \\
@@ -363,7 +363,7 @@ Bid offers are generated only when the agent is not negative on free assets afte
 
 \begin{table}[H]
 	\centering
-	\caption{Bid-Offering parameters}
+	\caption{Bid-Offering parameters of Asset/Bond market}
 	\begin{tabular} { l c r }
 		\hline
 		Pre-Condition & $\textit{free assets} >= \textit{0 after trade}$  \\
@@ -389,21 +389,98 @@ Bid offers are generated only when the agent is not negative on free assets afte
 \end{table}
 
 \section{Simulation}
-TODO: discuss the fact that not 1.0 units but small subchunks are traded. always talking about 1.0 units of assets/loans/cash but actually its a continuous double-auction.
-TODO: conserving the wealth
-TODO: explain why with 0.1 assets are traded down to 0.0
-TODO: define TRADING-UNIT of assets (0.1) and TRADING-UNIT of bonds (0.2)
+In this section a few details of the simulation-implementation are discussed as they are not so obvious but interesting and important enough to be mentioned.
+
+\medskip
+
+As noted above in the section "Markets" bonds and assets are always traded in chunks of TRADING-UNITS which is 0.1 in case of assets and 0.2 in case of bonds. Note that it is nothing unusual to scale the initial wealth-endowments to 1.0 and trade parts of them as in the end the absolute endowment does not matter but the distribution over the agents so a transformation to natural numbers would not gain anything. What is much more important is that the system conserves wealth: no wealth is lost and no wealth is created \textit{ex nihilo}. This is guaranteed by the equations and pre-conditions found in section "Markets". 
 
 \subsection{Sweeping and Matching}
-TODO: matching-amount explain: meet half-way price. this guarantees that not more than the previously defined amount is traded (again conserving the wealth). normalized price (depending on the amount)
-
 \label{sec:implementation_sweepingAndMatching}
+
+\paragraph{Sweeping}
+Sweeping is the process of generating a successful match by running through the agents and apply matching between their offers. Because offering-prices are created randomly in specific ranges it could happen that no offers match. To elevate this problem not only 1 but up to 500 sweeps are done when calculating the next successful match.
+
+\begin{algorithm}
+\caption{Sweeping Pseudocode}\label{euclid}
+\begin{algorithmic}[1]
+\State \textit{clear best offerings of all agents}
+\While{ $sweeps < 500$ }
+	\State \textit{clear global offerings of previous sweep}
+	\State \textit{shuffle agents}
+	\State \textit{generate offerings for all agents}
+	\ForAll {shuffled agents}
+		\State \textit{find match in neighbourhood}
+		\If{ match found }
+			\State \textit{execute match}
+			\State \textbf{exit sweeping}
+		\EndIf 
+	\EndFor
+	\If{ no trading possible }
+	\State \textbf{exit sweeping}
+	\EndIf
+\EndWhile
+\end{algorithmic}
+\end{algorithm}
+
+\paragraph{Matching}
+Matching is the process of finding a match of a given agent in the sweeping-process with the offerings of its neighbourhood. Note that a match can only occur on one specific market between two agents thus satisfying only one buy- and one sell-offer.
+
+\begin{algorithm}
+\caption{Matching Pseudocode}\label{euclid}
+\begin{algorithmic}[1]
+\State \textit{get best offerings of neighbourhood}
+\ForAll{neighbourhood offerings}
+	\State \textit{randomly check sell or buy offerings first}
+	\If{ $\textit{buy-price} \geq \textit{sell-price}$ }
+		\State $m \gets \textbf{new Match}$
+		\State $m.price = \frac{\textit{buy-price} + \textit{sell-price}}{2}$
+		\State $m.amount = \min(\textit{buy-amount}, \textit{sell-amount})$
+		\State $m.normPrice = m.price * m.amount$
+		\State \textbf{exit matching}
+	\EndIf
+\EndFor
+\end{algorithmic}
+\end{algorithm}
+
+\begin{algorithm}
+\caption{Get Best Offerings of Neighbourhood Pseudocode}\label{euclid}
+\begin{algorithmic}[1]
+\State $\textit{bestOfferings} \gets \textit{null}$
+\State $a \gets \textit{current agent}$
+\ForAll{neighbours of a}
+	\State $n \gets \textit{next neighbour of a}$
+	\State $\textit{neighbourOfferings} \gets \textit{n.currentOfferings}$
+	
+	\ForAll{neighbourOfferings}
+		\State $nO \gets \textit{next offering in neighbourOfferings}$
+		
+		\ForAll{bestOfferings}
+			\State $bO \gets \textit{next offering in bestOfferings}$
+		
+			\If{nO.price dominates bO.price}
+				\State $bO \gets nO$
+			\EndIf
+		\EndFor
+	\EndFor
+\EndFor
+\end{algorithmic}
+\end{algorithm}
+
+Note that as defined in the double-auction theory - see chapter \ref{ch:theory} "Continous Double-Auction" - the agents meet at the half-way price. This guarantees that not more than the previously defined amount is traded which again conserves the wealth. Care must be taken when calculating the real price of the match as all offering prices are for 1.0 Unit of the traded good. Thus to obtain the real matching-price the previously calculated half-way price needs to be scaled by the matching-amount to obtain the price for the given matching-amount.
+\medskip
+Also note that if one match is found on any market then the sweeping and matching is terminated and a successful match is returned thus the agents can place offers on all markets although the sum of the offers would be infeasible because only one offer will be satisfied and the other ones are thrown away.
 
 \section{Performance improvement}
 \label{sec:implementation_performanceImprovement}
-Matching Wahrscheinlichkeiten
-Importance Sampling
-Lokales vs Globales Offerbook
+
+\subsection{Local and Global Offer-book}
+if not fully-connected then neighborhood is local: is n^2 runtime and needs to iterate over large amount of neighbours in case of fully-connected. thus solution:
+
+if fully-connected then neighbourhood is global
+
+\subsection{Importance Sampling}
+Matching wahrscheinlichkeiten von ascending-connecte
 
 \section{Calculating theoretical Equilibrium}
 TODO analyse matlab-script of martin jandacka

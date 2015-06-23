@@ -41,7 +41,6 @@ public class Match {
 		int[] perm = Match.PERMUTATOR.nextPermutation( Markets.NUMMARKETS, Markets.NUMMARKETS );
 		
 		// check markets in random order - first match wins
-		// TODO: ignoring COLLATERAL_CASH Market for now
 		for ( int i = 0; i < Markets.NUMMARKETS; ++i ) {
 			int marketIndex = perm[ i ];
 			
