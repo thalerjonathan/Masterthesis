@@ -517,11 +517,15 @@ These diagram tell the following things about the ascending-connected topology:
 \item The more agents in the network the lower the matching-probabilities.
 \end{enumerate}
 
-This results in longer simulation-runs and. To elevate this problem one can adjust the matching-probabilities by transforming the price-ranges. It is very important that the shape of the matching-probabilities distribution must be exactly the same but only the absolute probabilities are increased where the edges are at the maximum of 1.0. 
-
-TODO: genaue analyse und formeln. ABER: ist dafür genug zeit oder soll das auf further research and conclusions geschoben werden?
+This results in longer simulation-runs and. To elevate this problem one can adjust the matching-probabilities by transforming the price-ranges. It is very important that the shape of the matching-probabilities distribution must be exactly the same but only the absolute probabilities are increased where the edges are at the maximum of 1.0. As this is mathematically quite involved and was not developed by myself but by supervisor Mr. Vollbrecht this has been moved to appendix \ref{app:increasingMatchingProbability} "Increasing the matching-probabilities in Ascending-Connected topology"
 
 \section{Calculating theoretical Equilibrium}
-TODO analyse matlab-script of martin jandacka. WENN GENUG ZEIT
+Theoretical equilibrium is known and specified through the equations given in section \ref{ch:leverageCycle} "Collateral Equilibrium" of chapter \ref{ch:leverageCycle} "The Leverage Cycle". This theoretical equilibrium is only applicable for an infinite number of agents whereas in the simulation a finite set of agents is used for which the theoretical equilibrium must be found too. For this purpose \cite{Breuer2015} developed an algorithm in MATLAB which searches the finite solution-space for the given equilibrium. This section gives a short overview of how the algorithm solves this task and is based on an existing documentation written by Martin Jandacka and the MATLAB code which both were available to the author of this thesis. Thus this section is only a simplified summary and the algorithm and the method behind it was not developed by the author of this thesis.
+
+time dependence is $O(n^2)$
+
+\medskip
+
+LP-solve linear solver
 
 \end{document}
