@@ -16,7 +16,7 @@ function [ individualP, matchingP ] = matchingProbAssetCash_AC( N )
     
     pU = 1.0;
     pD = 0.2;
-  
+    
     for i = 0 : N - 1
         indexA = i + 1;
         indexB = i + 2;
@@ -29,15 +29,15 @@ function [ individualP, matchingP ] = matchingProbAssetCash_AC( N )
         
         limitPriceRange = limitPriceBid - limitPriceAsk;
         
+         % store probabilities
+        individualP( i + 1, 1 ) = limitPriceRange / ( pU - limitPriceAsk );
+        individualP( i + 1, 2 ) = limitPriceRange / ( limitPriceBid - pD );
+        
         % probability for asker to fall into the potential matching range
         pAsk = limitPriceRange / ( pU - limitPriceAsk );
         % probability for the bider to fall into the potential matching
         % range
         pBid = limitPriceRange / ( limitPriceBid - pD );
-        
-        % store probabilities
-        individualP( i + 1, 1 ) = pAsk;
-        individualP( i + 1, 2 ) = pBid;
         
         % calculate probabilities that asker AND bider fall both into
         % matching range: bayes theorem, just multiply
