@@ -63,6 +63,7 @@ In this section the functionality of the thesis-software is explained to get an 
 
 \subsection{Emulate \cite{Breuer2015} functionality}
 Of course the starting point was to emulate the features of the \cite{Breuer2015} paper so all three markets were implemented together with "Bonds Pledgeability". In a first iteration the implementation was lacking the BP-feature which resulted in quite chaotic results which didn't come even close to the equilibrium shown in \cite{Breuer2015} which is a proof for the very importance of BP.
+TODO: Noch unvollständig
 
 \subsection{Inspection}
 Inspection allows for a given simulation-configuration to step through the whole process match-by-match, keep track of the successful matches and the wealth-distribution of the agents at this time and to jump back to each successful match. Through an offer-book the state and current offerings of all agents at a given time of the simulation (including past successful matches) can be inspected and compared by opening multiple offer-book windows. Furthermore this feature provides the user with statistics of successful, failed and total matches and the current equilibrium. Very much attention was paid to the implementation of the real-time visualisation of the agents wealth-distribution and the market-activities as visualisation is of very importance for a successful inspection and interpretation of a dynamic process. To be able to compare the visual results of 2 different simulation-configurations there exist 2 "Inspection" tabs in the main window.
@@ -81,7 +82,7 @@ The experiments-feature allows to open experiment-files and result-files of repl
 \textit{java -jar LeverageCycleCMD.jar PATH-TO-EXPERIMENT-FILE MAX-THREADS-OPTIONAL}
 \end{center}
 
-Note that the number of threads used is optional and when omitted the number of CPU-cores found on the system is used. 
+Note that the number of threads to use is optional and when omitted the number of CPU-cores found on the system is used. 
 
 \medskip
 
@@ -103,9 +104,11 @@ Theoretically the dependencies are top-down where the front-end includes only co
 
 \subsection{Frontend}
 The front-end contains the GUI functionality through which the user interacts with the program and the real-time visualisation of wealth-distribution and market-activity. Because data like the offer-book, agent/replication/equilibrium-information and network-visualization is required in different contexts much emphasis was put on massive re-use of GUI components through the use of sub-classing and aggregation already provided by SWING. Thus many small components were implemented and aggregated together to create bigger chunks of logical functionality. In the package-diagram \ref{fig:PACKAGE_DIAGRAM_MINIMAL} only the most important panels are shown. Those provide the main entry-point for the user to the given functionality as indicated by their names.
+TODO: noch aufzählung und beschreibung der wichtigsten panels (inspection/replication/experiments panel)
 
 \subsection{Controller}
 The controller package is rather slim and contains the steering functionality to drive inspections, replications and experiments. Inspections are driven by the class \textit{InspectionThread} which allows to advance the simulation step-by-step using the consumer-producer paradigm through lock and wait functionality provided by Java through the use of its monitors. The classes \textit{ReplicationsRunner} and \textit{ReplicationTask} encapsulate functionality to run a number of replications for a given simulation-configuration in parallel, calculating the current median for all important values on-line and writing results to xml-files. Experiments are executed from the command-line through the use of the class \textit{ExperimentCMDRunner} where it cycles through all simulation-configurations of a experiment-configuration and uses \textit{ReplicationsRunner} to execute it in parallel. 
+TODO: anstatt in prosa auzuzählen: itemize oder klassen und beschreiben dort
 
 \subsection{Backend}
 The back-end contains the domain-specific functionality for the simulation. The important classes can be seen in the package-diagram \ref{fig:PACKAGE_DIAGRAM_MINIMAL} but for better clarity each one is introduced briefly.
@@ -480,7 +483,7 @@ It is easy to see that the calculation of the best neighbourhood can be quite co
 \subsection{Matching probabilities}
 
 \paragraph{General matching}
-For a match to happen the buyer-price must be larger or equal the seller-price. Thus a price higher than the seller-price can only be placed by a buyer which has a strictly larger optimism-factor than the seller because only then their offering-ranges have a chance to cover each other partly. Thus matching in general works between a seller with lower optimism-factor and a buyer with higher optimism-factor. As noted in chapter \ref{ch:leverageCycle} "The Leverage Cycle" agents place offering-prices randomly in their ranges which are specified in this chapter in section "Markets" so matching is also subject to randomness.
+For a match to happen the buyer-price must be larger or equal the seller-price. Thus as shown in chapter \ref{ch:hypothesis} a price higher than the seller-price can only be placed by a buyer which has a strictly larger optimism-factor than the seller because only then their offering-ranges have a chance to cover each other partly. Thus matching in general works between a seller with lower optimism-factor and a buyer with higher optimism-factor. As noted in chapter \ref{ch:leverageCycle} "The Leverage Cycle" agents place offering-prices randomly in their ranges which are specified in this chapter in section "Markets" so matching is also subject to randomness.
 \medskip
 To investigate the matching-probabilities one must look at the coverage probabilities of the matching-ranges. The limit-price of bidders increase with rising optimism-factor and thus the width of the bidding-range decreases because bidders make their offers in the range of [limit-price..pU]. The situation is the inverse for askers as their limit-price increases too but the width of their asking-range increases because they place their offers in the range of [pD..limit-price]. Thus obviously the larger the difference in the optimism-factor between a seller and a buyer - again note that buyers optimism-factors are strictly larger than those of their corresponding sellers - the more likely a match will happen as both ranges increase and cover much more total distance thus increasing the probability that prices will be drawn which match.
 \medskip
