@@ -4,31 +4,65 @@
 \chapter{The Leverage Cycle}
 \label{ch:leverageCycle}
 
-TODO: optimism factor which denotes the probability an agents assigns the event of up-state tomorrow
+In this chapter the model for the simulation is given. All the following chapters build upon this model where the thesis-software is an implementation of it. 
 
-Definition des Modells
-		Märkte, Marktmechanismen, clearing, utiliy funktionen,....
-		alles theoretisch, um des dann in implementierung praktisch zu zeigen
-	Bestehende Resultate mit Bezug auf paper
-		Fully-Connected: prozess und endverteilung, erreicht theoretisches Gleichgewicht approximativ
+\section{Geanakoplos}
+The model of \cite{Breuer2015} which is discussed in the next section is based upon the works of John Geanakoplos article \cite{Geanakoplos2009} "The Leverage Cycle" thus for a better understanding a short overview of the innovations and influences found therein is given.
 
-\section{Collateral Equilibrium}
-\label{sec:collateralEquilibrium}
+\medskip
 
-\begin{center}
-$i_{1} = \frac{q - 0.2}{V - 0.2}$
-\end{center}
+The work of Geanakoplos focuses on asset-pricing, the influence of leverage on asset-prices and how leverage affects crises. He claims that because of leverage during boom times the asset-prices are too high because of massive leverage and during bad times the asset-prices are too low because of a massive drop in leverage. That is what he terms "the leverage cycle". Further he predicts that leverage cycles will occur although people remember past ones unless the central bank tries to stop those cycles by regulating leverage. Geanakoplos proposes a theory of equilibrium leverage and asset pricing which gives a central bank a tool for regulating leverage during boom times to prevent asset-prices skyrocketing and reinforce leverage in down times to lift the asset-prices which are too low to a reasonable level.
 
-\begin{center}
-$i_{2} = \frac{0.2(p - q)}{0.8q - (V - 0.2)p}$
-\end{center}
+\medskip
+
+For Geanakoplos all crises start with scary bad news which are then the reason why asset-prices drop below a price which is lower than everyone expected. He introduces the so-called "natural buyer" which is an agent who values the asset more than the public. This can be because the agent is less risk averse, get more utility out of it, use the asset more efficient. In the end the details matter not, the natural buyer is just more optimistic than the public.
+To prevent a too specific distinction between the natural buyer and the public Geanakoplos introduces a range of optimism \textit{h} $\in$ \textit{H} = [0..1] in which all agents are ordered by their optimism \textit{h} where the extreme pessimists reside at the lower end of 0.0 and the extreme optimists ate the upper end of 1.0. Each agent assigns the probability that good news will occur according to its optimism \textit{h} where the extreme optimist thinks that good news will happen for sure and the extreme optimist think that it will never occur thus the more optimistic an agent, the more a natural buyer it is. If the natural buyers drops out of the business then the asset-prices drop as the natural buyers are the only ones willing to drive asset-prices up through leverage as they value the asset-prices the most. Thus the natural buyers buy as many assets they can and buy even more assets through borrowing and using the assets as security thus creating leverage. Because of this mechanics Geanakoplos emphasises that it is of very importance who lost money in a crisis - the public or the natural buyers whereas a loss for the natural buyers is the real catastrophe.
+
+\medskip
+Geanakoplos then introduces a two-period economy which is the base for the economy used by Breuer et al. in their model. In the first period each agent of the previously mentioned continuum \textit{H} is endowed with one consumption good C and one asset Y and can then trade with each other. The second period can be one of two states: U(p) and D(own) whereas in the up-state the asset Y is worth 1.0 and in the Down-State only 0.2. The agents differ only in their optimism \textit{h} by which they assign the probability that the up-state will happen tomorrow in the second period. According to this they trade on the market according to their utility-function which depends on their optimism \textit{h}. The following formula gives the utility-function of each agent which gives the price of an asset which is how much an agent values it - obviously the more optimistic the higher the price.
 
 \begin{center}
-$p = \frac{1}{i_{1}} - 1$
+$price = h + (1 - h)0.2$
 \end{center}
 
-\begin{center}
-$q = p \frac{i_{2} - i{1}}{1 - i_{1}}$
-\end{center}
+Now if \textit{price} is larger than some given price \textit{p} then the agent will want to buy the asset as the agent values it more than the given price \textit{p} but can buy it for a lower price thus making an expected profit. If the \textit{price} is less than the given price \textit{p} the agent is going to sell the asset as the value the agent assigns to it is lower than the given price \textit{p} thus the agent can make an expected profit in selling it.
+
+\medskip
+Geanakoplos introduces a loan market where agents can lend and borrow money through loans to be able to further buy assets after they have ran out of cash. A loan can be sold and bought for \textit{j} = 0.2 and because lenders worry about default each loan needs to be backed up by an asset as security. Loans need to be paid back at the beginning of the second state. Regarding the up-state the borrower will pay back the initial value of the loan which is \textit{j} = 0.2. In the down-state either 0.2 or the asset will be given back thus it is a risk-less loan as the borrower lost no money in the down-state.
+
+Geanakoplos then predicts the so called \textit{marginal buyer} around \textit{h} = 0.69. All agents with \textit{h} $<$ 0.69 are pessimists and sell their assets. All agents above \textit{h} $>$ 0.69 are optimists and buy all the assets the pessimists sell either through cash or buy borrowing money from the pessimists through loans and using the borrowed money to buy further assets which then in turn act as security - the leverage is endogenous.
+
+Geanakoplos then makes the distinction between not only one \textit{j} = 0.2 loan but multiple loans with \textit{j} $>$ 0.2 where in the up-state they promise their initial value \textit{j} and in the down-state they deliver only 0.2 thus those loans with \textit{j} $>$ 0.2 are risky loans. He then shows that if there exist markets for all type of bonds which include the risk-less bond \textit{j} = 0.2 then only the risk-less bond will be traded.
+
+\medskip
+Note that this is only a small part of the quite involved economic theory. Geanakoplos does not stop at this point but this overview is already enough to get the basic influences found in the work of \cite{Breuer2015}.
+
+\section{Breuer et al.}
+Geanakoplos is equilibrium theory, which is static: for a given price traders maximize their utility. This is inherently static as time is not modelled in this process. Breuer et al. developed a model which tries to reach the equilibirum proposed by Geanakoplos in \cite{Geanakoplos2009} through a trading process between a finite number of agents over time. This model is now discussed in-depth as all the remaining chapters build upon it. 
+Fully-Connected: prozess und endverteilung, erreicht theoretisches Gleichgewicht approximativ
+TODO: zentral ist eine double-auction für collateralized assets
+TODO: wichtig: es werden keine up- und down-zustände gezogen, es wird nur die erste periode gerechnet
+
+\subsection{The economy}
+- up and down state 
+- market structure
+- collateral as enforcement of financial promises
+- constraints
+- collateral equilibrium
+- equilibrium predictions
+
+- riskless and riskful loans
+- many loans: although breuer et al. allowed more than one loan simultaneously in their model this is ignored by this thesis and not implemented in the thesis-software as it is not the primary focus.
+
+\subsection{Auction Mechanism}
+- Markets
+- agents: TODO: optimism factor which denotes the probability an agents assigns the event of up-state tomorrow
+- bidding
+- matching
+- rationale: BP and ABM
+
+\subsection{Leverage}
+TODO: leverage ist das zentrale thema des models sowohl von geanakoplos und von breuer, aber genau herausarbeiten wo und wie leverage passiert: assets werden durch kreditaufnahme finanziert d.h. der käufer nimmt einen kredit d.h. bonds auf und kauft damit das asset. dies passiert im asset/bond markt in 1 schritt: bezahlen mit bonds wobei der verkäufer den bond granted.
+TODO: auch wesentlich: ENDOGENOUS leverage
 
 \end{document}

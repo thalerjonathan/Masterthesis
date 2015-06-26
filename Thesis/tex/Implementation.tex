@@ -391,12 +391,15 @@ Bid offers are generated only when the agent is not negative on free assets afte
 	\end{tabular}
 \end{table}
 
+\section{BP Mechanism}
+TODO: explain how BP is implemented and how it would looks without BP
+
 \section{Simulation}
 In this section a few details of the simulation-implementation are discussed as they are not so obvious but interesting and important enough to be mentioned.
 
 \medskip
 
-As noted above in the section "Markets" bonds and assets are always traded in chunks of TRADING-UNITS which is 0.1 in case of assets and 0.2 in case of bonds. Note that it is nothing unusual to scale the initial wealth-endowments to 1.0 and trade parts of them as in the end the absolute endowment does not matter but the distribution over the agents so a transformation to natural numbers would not gain anything. What is much more important is that the system conserves wealth: no wealth is lost and no wealth is created \textit{ex nihilo}. This is guaranteed by the equations and pre-conditions found in section "Markets". 
+As noted above in the section "Markets" bonds and assets are always traded in chunks of TRADING-UNITS which is 0.1 in case of assets and 0.2 in case of bonds. Note that it is nothing unusual to scale the initial wealth-endowments to 1.0 and trade fractions of them as in the end the absolute endowment does not matter but the distribution over the agents so a transformation to natural numbers would not gain anything. What is much more important is that the system conserves wealth: no wealth is lost and no wealth is created \textit{ex nihilo}. This is guaranteed by the equations and pre-conditions found in section "Markets". 
 
 \subsection{Sweeping and Matching}
 \label{sec:implementation_sweepingAndMatching}
@@ -548,7 +551,23 @@ The lower matching-probabilities result in longer simulation-runs and more ineff
 This variant is dubbed "Ascending-Connected topology with Importance Sampling". See chapter \ref{ch:results} "Results" for the performance and results of this variant.
 
 \section{Calculating theoretical Equilibrium}
-Theoretical equilibrium is known and specified through the equations given in section \ref{ch:leverageCycle} "Collateral Equilibrium" of chapter \ref{ch:leverageCycle} "The Leverage Cycle". This theoretical equilibrium is only applicable for an infinite number of agents whereas in the simulation a finite set of agents is used for which the theoretical equilibrium must be found too. For this purpose \cite{Breuer2015} developed an algorithm in MATLAB which searches the finite solution-space for the given equilibrium. This section gives a short overview of how the algorithm solves this task and is based on an existing document written by Martin Jandacka and the MATLAB code which both were available to the author of this thesis. Thus this section is only a simplified summary and the algorithm and the method behind it was not developed by the author of this thesis.
+Theoretical equilibrium is known and specified through the equations given below. This theoretical equilibrium is only applicable for an infinite number of agents whereas in the simulation a finite set of agents is used for which the theoretical equilibrium must be found too. For this purpose \cite{Breuer2015} developed an algorithm in MATLAB which searches the finite solution-space for the given equilibrium. This section gives a short overview of how the algorithm solves this task and is based on an existing document written by Martin Jandacka and the MATLAB code which both were available to the author of this thesis. Thus this section is only a simplified summary and the algorithm and the method behind it was not developed by the author of this thesis.
+
+\begin{center}
+$i_{1} = \frac{q - 0.2}{V - 0.2}$
+\end{center}
+
+\begin{center}
+$i_{2} = \frac{0.2(p - q)}{0.8q - (V - 0.2)p}$
+\end{center}
+
+\begin{center}
+$p = \frac{1}{i_{1}} - 1$
+\end{center}
+
+\begin{center}
+$q = p \frac{i_{2} - i{1}}{1 - i_{1}}$
+\end{center}
 
 \medskip
 

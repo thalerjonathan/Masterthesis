@@ -53,6 +53,11 @@ P.~Erdős and A~Rényi.
 \newblock In {\em PUBLICATION OF THE MATHEMATICAL INSTITUTE OF THE HUNGARIAN
   ACADEMY OF SCIENCES}, pages 17--61, 1960.
 
+\bibitem[Gea09]{Geanakoplos2009}
+John Geanakoplos.
+\newblock The leverage cycle.
+\newblock Jul 2009.
+
 \bibitem[GP04]{GaertlerPatrignani_AutonomousSystem}
 M.~Gaertler and M.~Patrignani.
 \newblock Dynamic analysis of the autonomous system graph.
