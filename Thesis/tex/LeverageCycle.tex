@@ -28,41 +28,108 @@ $price = h + (1 - h)0.2$
 Now if \textit{price} is larger than some given price \textit{p} then the agent will want to buy the asset as the agent values it more than the given price \textit{p} but can buy it for a lower price thus making an expected profit. If the \textit{price} is less than the given price \textit{p} the agent is going to sell the asset as the value the agent assigns to it is lower than the given price \textit{p} thus the agent can make an expected profit in selling it.
 
 \medskip
-Geanakoplos introduces a loan market where agents can lend and borrow money through loans to be able to further buy assets after they have ran out of cash. A loan can be sold and bought for \textit{j} = 0.2 and because lenders worry about default each loan needs to be backed up by an asset as security. Loans need to be paid back at the beginning of the second state. Regarding the up-state the borrower will pay back the initial value of the loan which is \textit{j} = 0.2. In the down-state either 0.2 or the asset will be given back thus it is a risk-less loan as the borrower lost no money in the down-state.
-
+Geanakoplos introduces a loan market where agents can lend and borrow money through loans to be able to further buy assets after they have ran out of cash. A loan can be sold and bought for \textit{j} = 0.2 and because lenders worry about default each loan needs to be backed up by an asset as security. Loans need to be paid back at the beginning of the second state. Regarding the up-state the borrower will pay back the initial value of the loan which is \textit{j} = 0.2. In the down-state either 0.2 or the asset will be given back thus it is a risk-less loan as the borrower lost no money in the down-state. TODO: genauer begründen wieso risk-free (an breuer-paper anlehnen)
+\linebreak
 Geanakoplos then predicts the so called \textit{marginal buyer} around \textit{h} = 0.69. All agents with \textit{h} $<$ 0.69 are pessimists and sell their assets. All agents above \textit{h} $>$ 0.69 are optimists and buy all the assets the pessimists sell either through cash or buy borrowing money from the pessimists through loans and using the borrowed money to buy further assets which then in turn act as security - the leverage is endogenous.
-
+\linebreak
 Geanakoplos then makes the distinction between not only one \textit{j} = 0.2 loan but multiple loans with \textit{j} $>$ 0.2 where in the up-state they promise their initial value \textit{j} and in the down-state they deliver only 0.2 thus those loans with \textit{j} $>$ 0.2 are risky loans. He then shows that if there exist markets for all type of bonds which include the risk-less bond \textit{j} = 0.2 then only the risk-less bond will be traded.
 
 \medskip
+
+TODO: handle equilibrium theory presented. zuerst einmal alles hier hinein, falls es theoretisch wird, dann in theory hinein nehmen - wird wahrscheinlich der fall sein.
+erklären wie bzw. was die equilibrium theory bei geanakoplos ist und kurz erkläutern.
+TODO: zuerst wikipedia-artikel und equilibrium-theory genauer herausarbeiten
+
+\medskip
+
 Note that this is only a small part of the quite involved economic theory. Geanakoplos does not stop at this point but this overview is already enough to get the basic influences found in the work of \cite{Breuer2015}.
 
 \section{Breuer et al.}
-Geanakoplos is equilibrium theory, which is static: for a given price traders maximize their utility. This is inherently static as time is not modelled in this process. Breuer et al. developed a model which tries to reach the equilibirum proposed by Geanakoplos in \cite{Geanakoplos2009} through a trading process between a finite number of agents over time. This model is now discussed in-depth as all the remaining chapters build upon it. 
-Fully-Connected: prozess und endverteilung, erreicht theoretisches Gleichgewicht approximativ
-TODO: zentral ist eine double-auction für collateralized assets
-TODO: wichtig: es werden keine up- und down-zustände gezogen, es wird nur die erste periode gerechnet
+The model of Geanakoplos is static equilibrium theory, which is static: for a given price traders maximize their utility. This is inherently static as time is not modelled in this process. Breuer et al. developed a model which tries to reach the equilibirum proposed by Geanakoplos in \cite{Geanakoplos2009} through a trading process between a finite number of agents over time. This model is now discussed in-depth as all the remaining chapters build upon it. 
+\medskip
+As already outlined the model of Breuer is heavily influenced by the work of Geanakoplos with the major difference that it is not a pure static equilibrium theory but is a simulation-process which approaches the equilibrium iteratively over time. Also a major achievement is that not only assets and bonds are traded against cash but the model has been extended by an additional market which allows collateralized assets to be traded. According to the authors of \cite{Breuer2015} this is the first time that the trading of leveraged assets was investigated in a continuous double-auction environment. It is also of very importance to note that although the up- and down-states are in this model too they are actually never realized, act only as a model and thus only the first period is simulated TODO: dieser satz macht wenig sinn, anders formulieren. Furthermore agents are not an infinite continuum but finite entities because the equilibrium-solving is done as an iterative simulation-process in software and thus finite agents are required.
 
-\subsection{The economy}
-- up and down state 
-- market structure
-- collateral as enforcement of financial promises
-- constraints
-- collateral equilibrium
-- equilibrium predictions
+The major differences to the approach of Geanakoplos are:
+\begin{enumerate}
+\item Collateralized assets are traded in addition to the other markets.
+\item Up- and down-states are never realized but only the first period is simulated.
+\item There are a finite number of agents as opposed to a continuum.
+\item It is a process over time which iteratively approaches theoretical equilibrium where Geanakoplos is a static equilibrium theory.
+\end{enumerate}
 
-- riskless and riskful loans
-- many loans: although breuer et al. allowed more than one loan simultaneously in their model this is ignored by this thesis and not implemented in the thesis-software as it is not the primary focus.
+In the following sections some details which are different to the model of Geanakoplos or need more explanation are discussed.
+
+\subsection{States}
+Both the up- and the down-state are the same as in Geanakoplos where the Up-State is denoted with pU and the Down-State is denoted as pD. Assets are worth 1.0 in pU and 0.2 in pD which is the same as in \cite{Geanakoplos2009}.
+Agents denote
+
+\subsection{Collateralized asset market}
+erklären wieso BP und ABM
+BP
+ABM
+
+\subsection{Utilitiy-Functions}
+\paragraph{Asset/Cash market}
+The asset market is the same as in \cite{Geanakoplos2009} where assets are just bought and sold by cash.
+
+\begin{center}
+$p = h + ( 1 - h )pD$
+\end{center}
+
+\paragraph{Bond/Cash market}
+The bond market acts the same way as described in \cite{Geanakoplos2009}. Collateral acts as enforcement of financial promises and thus for a given amount of loans the same amount of assets must be held as securities. A loan can be bought for a given price which is the face-value \textit{V}. This face-value has to be paid by the borrower in up-state whereas only pD has to be paid in down-state. Again note that up- and down-states are never realized but influence the utility-functions.
+\medskip
+Riskless as well as risky bonds are available in the model of \cite{Breuer2015} where the risky bonds are also those with face-value \textit{V} $>$ 0.2. Although breuer et al. allowed more than one loan simultaneously in their model this is not implemented in the thesis-software as it is not the primary focus of this work and would have required substantial changes in the software.
+
+\begin{center}
+$p = h V + ( 1 - h )pD$
+\end{center}
+
+\paragraph{Asset/Bond market}
+todo: erklären
+
+\begin{center}
+$p = \frac{\textit{utiliy Asset/Cash}}{\textit{utility Bond/Cash}}$
+\end{center}
+
+\subsection{Constraints}
+no short sale,...
 
 \subsection{Auction Mechanism}
-- Markets
-- agents: TODO: optimism factor which denotes the probability an agents assigns the event of up-state tomorrow
+- agents
 - bidding
 - matching
-- rationale: BP and ABM
 
-\subsection{Leverage}
+\subsection{Endogenous leverage}
 TODO: leverage ist das zentrale thema des models sowohl von geanakoplos und von breuer, aber genau herausarbeiten wo und wie leverage passiert: assets werden durch kreditaufnahme finanziert d.h. der käufer nimmt einen kredit d.h. bonds auf und kauft damit das asset. dies passiert im asset/bond markt in 1 schritt: bezahlen mit bonds wobei der verkäufer den bond granted.
 TODO: auch wesentlich: ENDOGENOUS leverage
+
+
+\subsection{Equilibrium}
+\begin{center}
+$i_{1} = \frac{q - 0.2}{V - 0.2}$
+\end{center}
+
+\begin{center}
+$i_{2} = \frac{0.2(p - q)}{0.8q - (V - 0.2)p}$
+\end{center}
+
+\begin{center}
+$p = \frac{1}{i_{1}} - 1$
+\end{center}
+
+\begin{center}
+$q = p \frac{i_{2} - i{1}}{1 - i_{1}}$
+\end{center}
+
+\section{Static Equilibrium vs. Process-oriented Equilibrium}
+equilibrium theory vs. process
+
+theoretisches: utiliy-funktionen und clearing preis
+		in der simulation: ungeklärt, immer individuell, "steckenbleiben" vs. gleichgewicht, am ende an theoretischem gleichgewicht orientiert
+
+TODO: What is equilibrium in a process? It is NOT when no agents are able to trade anymore.
+TODO: Can we give an equilibrium-definition for the dynamic-process? HV: hier ein paar schlaue gedanken dazu?
+
 
 \end{document}
