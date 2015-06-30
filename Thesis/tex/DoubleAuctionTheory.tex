@@ -71,6 +71,20 @@
 	description={Is the price upon a buyer and a seller agree when trading with each other.}
 }
 
+\newglossaryentry{offer-book} {
+	name=offer-book,
+	description={Keeps all offers made by the traders.}
+}
+
+\newglossaryentry{zero-intelligence agents} {
+	name=zero-intelligence agents,
+	description={Place offers strictly in the range which increases their utility and do not learn. They are completely deterministic in a way that they never change their behaviour.}
+}
+
+\newglossaryentry{utility} {
+	name=utility,
+	description={The utility of a trader determines how much a trader is valuing a given good. Each trader tries to maximise its utility during each trade by making offers which result in a maximum profit. TODO: passt noch nicht ganz}
+}
 
 \section{Continuous Double Auction}	
 The continuous double-auction (CDA) is a type of auction upon which the model of \cite{Breuer2015} presented in chapter \ref{ch:leverageCycle} "The Leverage Cycle" and thus the thesis-software is based. The reasons why \cite{Breuer2015} chose the continuous double-auction as the auction-mechanism is:
@@ -81,35 +95,46 @@ The continuous double-auction (CDA) is a type of auction upon which the model of
 
 \medskip
 
-To explain the details of the \textit{continuous} double-auction one has to start with the double-auction (DA) alone. The DA is a \gls{market institution} which defines rules how traders can exchange \gls{good} for some \gls{numeraire} between each other. As the name implies the DA is an \gls{auction} which coordinates messages from traders which include some price information. Traders can be distinguished between \gls{seller} and \gls{buyer} which send their messages/place their \gls{offer} in a given price-range according to their \gls{limit-price}. Depending on the type of the DA at some point a \gls{clearing} of the market happens thus leading to the actual exchange between the traders and thus a change in the allocation of their goods and cash.
+To explain the details of the \textit{continuous} double-auction one has to start with the double-auction (DA) alone. The DA is a \gls{market institution} which defines rules how traders can exchange \gls{good} for some \gls{numeraire} between each other. As the name implies the DA is an \gls{auction} which coordinates messages from traders which include some price information. Traders can be distinguished between \gls{seller} and \gls{buyer} which send their messages/place their \gls{offer} in a given price-range according to their \gls{limit-price}. Depending on the type of the DA at some point a \gls{clearing} of the market happens thus leading to the actual exchange between the traders and thus a change in the allocation of their goods and cash. So what a DA basically does is allowing agents to place offers during multiple \gls{round} TODO: plural in a \gls{offer-book} and then clearing the market by matching offers between each other in some way as described below.
 
 \medskip
-There exists not such a single thing as the "double auction" as there are many variants of it where they can all be differentiated in the way when and how they clear the market. \cite{Parsons2006} provide a range of questions to distinguish different types of double auctions. Some are cited here and answered to give an idea of the multiple instances of DA and the difference to the CDA.
+It is important to note that there exists not such a single thing as the "double auction" as there are many variants of it where they can all be differentiated in the way when and how agents place their offers and when and how the auction clears the market. The following questions must be answered when characterizing a double-auction instance:
 
-\paragraph{It the market one-shot or repeated?} It is one-shot. A repeated DA comprises of multiple trading-periods where agents are endowed with new allocations and may or may not keep their final allocations after each period. This is not the case in this thesis where only one trading-period is simulated. This is not to be confused with \Gls{round} as there are many rounds within one trading-period.
+\begin{itemize}
+\item When does the clearing happen?
+\item When do offers of traders arrive?
+\item What information is available to each trader about current offers and other traders?
+\item How are unmatched offers treated?
+\item How are the trades priced?
+\item Are there one or multiple trading-periods?
+\end{itemize}
 
-\paragraph{Is it periodic or continuous?} It is continuous. In a periodic DA clearing happens at discrete time slots during the trading-process. In continuous DA the traders agree on each others offers and exchange the traded goods immediately.
+\cite{Parsons2006} provide a range of questions to characterize different kinds of double-auctions. The questions relevant for the DA instance found in this thesis are cited in combination with the questions mentioned above. They are then answered to give a better understanding of the various types of DA and to understand the difference of the \textit{continuous} double-auction used in this thesis as compared to the other variants.
 
-\paragraph{How do offers arrive over time?} Agents place their offers simultaneously in each round - offers do not arrive over time.
+\paragraph{When does the clearing happen? Is it periodic or continuous?} Clearing happens at the end of a round where the first match of two random traders on a random market is searched. It is continuous because traders agree on each others offers and exchange the traded goods immediately. In a periodic DA clearing happens at discrete time slots during the trading-process after multiple rounds.
 
-\paragraph{Are prices set by an institution of by the traders?} The prices are set by the traders. Institutional price-setting is applied e.g. in stock-markets to determine opening prices in the morning.
+\paragraph{When do offers of traders arrive? Do offers arrive over time?} Agents place their offers simultaneously at the beginning of each round. Offers do not arrive over time.
 
-\paragraph{What information about other traders offers does each trader have?} None. The agents are not able to look into the global offer-book and act only as zero-intelligence agents.
+\paragraph{What information about other traders offers does each trader have?} None. The agents are not able to look into the offer-book and act only as \gls{zero-intelligence agents}.
 
-\paragraph{What happens to unmatched bids and asks when a match occurs?} They are all deleted.
+\paragraph{How are unmatched offers treated? What happens to unmatched bids and asks when a match occurs?} They are all deleted. Prices are placed randomly as will be seen in \ref{ch:leverageCycle} "The Leverage Cycle" and if they haven't matched in the current round the won't match in the future ones thus they are all deleted from the offer-book.
 
-\paragraph{Do the buyers want to buy one or many goods? Do sellers want to sell one or many goods?} Both trade in fractions of their initial endowment thus one can claim that they trade many goods.
+\paragraph{How are the trades priced? Are trades priced using discriminatory or uniform pricing and how are the uniform or discriminatory prices determined?} Discriminatory pricing is used. In uniform pricing one price is chosen and applied to all trades which clears the market where in discriminatory pricing the prices are determined individually for each trade. The \gls{transaction-price} where the buyer and seller meet is the half-way price between the offers of both.
 
-\paragraph{Are trades priced using discriminatory or uniform pricing?} Discriminatory pricing is used. In uniform pricing one price is chosen and applied to all trades where in discriminatory pricing the prices are determined individually for each trade. 
+\paragraph{Are there one or multiple trading-periods? Is the market one-shot or repeated?} It is one-shot. A repeated DA comprises of multiple trading-periods where agents are endowed with new allocations and may or may not keep their final allocations after each period. This is not the case in this thesis where only one trading-period is simulated. This is not to be confused with \Gls{round} as there are many rounds within one trading-period.
 
-\paragraph{How are the uniform or discriminatory prices determined?} The \gls{transaction-price} where the buyer and seller meet is the half-way price between the offers of both.
+\medskip
+
+TODO: find proof for buyer-price $\geq$ seller-price and half-way price
+
+\medskip
 
 Thus the instance of CDA used in this thesis works as follows:
 
 \begin{enumerate}
 \item Endow all traders with initial goods and numeraire.
 \item Open all markets.
-\item Rounds as long as traders are able to trade.
+\item Execute rounds as long as traders are able to trade.
 \item In each round every trader is allowed to place one buy and one sell offer on all opened markets.
 \item After all offers have been placed the auction clears the markets.
 \item In clearing the first match between random agents on a random market is searched where buyer-price $\geq$ seller-price.
@@ -117,8 +142,15 @@ Thus the instance of CDA used in this thesis works as follows:
 \item Upon a match all the other offers on all markets are deleted and a new round starts.
 \end{enumerate}
 
-\cite{Parsons2006}
+Note in this case it is maybe not feasible to speak of clearing the markets but to speak of matching. In equilibrium theory clearing is the process of finding a price which satisfies all available demands and supplies and thus clearing the market because by selecting this price no demand and supply will be left unmatched. In this trading process only one match between two random agents on a random market will be searched and in case of a match the offers of the other agents will be deleted which is in stark contrast to the clearing as defined in equlibrium theory. This fact is also handled in the chapter TODO: static equliibrium theory vs. dynamic equilbrium process.
+
+\medskip
+
+TODO: handle \cite{GodeSunder1993}
+TODO: allocative efficiency
+
+\medskip
+
 http://dl.acm.org/citation.cfm?id=1883617
-\cite{GodeSunder1993}
 
 \end{document}
