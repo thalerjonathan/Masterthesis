@@ -1,4 +1,4 @@
-\begin{thebibliography}{ASBS00}
+\begin{thebibliography}{PMNP06}
 
 \bibitem[ACL01]{AielloChungLu_RandomEvolution}
 William Aiello, Fan R.~K. Chung, and Linyuan Lu.
@@ -64,6 +64,12 @@ M.~Gaertler and M.~Patrignani.
 \newblock {\em In IPS 2004, International Workshop on Inter-domain Performance
   and Simulation}, page pages 13–24, 2004.
 
+\bibitem[GS93]{GodeSunder1993}
+Dhananjay~K Gode and Shyam Sunder.
+\newblock Allocative efficiency of markets with zero-intelligence traders:
+  Market as a partial substitute for individual rationality.
+\newblock {\em Journal of Political Economy}, 101(1):119--37, 1993.
+
 \bibitem[Kle00]{Kleinberg_SmallworldAlgorithmic}
 Jon Kleinberg.
 \newblock The small-world phenomenon: An algorithmic perspective.
@@ -91,6 +97,12 @@ M.~E.~J. Newman.
   matrices.
 \newblock {\em Physical Review E (Statistical, Nonlinear, and Soft Matter
   Physics)}, 74(3), 2006.
+
+\bibitem[PMNP06]{Parsons2006}
+Simon Parsons, Marek Marcinkiewicz, Jinzhong Niu, and Steve Phelps.
+\newblock Everything you wanted to know about double auctions, but were afraid
+  to (bid or) ask.
+\newblock 2006.
 
 \bibitem[TM69]{TraverMilgram_StudySmallWorld}
 J.~Travers and Stanley Milgram.

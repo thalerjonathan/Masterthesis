@@ -1,0 +1,124 @@
+\documentclass[../Bachelorarbeit.tex]{subfiles}
+\begin{document}
+
+\newglossaryentry{auction}{
+	name=auction,
+	description={Is a market institution in which messages from traders include some price information.}
+}
+
+\newglossaryentry{market institution}{
+	name=market institution,
+	description={Defines how exchange between traders takes place by defining rules what traders can do.}
+}
+
+\newglossaryentry{limit-price}{
+	name=limit-price,
+	description={Is the private price a trader assigns to a good they want to exchange. This private price is different from the price in the offering and is higher in case of the buyer and lower in the case of the seller.}
+}
+
+\newglossaryentry{trader}{
+	name=trader,
+	description={Is an agent who wants to exchange goods with other agents.}
+}
+
+\newglossaryentry{good}{
+	name=good,
+	description={A generic object which is traded between agents. Can be an asset, food, gold,... }
+}
+
+\newglossaryentry{seller}{
+	name=seller,
+	description={A trader who is willing to sell a given amount of good for a given price.}
+}
+
+\newglossaryentry{buyer}{
+	name=buyer,
+	description={A trader who is willing to buy a given amount of good for a given price.}
+}
+
+\newglossaryentry{offer}{
+	name=offer,
+	description={A tuple of price and quantity on a given market which signals the willingness to trade by these given quantities.}
+}
+
+\newglossaryentry{bid}{
+	name=bid,
+	description={Is an offer placed by a buyer.}
+}
+
+\newglossaryentry{ask}{
+	name=ask,
+	description={Is an offer placed by a seller.}
+}
+
+\newglossaryentry{clearing}{
+	name=clearing,
+	description={Is the process of finding a price in which all demands are matched to the given supplies thus clearing the market by leaving no unmatched demands or supplies.}
+}
+
+\newglossaryentry{numeraire} {
+	name=numeraire,
+	description={A generic form of money.}
+}
+
+\newglossaryentry{round} {
+	name=round,
+	description={In each round all traders have the opportunity to place an offer.}
+}
+
+\newglossaryentry{transaction-price} {
+	name=transaction-price,
+	description={Is the price upon a buyer and a seller agree when trading with each other.}
+}
+
+
+\section{Continuous Double Auction}	
+The continuous double-auction (CDA) is a type of auction upon which the model of \cite{Breuer2015} presented in chapter \ref{ch:leverageCycle} "The Leverage Cycle" and thus the thesis-software is based. The reasons why \cite{Breuer2015} chose the continuous double-auction as the auction-mechanism is:
+
+\begin{quote}
+"Experimental economists believe that the continuous double auction is a trading institution that comes close to an environment which abstract equilibrium theories of competitive trading try to describe. It is an institution that allows for competitive bidding and trade on both sides of the market over time. One of the discoveries of experimental economists is that in many experiments double auctions converge to states where trading activity comes to a halt. In these final states prices and allocations often are similar to what equilibrium theory predicts."
+\end{quote}
+
+\medskip
+
+To explain the details of the \textit{continuous} double-auction one has to start with the double-auction (DA) alone. The DA is a \gls{market institution} which defines rules how traders can exchange \gls{good} for some \gls{numeraire} between each other. As the name implies the DA is an \gls{auction} which coordinates messages from traders which include some price information. Traders can be distinguished between \gls{seller} and \gls{buyer} which send their messages/place their \gls{offer} in a given price-range according to their \gls{limit-price}. Depending on the type of the DA at some point a \gls{clearing} of the market happens thus leading to the actual exchange between the traders and thus a change in the allocation of their goods and cash.
+
+\medskip
+There exists not such a single thing as the "double auction" as there are many variants of it where they can all be differentiated in the way when and how they clear the market. \cite{Parsons2006} provide a range of questions to distinguish different types of double auctions. Some are cited here and answered to give an idea of the multiple instances of DA and the difference to the CDA.
+
+\paragraph{It the market one-shot or repeated?} It is one-shot. A repeated DA comprises of multiple trading-periods where agents are endowed with new allocations and may or may not keep their final allocations after each period. This is not the case in this thesis where only one trading-period is simulated. This is not to be confused with \Gls{round} as there are many rounds within one trading-period.
+
+\paragraph{Is it periodic or continuous?} It is continuous. In a periodic DA clearing happens at discrete time slots during the trading-process. In continuous DA the traders agree on each others offers and exchange the traded goods immediately.
+
+\paragraph{How do offers arrive over time?} Agents place their offers simultaneously in each round - offers do not arrive over time.
+
+\paragraph{Are prices set by an institution of by the traders?} The prices are set by the traders. Institutional price-setting is applied e.g. in stock-markets to determine opening prices in the morning.
+
+\paragraph{What information about other traders offers does each trader have?} None. The agents are not able to look into the global offer-book and act only as zero-intelligence agents.
+
+\paragraph{What happens to unmatched bids and asks when a match occurs?} They are all deleted.
+
+\paragraph{Do the buyers want to buy one or many goods? Do sellers want to sell one or many goods?} Both trade in fractions of their initial endowment thus one can claim that they trade many goods.
+
+\paragraph{Are trades priced using discriminatory or uniform pricing?} Discriminatory pricing is used. In uniform pricing one price is chosen and applied to all trades where in discriminatory pricing the prices are determined individually for each trade. 
+
+\paragraph{How are the uniform or discriminatory prices determined?} The \gls{transaction-price} where the buyer and seller meet is the half-way price between the offers of both.
+
+Thus the instance of CDA used in this thesis works as follows:
+
+\begin{enumerate}
+\item Endow all traders with initial goods and numeraire.
+\item Open all markets.
+\item Rounds as long as traders are able to trade.
+\item In each round every trader is allowed to place one buy and one sell offer on all opened markets.
+\item After all offers have been placed the auction clears the markets.
+\item In clearing the first match between random agents on a random market is searched where buyer-price $\geq$ seller-price.
+\item On a match the offered amount is transferred and both traders meet at the half-way price.
+\item Upon a match all the other offers on all markets are deleted and a new round starts.
+\end{enumerate}
+
+\cite{Parsons2006}
+http://dl.acm.org/citation.cfm?id=1883617
+\cite{GodeSunder1993}
+
+\end{document}
