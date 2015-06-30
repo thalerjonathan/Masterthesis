@@ -1,6 +1,8 @@
 \documentclass[../Bachelorarbeit.tex]{subfiles}
 \begin{document}
 
+\graphicspath{{./figures/theory/da/}}	%specifying the folder for the figures
+
 \newglossaryentry{auction}{
 	name=auction,
 	description={Is a market institution in which messages from traders include some price information.}
@@ -63,7 +65,7 @@
 
 \newglossaryentry{round} {
 	name=round,
-	description={In each round all traders have the opportunity to place an offer.}
+	description={In each round all traders have the opportunity to place an offer. At the end of each round matching is applied and if a successful match is found the unmatched offers are deleted from the offer-book.}
 }
 
 \newglossaryentry{transaction-price} {
@@ -95,9 +97,10 @@ The continuous double-auction (CDA) is a type of auction upon which the model of
 
 \medskip
 
-To explain the details of the \textit{continuous} double-auction one has to start with the double-auction (DA) alone. The DA is a \gls{market institution} which defines rules how traders can exchange \gls{good} for some \gls{numeraire} between each other. As the name implies the DA is an \gls{auction} which coordinates messages from traders which include some price information. Traders can be distinguished between \gls{seller} and \gls{buyer} which send their messages/place their \gls{offer} in a given price-range according to their \gls{limit-price}. Depending on the type of the DA at some point a \gls{clearing} of the market happens thus leading to the actual exchange between the traders and thus a change in the allocation of their goods and cash. So what a DA basically does is allowing agents to place offers during multiple \gls{round} TODO: plural in a \gls{offer-book} and then clearing the market by matching offers between each other in some way as described below.
+To explain the details of the \textit{continuous} double-auction one has to start with the double-auction (DA) alone. The DA is a \gls{market institution} which defines rules how traders can exchange \gls{good} for some \gls{numeraire} between each other. As the name implies the DA is an \gls{auction} which coordinates messages between traders which include some price information. Thus a DA is a multilateral process in which during multiple \gls{round} TODO: plural traders can enter \gls{offer} TODO: plural into an \gls{offer-book} and accept offers made by others. Traders can be distinguished between \gls{seller} and \gls{buyer} and send their messages/place their offers in a given price-range according to their \gls{limit-price}. Depending on the type of the DA at some point a \gls{clearing} of the market happens thus leading to the actual exchange between the traders and thus a change in the allocation of their goods and cash. 
 
 \medskip
+
 It is important to note that there exists not such a single thing as the "double auction" as there are many variants of it where they can all be differentiated in the way when and how agents place their offers and when and how the auction clears the market. The following questions must be answered when characterizing a double-auction instance:
 
 \begin{itemize}
@@ -119,17 +122,13 @@ It is important to note that there exists not such a single thing as the "double
 
 \paragraph{How are unmatched offers treated? What happens to unmatched bids and asks when a match occurs?} They are all deleted. Prices are placed randomly as will be seen in \ref{ch:leverageCycle} "The Leverage Cycle" and if they haven't matched in the current round the won't match in the future ones thus they are all deleted from the offer-book.
 
-\paragraph{How are the trades priced? Are trades priced using discriminatory or uniform pricing and how are the uniform or discriminatory prices determined?} Discriminatory pricing is used. In uniform pricing one price is chosen and applied to all trades which clears the market where in discriminatory pricing the prices are determined individually for each trade. The \gls{transaction-price} where the buyer and seller meet is the half-way price between the offers of both.
+\paragraph{How are the trades priced? Are trades priced using discriminatory or uniform pricing and how are the uniform or discriminatory prices determined?} Discriminatory pricing is used. In uniform pricing one price is chosen and applied to all trades which clears the market where in discriminatory pricing the prices are determined individually for each trade. The \gls{transaction-price} where the buyer and seller meet is the half-way price between the offers of both. Another possibility for the transaction-price as reported in \cite{GodeSunder1993} would be to select the price of the offer which was placed first.
 
 \paragraph{Are there one or multiple trading-periods? Is the market one-shot or repeated?} It is one-shot. A repeated DA comprises of multiple trading-periods where agents are endowed with new allocations and may or may not keep their final allocations after each period. This is not the case in this thesis where only one trading-period is simulated. This is not to be confused with \Gls{round} as there are many rounds within one trading-period.
 
 \medskip
 
-TODO: find proof for buyer-price $\geq$ seller-price and half-way price
-
-\medskip
-
-Thus the instance of CDA used in this thesis works as follows:
+The following points summarise the workings of the instance of CDA used in this thesis:
 
 \begin{enumerate}
 \item Endow all traders with initial goods and numeraire.
@@ -142,12 +141,11 @@ Thus the instance of CDA used in this thesis works as follows:
 \item Upon a match all the other offers on all markets are deleted and a new round starts.
 \end{enumerate}
 
-Note in this case it is maybe not feasible to speak of clearing the markets but to speak of matching. In equilibrium theory clearing is the process of finding a price which satisfies all available demands and supplies and thus clearing the market because by selecting this price no demand and supply will be left unmatched. In this trading process only one match between two random agents on a random market will be searched and in case of a match the offers of the other agents will be deleted which is in stark contrast to the clearing as defined in equlibrium theory. This fact is also handled in the chapter TODO: static equliibrium theory vs. dynamic equilbrium process.
-
 \medskip
 
 TODO: handle \cite{GodeSunder1993}
 TODO: allocative efficiency
+TODO: cite other papers. friedman not available but cited by 3rd parties.
 
 \medskip
 
