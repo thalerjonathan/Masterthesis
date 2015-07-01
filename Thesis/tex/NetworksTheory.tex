@@ -1,0 +1,126 @@
+\documentclass[../Bachelorarbeit.tex]{subfiles}
+\begin{document}
+
+\graphicspath{{./figures/theory/networks/}}	%specifying the folder for the figures
+
+\section{Complex Networks}
+\label{sec:theory_complexNetworks}
+This thesis lays its main focus on the influence of network-topologies on the equilibrium found in continuous double-auction. The networks define the neighbourhood between agents and determine which pair of agents can trade with each other. All graph-related definitions in the following sections are provided through \cite{Drmota2007}.
+
+\medskip
+
+A network is a graph \textit{G = (V,E)} which has a finite set of vertices \textit{V = V(G)} and a finite set of edges \textit{E = E(G)}. The vertices resemble the agents and the edges connecting them resemble the neighbourhood between agents or the knowledge of each other. Two agents know each other and can trade with each other if there exists an edge between them. In this context only undirected graphs consisting of undirected edges $e$ $\in$ $E(G)$, $e = {v_1, v_2}$ between two vertices $v_1$, $v_2$ $\in$ $V(G)$ without multi- and self-edges are of interest.
+
+\begin{itemize}
+\item Undirected: if one agent $v_1$ knows another agent $v_2$ then $v_2$ knows $v_1$ too - trading is always possible in both directions.
+\item No multi-edges: one neighbourhood connection is enough as edges have no additional properties or weights.
+\item No self-edges: agents are not allowed to trade with themselves.
+\end{itemize}
+ 
+In the following section first an introduction about important network metrics is given. Then a short overview of the development of network-topologies and recent findings in this research-field is given and the non-trivial networks are discussed. The non-trivial networks are the one that exhibit small-world properties and follow a power-law distribution as shown below. See appendix \ref{app:topologies} for a complete catalogue of network-topologies investigated in this thesis - the non-trivial ones are:
+
+\begin{enumerate}
+\item Erdos-Renyi
+\item Barbasi-Albert
+\item Watts-Strogatz
+\end{enumerate}
+
+M.E.J. Newmann gives an extensive overview of complex networks in the paper \cite{Newman_ComplexNetworks} which in combination with the book by Mathew Jackson \cite{Jackson2008} are the main sources for the following sections.
+
+\subsection{Overview}
+Since the first proof in network-theory by Euler in 1735 the analysis of networks has had a long tradition. In recent years the focus is shifting away from the analysis of single small graphs and the properties of individual vertices or edges to consideration of large-scale statistical properties of graphs TODO: das ist kopiert, umformulieren. This transition of focus was made possible by the availability of an ever increasing amount of processing power through computers which allow the investigation of networks with millions of vertices.
+
+\subsection{Random graphs}
+One of the simplest network models studied was the random graph which was investigated first by \cite{ErdosRenyi_RandomGraphs}. Such networks are constructed by having n vertices and then adding at random each potential edge with a given probability. The probabilities can follow different distributions e.g. a uniform- poisson- or gaussian-distribution. The Ascending-Connected topology with random short-cuts is a random graph constructed using the uniform-distribution - see appendix \ref{app:topologies}. 
+
+TODO formulas of poisson distribution
+
+TODO Regular Graphs: \citep[vgl.]{BarabasiAlbert_StatisticalMechanics} \citep[vgl.]{Newman_ComplexNetworks}
+
+\subsection{Small-World effect and property}
+In 1960s Stanley Milgram conducted a famous experiment in which he demonstrated that a letter can reach a destination person by an average of just 6 intermediate steps in between. In his work \cite{TraverMilgram_StudySmallWorld} \citep{Milgram_SmallWorld} he termed this phenomenon the \textit{small-world effect}. Although the results of his work have been questioned - more specifically that the world is really a small one - e.g. by \cite{Kleinfeld_BigWorld} it had big influences within the network-research community and led to the development of the small-world property.
+
+\medskip
+
+\cite{Newman_ComplexNetworks} give the formula for estimating the mean shortest distance between vertex pairs in a network by
+
+\begin{center}
+$\ell = \frac{1}{\frac{1}{2}n(n+1)} \displaystyle\sum_{i \geq j }^{} d_{ij}$
+\end{center}
+
+where $d_{ij}$ is the shortest distance from vertex i to vertex j. Networks exhibit the small-world effect if $\ell$ scales at max logarithmically with network size of mean degree.
+
+\medskip
+
+TODO: This value allows to derive the average path length 
+TODO: define a path
+
+\medskip
+
+TODO: average clustering coefficient. A small world network as defined by Watts and Strogatz \cite{WattsStrogatz_DynamicsSmallWorld}, is a network with high clustering coefficient and small average path length. 
+
+\medskip
+
+The small-world property is of very importance e.g. in social networks because this property implies that information spreads very quickly in the network as it needs very few steps to reach all nodes. This can also be applied to trading networks where it enables traders to trade goods with very few intermediary steps to traders which value the good the most.
+
+\subsection{Degree distribution}
+In an undirected Graph \textit{G} the edges adjacent to $v$ $\in$ $V(G)$ 
+
+\begin{center}
+$\Gamma(v)$ = ${w \in V(G) | vw \in E(G)}$
+\end{center}
+
+are the neighbours. The quantity of the neighbours of $v$ $\in$ $V(G)$ 
+
+\begin{center}
+$d(v) = |\Gamma(v)|$ = $|{w \in V(G) | vw \in E(G)}|$
+\end{center}
+
+is the degree of a vertex $v$ $\in$ $V(G)$. When regarding the adjacent-matrix of a graph the degree of a vertex $v_i$ $\in$ $V(G)$ is given by
+
+\begin{center}
+$d(v_i) = \displaystyle\sum_{j=1}^{n} a_{ij}$
+\end{center}
+
+Having defined the degree of a vertex one can calculate the degree distribution of of a given network simply by counting the number of nodes which have a given degree k:
+
+\begin{center}
+$P_{deg}(k) = fraction of nodes in the graph with degree k$
+\end{center}
+
+The resulting statistics is presented in a histogram which gives a good visual overview of the distribution of the degrees and allows to calculate the average degree. 
+
+TODO: show histograms using thesis-software
+
+\medskip
+Researchers found that real networks are non-random which lead to the discovery of the phenomena of scale-free networks. When looking at the histograms of the degree-distribution within real-world networks one can see a long right tail of values that are far above the mean.
+
+TODO: show real-world network 
+
+It can be shown that the degree distribution of such networks follow a power law:
+
+\begin{center}
+$P_{deg}(k) \sim k^{-\gamma}$
+\end{center}
+
+Such networks are termed \textit{scale-free} networks \cite{BarabasiAlbert_EmergenceScaling}
+Small World and Scale Free Network:  A scale free network as defined by Barabasi and Albert \citep{BarabasiAlbert_EmergenceScaling}, is a network where the degree distribution follows a power law.
+
+TODO: what is the good thing about scale-free networks? and in the context of trading-networks?
+TODO: network resillience
+
+\subsection{Complex Networks}
+Complex Networks: are Small-World and/or Scale-Free \citep{BarratWeigt_PropertiesSmallWorld} \citep{AmaralScalaStanley_ClassesSmallWorld}
+
+\subsubsection{Network diameter}
+\subsubsection{Graph density}
+
+
+\subsection{Non-trivial networks}
+In this section the non-trivial networks used in this thesis as outlined above are described and how they can be generated. All of them exhibit small-world properties and follow a power-law distribution.
+
+\subsubsection{Erdos-Renyi}
+\subsubsection{Barbasi-Albert}
+\subsubsection{Watts-Strogatz}
+
+\end{document}

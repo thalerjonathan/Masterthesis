@@ -55,58 +55,6 @@ As an example an agent wants to buy a house for 500\euro{} but has only 50\euro{
 \subsection{Dangers}
 As stated above leverage not only multiplies gains but also losses. If house prices rise by 25\% this will result in a gain of 125\euro{} or 250\% return on the agents investment when selling the house. However if house prices decline by 15\% this will result in a loss of 75\euro{} or 150\% loss on the agents investment - in this case the agent has lost more money than it initially invested. The leveraged loss can become a serious issue in financed housing because of margin requirements towards the lender. The margin requirement is the minimum margin the house-buyer has to maintain independent of the gains or losses of the house. Thus if the house-price drops to 475\euro{} then the net value of the margin is 25\euro{} and the agent needs to bring in back 25\euro{} to meet the margin requirements. If the losses are higher or the agent is not able to compensate them the house has to be sold. 
 
-\section{Complex Networks}
-\label{sec:theory_complexNetworks}
-small-world
-power-law distribution
-generation algorithms
-dient hauptsächlich zur kategorisierung
-		
-TODO:
-In "State of the art" an overview of abstract networks and their properties is given. Also network-generating algorithms are presented and discussed. Because continuous double-auctions are the type of market which is used for matchings a short introduction is given on this topic too.\\
-
-TODO: ziel hier eine theoretische übersicht über  netzwerk-theorie zu geben wobei hauptaugenmerk auf die entwicklungen der letzten jahre (scale-free, small-world, ...)
-
-Regular Graphs: \citep[vgl.]{BarabasiAlbert_StatisticalMechanics} \citep[vgl.]{Newman_ComplexNetworks}
-
-Random Graphs: but since then, most large scale networks with no apparent design principle were described as random graphs introduced by two Hungarian mathematicians Paul Erdos and Alfred Renyi \citep[vgl.]{ErdosRenyi_RandomGraphs} \citep[vgl.]{ErdosRenyi_EvolutionRandomGraphs} Have small-world properties.
-
-Small World Graphs or Average Path Length: Stanley Milgram \citep{TraverMilgram_StudySmallWorld} \citep{Milgram_SmallWorld} \citep{Kleinberg_SmallworldAlgorithmic}
-
-Clustering Coefficient or Transitivity \citep{WattsStrogatz_DynamicsSmallWorld}
-
-Degree Distribution \citep{BarabasiAlbert_EmergenceScaling} Generally, it was believed that the degree distribution in most networks follows a
-Poisson distribution but in reality, real world networks have a highly skewed degree distribution following power-laws. Power-laws are expressions of the form y / x, where is a constant, x and y are the measures of interest [152].
-
-Small World and Scale Free Network: A small world network as deined by Watts and Strogatz \cite{WattsStrogatz_DynamicsSmallWorld}, is a network with high clustering coeffcient and small average path length. A scale free network as deined by Barabasi and Albert \citep{BarabasiAlbert_EmergenceScaling}, is a network where the degree distribution follows a power law.
-
-Complex Networks: are Small-World and/or Scale-Free \citep{BarratWeigt_PropertiesSmallWorld} \citep{AmaralScalaStanley_ClassesSmallWorld}
-
-\citep {Kleinfeld_BigWorld}
-http://www.cs.princeton.edu/~chazelle/courses/BIB/big-world.htm
-
-introduce Metrics:
-- Average degree
-- average path-length
-- average clustering coefficient
-- network diameter
-- graph density
-
-Mathematical stuff 
-\citep{Newman_Eigenvectors}
-\citep{AielloChungLu_RandomEvolution}
-\citep{EbelMielschBornholdt_TopologyEmail}
-\citep{GaertlerPatrignani_AutonomousSystem}
-
-\subsection{Network-Generating Algorithms}
-- fully connected
-- ascending connected
-- ascending connected with shortcuts
-- hubs
-- erdos-renyi
-- barbasi-albert
-- watts-strogatz
-
-TODO: reference to appendix a for concrete pictures of topologies
+\subfile{./tex/NetworksTheory.tex}
 
 \end{document}
