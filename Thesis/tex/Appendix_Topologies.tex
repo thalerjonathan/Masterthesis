@@ -10,11 +10,10 @@ In this chapter all simulated topologies are visualized and explained shortly. A
 \section{Metrics}
 For each network the following metrics are given:
 
-\paragraph{Average degree} Gives a measure of how many neighbours a vertex has on average. The higher this value the higher the density of connections in this network.
+\paragraph{Average degree} Gives a measure of how many neighbours a vertex has on average.
 \paragraph{Average path-length} Gives a measure of how many edges a path between two vertices has on average.
-\paragraph{Average clustering coefficient} TODO: definition and interpretation
-\paragraph{Network diameter} Is the longest shortest path between any two vertices. TODO: interpretation
-\paragraph{Graph density} Is the ratio of the number of edges to the number of possible edges. TODO: interpretation
+\paragraph{Network diameter} Is the longest shortest path between any two vertices.
+\paragraph{Graph density} Is the ratio of the number of edges to the number of possible edges.
 \paragraph{Edge count} Gives a formula to calculate the exact number of edges. Is omitted for the complex networks as there is no exact estimation possible.
 \paragraph{Connected component} Gives the number of components found in this network. All non-complex networks have always only 1 connected-component where the complex networks could result in more than 1.
 
@@ -31,14 +30,13 @@ Included as major point-of-reference as \cite{Breuer2015} developed their model 
 	\label{fig:topology_FULLY_CONNECTED_30}
 \end{figure}
 
-\begin{table}[h]
+\begin{table}[H]
 	\centering
 	\caption{Network metrics Fully-Connected topology}
 	\begin{tabular} { l c r }
 		\hline
 		Avg. degree & 29 \\
 		Avg. path-length & 1 \\
-		Avg. clustering coefficient & 1 \\
 		Network diameter & 1 \\
 		Graph density & 1 \\
 		Edge count & $\frac{N(N - 1)}{2}$ \\
@@ -58,14 +56,13 @@ Included to investigate the influence of isolated agents.
 	\label{fig:topology_HALFFULLY_CONNECTED_30}
 \end{figure}
 
-\begin{table}[h]
+\begin{table}[H]
 	\centering
 	\caption{Network metrics Half Fully-Connected topology}
 	\begin{tabular} { l c r }
 		\hline
 		Avg. degree & 8.067 \\
 		Avg. path-length & 4.007 \\
-		Avg. clustering coefficient & 0.491 \\
 		Network diameter & 9 \\
 		Graph density & 0.278 \\
 		Edge count & $\frac{\frac{N}{2}(\frac{N}{2} - 1)}{2} + \frac{N}{2} + 1$ \\
@@ -85,14 +82,13 @@ Included because it is the most minimal network which satisfies the theory and i
 	\label{fig:topology_ASCENDING_CONNECTED_30}
 \end{figure}
 
-\begin{table}[h]
+\begin{table}[H]
 	\centering
 	\caption{Network metrics Ascending-Connected topology}
 	\begin{tabular} { l c r }
 		\hline
 		Avg. degree & 1.933 \\
 		Avg. path-length & 10.33 \\
-		Avg. clustering coefficient & 0 \\
 		Network diameter & 29 \\
 		Graph density & 0.067 \\
 		Edge count & $N-1$ \\
@@ -113,14 +109,13 @@ Included to analyse the influence of increasing connectivity.
 	\label{fig:topology_ASCENDING_CONNECTED_FULLSHORTCUTS_5_30}
 \end{figure}
 
-\begin{table}[h]
+\begin{table}[H]
 	\centering
 	\caption{Network metrics Ascending-Connected 5 full short-cuts topology}
 	\begin{tabular} { l c r }
 		\hline
 		Avg. degree & 10 \\
 		Avg. path-length & 1.966 \\
-		Avg. clustering coefficient & 0.667 \\
 		Network diameter & 3 \\
 		Graph density & 0.345 \\
 		Edge count & $NK$ \\
@@ -140,14 +135,13 @@ Included to analyse the influence of trading-links to agents with much higher op
 	\label{fig:topology_ASCENDING_CONNECTED_REGULARSHORTCUTS_5_30}
 \end{figure}
 
-\begin{table}[h]
+\begin{table}[H]
 	\centering
 	\caption{Network metrics Ascending-Connected 5 regular short-cuts topology}
 	\begin{tabular} { l c r }
 		\hline
 		Avg. degree & 3.867 \\
 		Avg. path-length & 2.839 \\
-		Avg. clustering coefficient & 0 \\
 		Network diameter & 6 \\
 		Graph density & 0.133\\
 		Edge count & $2N$ \\
@@ -167,14 +161,13 @@ Included to analyse the influence of randomness in ascending-connected topologie
 	\label{fig:topology_ASCENDING_CONNECTED_RANDOMSHORTCUTS_10_30}
 \end{figure}
 
-\begin{table}[h]
+\begin{table}[H]
 	\centering
 	\caption{Network metrics Ascending-Connected random short-cuts topology}
 	\begin{tabular} { l c r }
 		\hline
 		Avg. degree & 3.867 \\
 		Avg. path-length & 2.506 \\
-		Avg. clustering coefficient & 0.056 \\
 		Network diameter & 5 \\
 		Graph density & 0.133\\
 		Edge count & $\min N, \max 2N$ \\
@@ -195,14 +188,13 @@ Included as a point-of-reference as this topology was discussed too in \cite{Bre
 	\label{fig:topology_3HUBS_30}
 \end{figure}
 
-\begin{table}[h]
+\begin{table}[H]
 	\centering
 	\caption{Network metrics 3 Hubs topology}
 	\begin{tabular} { l c r }
 		\hline
 		Avg. degree & 9.2 \\
 		Avg. path-length & 2.241 \\
-		Avg. clustering coefficient & 0.976 \\
 		Network diameter & 3 \\
 		Graph density & 0.371\\
 		Edge count & $3(\frac{\frac{N}{3}(\frac{N}{3} - 1)}{2}) + 3$ \\
@@ -222,14 +214,13 @@ Included to see what happens if all agents can only trade through median agents 
 	\label{fig:topology_3MEDIANHUB_30}
 \end{figure}
 
-\begin{table}[h]
+\begin{table}[H]
 	\centering
 	\caption{Network metrics 3 Median Hub topology}
 	\begin{tabular} { l c r }
 		\hline
 		Avg. degree & 2 \\
 		Avg. path-length & 2.49 \\
-		Avg. clustering coefficient & 0.018 \\
 		Network diameter & 3 \\
 		Graph density & 0.069 \\
 		Edge count & $N$ \\
@@ -249,14 +240,13 @@ Included for the same reason as in 3 median hubs but with just one median hub.
 	\label{fig:topology_1MEDIANHUB_30}
 \end{figure}
 
-\begin{table}[h]
+\begin{table}[H]
 	\centering
 	\caption{Network metrics Median Hub topology}
 	\begin{tabular} { l c r }
 		\hline
 		Avg. degree & 1.933 \\
 		Avg. path-length & 1.933 \\
-		Avg. clustering coefficient & 0 \\
 		Network diameter & 2 \\
 		Graph density & 0.067 \\
 		Edge count & $N-1$ \\
@@ -269,11 +259,11 @@ Looks the same as 1 Median Hub but all edges are connected to the agent with the
 \medskip
 Included just out of curiosity and has no real value as it is obviously clear that equilibrium is impossible to be reached in this case.
 
-\section{Small-World and Scale-Free topologies}
+\section{Complex network-topologies}
 \subsection{Erods-Renyi}
-Each possible edge is included with a given probability where self-loops and multi-edges are omitted. See section \ref{sec:theory_complexNetworks} for a discussion of this topology.
+See section \ref{sec:theory_complexNetworks} for how this topology is created.
 \medskip
-Included to investigate the influence of small-world an scale-free effects upon equilibrium and because of the randomness of the network.
+Included to investigate the influence of randomness, small-world and scale-free effects upon equilibrium.
 
 \begin{figure}[H]
 	\centering
@@ -282,14 +272,13 @@ Included to investigate the influence of small-world an scale-free effects upon 
 	\label{fig:topology_ERDOSRENYI_02_30}
 \end{figure}
 
-\begin{table}[h]
+\begin{table}[H]
 	\centering
 	\caption{Network metrics Erdosy-Renyi 0.2}
 	\begin{tabular} { l c r }
 		\hline
 		Avg. degree & 6.8 \\
 		Avg. path-length & 1.913 \\
-		Avg. clustering coefficient &  0.266 \\
 		Network diameter & 3 \\
 		Graph density & 0.234 \\
 		Connected component & 1 \\
@@ -304,14 +293,13 @@ Included to investigate the influence of small-world an scale-free effects upon 
 	\label{fig:topology_ERDOSRENYI_01_30}
 \end{figure}
 
-\begin{table}[h]
+\begin{table}[H]
 	\centering
 	\caption{Network metrics Erdosy-Renyi 0.1}
 	\begin{tabular} { l c r }
 		\hline
 		Avg. degree & 2.933 \\
 		Avg. path-length & 3.262 \\
-		Avg. clustering coefficient & 0.103 \\
 		Network diameter & 7 \\
 		Graph density & 0.101 \\
 		Connected component & 1 \\
@@ -326,14 +314,13 @@ Included to investigate the influence of small-world an scale-free effects upon 
 	\label{fig:topology_ERDOSRENYI_005_30}
 \end{figure}
 
-\begin{table}[h]
+\begin{table}[H]
 	\centering
 	\caption{Network metrics Erdosy-Renyi 0.05}
 	\begin{tabular} { l c r }
 		\hline
 		Avg. degree & 1.6 \\
 		Avg. path-length & 3.052 \\
-		Avg. clustering coefficient & 0 \\
 		Network diameter & 8 \\
 		Graph density & 0.055 \\
 		Connected component & 11 \\
@@ -342,9 +329,9 @@ Included to investigate the influence of small-world an scale-free effects upon 
 \end{table}
 
 \subsection{Barbasi-Albert}
-One starts with m0 nodes and attaches each new node randomly to m existing nodes where the selection-probability of a node depends on its degree. See section \ref{sec:theory_complexNetworks} for a discussion of this topology.
+See section \ref{sec:theory_complexNetworks} for how this topology is created.
 \medskip
-Included to investigate the influence of small-world an scale-free effects upon equilibrium and because of the randomness of the network.
+Included to investigate the influence of randomness, small-world and scale-free effects upon equilibrium.
 
 \begin{figure}[H]
 	\centering
@@ -353,14 +340,13 @@ Included to investigate the influence of small-world an scale-free effects upon 
 	\label{fig:topology_BARBASIALBERT_3_1_30}
 \end{figure}
 
-\begin{table}[h]
+\begin{table}[H]
 	\centering
 	\caption{Network metrics Barbasi-Albert m0=3, m=1}
 	\begin{tabular} { l c r }
 		\hline
 		Avg. degree & 1.98 \\
 		Avg. path-length & 4.684 \\
-		Avg. clustering coefficient & 0 \\
 		Network diameter & 11 \\
 		Graph density & 0.02 \\
 		\hline
@@ -374,14 +360,13 @@ Included to investigate the influence of small-world an scale-free effects upon 
 	\label{fig:topology_BARBASIALBERT_9_3_30}
 \end{figure}
 
-\begin{table}[h]
+\begin{table}[H]
 	\centering
 	\caption{Network metrics Barbasi-Albert m0=9, m=3}
 	\begin{tabular} { l c r }
 		\hline
 		Avg. degree & 4.733 \\
 		Avg. path-length & 2.11 \\
-		Avg. clustering coefficient & 0.279 \\
 		Network diameter & 4 \\
 		Graph density & 0.163 \\
 		\hline
@@ -389,9 +374,9 @@ Included to investigate the influence of small-world an scale-free effects upon 
 \end{table}
 
 \subsection{Watts-Strogatz}
-Creates N nodes and connects each to K neighbours and rewires each then existing edge with a probability of 0.2 to a younger node. See section \ref{sec:theory_complexNetworks} for a discussion of this topology.
+See section \ref{sec:theory_complexNetworks} for how this topology is created.
 \medskip
-Included to investigate the influence of small-world an scale-free effects upon equilibrium and because of the randomness of the network.
+Included to investigate the influence of randomness, small-world and scale-free effects upon equilibrium.
 
 \begin{figure}[H]
 	\centering
@@ -400,14 +385,13 @@ Included to investigate the influence of small-world an scale-free effects upon 
 	\label{fig:topology_WATTSSTROGATZ_2_02_30}
 \end{figure}
 
-\begin{table}[h]
+\begin{table}[H]
 	\centering
 	\caption{Network metrics Watts-Strogatz k=2, p=0.2}
 	\begin{tabular} { l c r }
 		\hline
 		Avg. degree & 4 \\
 		Avg. path-length & 2.883 \\
-		Avg. clustering coefficient & 0.259 \\
 		Network diameter & 6 \\
 		Graph density & 0.138 \\
 		\hline
@@ -428,7 +412,6 @@ Included to investigate the influence of small-world an scale-free effects upon 
 		\hline
 		Avg. degree & 8 \\
 		Avg. path-length & 1.823 \\
-		Avg. clustering coefficient & 0.241 \\
 		Network diameter & 3 \\
 		Graph density & 0.276 \\
 		\hline

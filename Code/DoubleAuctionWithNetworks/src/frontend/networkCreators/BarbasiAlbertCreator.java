@@ -8,8 +8,8 @@ import backend.agents.network.AgentNetwork;
 import backend.markets.Markets;
 
 public class BarbasiAlbertCreator extends NetworkCreator {
-	private int m0 = 3;
-	private int m = 1;
+	private int m0 = 9;
+	private int m = 3;
 	
 	public AgentNetwork createNetwork( IAgentFactory agentFactory ) {
 		return AgentNetwork.createBarbasiAlbertConnected( this.m0, this.m, agentFactory);
