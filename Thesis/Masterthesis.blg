@@ -1,9 +1,12 @@
 This is BibTeX, Version 0.99dThe top-level auxiliary file: Masterthesis.aux
 The style file: alpha.bst
+White space in argument---line 75 of file Masterthesis.aux
+ : \citation{complex
+ :                   networks}
+I'm skipping whatever remains of this command
 Database file #1: ./bib/Bibliography.bib
 Warning--empty journal in Brigham2012
 Warning--empty journal in Breuer2015
 Warning--empty journal in Geanakoplos2009
-Warning--empty journal in Jackson2008
 Warning--empty journal in Parsons2006
-(There were 5 warnings)
+(There was 1 error message)

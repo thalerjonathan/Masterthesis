@@ -1,10 +1,5 @@
 \begin{thebibliography}{PMNP06}
 
-\bibitem[AlB99]{BarabasiAlbert_StatisticalMechanics}
-Réka Albert and Albert lászló Barabási.
-\newblock Statistical mechanics of complex networks.
-\newblock {\em Rev. Mod. Phys}, page 2002, 1999.
-
 \bibitem[AlB02]{BarabasiAlbert_EmergenceScaling}
 Réka Albert and Albert lászló Barabási.
 \newblock Emergence of scaling in random networks.
@@ -42,6 +37,11 @@ M.~Drmota, Gittenberger B., Karigl G., and Panholzer A.
 \newblock {\em Mathematik für Informatik}.
 \newblock Heldermann Verlag, 2007.
 
+\bibitem[EK10]{Easley2010}
+David Easley and Jon Kleinberg.
+\newblock {\em Networks, Crowds and Markets}.
+\newblock Cambridge University Press, 2010.
+
 \bibitem[ER59]{ErdosRenyi_RandomGraphs}
 P.~Erdős and A~Rényi.
 \newblock On random graphs.
@@ -60,8 +60,8 @@ Dhananjay~K Gode and Shyam Sunder.
 
 \bibitem[Jac08]{Jackson2008}
 Mathew~O. Jackson.
-\newblock Social and economic networks.
-\newblock 2008.
+\newblock {\em Social and Economic Networks}.
+\newblock Princeton University Press, 2008.
 
 \bibitem[Kle02]{Kleinfeld_BigWorld}
 Judith~S. Kleinfeld.
