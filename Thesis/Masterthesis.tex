@@ -13,9 +13,10 @@
 \usepackage{chngcntr}	% used to prevent figurenumbering is done chapterwise
 \usepackage{ifthen} 		% needed to support german and english
 \usepackage{float}		% needed for fixed positions of figures
-\usepackage{algorithm}
-\usepackage[noend]{algpseudocode}
-\usepackage[official]{eurosym}
+\usepackage{algorithm}	%pseudocode
+\usepackage[noend]{algpseudocode}	%pseudocode
+\usepackage[official]{eurosym}		% euro-sign
+\usepackage{amsthm}		%theorems
 
 \usepackage{epstopdf}
 
@@ -39,7 +40,7 @@
 \makeglossaries
 
 % Settings
-\bibliographystyle{alpha}  % This is fhv standard
+\bibliographystyle{apalike}  % fhv standard is alpha. other is apalike
 \setLanguage{english}
 \setThesistype{Master}
 \setTitle{Influence of network-topologies on equilibrium in continuous double-auctions.}

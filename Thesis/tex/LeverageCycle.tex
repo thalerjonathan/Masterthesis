@@ -21,9 +21,9 @@ To prevent a too specific distinction between the natural buyer and the public G
 \medskip
 Geanakoplos then introduces a two-period economy which is the base for the economy used by Breuer et al. in their model. In the first period each agent of the previously mentioned continuum \textit{H} is endowed with one consumption good C and one asset Y and can then trade with each other. The second period can be one of two states: U(p) and D(own) whereas in the up-state the asset Y is worth 1.0 and in the Down-State only 0.2. The agents differ only in their optimism \textit{h} by which they assign the probability that the up-state will happen tomorrow in the second period. According to this they trade on the market according to their utility-function which depends on their optimism \textit{h}. The following formula gives the utility-function of each agent which gives the price of an asset which is how much an agent values it - obviously the more optimistic the higher the price.
 
-\begin{center}
-$price = h + (1 - h)0.2$
-\end{center}
+\begin{equation}
+price = h + (1 - h)0.2
+\end{equation}
 
 Now if \textit{price} is larger than some given price \textit{p} then the agent will want to buy the asset as the agent values it more than the given price \textit{p} but can buy it for a lower price thus making an expected profit. If the \textit{price} is less than the given price \textit{p} the agent is going to sell the asset as the value the agent assigns to it is lower than the given price \textit{p} thus the agent can make an expected profit in selling it.
 
@@ -82,25 +82,25 @@ In this section the utilitiy-functions for each market are given. See chapter \r
 \paragraph{Asset/Cash market}
 The asset market is the same as in \cite{Geanakoplos2009} where assets are just bought and sold against cash.
 
-\begin{center}
-$p = h + ( 1 - h )pD$
-\end{center}
+\begin{equation}
+p = h + ( 1 - h )pD
+\end{equation}
 
 \paragraph{Bond/Cash market}
 The bond market acts the same way as described in \cite{Geanakoplos2009}. Collateral acts as enforcement of financial promises and thus for a given amount of loans the same amount of assets must be held as securities. A loan can be bought for a given price which is the face-value \textit{V}. This face-value has to be paid by the borrower in up-state whereas only pD has to be paid in down-state. Again note that up- and down-states are never realized but influence the utility-functions.
 \medskip
 Risk-less as well as risky bonds are available in the model of \cite{Breuer2015} where the risky bonds are also those with face-value \textit{V} $>$ 0.2. Although breuer et al. allowed more than one loan simultaneously in their model this is not implemented in the thesis-software as it is not the primary focus of this work and would have required substantial changes in the software.
 
-\begin{center}
-$p = h V + ( 1 - h )pD$
-\end{center}
+\begin{equation}
+p = h V + ( 1 - h )pD
+\end{equation}
 
 \paragraph{Asset/Bond market}
 The Asset/Bond market trades asset against bonds thus the utility-function is just the ratio of the Asset/Cash utility to the Bond/Cash utility which gives the amount of bonds one asset is worth for a given optimism \textit{h}.
 
-\begin{center}
-$p = \frac{\textit{utiliy Asset/Cash}}{\textit{utility Bond/Cash}}$
-\end{center}
+\begin{equation}
+p = \frac{\textit{utiliy Asset/Cash}}{\textit{utility Bond/Cash}}
+\end{equation}
 
 \subsection{Auction Mechanism}
 The auction mechanism used is a continuous double-auction on all markets open at the same time with a finite number of agents. To prevent a bias
@@ -117,14 +117,14 @@ To prevent a bias one agent is picked at random and then submits offerings on al
 \paragraph{Matching}
 Again to prevent a bias pick one market at random and pick at random the buy or sell offers on this market too and compare them with the offers of the previously selected random agent. According to the double-auction mechanism a match occurs only if:
 
-\begin{center}
-$\textit{buy-price} \geq \textit{sell-price}$
-\end{center}
+\begin{equation}
+\textit{buy-price} \geq \textit{sell-price}
+\end{equation}
 
 In this case the offers are deleted from the offering-book and the matching-price is calculated at the half-way price as defined for double-auctions:
-\begin{center}
-$\textit{matching-price} = \frac{\textit{buy-price} + \textit{sell-price}}{2}$
-\end{center}
+\begin{equation}
+\textit{matching-price} = \frac{\textit{buy-price} + \textit{sell-price}}{2}
+\end{equation}
 
 If no match occurs by the currently picked random agent pick another agent at random and continue as above with submitting its offers on all markets.
 
@@ -141,17 +141,17 @@ If a risk-free bond with a face-value of \textit{V} $\leq$ 0.2 is available then
 
 Below the formulas reported in \cite{Breuer2015} are given for calculating $i^*$, the asset-price \textit{p} and the bond-price \textit{q} in equilibrium.
 
-\begin{center}
-$i^* = \frac{p - 0.2}{0.8}$
-\end{center}
+\begin{equation}
+i^* = \frac{p - 0.2}{0.8}
+\end{equation}
 
-\begin{center}
-$p = \frac{1 + q - i^*}{i^*}$
-\end{center}
+\begin{equation}
+p = \frac{1 + q - i^*}{i^*}
+\end{equation}
 
-\begin{center}
-$q = 0.2$
-\end{center}
+\begin{equation}
+q = 0.2
+\end{equation}
 
 \paragraph{Risky bond}
 When only a risky bond with face-value \textit{V} $>$ 0.2 is available then the agents divide into three instead of two subgroups separated by $i_{1}$ and $i_{2}$:
@@ -164,21 +164,21 @@ When only a risky bond with face-value \textit{V} $>$ 0.2 is available then the 
 
 Below the formulas reported in \cite{Breuer2015} are given for calculating $i_{1}$, $i_{2}$, the asset-price \textit{p} and the bond-price \textit{q} in equilibrium. Note that in this thesis equilibria are always calculated for a risky bond with a face-value of \textit{V} = 0.5.
 
-\begin{center}
-$i_{1} = \frac{q - 0.2}{V - 0.2}$
-\end{center}
+\begin{equation}
+i_{1} = \frac{q - 0.2}{V - 0.2}
+\end{equation}
 
-\begin{center}
-$i_{2} = \frac{0.2(p - q)}{0.8q - (V - 0.2)p}$
-\end{center}
+\begin{equation}
+i_{2} = \frac{0.2(p - q)}{0.8q - (V - 0.2)p}
+\end{equation}
 
-\begin{center}
-$p = \frac{1}{i_{1}} - 1$
-\end{center}
+\begin{equation}
+p = \frac{1}{i_{1}} - 1
+\end{equation}
 
-\begin{center}
-$q = p \frac{i_{2} - i{1}}{1 - i_{1}}$
-\end{center}
+\begin{equation}
+q = p \frac{i_{2} - i{1}}{1 - i_{1}}
+\end{equation}
 
 Note that this case is not discussed in \cite{Geanakoplos2009} where it is excluded by assumption.
 
@@ -207,9 +207,9 @@ and furthermore
 
 When an agent buys an asset by borrowing money through selling bonds on the Asset/Bond market then the agent is using leverage to finance the asset trade. Buyers are buying an asset if the utility increases thus assigning the asset a higher value than the seller but still the buyer is paying less than the value he assigns the asset. According to the definition of leverage in chapter \ref{ch:theory} the leverage ratio is:
 
-\begin{center}
-$\textit{leverage-ratio} = \frac{\textit{buyer utility-price}}{\textit{buyer-price} - \textit{matching-price}}$
-\end{center}
+\begin{equation}
+\textit{leverage-ratio} = \frac{\textit{buyer utility-price}}{\textit{buyer-price} - \textit{matching-price}}
+\end{equation}
 
 The buyer assigns the asset the value given by the agents utility-price thus the leverage-ratio is then the ratio of this value to the difference between the buyers-price and the price the agent really pays, which is less due to the mechanics of the double-auction. The value in the denominator is the amount the agent does not finance by borrowing - in the case of this model this value is never paid by the agent and is just the expected win if the up-state occurs. This is the leverage which drives up the asset-prices as noted by Geanakoplos.
 

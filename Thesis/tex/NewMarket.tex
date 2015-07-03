@@ -17,23 +17,23 @@ As within all other three markets the price-ranges of the offers must be defined
 \paragraph{minimum}
 When calculating the minimum price of a collateralized asset - that is how much is the collateralized asset minimally worth - it is important to include the collateral-aspect of the asset. Thus one starts with the minimum asset-price in cash which is the down-price \textit{pD} and subtracts the maximum possible amount of cash which is bound through a bond as collateral which is the face-value \textit{V}. This value is a constant for all agents.
 
-\begin{center}
-$\textit{min collateralized asset-price} = \min(0, \textit{pD} - \textit{V})$
-\end{center}
+\begin{equation}
+\textit{min collateralized asset-price} = \min(0, \textit{pD} - \textit{V})
+\end{equation}
  
 \paragraph{maximum}
 To calculate the maximum price of a collateralized asset - that is how much is the collateralized asset maximally worth - one needs to include the collateral-aspect of the asset too. Equal to calculating the minimum one starts now with the maximum asset-price in cash which is the up-price \textit{pU} and subtracts the minimum possible amount of cash which is bound through a bond as collateral which is the face-value \textit{pD}. This value is a constant for all agents.
 
-\begin{center}
-$\textit{max collateralized asset-price} = \textit{pU} - \textit{pD}$
-\end{center}
+\begin{equation}
+\textit{max collateralized asset-price} = \textit{pU} - \textit{pD}
+\end{equation}
 
 \paragraph{limit}
 Applying the same rules as in minimum and maximum to the limit price calculation one needs to subract the limit-price of loans from the limit-price of asset to receive the limit-price of a collateralized asset. This value is individual for each agent as the limit-prices differ across the agents both for assets and loans.
 
-\begin{center}
-$\textit{limit-price of collateralized asset} = \textit{limit-price of asset} - \textit{limit-price of loan}$
-\end{center}
+\begin{equation}
+\textit{limit-price of collateralized asset} = \textit{limit-price of asset} - \textit{limit-price of loan}
+\end{equation}
 
 \subsection{Bid-Offering}
 The way bid-offers are generated is very similar to the Bond/Cash market. Bid offers are generated only when the agent has any cash holdings. The price is drawn randomly between the minimum price and the limit-price because when buying one wants to buy below the expected value to make a profit. As amount one TRADING-UNIT of an asset is selected - in the thesis-implementation 0.1 - but if there is not enough cash left to buy one TRADING-UNIT of assets then the amount of assets is selected which can be bought with the remaining cash holdings.

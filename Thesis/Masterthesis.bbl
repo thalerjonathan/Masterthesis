@@ -1,97 +1,81 @@
-\begin{thebibliography}{PMNP06}
+\begin{thebibliography}{}
 
-\bibitem[AlB02]{BarabasiAlbert_EmergenceScaling}
-Réka Albert and Albert lászló Barabási.
+\bibitem[Albert and lászló Barabási, 2002]{BarabasiAlbert_EmergenceScaling}
+Albert, R. and lászló Barabási, A. (2002).
 \newblock Emergence of scaling in random networks.
-\newblock {\em Science}, page 286(5439):509–512, 2002.
+\newblock {\em Science}, page 286(5439):509–512.
 
-\bibitem[ASBS00]{AmaralScalaStanley_ClassesSmallWorld}
-L.~A.~N. Amaral, A.~Scala, M.~Barth´el´emy, and H.~E. Stanley.
-\newblock Classes of small-world networks.
-\newblock In {\em Proceedings of the National Academy of Sciences of the United
-  States of America}, page 97(21):11149–11152, 2000.
-
-\bibitem[Bor10]{Milan2010}
-Milan Boran.
+\bibitem[Boran, 2010]{Milan2010}
+Boran, M. (2010).
 \newblock Market dynamics and systemic risk.
-\newblock {\em 23rd Australasian Finance and Banking Conference 2010}, 2010.
+\newblock {\em 23rd Australasian Finance and Banking Conference 2010}.
 
-\bibitem[Bri12]{Brigham2012}
-Eugene~F. Brigham.
-\newblock Fundamentals of financial management.
-\newblock 2012.
-
-\bibitem[BSV13]{Breuer2015}
-Thomas Breuer, Martin Summer, and Hans-Joachim Vollbrecht.
+\bibitem[Breuer et~al., 2013]{Breuer2015}
+Breuer, T., Summer, M., and Vollbrecht, H.-J. (2013).
 \newblock Endogenous leverage and asset pricing in double auctions.
-\newblock 2013.
 
-\bibitem[BW00]{BarratWeigt_PropertiesSmallWorld}
-A.~Barrat and M.~Weigt.
-\newblock On the properties of small-world network models.
-\newblock In {\em The European Physical Journal B - Condensed Matter and
-  Complex Systems}, page 13(3):547–560, 2000.
+\bibitem[Brigham, 2012]{Brigham2012}
+Brigham, E.~F. (2012).
+\newblock Fundamentals of financial management.
 
-\bibitem[DBGA07]{Drmota2007}
-M.~Drmota, Gittenberger B., Karigl G., and Panholzer A.
+\bibitem[Drmota et~al., 2007]{Drmota2007}
+Drmota, M., B., G., G., K., and A., P. (2007).
 \newblock {\em Mathematik für Informatik}.
-\newblock Heldermann Verlag, 2007.
+\newblock Heldermann Verlag.
 
-\bibitem[EK10]{Easley2010}
-David Easley and Jon Kleinberg.
+\bibitem[Easley and Kleinberg, 2010]{Easley2010}
+Easley, D. and Kleinberg, J. (2010).
 \newblock {\em Networks, Crowds and Markets}.
-\newblock Cambridge University Press, 2010.
+\newblock Cambridge University Press.
 
-\bibitem[ER59]{ErdosRenyi_RandomGraphs}
-P.~Erdős and A~Rényi.
-\newblock On random graphs.
-\newblock In {\em Publicationes Mathematicae}, pages 6:290–--297, 1959.
-
-\bibitem[Gea09]{Geanakoplos2009}
-John Geanakoplos.
+\bibitem[Geanakoplos, 2009]{Geanakoplos2009}
+Geanakoplos, J. (2009).
 \newblock The leverage cycle.
-\newblock Jul 2009.
 
-\bibitem[GS93]{GodeSunder1993}
-Dhananjay~K Gode and Shyam Sunder.
+\bibitem[Geanakoplos and Zame, 2014]{GeanakoplosZame2014}
+Geanakoplos, J. and Zame, W. (2014).
+\newblock Collateral equilibrium, i: a basic framework.
+\newblock {\em Economic Theory}, 56(3):443--492.
+
+\bibitem[Gode and Sunder, 1993]{GodeSunder1993}
+Gode, D.~K. and Sunder, S. (1993).
 \newblock Allocative efficiency of markets with zero-intelligence traders:
   Market as a partial substitute for individual rationality.
-\newblock {\em Journal of Political Economy}, 101(1):119--37, 1993.
+\newblock {\em Journal of Political Economy}, 101(1):119--37.
 
-\bibitem[Jac08]{Jackson2008}
-Mathew~O. Jackson.
+\bibitem[Jackson, 2008]{Jackson2008}
+Jackson, M.~O. (2008).
 \newblock {\em Social and Economic Networks}.
-\newblock Princeton University Press, 2008.
+\newblock Princeton University Press.
 
-\bibitem[Kle02]{Kleinfeld_BigWorld}
-Judith~S. Kleinfeld.
+\bibitem[Kleinfeld, 2002]{Kleinfeld_BigWorld}
+Kleinfeld, J.~S. (2002).
 \newblock Could it be a big world after all ?
-\newblock {\em Society}, page 39(2):61–66, 2002.
+\newblock {\em Society}, page 39(2):61–66.
 
-\bibitem[Mil67]{Milgram_SmallWorld}
-Stanley Milgram.
+\bibitem[Milgram, 1967]{Milgram_SmallWorld}
+Milgram, S. (1967).
 \newblock The small world problem.
-\newblock {\em Pyschology Today}, page 1:61–67, 1967.
+\newblock {\em Pyschology Today}, page 1:61–67.
 
-\bibitem[New03]{Newman_ComplexNetworks}
-M.~E.~J. Newman.
+\bibitem[Newman, 2003]{Newman_ComplexNetworks}
+Newman, M. E.~J. (2003).
 \newblock The structure and function of complex networks.
-\newblock {\em SIAM REVIEW}, 45:167--256, 2003.
+\newblock {\em SIAM REVIEW}, 45:167--256.
 
-\bibitem[PMNP06]{Parsons2006}
-Simon Parsons, Marek Marcinkiewicz, Jinzhong Niu, and Steve Phelps.
+\bibitem[Parsons et~al., 2006]{Parsons2006}
+Parsons, S., Marcinkiewicz, M., Niu, J., and Phelps, S. (2006).
 \newblock Everything you wanted to know about double auctions, but were afraid
   to (bid or) ask.
-\newblock 2006.
 
-\bibitem[TM69]{TraverMilgram_StudySmallWorld}
-J.~Travers and Stanley Milgram.
+\bibitem[Travers and Milgram, 1969]{TraverMilgram_StudySmallWorld}
+Travers, J. and Milgram, S. (1969).
 \newblock An experimental study of the small world problem.
-\newblock {\em Sociometry}, page 32:425–443, 1969.
+\newblock {\em Sociometry}, page 32:425–443.
 
-\bibitem[WS98]{WattsStrogatz_DynamicsSmallWorld}
-D.~J. Watts and S.~H. Strogatz.
+\bibitem[Watts and Strogatz, 1998]{WattsStrogatz_DynamicsSmallWorld}
+Watts, D.~J. and Strogatz, S.~H. (June 1998).
 \newblock Collective dynamics of ’small-world’ networks.
-\newblock In {\em Nature}, page 393:440–442, June 1998.
+\newblock In {\em Nature}, page 393:440–442.
 
 \end{thebibliography}

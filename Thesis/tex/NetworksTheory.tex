@@ -34,15 +34,15 @@ Since the first proof in network-theory by Euler in 1735 the analysis of network
 One of the simplest network models studied was the random graph which was investigated first by \cite{ErdosRenyi_RandomGraphs}. Such networks are constructed by having n unconnected vertices and then adding at random each possible edge with a given probability. The probabilities can follow different distributions e.g. a uniform- poisson- or gaussian-distribution. TODO: noch etwas mehr information
 
 \subsection{Small-World effects}
-In 1960s Stanley Milgram conducted a famous experiment in which he demonstrated that a letter can reach a destination person by an average of just 6 intermediate steps in between. In his work \cite{TraverMilgram_StudySmallWorld} \citep{Milgram_SmallWorld} he termed this phenomenon the \textit{small-world effect}. Although the results of his work have been questioned - more specifically that the world is really a small one e.g. by \cite{Kleinfeld_BigWorld} - it had big influences within the network-research community and led to the development of the small-world property. It is of very importance e.g. in social networks because this property implies that information spreads very quickly in the network as it needs very few steps to reach all nodes. This can also be applied to trading networks where it enables traders to trade goods within very few intermediary steps to traders which value the good the most.
+In 1960s Stanley Milgram conducted a famous experiment in which he demonstrated that a letter can reach a destination person by an average of just 6 intermediate steps in between. In his work \cite{TraverMilgram_StudySmallWorld} \cite{Milgram_SmallWorld} he termed this phenomenon the \textit{small-world effect}. Although the results of his work have been questioned - more specifically that the world is really a small one e.g. by \cite{Kleinfeld_BigWorld} - it had big influences within the network-research community and led to the development of the small-world property. It is of very importance e.g. in social networks because this property implies that information spreads very quickly in the network as it needs very few steps to reach all nodes. This can also be applied to trading networks where it enables traders to trade goods within very few intermediary steps to traders which value the good the most.
 
 \medskip
 
 To calculate whether a network has the small-world property one starts with the formula given by \cite{Newman_ComplexNetworks} for calculating the average path length in a network
 
-\begin{center}
-$\ell = \frac{1}{\frac{1}{2}n(n+1)} \displaystyle\sum_{i \geq j }^{} d_{ij}$
-\end{center}
+\begin{equation}
+\ell = \frac{1}{\frac{1}{2}n(n+1)} \displaystyle\sum_{i \geq j }^{} d_{ij}
+\end{equation}
 
 where $d_{ij}$ is the shortest distance from vertex i to vertex j. Networks then exhibit the small-world property if $\ell$ scales at max logarithmically with network size of mean degree.
 
@@ -52,27 +52,27 @@ Researchers found that real-world networks are non-random which lead to the disc
 \subsubsection{Degree distribution}
 In an undirected Graph \textit{G} the edges adjacent to $v$ $\in$ $V(G)$ 
 
-\begin{center}
-$\Gamma(v)$ = ${w \in V(G) | vw \in E(G)}$
-\end{center}
+\begin{equation}
+\Gamma(v) = {w \in V(G) | vw \in E(G)}
+\end{equation}
 
 are the neighbours. The quantity of the neighbours of $v$ $\in$ $V(G)$ 
 
-\begin{center}
-$d(v) = |\Gamma(v)|$ = $|{w \in V(G) | vw \in E(G)}|$
-\end{center}
+\begin{equation}
+d(v) = |\Gamma(v)| = |{w \in V(G) | vw \in E(G)}|
+\end{equation}
 
 is the degree of a vertex $v$ $\in$ $V(G)$. When regarding the adjacent-matrix of a graph the degree of a vertex $v_i$ $\in$ $V(G)$ is given by
 
-\begin{center}
-$d(v_i) = \displaystyle\sum_{j=1}^{n} a_{ij}$
-\end{center}
+\begin{equation}
+d(v_i) = \displaystyle\sum_{j=1}^{n} a_{ij}
+\end{equation}
 
 Having defined the degree of a vertex one can calculate the degree distribution of of a given network simply by counting the number of nodes which have a given degree k:
 
-\begin{center}
-$P_{deg}(k) = \textit{fraction of nodes in the graph with degree k}$
-\end{center}
+\begin{equation}
+P_{deg}(k) = \textit{fraction of nodes in the graph with degree k}
+\end{equation}
 
 The resulting statistics are presented in a histogram which gives a good visual overview of the distribution of the degrees and allows to calculate the average degree. 
 
@@ -95,9 +95,9 @@ In figure \ref{fig:BARBASIALBERT_HIST} the degree-distribution of a scale-free n
 
 What is striking about this figure is the long right tail. This shows that there exist a few vertices in this network which have a very high degree far beyond the average degree. This means that many other vertices are connected to them - they act as a kind of hub. Most of the vertices though have a low degree around 5 which in combination with the few high-degree vertices results in the long tail of this distribution which follows a power-law
 
-\begin{center}
-$P_{deg}(k) \sim k^{-\gamma}$
-\end{center}
+\begin{equation}
+P_{deg}(k) \sim k^{-\gamma}
+\end{equation}
 
 Note that due to the power-law the distribution of such networks remains unchanged when scaling \textit{k} with a given factor \textit{a}. Thus those networks are called \textit{scale-free}.
 

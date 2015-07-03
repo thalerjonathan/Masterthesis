@@ -1,47 +1,31 @@
 \documentclass[Bachelorarbeit.tex]{subfiles}
 \begin{document}
 \chapter{Introduction}
-
-TODO: überarbeiten, passt so noch nicht
-
-In 2008 the so called "Subprime Mortgage Crisis" struck the world. It was caused by declining house prices which rose during the US Housing Market Bubble in 2006 to an all-time high. Borrowers used their asset as collateral for the mortgage which constantly increased in value which guaranteed them a low payment-rate because the rate was coupled to the value of the asset.
-Banks granted "subprime" mortgages to more and more highly risky borrowers. In 2007 borrowers started to default which led to falling prices as the banks reclaimed the collateral and wanted to sell it again on the market to compensate for the loss. This led to a flood of assets which led to a decline of housing prices overall.
-As the prices fell dramatically the payment-rates rose dramatically to compensate for the cheaper asset. This in turn resulted in even more borrowers going default which resulted in a dramatic downward spiral.
-Even worse the banks were selling these collateralized products between each other and even insured themself against defaults of borrowers which led to an even more dramatic kick-back.
-margin requirements
-
-\thinspace
-
-This mechanism of borrowing money to buy goods which in turn act as a security for the borrowed money is called leverage which was determined as the primary driving force behind systemic risk in the aftermath of the "Subprime Mortgage Crisis".
+In 2008 the so called \textit{Subprime Mortgage Crisis} struck the world. It was caused by declining house prices which rose during the US Housing Market Bubble in 2006 to an all-time high. Borrowers used their asset as collateral for the mortgage which constantly increased in value which guaranteed them a low payment-rate because the rate was coupled to the value of the asset. 
+\medskip
+Banks granted "subprime" mortgages to more and more highly risky borrowers. In 2007 borrowers started to default which led to falling prices as the banks reclaimed the collateral and wanted to sell it again on the market to compensate for the loss. This led to a flood of assets on the market which led to a decline of housing prices overall. As the prices fell dramatically the payment-rates rose dramatically to compensate for the cheaper asset. This in turn resulted in even more borrowers going default because of margin requirements which resulted in a dramatic downward spiral. Even worse the banks were selling these collateralized products between each other and even insured themselves against defaults of borrowers which led to an even more dramatic kick-back.
+\medskip
+The mechanism of borrowing money to buy goods which in turn act as a security for the borrowed money is called leverage which was determined as the primary driving force behind systemic risk in the aftermath of the \textit{Subprime Mortgage Crisis}.
 
 \section{Motivation}
-Up until 2010 leverage was always exogenous in the literature on collateralized credit but recently Geanakoplos and Zame ( TODO: cite) proposed theories which endogenized leverage within a general equilibrium framework.
+In the classic economics literature leverage was always an exogenous parameter in the works on collateralized credit but recently \cite{Geanakoplos2009} and \cite{GeanakoplosZame2014} proposed an equilibrium framework which endogenized leverage. \cite{Breuer2015} built upon this findings and developed a simulation on top of the model of \cite{Geanakoplos2009} in which zero-intelligence agents trade assets and bonds in a continuous double-auction. They asked 
 
-\thinspace
+\begin{quote}
+"whether the competitive theory of trade in leveraged assets has descriptive and predictive power in a double auction environment."
+\end{quote}
 
-\cite{Breuer2015} developed a simulation on top of the model of Geanakoplos in which zero-intelligence agents trade assets and loans in a continuous double auction. They wanted to better understand the dynamic of such a theoretical process and how prices develop instead of being predicted through an equilibrium theory. They TODO: zitierne "ask whether the competitive theory of trade in leveraged assets has decriptive and predictive power in a double auction environment."
+and wanted to better understand the dynamic of such an equilibrium process, how prices develop and whether they approach the equilibrium predicted in the framework or not. \cite{Breuer2015} made three contributions:
 
-4 contributions:
-1. double auctions for leveraged assets is new
-2. details of institutional specification matter a lot
-3. limits of the endogenous leverage model
-4. 
+\begin{enumerate}
+\item Continuous double-auction for leveraged assets is new.
+\item They find that the institutional specification matter a lot.
+\item Robustness tests were conducted to show under which circumstances equilibrium cannot be reached.
+\end{enumerate}
 
-They could show that in their simulation trading prices and wealth-distribution approach the theoretical equilibrium of Geanakoplos.
-In their simulation only a fully connected network and a hub-network of agents was investigated where the equilibrium was only reached in the case of the fully connected network. See Chapter 3. "The Leverage Cycle" for a thorough description of the simulation-model of \cite{Breuer2015}. 
+They could show that in their simulation trading prices and wealth-distribution approach the theoretical equilibrium of \cite{Geanakoplos2009}. They investigated a fully connected network and a hub-network of agents where the equilibrium was only reached in the case of the fully connected network. 
 
 \section{Objectives}
-This thesis investigates more topologies of networks and their states of equilibrium. Furthermore it presents a hypothesis about the necessary property a topology of a network must satisfy to reach the theoretical equilibrium predicted in the theory of \cite{Geanakoplos2009} upon which \cite{Breuer2015} built their model.
-
-Interestingly it is shown experimentally that the hypothesis alone does not guarantee
-the reach of the theoretical equilibrium but further mechanisms needs to be implemented.
-See Chapter 4 "Hypothesis" and Chapter 6 "Results" for an in-depth explanation of both the hypothesis and why it does not hold and needs to be extended by means of an additional market-mechanism.
-
-\thinspace
-
-For experimental investigation a software was built for this thesis which 
-implemented the exact simulation model of \cite{Breuer2015} but extended it further to be 
-applicable to arbitrary topologies. See Chapter 5 "Implementation" on details of the software.
+This thesis investigates more topologies of networks and their convergence towards theoretical equilibrium. Furthermore it presents a hypothesis about which properties a topology of a network must satisfy to reach the same equilibrium as in \cite{Breuer2015}. For experimental investigation a software was built for this thesis which implemented the exact simulation model of \cite{Breuer2015} but extended it further to be applicable to arbitrary topologies.
 
 \section{Struture}
 In chapter \ref{ch:theory} "Theory" the theoretical background involved with this thesis is presented. First a basic definition of equilibrium in economics is presented. Then an introduction into the mechanics of the continuous double-auction which is used as market institution in the simulation-software is given. Finally an overview of complex networks, their properties and how they can be generated is given.

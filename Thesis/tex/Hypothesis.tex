@@ -10,15 +10,18 @@ In this chapter the question of the importance of fully-connectedness for reachi
 
 \section{Definition}
 
-\begin{center}
-fully-connectedness equilibrium $\iff$
-\linebreak
-$\forall$ \textit{agent-pairs} $(a_{1},a_{n})$ $\exists$ \textit{path} P $\{a_{1}, a_{2}, ... , a_{n-1}, a_{n}\}$ $|$ $h(a_{i}) < h(a_{i+1})$
-\end{center}
+\begin{equation}
+\begin{split}
+\textit{fully-connectedness equilibrium} \iff \\
+\forall \: \textit{agent-pairs} \: (a_{1},a_{n}) \: \exists \:  \textit{path} \: P \: \{a_{1}, a_{2}, ... , a_{n-1}, a_{n}\} \: | \: h(a_{i}) < h(a_{i+1})
+\end{split}
+\end{equation}
 
-\begin{center}
-\textit{If and only if for all agents exists a path between two agents in which each visited agent has a larger optimism factor than the previous one then the same equilibrium as in fully-connectedness will be reached.}
-\end{center}
+\newtheorem{conj}{Conjecture}
+
+\begin{conj}
+If and only if for all agents exists a path between two agents in which each visited agent has a larger optimism factor than the previous one then the same equilibrium as in fully-connectedness will be reached.
+\end{conj}
 
 The most minimal configuration of agents which satisfies this hypothesis is a graph of agents where each agent is connected to the agent with the next higher optimism-factor. This is the same as the Ascending-Connected topology - see appendix \ref{app:topologies} "Topologies" - which is the major network of interest in this thesis (besides the fully-connected one) as it is the most minimal topology which satisfies the hypothesis.
 
