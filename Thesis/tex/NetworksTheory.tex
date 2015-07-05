@@ -28,10 +28,16 @@ This thesis also investigates the equilibrium in so called \textit{complex netwo
 M.E.J. Newmann gives an extensive overview of complex networks in the paper \cite{Newman_ComplexNetworks} which in combination of the books \cite{Jackson2008} and \cite{Easley2010} are the main sources for the following sections. Note that in this thesis only static networks are of interest thus no models of network-growth or processes in and on networks are discussed.
 
 \subsection{Overview}
-Since the first proof in network-theory by Euler in 1735 the analysis of networks has had a long tradition. In recent years the focus is shifting away from the analysis of single small graphs and the properties of individual vertices or edges to consideration of large-scale statistical properties of graphs TODO: das ist kopiert, umformulieren. This transition of focus was made possible by the availability of an ever increasing amount of processing power through computers which allow the investigation of networks with millions of vertices.
+Since the first proof in network-theory by Euler in 1735 the analysis of networks has had a long tradition. Up until a few years ago the analysis of small graphs and properties of individual vertices or edges dominated the field of network-research but over the last years the focus shifted towards large-scale statistical properties. This transition of focus was made possible by the availability of an ever increasing amount of processing power through computers which allow the investigation of networks with millions of vertices.
 
 \subsection{Random graphs}
-One of the simplest network models studied was the random graph which was investigated first by \cite{ErdosRenyi_RandomGraphs}. Such networks are constructed by having n unconnected vertices and then adding at random each possible edge with a given probability. The probabilities can follow different distributions e.g. a uniform- poisson- or gaussian-distribution. TODO: noch etwas mehr information
+One of the simplest network models studied was the random graph which was investigated first by \cite{ErdosRenyi1959}. The motivation behind random graphs is to assume a random-process of network formation and to study the resulting networks. Such networks are constructed by having \textit{N} unconnected vertices and then adding at random each possible edge with a given probability \textit{p} where the distribution of \textit{p} follows a specific distributions e.g. uniform-, poisson-, gaussian-distribution. Thus random graphs can be reduced to a "binomial model of link formation" \cite{Jackson2008} where out of all the possible random graphs with \textit{N} nodes one graph is selected with a probability of 
+
+\begin{equation}
+p^m(1-p) \frac{n(n-1)}{2} - m
+\end{equation}
+
+as reported in \cite{Jackson2008}.
 
 \subsection{Small-World effects}
 In 1960s Stanley Milgram conducted a famous experiment in which he demonstrated that a letter can reach a destination person by an average of just 6 intermediate steps in between. In his work \cite{TraverMilgram_StudySmallWorld} \cite{Milgram_SmallWorld} he termed this phenomenon the \textit{small-world effect}. Although the results of his work have been questioned - more specifically that the world is really a small one e.g. by \cite{Kleinfeld_BigWorld} - it had big influences within the network-research community and led to the development of the small-world property. It is of very importance e.g. in social networks because this property implies that information spreads very quickly in the network as it needs very few steps to reach all nodes. This can also be applied to trading networks where it enables traders to trade goods within very few intermediary steps to traders which value the good the most.
@@ -47,7 +53,7 @@ To calculate whether a network has the small-world property one starts with the 
 where $d_{ij}$ is the shortest distance from vertex i to vertex j. Networks then exhibit the small-world property if $\ell$ scales at max logarithmically with network size of mean degree.
 
 \subsection{Scale-free networks}
-Researchers found that real-world networks are non-random which lead to the discovery of the phenomena of scale-free networks which are networks whose vertex-degree distribution follows a power-law.
+Researchers found that real-world networks in contrast to random graphs are non-random which led to the discovery of the phenomena of scale-free networks which are networks whose vertex-degree distribution follows a power-law.
 
 \subsubsection{Degree distribution}
 In an undirected Graph \textit{G} the edges adjacent to $v$ $\in$ $V(G)$ 
@@ -125,16 +131,12 @@ This resilience can be of benefit in a scale-free trading network where the inab
 To summarize complex networks are random networks that could have small-world properties and could be scale-free depending on the algorithms used to create them. There are exist a few models to create complex networks where three well known models are implemented in this thesis.
 
 \subsubsection{Erdos-Renyi}
-The Erdos-Renyi model generates a pure random-graph which exhibits \textit{no} small-world properties. It starts with \textit{N} vertices and selects out of all the possible graphs with \textit{n} vertices one by random by iterating over all possible edges and including each with a given probability \textit{p}. See appendix \ref{app:topologies} for examples of Erdos-Renyi networks created by the thesis-software with varying inclusion probabilities \textit{p}.
+The Erdos-Renyi model generates a pure random-graph which exhibits \textit{no} small-world properties. It starts with \textit{N} vertices and selects out of all the possible graphs with \textit{n} vertices one by random by iterating over all possible edges and including each with a given probability \textit{p}. See appendix \ref{app:topologies} for examples of Erdos-Renyi networks created by the thesis-software with varying inclusion probabilities \textit{p}. \cite{ErdosRenyi1959}
 
 \subsubsection{Watts-Strogatz}
-The Watts-Strogath model generates a random-graph which exhibits small-world properties. One starts with \textit{N} unconnected vertices and creates a regular lattice where each vertex is connected to \textit{K} neighbours with $\frac{K}{2}$ on each side. Then iterate through all vertices and and rewire each edge which is connected to a vertex already visited with a given probability \textit{b} to another vertex from all the possible vertices - self-loops and link-duplication is not allowed. See appendix \ref{app:topologies} for examples of Watts-Strogatz networks with various parametrization.
-
-TODO: \cite{WattsStrogatz_DynamicsSmallWorld}
+The Watts-Strogath model generates a random-graph which exhibits small-world properties. One starts with \textit{N} unconnected vertices and creates a regular lattice where each vertex is connected to \textit{K} neighbours with $\frac{K}{2}$ on each side. Then iterate through all vertices and and rewire each edge which is connected to a vertex already visited with a given probability \textit{b} to another vertex from all the possible vertices - self-loops and link-duplication is not allowed. See appendix \ref{app:topologies} for examples of Watts-Strogatz networks with various parametrization. \cite{WattsStrogatz_DynamicsSmallWorld}
 
 \subsubsection{Barbasi-Albert}
-The Barbasi-Albert model generates a random-graph which exhibits small-world and scale-free properties which is achieved through preferential attachment. To create a network with \textit{N} vertices one starts with $m_0$ vertices and adds $N - m_0$ vertices. Each new vertex is connected to \textit{m} existing vertex where the probability to be connected to a given vertex is proportional to its degree. When choosing m = 1 then one creates a hub-structure - see appendix \ref{app:topologies} for examples of Barbasi-Albert networks with various parametrization.
-
-TODO: \cite{BarabasiAlbert_EmergenceScaling}
+The Barbasi-Albert model generates a random-graph which exhibits small-world and scale-free properties which is achieved through preferential attachment. To create a network with \textit{N} vertices one starts with $m_0$ vertices and adds $N - m_0$ vertices. Each new vertex is connected to \textit{m} existing vertex where the probability to be connected to a given vertex is proportional to its degree. When choosing m = 1 then one creates a hub-structure - see appendix \ref{app:topologies} for examples of Barbasi-Albert networks with various parametrization. \cite{BarabasiAlbert_EmergenceScaling}
 
 \end{document}

@@ -5,13 +5,8 @@ Albert, R. and lászló Barabási, A. (2002).
 \newblock Emergence of scaling in random networks.
 \newblock {\em Science}, page 286(5439):509–512.
 
-\bibitem[Boran, 2010]{Milan2010}
-Boran, M. (2010).
-\newblock Market dynamics and systemic risk.
-\newblock {\em 23rd Australasian Finance and Banking Conference 2010}.
-
-\bibitem[Breuer et~al., 2013]{Breuer2015}
-Breuer, T., Summer, M., and Vollbrecht, H.-J. (2013).
+\bibitem[Breuer et~al., 2015]{Breuer2015}
+Breuer, T., Summer, M., and Vollbrecht, H.-J. (2015).
 \newblock Endogenous leverage and asset pricing in double auctions.
 
 \bibitem[Brigham, 2012]{Brigham2012}
@@ -27,6 +22,11 @@ Drmota, M., B., G., G., K., and A., P. (2007).
 Easley, D. and Kleinberg, J. (2010).
 \newblock {\em Networks, Crowds and Markets}.
 \newblock Cambridge University Press.
+
+\bibitem[Erdos and A., 1959]{ErdosRenyi1959}
+Erdos, P. and A., R. (1959).
+\newblock On random graphs.
+\newblock In {\em Publicationes Mathematicae}, pages 6:290–--297.
 
 \bibitem[Geanakoplos, 2009]{Geanakoplos2009}
 Geanakoplos, J. (2009).
