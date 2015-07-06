@@ -51,9 +51,10 @@ public class AscendingConnectedCreator extends ParameterlessCreator {
 			double[][] limitLoans = new double[2][2];
 			double[][] limitAssetLoans= new double[2][2];
 			
+			// selling lower- and upper-ranges
 			if (i < agentCount)  {
-				limitAssets[1][0] = agents.get( i - 1 ).getLimitPriceAsset();
-				limitAssets[1][1] = agents.get(i).getLimitPriceAsset() + ca[i];
+				limitAssets[1][0] = agents.get( i - 1 ).getLimitPriceAsset(); //sell lower
+				limitAssets[1][1] = agents.get(i).getLimitPriceAsset() + ca[i]; //sell upper
 				limitLoans[1][0] = agents.get(i - 1).getLimitPriceLoans();
 				limitLoans[1][1] = agents.get(i).getLimitPriceLoans() + cl[i];
 				limitAssetLoans[1][0] = agents.get(i - 1).getLimitPriceAsset() / agents.get(i - 1).getLimitPriceLoans();
@@ -67,9 +68,10 @@ public class AscendingConnectedCreator extends ParameterlessCreator {
 				limitAssetLoans[1][0] = 1000000;
 				limitAssetLoans[1][1] = 1000000;
 			}
+			// buying lower- and upper-ranges
 			if (i > 1)  {
-				limitAssets[0][0] = agents.get(i - 2).getLimitPriceAsset();
-				limitAssets[0][1] = agents.get(i - 1).getLimitPriceAsset();
+				limitAssets[0][0] = agents.get(i - 2).getLimitPriceAsset(); //buy lower
+				limitAssets[0][1] = agents.get(i - 1).getLimitPriceAsset(); //buy upper
 				limitLoans[0][0] = agents.get(i - 2).getLimitPriceLoans();
 				limitLoans[0][1] = agents.get(i - 1).getLimitPriceLoans();
 				limitAssetLoans[0][0] = agents.get(i - 2).getLimitPriceAsset() / agents.get(i - 2).getLimitPriceLoans();

@@ -1,10 +1,97 @@
 \documentclass[Bachelorarbeit.tex]{subfiles}
 \begin{document}
 
-\chapter{Increasing the matching-probabilities in Ascending-Connected topology}
+\chapter{Increasing matching-probabilities}
 \label{app:increasingMatchingProbability}
 
-TODO: genaue analyse und formeln. ABER: ist dafür genug zeit oder soll das auf further research and conclusions geschoben werden?
+This appendix gives the formulas for increasing the matching-probabilities in Ascending-Connected topology. This technique was not developed by the author of the thesis but by the supervisor Mr. Hans-Joachim Vollbrecht and is included for completeness.
 
+\bigskip
+
+The idea is to adjust the price-ranges by a specific constant for each agent so that the shape of the matching-probabilities is kept but the absolute value of a match is dramatically increased where the edges as seen in \ref{fig:MATCHING_PROBABILITIES_30_COMBINED} are at 1. So the process is to calculate the constants for each market for each agent and then in a next step adjust the price-ranges. 
+
+\section{Calculating constants}
+The constants are named \textit{ca} for the Asset/Cash market, \textit{cl} for the Bond/Cash market and \textit{cal} for the Asset/Bond market. The number of agents is denoted by \textit{R} and the face-value of the used bond is \textit{V}.
+
+\subsection{Asset/Cash market}
+
+\begin{equation}
+E_{i}^{asset} = 0.8 \frac{i}{R+1} + 0.2
+\end{equation}
+
+\begin{equation}
+ca_{i+1} = \frac{(R-i)(i+2)(\frac{0.8}{R+1}+ca_i)}{(R+1-i)(i+1)} - \frac{0.8}{R+1}
+\end{equation}
+
+\subsection{Bond/Cash market}
+
+\begin{equation}
+E_{i}^{V} = 0.2 + \frac{i}{R+i}(V-0.2)
+\end{equation}
+
+\begin{equation}
+cl_{i+1} = \frac{(R-i)(i+2)(\frac{V-0.2}{R+1} + cl_i)}{(R+1-i)(i+1)} - \frac{V - 0.2}{R+1}
+\end{equation}
+
+\subsection{Asset/Bond market}
+
+\begin{equation}
+E_{i}^{asset,V} = \frac{E_{i}^{asset}}{E_{i}^{V}}
+\end{equation}
+
+\begin{equation}
+d_{i,V} = E_{i+1}^{asset,V} - E_{i}^{asset,V}
+\end{equation}
+
+\begin{equation}
+cal_{i+1} = \frac{d_{i,V}(5.0 - E_{i+1}^{asset,V})(E_{i+2}^{asset,V} -\frac{0.2}{V})(d_{i,V} + cal_i)}{d_{i+1,V}(5 - E_{i}^{asset,V}(E_{i+1}^{asset,V} - \frac{0.2}{V})} - d_{i+1,V}
+\end{equation}
+
+\subsection{Adjusting the ranges}
+Using the previously calculated constants \textit{ca, cl, cal} for each agent on each market now the minimum and maximum values of the price-ranges of each agent are adjusted using the constants to increase the matching-probability. Note that only the min- and max-values are changed but the limit-price has obviously to be left untouched.
+
+\subsubsection{Ask-offering ranges}
+\begin{equation}
+\textit{min asset-price} \; agent_{i}  = \textit{limit-price asset} \; agent_{i}
+\end{equation}
+\begin{equation}
+\textit{max asset-price} \; agent_{i} = \textit{limit-price asset} \; agent_{i+1} + ca_{i+1}
+\end{equation}
+
+\begin{equation}
+\textit{min bond-price} \; agent_{i} = \textit{limit-price bond} \; agent_{i}
+\end{equation}
+\begin{equation}
+\textit{max bond-price} \; agent_{i} = \textit{limit-price bond} \; agent_{i+1} + cl_{i+1}
+\end{equation}
+
+\begin{equation}
+\textit{min asset/bond-price} \; agent_{i} = \frac{\textit{limit-price asset} \; agent_{i}}{\textit{limit-price bond} \; agent_{i}}
+\end{equation}
+\begin{equation}
+\textit{max asset/bond-price} \; agent_{i} = \frac{\textit{limit-price asset} \; agent_{i+1}}{\textit{limit-price bond} \; agent_{i+1}} + cal_{i+1}
+\end{equation}
+
+\subsubsection{Bid-offering ranges}
+\begin{equation}
+\textit{min asset-price} \; agent_{i} = \textit{limit-price asset} \; agent_{i - 1}
+\end{equation}
+\begin{equation}
+\textit{max asset-price} \; agent_{i} = \textit{limit-price asset} \; agent_{i}
+\end{equation}
+
+\begin{equation}
+\textit{min bond-price} \; agent_{i} = \textit{limit-price bond} \; agent_{i - 1}
+\end{equation}
+\begin{equation}
+\textit{max bond-price} \; agent_{i} = \textit{limit-price bond} \; agent_{i}
+\end{equation}
+
+\begin{equation}
+\textit{min asset/bond-price} \; agent_{i} = \frac{\textit{limit-price asset} \; agent_{i - 1}}{\textit{limit-price bond} \; agent_{i - 1}}
+\end{equation}
+\begin{equation}
+\textit{max asset/bond-price} \; agent_{i} = \frac{limit-price asset agent_{i}}{limit-price bond agent_{i}}
+\end{equation}
 
 \end{document}
