@@ -59,11 +59,7 @@ When running a bunch of replications for a given set-up the results of it should
 As already described replications are required to be implemented for parallel processing where up to the number of CPU-cores replications can run in parallel. When running a vast number of replications one does not need to GUI-functionality and most probably the machine is so occupied by the heavy work-load that a fließender usage of GUI would be not possible any-more. Thus replications should be runnable through a separate command-line mode of the thesis-software which reads information from a XML-File in which one can specify multiple simulation set-ups for which replications should be run. The command-line mode iterates through all configurations and runs the required replications and writes the result out for a later inspection. Obviously the more CPU-cores the faster a simulation-run with e.g. 50 replications finishes. For this reason most of the final replication-runs were done on a 40-core machine of the FH Vorarlberg which runs on Linux on which the thesis-software could be run easily because of Java's platform-independence.
 
 \section{Functionality}
-In this section the functionality of the thesis-software is explained to get an understanding of the implemented features. All features are available through the GUI unless stated otherwise. For inspection, replications and experimenter an individual tab is available inside the main window so they can be used in parallel.
-
-\subsection{Emulate \cite{Breuer2015} functionality}
-Of course the starting point was to emulate the features of the \cite{Breuer2015} paper so all three markets were implemented together with "Bonds Pledgeability". In a first iteration the implementation was lacking the BP-feature which resulted in quite chaotic results which didn't come even close to the equilibrium shown in \cite{Breuer2015} which is a proof for the very importance of BP.
-TODO: Noch unvollständig
+In this section the functionality of the thesis-software is explained to get an understanding of the implemented features. All features are available through the GUI unless stated otherwise. For inspection, replications and experimenter an individual tab is available inside the main window so they can be used in parallel. The features were implemented in combination with emulating the functionality of the model introduced in chapter \ref{ch:leverageCycle} thus this thesis-software is a super-set of the software used in \cite{Breuer2015}.
 
 \subsection{Inspection}
 Inspection allows for a given simulation-configuration to step through the whole process match-by-match, keep track of the successful matches and the wealth-distribution of the agents at this time and to jump back to each successful match. Through an offer-book the state and current offerings of all agents at a given time of the simulation (including past successful matches) can be inspected and compared by opening multiple offer-book windows. Furthermore this feature provides the user with statistics of successful, failed and total matches and the current equilibrium. Very much attention was paid to the implementation of the real-time visualisation of the agents wealth-distribution and the market-activities as visualisation is of very importance for a successful inspection and interpretation of a dynamic process. To be able to compare the visual results of 2 different simulation-configurations there exist 2 "Inspection" tabs in the main window.
@@ -104,11 +100,23 @@ Theoretically the dependencies are top-down where the front-end includes only co
 
 \subsection{Frontend}
 The front-end contains the GUI functionality through which the user interacts with the program and the real-time visualisation of wealth-distribution and market-activity. Because data like the offer-book, agent/replication/equilibrium-information and network-visualization is required in different contexts much emphasis was put on massive re-use of GUI components through the use of sub-classing and aggregation already provided by SWING. Thus many small components were implemented and aggregated together to create bigger chunks of logical functionality. In the package-diagram \ref{fig:PACKAGE_DIAGRAM_MINIMAL} only the most important panels are shown. Those provide the main entry-point for the user to the given functionality as indicated by their names.
-TODO: noch aufzählung und beschreibung der wichtigsten panels (inspection/replication/experiments panel)
+
+\begin{itemize}
+\item InspectionPanel - Is the entry-point for the inspection-functionality. There exist 2 instances during run-time to be able to compare two inspection-runs.
+\item ReplicationPanel - Is the entry-point for the replication-functionality.
+\item ExperimentsPanel - Is the entry-point for the experiments-functionality. Results of replications and experiment-files can be loaded there.
+\item AgentInfoFrame - Displays the information of agents: current wealth, optimism and its price-ranges.
+\item OfferBook - Is only available in the inspection-functionality and allows to inspect the current offerings of each agent on all markets and the agent-information of each agent the same way as in \textit{AgentInfoFrame}. Multiple instances can be created simultaneously by the user to compare the data of multiple agents.
+\end{itemize}
 
 \subsection{Controller}
-The controller package is rather slim and contains the steering functionality to drive inspections, replications and experiments. Inspections are driven by the class \textit{InspectionThread} which allows to advance the simulation step-by-step using the consumer-producer paradigm through lock and wait functionality provided by Java through the use of its monitors. The classes \textit{ReplicationsRunner} and \textit{ReplicationTask} encapsulate functionality to run a number of replications for a given simulation-configuration in parallel, calculating the current median for all important values on-line and writing results to xml-files. Experiments are executed from the command-line through the use of the class \textit{ExperimentCMDRunner} where it cycles through all simulation-configurations of a experiment-configuration and uses \textit{ReplicationsRunner} to execute it in parallel. 
-TODO: anstatt in prosa auzuzählen: itemize oder klassen und beschreiben dort
+The controller package is rather slim and contains the steering functionality to drive inspections, replications and experiments. 
+
+\begin{itemize}
+\item InspectionThread - Inspections are driven by this class which allows to advance the simulation step-by-step using the consumer-producer paradigm through lock and wait functionality provided by Java through the use of its monitors.
+\item ReplicationsRunner and ReplicationTask - These classes encapsulate functionality to run a number of replications for a given simulation-configuration in parallel, calculating the current median for all important values on-line and writing results to xml-files.
+\item ExperimentCMDRunner - Experiments are executed from the command-line through the use of this class where it cycles through all simulation-configurations of a experiment-configuration and uses \textit{ReplicationsRunner} to execute it in parallel. 
+\end{itemize}
 
 \subsection{Backend}
 The back-end contains the domain-specific functionality for the simulation. The important classes can be seen in the package-diagram \ref{fig:PACKAGE_DIAGRAM_MINIMAL} but for better clarity each one is introduced briefly.
@@ -123,6 +131,7 @@ The back-end contains the domain-specific functionality for the simulation. The 
 \end{itemize}
 
 \section{Agents}
+\label{sec:AGENTS}
 Although agents are used in this software it is not an agent-based simulation in the classical way as these agents are zero-intelligence ones and have no states of behaviour. That is each agent makes bid- and ask-offers on all markets if the constraints allow it where the prices are selected from random ranges which improve the utility of the agent - that means it makes always offers which would result in a profit.
 
 \medskip
@@ -149,11 +158,12 @@ There are three important derived variables which are calculated from the previo
 \item Collateralized assets - is the amount of assets which are bound through collateral obligations because of taken bonds. 
 \begin{equation}
 \textit{collateralized assets} = max( 0, \textit{loans taken} - \textit{loans given} )
+\label{eq:COLLATERALIZED_ASSETS_WITH_BP}
 \end{equation}
 
 \item Free assets - is the amount of assets which are unbound and act not as security and are owned completely by the agent.
 \begin{equation}
-\textit{free assets} = \textit{Assets holding} - \textit{Collateralized assets}
+\textit{free assets} = \textit{assets holding} - \textit{collateralized assets}
 \end{equation}
 
 \item Loans - is the net number of loans and calculated through 
@@ -407,8 +417,21 @@ Bid offers are generated only when the agent is not negative on free assets afte
 	\end{tabular}
 \end{table}
 
-\section{BP Mechanism}
-TODO: explain how BP is implemented and how it would looks without BP
+\section{Bond pledgeability (BP) mechanism}
+As already defined in chapter \ref{ch:leverageCycle} "The Leverage Cycle" the BP-mechanism allows to free a collateralized asset by buying a bond. \cite{Breuer2015} define it technically: 
+
+\begin{quote}
+This amounts to a collateral constraint requiring the negative \textit{net} number of bonds (short minus long) to be less or equal the number of assets.
+\end{quote}
+
+Thus to implement the BP-mechanism one must be able to differentiate between the amount of loans the agent has taken (short) and the amount of loans the agent has given (long). The collateralized assets are then calculated by subtracting the long bonds from the short bonds where the result must be $\geq 0$ to satisfy the collateral constraint. As can be seen in section \ref{sec:AGENTS} this is already implemented. An agent has two loan-variables: \textit{loan given} and \textit{loan taken} and thus the collateralized assets are calculated as given in equation \ref{eq:COLLATERALIZED_ASSETS_WITH_BP}.
+\medskip
+When ignoring the BP-mechanism this equation would skip the subtraction of the \textit{loans given} which in this case ignores the "pledgeability"-part. In this case the loan-obligations can only increase - and thus the amount of collateralized assets - but never be reduced because \textit{loan given} is not included any more in this equation. Thus the only difference when ignoring the BP-mechanism is a change in the equation of the collateral constraint of an agent. The equation without BP is:
+
+\begin{equation}
+\textit{collateralized assets} = max(0, \textit{loans taken})
+\label{eq:COLLATERALIZED_ASSETS_WITHOUT_BP}
+\end{equation}
 
 \section{Simulation}
 In this section a few details of the simulation-implementation are discussed as they are not so obvious but interesting and important enough to be mentioned.
