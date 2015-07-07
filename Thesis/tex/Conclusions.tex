@@ -10,6 +10,9 @@ The major conclusion on the findings of the thesis is that equilibrium seems onl
 
 \section*{Further Research}
 
+\subsection*{Imporance-Sampling}
+Importance sampling was used to increase the matching-probabilities for the special case of an Ascending-Connected network which led to a dramatic performance enhancement as much less matching-rounds were required to reach the point where no trading was possible any more. Further research could investigate a more general mechanisms of increasing the matching-probabilities independent of the topology without introducing a bias. One way could be through sampling the price-ranges in different intervals or learning and adapting them on-the-fly during a simulation run.
+
 \subsection*{In-depth analysis of market-activities}
 The market-activities as presented in chapter \ref{ch:interpretation} and to a greater extend in chapter \ref{ch:newMarket} are only covered by intuitive description what is going on and why - no theory about market-activity is presented. Further research could dedicate its attention to develop a serious theory why the activities behave as they do, how they interact between each other and how they influence equilibrium. Furthermore it could establish connections to market-activity theory in economics to validate the simulation-results against theoretical frameworks.
 
@@ -17,9 +20,6 @@ The market-activities as presented in chapter \ref{ch:interpretation} and to a g
 Experimental economics has a long history and allows to verify theoretical equilibrium frameworks or theories. The author of this thesis is part of a group which has conducted a pilot experiment with real subjects on the subject of trading collateralized assets based on the model of \cite{Breuer2015}. This was to best knowledge the first time that an experiment in this field was ever undertaken. Although it was only a pilot it gave already valuable insights on the models of \cite{Breuer2015} and \cite{Geanakoplos2009} but more experiments need to be carried out to be able to give serious results. Based upon the results and findings of this thesis the already existing trading software could be extended furthermore to restrict the trading between agents to a specific topology e.g. Ascending-Connected. It would be of much interest whether intelligent human traders are able to resolve the miss-allocations produced by the Ascending-Connected topology without the use of the new market and if they can approach theoretical equilibrium.
 
 \subsection*{Equilibrium theory vs. equilibrium process}
-It was noted on multiple occasions in this thesis that there is a fundamental difference between the equilibrium theory upon the model of the thesis is built and the equilibrium process implemented in the thesis-software. Further research could look for a formal definition of equilibrium in such a process and combines it with the given equilibrium theory of complex systems in general and economics in particular.
-
-\subsection*{Imporance-Sampling}
-Importance sampling was used to increase the matching-probabilities for the special case of an Ascending-Connected network which led to a dramatic performance enhancement as much less matching-rounds were required to reach the point where no trading was possible any more. Further research could investigate a more general mechanisms of increasing the matching-probabilities independent of the topology without introducing a bias. One way could be through sampling the price-ranges in different intervals or learning and adapting them on-the-fly during a simulation run.
+It was noted on multiple occasions in this thesis that there is a fundamental difference between the equilibrium theory upon the model of the thesis is built and the equilibrium process implemented in the thesis-software. Further research could look for a formal definition of equilibrium in such a process and combines it with the given equilibrium theory of complex systems in general and economics in particular to find a definition for the equilibrium of such a trading process.
 
 \end{document}

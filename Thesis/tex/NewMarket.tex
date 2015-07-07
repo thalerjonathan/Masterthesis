@@ -15,17 +15,17 @@ Collateralized assets are traded against cash. The buyer gets a specific amount 
 As within all other three markets the price-ranges of the offers must be defined. Note that all prices must be obviously in the unit of cash according to the previously defined products.
 
 \paragraph{minimum}
-When calculating the minimum price of a collateralized asset - that is how much is the collateralized asset minimally worth - it is important to include the collateral-aspect of the asset. Thus one starts with the minimum asset-price in cash which is the down-price \textit{pD} and subtracts the maximum possible amount of cash which is bound through a bond as collateral which is the face-value \textit{V}. This value is a constant for all agents.
+When calculating the minimum price of a collateralized asset - that is how much is the collateralized asset minimally worth - it is important to include the collateral-aspect of the asset. Thus one starts with the minimum asset-price in cash which is the down-price \textit{pD} and subtracts the minimum amount of cash which is bound through a bond as collateral which is \textit{pD}. This value is a constant for all agents.
 
 \begin{equation}
-\textit{min collateralized asset-price} = \min(0, \textit{pD} - \textit{V})
+\textit{min collateralized asset-price} = \textit{pD} - \textit{pD} = 0
 \end{equation}
  
 \paragraph{maximum}
-To calculate the maximum price of a collateralized asset - that is how much is the collateralized asset maximally worth - one needs to include the collateral-aspect of the asset too. Equal to calculating the minimum one starts now with the maximum asset-price in cash which is the up-price \textit{pU} and subtracts the minimum possible amount of cash which is bound through a bond as collateral which is the face-value \textit{pD}. This value is a constant for all agents.
+To calculate the maximum price of a collateralized asset - that is how much is the collateralized asset maximally worth - one needs to include the collateral-aspect of the asset too. Equal to calculating the minimum one starts now with the maximum asset-price in cash which is the up-price \textit{pU} and subtracts the maximum possible amount of cash which is bound through a bond as collateral which is the face-value \textit{V}. This value is a constant for all agents.
 
 \begin{equation}
-\textit{max collateralized asset-price} = \textit{pU} - \textit{pD}
+\textit{max collateralized asset-price} = \textit{pU} - \textit{V}
 \end{equation}
 
 \paragraph{limit}

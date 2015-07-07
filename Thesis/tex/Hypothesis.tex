@@ -31,7 +31,7 @@ The motivation behind the hypothesis is the fact that according to the double-au
 \subsection{Proof}
 The proofs are given for the Asset/Cash market only because the equations of the Loan/Cash market work exactly the same way where only the absolute numbers are different. The Asset/Bond market is the same too as the limit-price is just the ratio of the limit-prices of asset and bond thus resulting in the same linear ordering of the limit-prices.
 
-\paragraph{Visual proof}
+\paragraph{Illustrating the matching ranges}
 In figure \ref{fig:MATCHING_BUYER_SELLER_RANGES} the price-ranges of both a seller and buyer are given where h(s) and h(b) denote the optimism-factors of the seller and buyer respectively. The seller places its offerings in the price-range of [h(s)..pU] as it wants to sell the good above the expected price to make a profit. The buyer places its offerings in the price-range of [pD..h(b)] as it wants to buy the goods below the expected price to make a profit. The resulting matching-range on which the prices can meet - again buyer-price $\geq$ seller-price - is marked by the red rectangle. It is easy to see that a match with these mechanics can occur only if the optimism-factor of the buyer h(b) is strictly higher than the one of the seller h(s).
 
 \begin{figure}[H]
@@ -43,6 +43,14 @@ In figure \ref{fig:MATCHING_BUYER_SELLER_RANGES} the price-ranges of both a sell
 
 \paragraph{Formal proof}
 TODO
+
+either through proof by contradiction: assume a seller with a larger optimism than the buyer and show that the assumption that the utility-function must increase fails.
+
+or through difference between the two utility functions of a buyer and a seller: difference is always larger or smaller (dependeing on the direction of subtraction) than zero.
+
+TODO: hypothese beweisen
+1. zeigen dass hypothese auf minimale vernetzung reduziert werden kann bzw. dass diese minimale vernetzung ausreicht. (über den vorhergehenden formal proof und dass limit-prices monoton steigen)
+2. zeigen, dass lücken bei minimalster vernetzung an beliebiger stelkle zu widerspruch führt: gleichgewicht wird nicht erreicht. 
 
 \section{Predictions}
 The following topologies found in appendix \ref{app:topologies} satisfy the definition of the hypothesis:

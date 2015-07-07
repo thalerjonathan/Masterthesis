@@ -181,7 +181,7 @@ In this section all markets and their implementations are described. Each market
 
 \begin{itemize}
 \item Products - the products traded on the corresponding market.
-\item Price-ranges - the price-ranges in which an agent places profit-making offers on the market.
+\item Price-ranges - the price-ranges in which an agent places profit-making offers on the market. A range is defined by a minimum and maximum where the limit-prices vary across this range. This implies that the most pessimistic agent is at the minimum end of the range and the most optimistic agent is at the maximum end of the range.
 \item Bid- and Ask-Offerings - define the pre-conditions for an agent to make offerings on the market and the amount and the prices generated during an offer. \medskip
 Note that in case of bid-offerings the price of the profit-making offer is drawn randomly between the minimum price and the limit-price because when buying one wants to buy below the expected value to make a profit where in case of ask-offerings the price is drawn randomly between the limit-price and maximum price because when selling one wants to sell above the expected value to make a profit.
 \item Match-Table - In case of a match between two agents the wealth-exchange is declared where the wealth is increased/decreased as indicated by the +/- signs.
@@ -338,17 +338,17 @@ Assets are traded against bonds. The buyer gets a specific amount of free assets
 \subsubsection{Price-Range}
 
 \paragraph{minimum}
-The minimum value of one asset in bonds is defined as the ratio of the minimum asset-price in cash to the maximum bond-price in cash. This value is obviously a constant for all agents.
+The minimum value of one asset in bonds is defined as the ratio of the minimum asset-price in cash to the minimum bond-price in cash. This value is obviously a constant for all agents.
 
 \begin{equation}
-\textit{min asset/bond price} = \frac{\textit{minimum asset-price}}{\textit{maximum bond-price}} = \frac{pD}{V}
+\textit{min asset/bond price} = \frac{\textit{minimum asset-price}}{\textit{minimum bond-price}} = \frac{pD}{pD} = 1
 \end{equation}
  
 \paragraph{maximum}
-The maximum value of one asset in bonds is defined in the ratio of the maximum asset-price in cash to the minimum bond-price in cash.
+The maximum value of one asset in bonds is defined in the ratio of the maximum asset-price in cash to the maximum bond-price in cash.
 
 \begin{equation}
-\textit{max asset/bond price} = \frac{\textit{maximum asset-price}}{\textit{minimum bond-price}} = \frac{pU}{pD}
+\textit{max asset/bond price} = \frac{\textit{maximum asset-price}}{\textit{maximum bond-price}} = \frac{pU}{V}
 \end{equation}
 
 \paragraph{limit}
@@ -581,22 +581,5 @@ Looking at these diagrams one can derive the following facts about the matching-
 The lower matching-probabilities result in longer simulation-runs and more inefficiencies towards the end where free assets are kept by optimists instead of traded as the matching-probabilities decrease so much that no more trading will occur. To elevate this problem one can adjust the matching-probabilities by transforming the price-ranges. It is of very importance that the shape of the matching-probabilities distribution must be exactly the same. Only the absolute values of the probabilities are increased where the edges are at the maximum of 1.0. This is mathematically quite involved and was not developed by myself but by Supervisor Mr. Vollbrecht. The formulas and explanations have been moved to appendix \ref{app:increasingMatchingProbability} "Increasing the matching-probabilities in Ascending-Connected topology"
 \medskip
 This variant is dubbed "Ascending-Connected topology with Importance Sampling". See chapter \ref{ch:results} for the performance and results of this variant.
-
-\section{Calculating theoretical Equilibrium}
-TODO: diese kurze abhandlung bringt eigentlich nicht wirklich was, müsste wesentlich mehr zeit hineinstecken, die ich nicht übrig habe und wirklich wesentlich ist es für die thesis nicht.
-
-Theoretical equilibrium is known and specified through the equations given below. This theoretical equilibrium is only applicable for an infinite number of agents whereas in the simulation a finite set of agents is used for which the theoretical equilibrium must be found too. For this purpose \cite{Breuer2015} developed an algorithm in MATLAB which searches the finite solution-space for the given equilibrium. This section gives a short overview of how the algorithm solves this task and is based on an existing document written by Martin Jandacka and the MATLAB code which both were available to the author of this thesis. Thus this section is only a simplified summary and the algorithm and the method behind it was not developed by the author of this thesis.
-
-\medskip
-
-For given asset prices q and bond-prices q each agent optimises its expected utility. As can be seen in the section "Markets" the utility-functions are linear which makes this optimization problem a linear one which can be solved by Linear Programming (LP). The only feasible vertices are:
-
-\begin{itemize}
-\item Cash only - hold by pessimists
-\item Bonds only - hold by medianists
-\item Assets financed by Bonds (no free assets) - hold by optimists 
-\end{itemize}
-
-Thus the two agents i1 and i2 are searched where i1 marks the end of the pessimists and i2 the beginning of the optimists. This is done by iterating through all possible combinations of i1 and i2 and checking if they generate equilibrium on the market or not. Thus time dependence is $O(n^2)$ where n is the amount of agents. 
 
 \end{document}
