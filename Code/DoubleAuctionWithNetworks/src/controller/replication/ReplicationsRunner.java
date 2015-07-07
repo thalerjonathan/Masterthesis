@@ -132,6 +132,7 @@ public class ReplicationsRunner {
 				}
 				
 				ReplicationsRunner.this.cleanUp();
+				ReplicationsRunner.this.running = false;
 			}
 		} );
 		
@@ -155,7 +156,6 @@ public class ReplicationsRunner {
 		this.listener.allReplicationsFinished();
 		this.cleanUp();
 	}
-	
 	
 	public void stopAsync() {
 		// no replications running

@@ -364,10 +364,12 @@ public class Agent {
 		this.assetLimits[0][1] = limitPriceAsset; //buy upper
 		this.assetLimits[1][0] = limitPriceAsset; //sell lower
 		this.assetLimits[1][1] = maxAssetPriceInCash; //sell upper
+		
 		this.loanLimits[0][0] = minLoanPriceInCash; //buy lower
 		this.loanLimits[0][1] = limitPriceLoan; //buy upper
 		this.loanLimits[1][0] = limitPriceLoan; //sell lower
 		this.loanLimits[1][1] = maxLoanPriceInCash; //sell upper
+		
 		this.assetLoanLimits[0][0] = minAssetPriceInLoans; //buy lower
 		this.assetLoanLimits[0][1] = limitPriceAssetLoans; //buy upper
 		this.assetLoanLimits[1][0] = limitPriceAssetLoans; //sell lower
@@ -611,25 +613,19 @@ public class Agent {
 		double pD = this.markets.pD();
 		double pU = this.markets.pU();
 		double V = this.markets.V();
-		
-		double minAssetPrice = pD;
-		double maxLoanPrice = Math.min( pU, V );
-		
-		double maxAssetPrice = pU;
-		double minLoanPrice = Math.min( pD, V );
-		
+
 		this.limitPriceAsset = this.markets.calculateLimitPriceAsset( this.h );
 		this.limitPriceLoan = this.markets.calculateLimitPriceLoan( this.h );
 		
-		this.minAssetPriceInCash = Math.min( pD, this.limitPriceAsset );
-		this.minLoanPriceInCash = Math.min( minLoanPrice, this.limitPriceLoan );
-		this.minAssetPriceInLoans = minAssetPrice / maxLoanPrice ;
+		this.minAssetPriceInCash = pD;
+		this.minLoanPriceInCash = pD;
+		this.minAssetPriceInLoans = 1.0; // pD / pD 
 		
-		this.maxAssetPriceInCash = Math.max( pU, this.limitPriceAsset );
-		this.maxLoanPriceInCash = Math.max( maxLoanPrice, this.limitPriceLoan );
-		this.maxAssetPriceInLoans = maxAssetPrice / V;
+		this.maxAssetPriceInCash = pU;
+		this.maxLoanPriceInCash = V;
+		this.maxAssetPriceInLoans = pU / V;
 		
-		this.minCollateralPriceInCash = Math.min( 0, this.minAssetPriceInCash - this.minLoanPriceInCash  );
+		this.minCollateralPriceInCash = 0.0; // this.minAssetPriceInCash - this.minLoanPriceInCash 
 		this.maxCollateralPriceInCash = this.maxAssetPriceInCash - this.maxLoanPriceInCash;
 		
 		this.limitPriceAssetLoans = this.limitPriceAsset / this.limitPriceLoan;

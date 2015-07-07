@@ -21,7 +21,7 @@ public class AskOffering extends Offering {
 	public boolean dominates(AskOffering offer)  {
 		// TODO: test market-type of other offer!
 		
-		// this sell-offer is better/dominates another sell-offer when it has a higher price than the other sell-offer
+		// this sell-offer is better/dominates another sell-offer when it has a lower price than the other sell-offer
 		// vice versa: the other offer dominates when it has a higher price than this one
 		return (offer.getPrice() >= getPrice());
 	}

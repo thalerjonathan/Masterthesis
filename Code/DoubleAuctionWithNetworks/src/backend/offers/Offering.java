@@ -7,8 +7,6 @@ public abstract class Offering {
 	private Agent agent;
 	private MarketType marketType;
 	
-	private double finalAssetPrice;
-	
 	private double price;
 	private double amount;
 
@@ -33,14 +31,6 @@ public abstract class Offering {
 
 	public MarketType getMarketType() {
 		return marketType;
-	}
-
-	public double getFinalAssetPrice() {
-		return finalAssetPrice;
-	}
-
-	public void setFinalAssetPrice(double finalAssetPrice) {
-		this.finalAssetPrice = finalAssetPrice;
 	}
 	
 	public void setAmount(double a) {
