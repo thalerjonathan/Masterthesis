@@ -6,7 +6,7 @@
 \chapter{Results}
 \label{ch:results}
 
-In this chapter the results of the experiments are given. Each topology-type introduced in appendix \ref{app:topologies} "Topologies" was simulated where in this chapter only Fully-Connected and Ascending-Connected topologies are handled as the Ascending-Connected topology - both with and without importance sampling - is the most minimal network which satisfies the requirements for the hypothesis. The results for the other topologies can be found in appendix \ref{app:results} "Results for Hub-Based, Scale-Free and Small-World Topologies".
+In this chapter the results of the experiments are given. Each topology-type introduced in appendix \ref{app:topologies} was simulated where in this chapter only Fully-Connected and Ascending-Connected topologies are handled as the Ascending-Connected topology - both with and without importance sampling - is the most minimal network which satisfies the requirements for the hypothesis. The results for the other topologies can be found in appendix \ref{app:results} for Hub-Based, Scale-Free and Small-World Topologies".
 
 Note: The numbers in tables resemble always a median-value with the standard-deviation given in parentheses.
 
@@ -101,10 +101,10 @@ As  a point-of-reference and as an experimental proof for the correctness of the
 	\end{tabular}
 \end{table} 
 
-Although marginal agent i1 and bond-price q are quite different than from theoretical equilibrium and the pessimists wealth is 7.8\% less than given in \cite{Breuer2015} these results are nonetheless accepted as reaching the equilibrium. The differences emerge from the reasons that the thesis-simulation runs were terminated earlier than in \cite{Breuer2015} which results in the i1 and i2 edges to be not as sharp as reported in \cite{Breuer2015}. It would be necessary to run the simulation an order of magnitude longer as the matching probabilities are reduced rapidly when only direct neighbours are able to trade any more within a network of 1000 agents. See section \ref{sec:implementation_performanceImprovement} "Performance improvement" for details on matching-probabilities.
+Although marginal agent i1 and bond-price q are quite different than from theoretical equilibrium and the pessimists wealth is 7.8\% less than given in \cite{Breuer2015} these results are nonetheless accepted as reaching the equilibrium. The differences emerge from the reasons that the thesis-simulation runs were terminated earlier than in \cite{Breuer2015} which results in the i1 and i2 edges to be not as sharp as reported in \cite{Breuer2015}. It would be necessary to run the simulation an order of magnitude longer as the matching probabilities are reduced rapidly when only direct neighbours are able to trade any more within a network of 1000 agents. See section \ref{sec:implementation_performanceImprovement} for details on matching-probabilities.
 
 \subsection{Performance and termination measurements}
-As noted in section \ref{sec:implementation_sweepingAndMatching} "Sweeping and Matching" a matching-round performs up to 500 offering-rounds where during one round all agents make an offer to find a match. If a match occurs during one offering-round the current matching-round is terminated and marked as successful. If no match occurs during all 500 offering-rounds the current matching-round is terminated too but marked as failed. Thus the following terminology is defined:
+As noted in section \ref{sec:implementation_sweepingAndMatching} a matching-round performs up to 500 offering-rounds where during one round all agents make an offer to find a match. If a match occurs during one offering-round the current matching-round is terminated and marked as successful. If no match occurs during all 500 offering-rounds the current matching-round is terminated too but marked as failed. Thus the following terminology is defined:
 
 \paragraph{Successful matching-round} a match occurred within maximal 500 offering-rounds where in each offering-round all agents make an offer.
 \paragraph{Failed matching-round} no match occurred within 500 offering-rounds where in each offering-round all agents make an offer.
@@ -139,7 +139,7 @@ The 0.5 bond was selected because it is a risky one which is important as with r
 
 \medskip
 
-As already described in section \ref{sec:implementation_sweepingAndMatching} "Sweeping and Matching" the whole simulation-process is a random-process with an equilibrium different for each topology as the fixed-point solution thus one needs replications to reduce noise. The number of 50 replications was chosen because it is a good match between processing-power requirements and overall reduction of noise. Thus increasing the number e.g. to 100 or 200 would not result in much better results - both visual and numerical - but would need much longer to run. All facts can already be seen and derived when using 50 replications thus for all figures 50 replications were used unless stated otherwise e.g. a single run.
+As already described in section \ref{sec:implementation_sweepingAndMatching} the whole simulation-process is a random-process with an equilibrium different for each topology as the fixed-point solution thus one needs replications to reduce noise. The number of 50 replications was chosen because it is a good match between processing-power requirements and overall reduction of noise. Thus increasing the number e.g. to 100 or 200 would not result in much better results - both visual and numerical - but would need much longer to run. All facts can already be seen and derived when using 50 replications thus for all figures 50 replications were used unless stated otherwise e.g. a single run.
 
 \begin{table}[H]
 	\centering

@@ -65,7 +65,7 @@ In this section the functionality of the thesis-software is explained to get an 
 Inspection allows for a given simulation-configuration to step through the whole process match-by-match, keep track of the successful matches and the wealth-distribution of the agents at this time and to jump back to each successful match. Through an offer-book the state and current offerings of all agents at a given time of the simulation (including past successful matches) can be inspected and compared by opening multiple offer-book windows. Furthermore this feature provides the user with statistics of successful, failed and total matches and the current equilibrium. Very much attention was paid to the implementation of the real-time visualisation of the agents wealth-distribution and the market-activities as visualisation is of very importance for a successful inspection and interpretation of a dynamic process. To be able to compare the visual results of 2 different simulation-configurations there exist 2 "Inspection" tabs in the main window.
 
 \subsection{Networks}
-This functionality allows to model different kind of network-topologies as described in appendix \ref{app:topologies} "Topologies" to restrict trading only to this kind of neighbourhood. Obviously network-topologies are graphs and thus it would have been required to implement a graph-library but that was not implemented self but the graph-library JUNG was used as it supported all the required features like visualisation, neighbourhood- and path-queries.
+This functionality allows to model different kind of network-topologies as described in appendix \ref{app:topologies} to restrict trading only to this kind of neighbourhood. Obviously network-topologies are graphs and thus it would have been required to implement a graph-library but that was not implemented self but the graph-library JUNG was used as it supported all the required features like visualisation, neighbourhood- and path-queries.
 
 \subsection{Replications}
 To get robust results replications are used to reduce the influence of random noise. This feature allows to let run a specific simulation configuration for a given number of replications in parallel. The specific simulation-configuration serves as a template - especially the network-topology - and each replication does a clone of the network together with the agents to be able to run in parallel without the need of synchronization. It was tried to implement the network as a shared network between all replications but because the agents serve as nodes this was not feasible and would have required a very fundamental re-factoring of already existing functionality. Thus the higher requirements in memory and time for cloning was accepted for a more elegant solution.
@@ -194,14 +194,14 @@ Free assets are traded against cash. The buyer gets a specific amount of free as
 \subsubsection{Price-Range}
 
 \paragraph{minimum}
-The minimum value of one asset in cash is the down-value pD tomorrow as defined in chapter \ref{ch:leverageCycle} "The Leverage Cycle". This value is obviously a constant for all agents.
+The minimum value of one asset in cash is the down-value pD tomorrow as defined in chapter \ref{ch:leverageCycle}. This value is obviously a constant for all agents.
 
 \begin{equation}
 \textit{min asset-price} = \textit{pD}
 \end{equation}
 
 \paragraph{maximum}
-The maximum value of one asset in cash is the up-value pU tomorrow as defined in chapter \ref{ch:leverageCycle} "The Leverage Cycle". This value is obviously a constant for all agents.
+The maximum value of one asset in cash is the up-value pU tomorrow as defined in chapter \ref{ch:leverageCycle}. This value is obviously a constant for all agents.
 
 \begin{equation}
 \textit{max asset-price} = \textit{pU}
@@ -266,14 +266,14 @@ Bonds are traded against cash. The buyer grants the seller a loan in buying a bo
 \subsubsection{Price-Range}
 
 \paragraph{minimum}
-The minimum value of one bond in cash is the down-value pD tomorrow as defined in chapter \ref{ch:leverageCycle} "The Leverage Cycle". This value is obviously a constant for all agents.
+The minimum value of one bond in cash is the down-value pD tomorrow as defined in chapter \ref{ch:leverageCycle}. This value is obviously a constant for all agents.
 
 \begin{equation}
 \textit{min bond-price} = \textit{pD}
 \end{equation}
  
 \paragraph{maximum}
-The maximum value of one bond in cash is the face-value V tomorrow as defined in chapter \ref{ch:leverageCycle} "The Leverage Cycle". This value is obviously a constant for all agents.
+The maximum value of one bond in cash is the face-value V tomorrow as defined in chapter \ref{ch:leverageCycle}. This value is obviously a constant for all agents.
 
 \begin{equation}
 \textit{max bond-price} = \textit{facevalue V}
@@ -418,7 +418,7 @@ Bid offers are generated only when the agent is not negative on free assets afte
 \end{table}
 
 \section{Bond pledgeability (BP) mechanism}
-As already defined in chapter \ref{ch:leverageCycle} "The Leverage Cycle" the BP-mechanism allows to free a collateralized asset by buying a bond. \cite{Breuer2015} define it technically: 
+As already defined in chapter \ref{ch:leverageCycle} the BP-mechanism allows to free a collateralized asset by buying a bond. \cite{Breuer2015} define it technically: 
 
 \begin{quote}
 This amounts to a collateral constraint requiring the negative \textit{net} number of bonds (short minus long) to be less or equal the number of assets.
@@ -512,7 +512,7 @@ Matching is the process of finding a match of a given agent in the sweeping-proc
 \end{algorithmic}
 \end{algorithm}
 
-Note that as defined in the double-auction theory - see chapter \ref{ch:theory} "Continous Double-Auction" - the agents meet at the half-way price. This guarantees that not more than the previously defined amount is traded which again conserves the wealth. Care must be taken when calculating the real price of the match as all offering prices are for 1.0 Unit of the traded good. Thus to obtain the real matching-price the previously calculated half-way price needs to be scaled by the matching-amount to obtain the price for the given matching-amount.
+Note that as defined in the double-auction theory - see chapter \ref{ch:theory} - the agents meet at the half-way price. This guarantees that not more than the previously defined amount is traded which again conserves the wealth. Care must be taken when calculating the real price of the match as all offering prices are for 1.0 Unit of the traded good. Thus to obtain the real matching-price the previously calculated half-way price needs to be scaled by the matching-amount to obtain the price for the given matching-amount.
 \medskip
 Also note that if one match is found on any market then the sweeping and matching is terminated and a successful match is returned thus the agents can place offers on all markets although the sum of the offers would be infeasible because only one offer will be satisfied and the other ones are thrown away.
 
@@ -525,7 +525,7 @@ It is easy to see that the calculation of the best neighbourhood can be quite co
 \subsection{Matching probabilities}
 
 \paragraph{General matching}
-For a match to happen the buyer-price must be larger or equal the seller-price. Thus as shown in chapter \ref{ch:hypothesis} a price higher than the seller-price can only be placed by a buyer which has a strictly larger optimism-factor than the seller because only then their offering-ranges have a chance to cover each other partly. Thus matching in general works between a seller with lower optimism-factor and a buyer with higher optimism-factor. As noted in chapter \ref{ch:leverageCycle} "The Leverage Cycle" agents place offering-prices randomly in their ranges which are specified in this chapter in section "Markets" so matching is also subject to randomness.
+For a match to happen the buyer-price must be larger or equal the seller-price. Thus as shown in chapter \ref{ch:hypothesis} a price higher than the seller-price can only be placed by a buyer which has a strictly larger optimism-factor than the seller because only then their offering-ranges have a chance to cover each other partly. Thus matching in general works between a seller with lower optimism-factor and a buyer with higher optimism-factor. As noted in chapter \ref{ch:leverageCycle} agents place offering-prices randomly in their ranges which are specified in this chapter in section "Markets" so matching is also subject to randomness.
 \medskip
 To investigate the matching-probabilities one must look at the coverage probabilities of the matching-ranges. The limit-price of bidders increase with rising optimism-factor and thus the width of the bidding-range decreases because bidders make their offers in the range of [limit-price..pU]. The situation is the inverse for askers as their limit-price increases too but the width of their asking-range increases because they place their offers in the range of [pD..limit-price]. Thus obviously the larger the difference in the optimism-factor between a seller and a buyer - again note that buyers optimism-factors are strictly larger than those of their corresponding sellers - the more likely a match will happen as both ranges increase and cover much more total distance thus increasing the probability that prices will be drawn which match.
 \medskip
@@ -580,7 +580,7 @@ Looking at these diagrams one can derive the following facts about the matching-
 
 The lower matching-probabilities result in longer simulation-runs and more inefficiencies towards the end where free assets are kept by optimists instead of traded as the matching-probabilities decrease so much that no more trading will occur. To elevate this problem one can adjust the matching-probabilities by transforming the price-ranges. It is of very importance that the shape of the matching-probabilities distribution must be exactly the same. Only the absolute values of the probabilities are increased where the edges are at the maximum of 1.0. This is mathematically quite involved and was not developed by myself but by Supervisor Mr. Vollbrecht. The formulas and explanations have been moved to appendix \ref{app:increasingMatchingProbability} "Increasing the matching-probabilities in Ascending-Connected topology"
 \medskip
-This variant is dubbed "Ascending-Connected topology with Importance Sampling". See chapter \ref{ch:results} "Results" for the performance and results of this variant.
+This variant is dubbed "Ascending-Connected topology with Importance Sampling". See chapter \ref{ch:results} for the performance and results of this variant.
 
 \section{Calculating theoretical Equilibrium}
 TODO: diese kurze abhandlung bringt eigentlich nicht wirklich was, müsste wesentlich mehr zeit hineinstecken, die ich nicht übrig habe und wirklich wesentlich ist es für die thesis nicht.

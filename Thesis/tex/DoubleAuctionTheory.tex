@@ -5,98 +5,98 @@
 
 \newglossaryentry{auction}{
 	name=auction,
-	description={Is a market institution in which messages from traders include some price information.}
+	description={Is a market institution in which messages from traders include some price information}
 }
 
 \newglossaryentry{market institution}{
 	name=market institution,
-	description={Defines how exchange between traders takes place by defining rules what traders can do.}
+	description={Defines how exchange between traders takes place by defining rules what traders can do}
 }
 
 \newglossaryentry{limit-price}{
 	name=limit-price,
-	description={Is the private price a trader assigns to a good they want to exchange. It is different from the price in the offering and is higher in case of the buyer and lower in the case of the seller. Note that the limit-price is a private price and thus unknown to other traders.}
+	description={Is the private price a trader assigns to a good they want to exchange. It is different from the price in the offering and is higher in case of the buyer and lower in the case of the seller. Note that the limit-price is a private price and thus unknown to other traders}
 }
 
 \newglossaryentry{trader}{
 	name=trader,
-	description={Is an agent who wants to exchange goods with other agents.}
+	description={Is an agent who wants to exchange goods with other agents}
 }
 
 \newglossaryentry{good}{
 	name=good,
-	description={A generic object which is traded between agents. Can be an asset, food, gold,... }
+	description={A generic object which is traded between agents. Can be an asset, food, gold }
 }
 
 \newglossaryentry{seller}{
 	name=seller,
-	description={A trader who is willing to sell a given amount of good for a given price.}
+	description={A trader who is willing to sell a given amount of good for a given price}
 }
 
 \newglossaryentry{buyer}{
 	name=buyer,
-	description={A trader who is willing to buy a given amount of good for a given price.}
+	description={A trader who is willing to buy a given amount of good for a given price}
 }
 
 \newglossaryentry{offer}{
 	name=offer,
-	description={A tuple of price and quantity on a given market which signals the willingness to trade by these given quantities.}
+	description={A tuple of price and quantity on a given market which signals the willingness to trade by these given quantities}
 }
 
 \newglossaryentry{bid}{
 	name=bid,
-	description={Is an offer placed by a buyer.}
+	description={Is an offer placed by a buyer}
 }
 
 \newglossaryentry{ask}{
 	name=ask,
-	description={Is an offer placed by a seller.}
+	description={Is an offer placed by a seller}
 }
 
 \newglossaryentry{clearing}{
 	name=clearing,
-	description={Is the process of finding a price in which all demands are matched to the given supplies thus clearing the market by leaving no unmatched demands or supplies.}
+	description={Is the process of finding a price in which all demands are matched to the given supplies thus clearing the market by leaving no unmatched demands or supplies}
 }
 
 \newglossaryentry{numeraire} {
 	name=numeraire,
-	description={A generic form of money.}
+	description={A generic form of money}
 }
 
 \newglossaryentry{round} {
 	name=round,
-	description={In each round all traders have the opportunity to place an offer. At the end of each round matching is applied and if a successful match is found the unmatched offers are deleted from the offer-book.}
+	description={In each round all traders have the opportunity to place an offer. At the end of each round matching is applied and if a successful match is found the unmatched offers are deleted from the offer-book}
 }
 
 \newglossaryentry{transaction-price} {
 	name=transaction-price,
-	description={Is the price upon a buyer and a seller agree when trading with each other.}
+	description={Is the price upon a buyer and a seller agree when trading with each other}
 }
 
 \newglossaryentry{offer-book} {
 	name=offer-book,
-	description={Keeps all offers made by the traders.}
+	description={Keeps all offers made by the traders}
 }
 
 \newglossaryentry{zero-intelligence agents} {
 	name=zero-intelligence agents,
-	description={Place offers strictly in a range which increases their utility and do not learn. They are completely deterministic in a way that they never change their behaviour.}
+	description={Place offers strictly in a range which increases their utility and do not learn. They are completely deterministic in a way that they never change their behaviour}
 }
 
 \newglossaryentry{utility} {
 	name=utility,
-	description={The utility of a trader determines how much a trader is valuing a given good. Each trader tries to maximise its utility during each trade by making offers which result in a maximum profit. TODO: passt noch nicht ganz}
+	description={The utility of a trader determines how much a trader is valuing a given good. Each trader tries to maximise its utility during each trade by making offers which result in a maximum profit}
 }
 
 \newglossaryentry{allocative efficiency} {
 	name=allocative efficiency,
-	description={Is a state in which all products match the consumers preferences. In other words it means that goods are distributed optimally between all consumers reflecting the wants and tastes of the agents involved. If allocative efficiency is at 100\% then it is not possible any more to increase the utilities of \textit{both} traders in a case of a trade thus traders are no more willing to trade. In other words if two agents trade at an allocative efficiency of 100\% then one agent will decrease its utility and will lose.}
+	description={Is a state in which all products match the consumers preferences. In other words it means that goods are distributed optimally between all consumers reflecting the wants and tastes of the agents involved. If allocative efficiency is at 100\% then it is not possible any more to increase the utilities of \textit{both} traders in a case of a trade thus traders are no more willing to trade. In other words if two agents trade at an allocative efficiency of 100\% then one agent will decrease its utility and will lose}
 }
 
 \section{Continuous Double Auction}	
 
 \subsection{Motivation}
-The continuous double-auction (CDA) is a type of auction upon which the model of \cite{Breuer2015} presented in chapter \ref{ch:leverageCycle} "The Leverage Cycle" and thus the thesis-software is based. The reasons why \cite{Breuer2015} chose the continuous double-auction as the auction-mechanism is:
+The continuous double-auction (CDA) is a type of auction upon which the model of \cite{Breuer2015} presented in chapter \ref{ch:leverageCycle} and thus the thesis-software is based. The reasons why \cite{Breuer2015} chose the continuous double-auction as the auction-mechanism is:
 
 \begin{quote}
 "Experimental economists believe that the continuous double auction is a trading institution that comes close to an environment which abstract equilibrium theories of competitive trading try to describe. It is an institution that allows for competitive bidding and trade on both sides of the market over time. One of the discoveries of experimental economists is that in many experiments double auctions converge to states where trading activity comes to a halt. In these final states prices and allocations often are similar to what equilibrium theory predicts."
@@ -126,7 +126,7 @@ It is important to note that there exists not such a single thing as the "double
 
 \paragraph{What information about other traders offers does each trader have?} None. The traders are not able to look into the offer-book or to communicate with other traders. They act only as \gls{zero-intelligence agents} as introduced below.
 
-\paragraph{How are unmatched offers treated? What happens to unmatched bids and asks when a match occurs?} They are all deleted. Prices are placed randomly as will be seen in \ref{ch:leverageCycle} "The Leverage Cycle" and if they haven't matched in the current round the won't match in the future ones thus they are all deleted from the offer-book.
+\paragraph{How are unmatched offers treated? What happens to unmatched bids and asks when a match occurs?} They are all deleted. Prices are placed randomly as will be seen in \ref{ch:leverageCycle} and if they haven't matched in the current round the won't match in the future ones thus they are all deleted from the offer-book.
 
 \paragraph{How are the trades priced? Are trades priced using discriminatory or uniform pricing and how are the uniform or discriminatory prices determined?} Discriminatory pricing is used. In uniform pricing one price is chosen and applied to all trades which clears the market where in discriminatory pricing the prices are determined individually for each trade. The \gls{transaction-price} where the buyer and seller meet is the half-way price between the offers of both. Another possibility for the transaction-price as reported in \cite{GodeSunder1993} would be to select the price of the offer which was placed first.
 

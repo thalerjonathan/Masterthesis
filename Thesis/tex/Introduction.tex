@@ -1,4 +1,5 @@
 \documentclass[Bachelorarbeit.tex]{subfiles}
+
 \begin{document}
 \chapter{Introduction}
 In 2008 the so called \textit{Subprime Mortgage Crisis} struck the world. It was caused by declining house prices which rose during the US Housing Market Bubble in 2006 to an all-time high. Borrowers used their asset as collateral for the mortgage which constantly increased in value which guaranteed them a low payment-rate because the rate was coupled to the value of the asset. Banks granted "subprime" mortgages to more and more highly risky borrowers. In 2007 borrowers started to default which led to falling prices as the banks reclaimed the collateral and wanted to sell it again on the market to compensate for the loss. This led to a flood of assets on the market which led to a decline of housing prices overall. As the prices fell dramatically the payment-rates rose dramatically to compensate for the cheaper asset. This in turn resulted in even more borrowers going default because of margin requirements which resulted in a dramatic downward spiral. Even worse the banks were selling these collateralized products between each other and even insured themselves against defaults of borrowers which led to an even more dramatic kick-back. The mechanism of borrowing money to buy goods which in turn act as a security for the borrowed money is called leverage which was determined as the primary driving force behind systemic risk in the aftermath of the \textit{Subprime Mortgage Crisis}.
@@ -24,33 +25,30 @@ They could show that in their simulation trading prices and wealth-distribution 
 This thesis investigates more topologies of networks and their convergence towards theoretical equilibrium. Furthermore it presents a hypothesis about which properties a topology of a network must satisfy to reach the same equilibrium as in \cite{Breuer2015}. For experimental investigation a software was built for this thesis which implemented the exact simulation model of \cite{Breuer2015} but extended it further to be applicable to arbitrary topologies.
 
 \section{Struture}
-In chapter \ref{ch:theory} "Theory" the theoretical background involved with this thesis is presented. First a basic definition of equilibrium in economics is presented. Then an introduction into the mechanics of the continuous double-auction which is used as market institution in the simulation-software is given. Finally an overview of complex networks, their properties and how they can be generated is given.
+In chapter \ref{ch:theory} the theoretical background involved with this thesis is presented. First a basic definition of equilibrium in economics is presented. Then an introduction into the mechanics of the continuous double-auction which is used as market institution in the simulation-software is given. Finally an overview of complex networks, their properties and how they can be generated is given.
 
 \bigskip
 
-In chapter \ref{ch:leverageCycle} "The Leverage Cycle" a short overview of the theoretical model \cite{Breuer2015} built their simulation upon is discussed. Then the actual model which is used in the simulation of this thesis is presented which is in fact the same model used by \cite{Breuer2015}.
+In chapter \ref{ch:leverageCycle} a short overview of the theoretical model \cite{Breuer2015} built their simulation upon is discussed. Then the actual model which is used in the simulation of this thesis is presented which is in fact the same model used by \cite{Breuer2015}.
 
 \bigskip
 
-In chapter \ref{ch:hypothesis} "Hypothesis" the hypothesis about the properties a topology must satisfy to reach the theoretical equilibrium is presented and a conjecture is given whether the topologies presented in this thesis are able to reach it or not.
+In chapter \ref{ch:hypothesis} the hypothesis about the properties a topology must satisfy to reach the theoretical equilibrium is presented and a conjecture is given whether the topologies presented in this thesis are able to reach it or not.
 
 \bigskip
 
-Chapter \ref{ch:implementation} "Implementation" gives an in-depth explanation of the implementation of the computer-driven simulation presented in \cite{Breuer2015} including a description of the requirements, functionality, architecture, agents and the implementation of the markets and the trading mechanisms.
+Chapter \ref{ch:implementation} gives an in-depth explanation of the implementation of the computer-driven simulation presented in \cite{Breuer2015} including a description of the requirements, functionality, architecture, agents and the implementation of the markets and the trading mechanisms.
 
 \bigskip
 
-Chapter \ref{ch:results} "Results" validates the thesis-software against the results found in \cite{Breuer2015} and reports the results for the Fully-Connected and Ascending-Connected topologies. The results of all other topologies are listed in the appendix \ref{app:results}.
+Chapter \ref{ch:results} validates the thesis-software against the results found in \cite{Breuer2015} and reports the results for the Fully-Connected and Ascending-Connected topologies. The results of all other topologies are listed in the appendix \ref{app:results}.
 
 \bigskip
 
-Chapter \ref{ch:interpretation} "Interpretation" connects the content of the previous chapters to show that the hypothesis of chapter \ref{ch:hypothesis} does not guarantee the approaching of theoretical equilibrium and conjectures that it can be reached by introducing an additional market.
+Chapter \ref{ch:interpretation} connects the content of the previous chapters to show that the hypothesis of chapter \ref{ch:hypothesis} does not guarantee the approaching of theoretical equilibrium and conjectures that it can be reached by introducing an additional market.
 
 \bigskip
 
-Chapter \ref{ch:newMarket} "A new market" introduces the previously mentioned market and gives the results of the simulation runs with this market. It will be shown that by using the additional market an equilibrium closer to the theoretical one will be reached but that it is still different from the predictions. Thus it turns out that the hypothesis cannot be satisfied.
+Chapter \ref{ch:newMarket} introduces the previously mentioned market and gives the results of the simulation runs with this market. It will be shown that by using the additional market an equilibrium closer to the theoretical one will be reached but that it is still different from the predictions. Thus it turns out that the hypothesis cannot be satisfied.
 
-\bigskip
-
-In chapter \ref{ch:newMarket} "Conclusions, Summary and further Research" a short sum-up of the thesis and questions left for further research are presented.
 \end{document}
