@@ -18,7 +18,7 @@ For Geanakoplos all crises start with scary bad news which are then the reason w
 To prevent a too specific distinction between the natural buyer and the public Geanakoplos introduces a range of optimism \textit{h} $\in$ \textit{H} = [0..1] in which all agents are ordered by their optimism \textit{h} where the extreme pessimists reside at the lower end of 0 and the extreme optimists ate the upper end of 1. Each agent assigns the probability that good news will occur according to its optimism \textit{h} where the extreme optimist thinks that good news will happen for sure and the extreme optimist think that it will never occur thus the more optimistic an agent, the more a natural buyer it is. If the natural buyers drops out of the business then the asset-prices drop as the natural buyers are the only ones willing to drive asset-prices up through leverage as they value the asset-prices the most. Thus the natural buyers buy as many assets they can both by cash and through borrowing and using the assets as security thus creating leverage. Because of this mechanics Geanakoplos emphasises that it is of very importance who lost money in a crisis - the public or the natural buyers whereas a loss for the natural buyers is the real catastrophe as no one is willing to drive up the asset-prices any more.
 
 \subsection{Two-period economy}
-Geanakoplos then introduces a two-period economy. In the first period each agent of the previously mentioned continuum \textit{H} is endowed with one consumption good C and one asset Y and can then trade with each other. The second period can be one of two states: U(p) and D(own) whereas in the up-state the asset Y is worth 1.0 and in the down-state only 0.2. The agents differ only in their optimism \textit{h} by which they assign the probability that the up-state will happen tomorrow in the second period. According to this they trade on the market according to their utility-function which depends on their optimism \textit{h}. The following formula gives the utility-function of an agent. It gives the price of an asset, that is how much an agent values it - obviously the more optimistic the higher the price.
+Geanakoplos then introduces a two-period economy. In the first period each agent of the previously mentioned continuum \textit{H} is endowed with one consumption good C and one asset Y and can then trade with each other. The second period can be one of two states: U(p) and D(own) whereas in the up-state the asset Y is worth 1.0 and in the down-state only 0.2. The agents differ only in their optimism \textit{h} by which they assign the probability that the up-state will happen tomorrow in the second period. According to this they trade on the market according to their utility-function which depends on their optimism \textit{h}. The following formula gives the utility-function of an agent according to Geanakoplos. It gives the price of an asset, that is how much an agent values it - obviously the more optimistic the higher the price.
 
 \begin{equation}
 price = h + (1 - h)0.2
@@ -100,7 +100,7 @@ In this section the utility-functions of an agent for each market are given. See
 The asset market is the same as in \cite{Geanakoplos2009} where assets are just bought and sold against cash.
 
 \begin{equation}
-p = h + ( 1 - h )pD
+\ell_{asset} = h + ( 1 - h )pD
 \end{equation}
 
 \paragraph{Bond/Cash market}
@@ -109,14 +109,14 @@ The bond market acts the same way as described in \cite{Geanakoplos2009}. Collat
 Risk-less as well as risky bonds are available in the model of \cite{Breuer2015} where the risky bonds are those with face-value \textit{V} $>$ 0.2. Although Breuer et al. allowed more than one bond-types simultaneously in their model this is not implemented in the thesis-software as it is not the primary focus of this work and would have required substantial changes in the software.
 
 \begin{equation}
-p = h V + ( 1 - h )pD
+\ell_{bond} = h V + ( 1 - h )pD
 \end{equation}
 
 \paragraph{Asset/Bond market}
 The Asset/Bond market trades assets against bonds thus the utility-function is just the ratio of the Asset/Cash utility to the Bond/Cash utility which gives the amount of bonds one asset is worth for a given optimism \textit{h}.
 
 \begin{equation}
-p = \frac{\textit{utiliy Asset/Cash}}{\textit{utility Bond/Cash}}
+\ell_{asset/bond} = \frac{\ell_{asset}}{\ell_{bond}}
 \end{equation}
 
 \subsection{Auction Mechanism}
@@ -140,12 +140,13 @@ Again to prevent a bias pick one market at random and pick at random the buy or 
 
 In this case the offers of all other agents which have not matched are deleted from the offering-book and the matching-price is calculated at the half-way price:
 \begin{equation}
-\textit{matching-price} = \frac{\textit{buy-price} + \textit{sell-price}}{2}
+\textit{matching-price} = \frac{\textit{buyer-price} + \textit{seller-price}}{2}
 \end{equation}
 
 If no match occurs with the current random agent pick another agent at random and continue as above with submitting its offers on all markets.
 
 \subsection{Equilibrium}
+\label{sec:EQUILIBRIUM}
 Breuer et al. reported equilibria for prices and allocations both of bonds and assets where the equilibria are fundamentally different whether a risk-free bond is available or not.
 
 \paragraph{Risk-free bond}
@@ -207,7 +208,7 @@ Theoretical equilibrium can be calculated through the previously given equations
 For given asset prices \textit{q} and bond-prices \textit{q} each agent optimises its expected utility. As can be seen in the section \ref{sec:UTILITY_FUNCTIONS} the utility-functions are linear which makes this optimization problem a linear one which can be solved by Linear Programming (LP). Thus the two agents \textit{i1} and \textit{i2} are searched where \textit{i1} marks the end of the pessimists and \textit{i2} the beginning of the optimists. This is done by iterating through all possible combinations of \textit{i1} and \textit{i2} and checking if they generate equilibrium on the market or not. Thus time dependence is $O(N^2)$ where \textit{N} is the amount of agents. 
 
 \subsection{Endogenous leverage}
-Endogenous leverage is the central topic of the models both of Geanakoplos and of Breuer et al. Because it may seem not immediately clear where and how leverage is endogenous in the model of Breuer et al. this section tries to outline where this is the case and how it is implemented. 
+Endogenous leverage is the central topic of the models both of Geanakoplos and of Breuer et al. Because it may seem not immediately clear where and how leverage is endogenous in the model of Breuer et al. this section outlines where this is the case and how it is implemented. 
 
 \medskip
 In the work of \cite{Breuer2015} it is noted that 
@@ -221,29 +222,20 @@ and furthermore
 "Leverage, the percentage of the value of the real asset that can be borrowed to purchase it, is determined by contract selection through the market. Leverage is endogenous."
 \end{quote}
 
-When an agent buys an asset by borrowing money through selling bonds on the Asset/Bond market then the agent is using leverage to finance the asset trade. Buyers are buying an asset if the utility increases thus assigning the asset a higher value than the seller but still the buyer is paying less than the value it assigns the asset. According to the definition of leverage in chapter \ref{ch:theory} the leverage ratio is:
-
-\begin{equation}
-\textit{leverage-ratio} = \frac{\textit{buyer utility-price}}{\textit{buyer-price} - \textit{matching-price}}
-\end{equation}
-
-The buyer assigns the asset the value given by the agents utility-price thus the leverage-ratio is then the ratio of this value to the difference between the buyers-price and the price the agent really pays, which is less due to the mechanics of the double-auction. The value in the denominator is the amount the agent does not finance by borrowing - in the case of this model this value is never paid by the agent and is just the expected win if the up-state occurs. This is the leverage which drives up the asset-prices as noted by Geanakoplos.
+\textit{Contract selection} amounts to the selection of the bond-types used by the agents to finance their trades. Geanakoplos and Breuer report that if multiple bonds are available which include risk-free bonds the agents will select the risk-free bond with the highest face-value which is 0.2. The reason is that buyers which are more optimistic towards the up-state expect that they would have to pay the face-value so they try to select a bond with the lowest possible face-value the sellers would accept. The sellers which are more pessimistic towards the up-state expect that they will more likely get back the down-state value of 0.2 and don't want to trade above this value as they expect to loose money in this case. So buyers and sellers select the risk-free bond with face-value of 0.2 endogenously through the mechanics of the model and not by parameters which are set exogenous by an experimenter. Thus Leverage is regarded as endogenous, coming from within the simulation-model itself.
 
 \medskip
 
-Because the leverage is covered implicitly by the model and not by parameters which are set exogenous from an experimenter the leverage is regarded as endogenous, coming from within the simulation-model itself.
-
-\medskip
-TODO: noch beschreiben, was contract-selection ist und collateral equilibrium has both: contract selection and a collateral premium for the real asset.
-TODO: endogenizing leverage. prices of assets and debt are distorted through leverage.
-
-Note that the higher the face-value of a bond the higher the utility-price can get thus due to the Asset/Bond utility-function the cheaper an asset is traded against bonds. Geanakoplos and Breuer et al. showed that in case of a risk-free bond is available on the bond market then the one with the highest face-value will be selected and in case of only risky bonds are available only the 
+Note that the prices of assets and debt are distorted through leverage because optimists value the goods more and are willing to drive the prices up through the use of leverage. This was a major finding by both Geanakoplos and Breuer.
 
 \subsection{Equilibrium of trading-process}
-TODO: when does the process comes to a halt? 
-	when is trading no more possible. This is the case when
-	- due to collateral constraints 
-	- agents can only make utility-reducing offers which is forbidden in this simulation
-TODO: if the trading-process comes to a halt then an equilibrium was established but it is imperative to note that this must not necessarily be the theoretical equilibrium as given by the equilibrium theory.
+As already noted the model given above is a dynamic process which approaches an equilibrium over time. The equilibrium is established if the system does not change any more over time: the process has come to a halt, all time dependent variables stay constant. Due to its design the process of this model will always come to a halt at some point - and will thus have some equilibrium - which is the case when all traders have become unable to trade:
+
+\begin{itemize}
+\item Due to collateral constraints.
+\item They cannot place utility-increasing offers any more - utility-reduction is not allowed in this model.
+\end{itemize}
+
+It is of very importance to note that if the process has come to a halt \textit{some} equilibrium has been established but that the established equilibrium \textit{must not} be necessarily be the theoretical one as given by the equations in section \ref{sec:EQUILIBRIUM}.
 
 \end{document}
