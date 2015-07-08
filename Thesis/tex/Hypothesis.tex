@@ -41,9 +41,6 @@ In figure \ref{fig:MATCHING_BUYER_SELLER_RANGES} the price-ranges of both a sell
 	\label{fig:MATCHING_BUYER_SELLER_RANGES}
 \end{figure}
 
-\paragraph{Formal proof}
-TODO
-
 either through proof by contradiction: assume a seller with a larger optimism than the buyer and show that the assumption that the utility-function must increase fails.
 
 or through difference between the two utility functions of a buyer and a seller: difference is always larger or smaller (dependeing on the direction of subtraction) than zero.
@@ -52,22 +49,73 @@ TODO: hypothese beweisen
 1. zeigen dass hypothese auf minimale vernetzung reduziert werden kann bzw. dass diese minimale vernetzung ausreicht. (über den vorhergehenden formal proof und dass limit-prices monoton steigen)
 2. zeigen, dass lücken bei minimalster vernetzung an beliebiger stelkle zu widerspruch führt: gleichgewicht wird nicht erreicht. 
 
+\pagebreak
+
+\paragraph{Formal proof}
+Proofing optimism of buyer is greater or equal than the optimism of the seller $h_B \geq h_S$ by showing the limit-price of the buyer is greater of equal the limit-price of the seller $limit_B \geq limit_S$.
 
 \subsubsection{Asset/Cash}
+$limit_B = h_B + \frac{1}{5} - \frac{h_B}{5}$ \\
+$limit_S = h_S + \frac{1}{5} - \frac{h_S}{5}$
+
 \begin{proof}
+\begin{align*}
+	limit_S - limit_B \leq 0
+	\\ (h_S + \frac{1}{5} - \frac{h_S}{5}) - ( h_B + \frac{1}{5} - \frac{h_B}{5} ) \leq 0
+	\\ h_S + \frac{1}{5} - \frac{h_S}{5} - h_B - \frac{1}{5} + \frac{h_B}{5} \leq 0
+	\\ 5h_S + 1 - h_S - 5h_B - 1 + h_B \leq 0
+	\\ 4h_S - 4h_B \leq 0
+	\\ h_S - h_B \leq 0		\tag*{can only hold if $h_B \geq h_S$}
+\end{align*}
 \end{proof}
 
+\pagebreak
 \subsubsection{Bond/Cash}
+$limit_B = h_B \, V + \frac{1}{5} - \frac{h_B}{5}$ \\
+$limit_S = h_S \, V + \frac{1}{5} - \frac{h_S}{5}$
+
 \begin{proof}
-
-assume that $h_b \geq h_s$ (optimism factor h of buyer greater or equals of seller)
-
-$limit_b = h_b V + (1-h_b) pd$ \\
-$= h_b V + \frac{1}{5} - \frac{h_b}{5}$
+\begin{align*}
+	limit_S - limit_B \leq 0
+	\\ (h_S \, V  + \frac{1}{5} - \frac{h_S}{5}) - ( h_B \, V  + \frac{1}{5} - \frac{h_B}{5} ) \leq 0
+	\\ h_S \, V  + \frac{1}{5} - \frac{h_S}{5} -  h_B \, V  - \frac{1}{5} + \frac{h_B}{5} \leq 0
+	\\ 5 h_S \, V  + 1 - h_S - 5h_B \, V  - 1 + h_B \leq 0
+	\\ 5 h_S \, V - 5h_B \, V - h_S + h_B \leq 0
+	\\ 5V(h_S - h_B) - (h_S - h_B) \leq 0	\tag*{substituting $u = (h_S - h_B)$}
+	\\ 5Vu - u \leq 0	\tag*{assuming $h_S > h_B$}	
+	\\ \Rightarrow u > 0 \Rightarrow 5Vu - u > 0 		\tag*{violates the original assumption}	
+	\\ \textit{proof by contradiction} \Rightarrow h_B \geq h_S
+\end{align*}
 \end{proof}
 
+\pagebreak
 \subsubsection{Asset/Bond}
+$limit_B = \frac{h_B + \frac{1}{5} - \frac{h_B}{5}}{h_B \, V + \frac{1}{5} - \frac{h_B}{5}}$ \\
+$limit_S = \frac{h_S + \frac{1}{5} - \frac{h_S}{5}}{h_S \, V + \frac{1}{5} - \frac{h_S}{5}}$ \\
+
 \begin{proof}
+\begin{align*}
+	limit_S - limit_B \leq 0
+	\\ \frac{h_S + \frac{1}{5} - \frac{h_S}{5}}{h_S \, V + \frac{1}{5} - \frac{h_S}{5}} - \frac{h_B + \frac{1}{5} - \frac{h_B}{5}}{h_B \, V + \frac{1}{5} - \frac{h_B}{5}} \leq 0
+	\\ (h_S + \frac{1}{5} - \frac{h_S}{5})(h_B \, V + \frac{1}{5} - \frac{h_B}{5}) - (h_B + \frac{1}{5} - \frac{h_B}{5})(h_S \, V + \frac{1}{5} - \frac{h_S}{5}) \leq 0													
+	\\ substituting \; S = \frac{1}{5} - \frac{h_S}{5}, B = \frac{1}{5} - \frac{h_B}{5}
+	\\ (h_S + S)(h_B \, V + B) - (h_B + B)(h_S \, V + S) \leq 0
+	\\ h_S \, h_B \, V + h_S \, B + S \, h_B \, V + BS - (h_B \, h_S \, V + h_B \, S + B \, h_S \, V + BS) \leq 0
+	\\ h_S \, h_B \, V + h_S \, B + S \, h_B \, V + BS - h_B \, h_S \, V - h_B \, S - B \, h_S \, V - BS \leq 0
+	\\ h_S \, B + S \, h_B \, V - h_B \, S - B \, h_S \, V \leq 0
+	\\ h_S \, B - h_B \, S + V(h_B \, S - h_S \, B ) \leq 0 
+	\\ h_S(\frac{1}{5} - \frac{h_B}{5}) - h_B(\frac{1}{5} - \frac{h_S}{5}) + V(h_B(\frac{1}{5} - \frac{h_S}{5}) - h_S(\frac{1}{5} - \frac{h_B}{5})) \leq 0
+	\\ \frac{h_S}{5} - \frac{h_S \, h_B}{5} - \frac{h_B}{5} + \frac{h_B \, h_S}{5} + \frac{h_B \, V}{5} - \frac{h_B \, h_S \, V}{5} - \frac{h_S \, V}{5} + \frac{h_S \, h_B \, V}{5} \leq 0 
+	\\ \frac{h_S}{5} - \frac{h_B}{5} + \frac{h_B \, V}{5} - \frac{h_S \, V}{5} \leq 0
+	\\ h_S - h_B + h_B \, V - h_S \, V \leq 0 
+	\\ h_S( 1 - V ) + h_B( -1 + V ) \leq 0 
+	\\ substituting \; x = h_S( 1 - V ), y = h_B( -1 + V )
+	\\ x + y \leq 0 									
+	\\ \textit{assume V linear in range of} \; [0..1]
+	\\ x = [h_S..0] \Rightarrow x \geq 0 
+	\\ y = [-h_B..0] \Rightarrow y \leq 0
+	\\ \Rightarrow x + y \leq 0 \iff h_B \geq h_S
+\end{align*}
 \end{proof}
 
 \section{Predictions}
