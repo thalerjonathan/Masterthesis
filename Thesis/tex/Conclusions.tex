@@ -1,8 +1,9 @@
 \documentclass[Bachelorarbeit.tex]{subfiles}
 \begin{document}
 \chapter{Conclusions}
+\label{ch:conclusions}
 
-The motivation of this thesis was to investigate the influence of various types of network-topologies in continuous double-auctions on the convergence towards theoretical equilibrium. It builds upon findings and results of \cite{Breuer2015} and an equilibrium framework developed by \cite{Geanakoplos2009}. As a starting point a hypothesis was formulated which gives properties a network must exhibit to reach the theoretical equilibrium defined in the model. Interpreting the results of the thesis-software it turned out that the hypothesis is not feasible for the model of \cite{Breuer2015} as the Ascending-Connected topology - the most minimal topology which satisfies the properties postulated by the hypothesis - leads to serious miss-allocation of wealth in the range of the pessimist agents. The hope then was to be able to repair the miss-allocation by extending the original model by introducing a new market and that then theoretical equilibrium will be reached. This new market on which collateral can be traded against cash is able to remove the allocation inefficiencies but the equilibrium is still different from the theoretical one thus the hypothesis turns out to be invalid and infeasible for the extended model too.
+The motivation for this thesis was to investigate the influence of various types of network-topologies in continuous double-auctions on the convergence towards theoretical equilibrium. It builds upon findings and results of \cite{Breuer2015} and an equilibrium framework developed by \cite{Geanakoplos2009}. As a starting point a hypothesis was formulated which gives properties a network must exhibit to reach the theoretical equilibrium defined in the model. Interpreting the results of the thesis-software it turned out that the hypothesis is not feasible for the model of \cite{Breuer2015} as the Ascending-Connected topology - the most minimal topology which satisfies the properties postulated by the hypothesis - leads to serious miss-allocation of wealth in the range of the pessimist agents. The hope then was to be able to repair the miss-allocation by extending the original model by introducing a new market and that then theoretical equilibrium will be reached. This new market on which collateral can be traded against cash is able to remove the allocation inefficiencies but the equilibrium is still different from the theoretical one thus the hypothesis turns out to be invalid and infeasible for the extended model too.
 
 \bigskip
 
@@ -10,7 +11,7 @@ The major conclusion on the findings of the thesis is that equilibrium seems onl
 
 \section*{Further Research}
 
-\subsection*{Imporance-Sampling}
+\subsection*{Importance-Sampling}
 Importance sampling was used to increase the matching-probabilities for the special case of an Ascending-Connected network which led to a dramatic performance enhancement as much less matching-rounds were required to reach the point where no trading was possible any more. Further research could investigate a more general mechanisms of increasing the matching-probabilities independent of the topology without introducing a bias. One way could be through sampling the price-ranges in different intervals or learning and adapting them on-the-fly during a simulation run.
 
 \subsection*{In-depth analysis of market-activities}

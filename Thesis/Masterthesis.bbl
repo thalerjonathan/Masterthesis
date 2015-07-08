@@ -14,7 +14,7 @@ Brigham, E.~F. (2012).
 \newblock Fundamentals of financial management.
 
 \bibitem[Drmota et~al., 2007]{Drmota2007}
-Drmota, M., B., G., G., K., and A., P. (2007).
+Drmota, M., Gittenberger, B., Karigl, G., and Panholzer, A. (2007).
 \newblock {\em Mathematik für Informatik}.
 \newblock Heldermann Verlag.
 
@@ -23,10 +23,16 @@ Easley, D. and Kleinberg, J. (2010).
 \newblock {\em Networks, Crowds and Markets}.
 \newblock Cambridge University Press.
 
-\bibitem[Erdos and A., 1959]{ErdosRenyi1959}
-Erdos, P. and A., R. (1959).
+\bibitem[Erd\H{o}s and Renyi, 1959]{ErdosRenyi1959}
+Erd\H{o}s, P. and Renyi, A. (1959).
 \newblock On random graphs.
 \newblock In {\em Publicationes Mathematicae}, pages 6:290–--297.
+
+\bibitem[Erd\H{o}s and Renyi, 1960]{ErdosRenyi_EvolutionRandomGraphs}
+Erd\H{o}s, P. and Renyi, A. (1960).
+\newblock On the evolution of random graphs.
+\newblock In {\em PUBLICATION OF THE MATHEMATICAL INSTITUTE OF THE HUNGARIAN
+  ACADEMY OF SCIENCES}, pages 17--61.
 
 \bibitem[Geanakoplos, 2009]{Geanakoplos2009}
 Geanakoplos, J. (2009).
