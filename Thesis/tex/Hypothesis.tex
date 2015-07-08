@@ -29,7 +29,7 @@ The most minimal configuration of agents which satisfies this hypothesis is a gr
 The motivation behind the hypothesis is the fact that according to the double-auction definition - see chapter \ref{ch:theory} - for a match to happen the buyer-price must be larger or equal to the seller-price. This can only be the case when the buyer has a higher optimism-factor than the seller due the way agents place their prices - see chapter \ref{ch:leverageCycle}.
 
 \subsection{Proof}
-The proofs are given for the Asset/Cash market only because the equations of the Loan/Cash market work exactly the same way where only the absolute numbers are different. The Asset/Bond market is the same too as the limit-price is just the ratio of the limit-prices of asset and bond thus resulting in the same linear ordering of the limit-prices.
+The proofs are given for the Asset/Cash market only because the equations of the Loan/Cash market work exactly the same way where only the absolute numbers are different. The Asset/Bond market is the same too as the limit-price is just the ratio of the limit-prices of asset and bond thus resulting in the same linear ordering of the limit-prices. TODO: stimmt nicht
 
 \paragraph{Illustrating the matching ranges}
 In figure \ref{fig:MATCHING_BUYER_SELLER_RANGES} the price-ranges of both a seller and buyer are given where h(s) and h(b) denote the optimism-factors of the seller and buyer respectively. The seller places its offerings in the price-range of [h(s)..pU] as it wants to sell the good above the expected price to make a profit. The buyer places its offerings in the price-range of [pD..h(b)] as it wants to buy the goods below the expected price to make a profit. The resulting matching-range on which the prices can meet - again buyer-price $\geq$ seller-price - is marked by the red rectangle. It is easy to see that a match with these mechanics can occur only if the optimism-factor of the buyer h(b) is strictly higher than the one of the seller h(s).
@@ -51,6 +51,24 @@ or through difference between the two utility functions of a buyer and a seller:
 TODO: hypothese beweisen
 1. zeigen dass hypothese auf minimale vernetzung reduziert werden kann bzw. dass diese minimale vernetzung ausreicht. (über den vorhergehenden formal proof und dass limit-prices monoton steigen)
 2. zeigen, dass lücken bei minimalster vernetzung an beliebiger stelkle zu widerspruch führt: gleichgewicht wird nicht erreicht. 
+
+
+\subsubsection{Asset/Cash}
+\begin{proof}
+\end{proof}
+
+\subsubsection{Bond/Cash}
+\begin{proof}
+
+assume that $h_b \geq h_s$ (optimism factor h of buyer greater or equals of seller)
+
+$limit_b = h_b V + (1-h_b) pd$ \\
+$= h_b V + \frac{1}{5} - \frac{h_b}{5}$
+\end{proof}
+
+\subsubsection{Asset/Bond}
+\begin{proof}
+\end{proof}
 
 \section{Predictions}
 The following topologies found in appendix \ref{app:topologies} satisfy the definition of the hypothesis:

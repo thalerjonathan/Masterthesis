@@ -75,32 +75,11 @@ The major differences to the approach of Geanakoplos are:
 In the following sections some details which are different to the model of Geanakoplos or need more explanation are discussed.
 
 \subsection{States}
-Both the up- and the down-state are the same as in Geanakoplos where the up-state is denoted with pU and the down-state is denoted as pD and assets are worth 1 in pU and 0.2 in pD. Agents are endowed with 1 unit of cash and 1 unit of assets today and are then able to trade between each other. The tomorrow-state will not be drawn.
+Both the up- and the down-state are the same as in Geanakoplos where the up-state is denoted with pU and the down-state is denoted as pD and assets are worth 1 in pU and 0.2 in pD. Agents are endowed with 1 unit of cash and 1 unit of assets today and are then able to trade between each other. The tomorrow-state will not be drawn, agents trade only today.
 
-\subsection{Collateralized asset market}
-One of the major inventions of the work of Breuer et al. is the introduction of a market for collateralized assets which has never been studied in continuous double-auction simulations so far. This market enables an agent which is out of cash but high on assets to buy additional assets by selling bonds and thus borrowing money which the agent uses to buy the wanted assets and in return using them as security for collateral constraints. When implementing this mechanism Breuer et al. had to overcome two major difficulties.
+\subsection{Markets and limit-functions}
+\label{sec:LIMIT_FUNCTIONS}
 
-\begin{enumerate}
-\item Coordination of asset and bond markets - the buying of an asset and the selling of a bond needs to be coordinated across both markets and must happen at the same time.
-\item Reversibility of suboptimal trades - earlier trades could have been suboptimal for an agent because it couldn't fully anticipate the behaviour of other agents and thus needs to get out of old trades. Technically speaking this would require to free collateralized assets by unlocking them and transferring them in to the state of a real asset - no more collateralized, thus being completely owned by the agent.
-\end{enumerate}
-
-Breuer et al. proposed solutions to this two difficulties:
-\paragraph{ABM mechanism}
-The straight-forward solution to the coordination of the asset and bond markets would be to condition a buy offer of an asset to a sell offer of a bond. Breuer et al. reported that "Separate utility improvement in each of the coupled trades is more restrictive than a net sum utility improvement of all coupled trades." which prevents theoretical equilibrium to be reached. Thus they define the market to traded assets directly against bonds thus reducing the involved agents from three to two and removing the coordination-problem because only one product with one price is traded. This resolves the problem with the restrictiveness of utility in the case of two products.
-
-\paragraph{Bond pledgeability}
-The problem with the reversibility of suboptimal trades was solved in allowing to uncollateralize an asset by buying a bond. Breuer et al. called this mechanism "bond pledgeability" (BP) and showed that without this mechanism the simulation never converges towards the theoretical equilibrium. See chapter \ref{ch:implementation} "Implementation" for details on the implementation of this mechanism.
-
-\subsection{Agent Utilitiy}
-\label{sec:AGENT_UTILITY}
-
-The utility of an agent is a generic measure to define .
-It is defined as an equation into which the holdings of the agent are multiplied by the expected value the agent assigns to each.
-
-In this section the utility-functions of an agent for each market are given. See chapter \ref{ch:implementation} for more details on the markets. TODO: the functions below are NOT the utility-function but the limit-functions of an agent on each market. The utility-function is just a SINGLE one (no plural) and give a single utility-value. it includes the current holdings of cash, loan and assets and multiplies it by the limit-value of each market. The limit-functions are defined first, then the utility-function
-
-\subsubsection{Limit-functions}
 \paragraph{Asset/Cash market}
 The asset market is the same as in \cite{Geanakoplos2009} where assets are just bought and sold against cash.
 
@@ -124,28 +103,65 @@ The Asset/Bond market trades assets against bonds thus the utility-function is j
 \ell_{asset/bond} = \frac{\ell_{asset}}{\ell_{bond}}
 \end{equation}
 
-\subsubsection{Utility-function}
-Asset utility
-Bond utility
-Collateral utility: influences bonds AND assets
-Cash utility
+\subsection{Agent Utilitiy}
+TODO: move to next section of utility
+The utility of an agent is a generic measure to define .
+It is defined as an equation into which the holdings of the agent are multiplied by the expected value the agent assigns to each.
 
-complete utility-function the sum
+In this section the utility-functions of an agent for each market are given. See chapter \ref{ch:implementation} for more details on the markets. TODO: the functions below are NOT the utility-function but the limit-functions of an agent on each market. The utility-function is just a SINGLE one (no plural) and give a single utility-value. it includes the current holdings of cash, loan and assets and multiplies it by the limit-value of each market. The limit-functions are defined first, then the utility-function
 
-asset-utility:
+total utility
 \begin{equation}
-u_{asset} = (e_{asset} + y_{asset}) \ell_{asset}
+u_{agent} = u_{cash} + u_{asset} + u_{bond}
 \end{equation}
 
-cash-utility:
+\subsubsection{Cash utility}
+utility cash = (assets selling - assets buying) * asset-price + (bonds giving - bonds taking) * bond-price + cash endowment
+
+$s_{asset} \dots \textit{selling amount asset}$ \\
+$g_{bond} \dots \textit{giving amount bond}$ \\
+$b_{asset} \dots \textit{buying amount asset}$ \\
+$t_{bond} \dots \textit{taking amount bond}$ \\
+$p_{asset} \dots \textit{price asset}$ \\
+$p_{bond} \dots \textit{price bond}$ \\
+$e_{cash} \dots \textit{endowment cash}$
+
 \begin{equation}
-u_{cash} = -y_{asset} p_{asset} + x_{bond} q_{bond} + e_{cash}
+u_{cash} = (s_{asset} - b_{asset} ) p_{asset} + (g_{bond} - t_{bond}) p_{bond} + e_{cash}
 \end{equation}
 
-bond-utility:
+\subsubsection{Asset utility}
+utility asset = asset holdings * asset limit 
+
+$h_{asset} \dots \textit{holdings asset}$ \\
+
 \begin{equation}
-u_{bond} = x_{bond} q_{bond} - x_{bond} \ell_{bond}
+u_{asset} = h_{asset} * \ell_{asset}
 \end{equation}
+
+\subsubsection{Bond utility}
+utility bond = bond holdings * bond limit
+
+$h_{bond} \dots \textit{holdings bond}$ 
+
+\begin{equation}
+u_{bond} = h_{bond} * \ell_{bond}
+\end{equation}
+
+\subsection{Collateralized asset market}
+One of the major inventions of the work of Breuer et al. is the introduction of a market for collateralized assets which has never been studied in continuous double-auction simulations so far. This market enables an agent which is out of cash but high on assets to buy additional assets by selling bonds and thus borrowing money which the agent uses to buy the wanted assets and in return using them as security for collateral constraints. When implementing this mechanism Breuer et al. had to overcome two major difficulties.
+
+\begin{enumerate}
+\item Coordination of asset and bond markets - the buying of an asset and the selling of a bond needs to be coordinated across both markets and must happen at the same time.
+\item Reversibility of suboptimal trades - earlier trades could have been suboptimal for an agent because it couldn't fully anticipate the behaviour of other agents and thus needs to get out of old trades. Technically speaking this would require to free collateralized assets by unlocking them and transferring them in to the state of a real asset - no more collateralized, thus being completely owned by the agent.
+\end{enumerate}
+
+Breuer et al. proposed solutions to this two difficulties:
+\paragraph{ABM mechanism}
+The straight-forward solution to the coordination of the asset and bond markets would be to condition a buy offer of an asset to a sell offer of a bond. Breuer et al. reported that "Separate utility improvement in each of the coupled trades is more restrictive than a net sum utility improvement of all coupled trades." which prevents theoretical equilibrium to be reached. Thus they define the market to traded assets directly against bonds thus reducing the involved agents from three to two and removing the coordination-problem because only one product with one price is traded. This resolves the problem with the restrictiveness of utility in the case of two products.
+
+\paragraph{Bond pledgeability}
+The problem with the reversibility of suboptimal trades was solved in allowing to uncollateralize an asset by buying a bond. Breuer et al. called this mechanism "bond pledgeability" (BP) and showed that without this mechanism the simulation never converges towards the theoretical equilibrium. See chapter \ref{ch:implementation} "Implementation" for details on the implementation of this mechanism.
 
 \subsection{Auction Mechanism}
 The auction mechanism used is a continuous double-auction on all markets open at the same time with a finite number of agents.
@@ -233,7 +249,7 @@ Theoretical equilibrium can be calculated through the previously given equations
 
 \medskip
 
-For given asset prices \textit{q} and bond-prices \textit{q} each agent optimises its expected utility. As can be seen in the section \ref{sec:AGENT_UTILITY} the utility-functions are linear which makes this optimization problem a linear one which can be solved by Linear Programming (LP). Thus the two agents \textit{i1} and \textit{i2} are searched where \textit{i1} marks the end of the pessimists and \textit{i2} the beginning of the optimists. This is done by iterating through all possible combinations of \textit{i1} and \textit{i2} and checking if they generate equilibrium on the market or not. Thus time dependence is $O(N^2)$ where \textit{N} is the amount of agents. 
+For given asset prices \textit{q} and bond-prices \textit{q} each agent optimises its expected utility. As can be seen in the section \ref{sec:LIMIT_FUNCTIONS} the utility-functions are linear which makes this optimization problem a linear one which can be solved by Linear Programming (LP). Thus the two agents \textit{i1} and \textit{i2} are searched where \textit{i1} marks the end of the pessimists and \textit{i2} the beginning of the optimists. This is done by iterating through all possible combinations of \textit{i1} and \textit{i2} and checking if they generate equilibrium on the market or not. Thus time dependence is $O(N^2)$ where \textit{N} is the amount of agents. 
 
 \subsection{Endogenous leverage}
 Endogenous leverage is the central topic of the models both of Geanakoplos and of Breuer et al. Because it may seem not immediately clear where and how leverage is endogenous in the model of Breuer et al. this section outlines where this is the case and how it is implemented. 
