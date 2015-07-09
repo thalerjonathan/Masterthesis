@@ -41,6 +41,10 @@ In figure \ref{fig:MATCHING_BUYER_SELLER_RANGES} the price-ranges of both a sell
 	\label{fig:MATCHING_BUYER_SELLER_RANGES}
 \end{figure}
 
+
+\paragraph{Formal proof}
+Proofing optimism of buyer is greater or equal than the optimism of the seller $h_B \geq h_S$ by showing the limit-price of the buyer is greater of equal the limit-price of the seller $limit_B \geq limit_S$.
+
 either through proof by contradiction: assume a seller with a larger optimism than the buyer and show that the assumption that the utility-function must increase fails.
 
 or through difference between the two utility functions of a buyer and a seller: difference is always larger or smaller (dependeing on the direction of subtraction) than zero.
@@ -48,11 +52,6 @@ or through difference between the two utility functions of a buyer and a seller:
 TODO: hypothese beweisen
 1. zeigen dass hypothese auf minimale vernetzung reduziert werden kann bzw. dass diese minimale vernetzung ausreicht. (über den vorhergehenden formal proof und dass limit-prices monoton steigen)
 2. zeigen, dass lücken bei minimalster vernetzung an beliebiger stelkle zu widerspruch führt: gleichgewicht wird nicht erreicht. 
-
-\pagebreak
-
-\paragraph{Formal proof}
-Proofing optimism of buyer is greater or equal than the optimism of the seller $h_B \geq h_S$ by showing the limit-price of the buyer is greater of equal the limit-price of the seller $limit_B \geq limit_S$.
 
 \subsubsection{Asset/Cash}
 $limit_B = h_B + \frac{1}{5} - \frac{h_B}{5}$ \\
@@ -116,6 +115,47 @@ $limit_S = \frac{h_S + \frac{1}{5} - \frac{h_S}{5}}{h_S \, V + \frac{1}{5} - \fr
 	\\ y = [-h_B..0] \Rightarrow y \leq 0
 	\\ \Rightarrow x + y \leq 0 \iff h_B \geq h_S
 \end{align*}
+\end{proof}
+
+\subsection{Proof of monotony of limit-functions}
+\subsubsection{Asset/Cash market}
+\begin{proof}
+\begin{align*}
+	limit_{asset} = h \, pU + (1-h) pD		\tag*{pU = 1, pD = 0.2}
+	\\ = h + (1 - h)0.2
+	\\ = h + \frac{1}{5} - \frac{h}{5}		\tag*{$\frac{\mathrm d}{\mathrm d h}$}
+	\\ = 1 - \frac{1}{5}
+		&= \frac{4}{5}
+\end{align*}
+
+constant, positive slope implies a monotony increasing limit-function over the range of the real numbers. QED
+\end{proof}
+
+\subsubsection{Bond/Cash market}
+\begin{proof}
+\begin{align*}
+	limit_{bond} = h \, V + (1-h) pD			\tag*{pD = 0.2}
+	\\ = h \, V + (1 - h)0.2
+	\\ = h \, V + \frac{1}{5} - \frac{h}{5}		\tag*{$\frac{\mathrm d}{\mathrm d h}$}
+	\\ = V - \frac{1}{5}
+\end{align*}
+
+V is constant => constant, positive slope implies a monotony increasing limit-function were $V >= \frac{1}{5}$. QED
+\end{proof}
+
+\subsubsection{Asset/Bond market}
+\begin{proof}
+\begin{align*}
+	limit_{asset/bond} = \frac{h \, pU + (1-h) pD}{h \, V + (1-h) pD} 				\tag*{pU = 1, pD = 0.2}
+	\\ = \frac{h + \frac{1}{5} - \frac{h}{5}}{h \, V + \frac{1}{5} - \frac{h}{5}}	\tag*{$\frac{\mathrm d}{\mathrm d h}$}
+	\\ = - \frac{5(V-1)}{(h(5V-1)+1)^2}									\tag*{assume h and V in range [0..1]}
+	\\ \Rightarrow 5(V-1) \leq 0
+	\\ \Rightarrow (h(5V-1)+1)^2 \geq 0
+	\\ \Rightarrow - \frac{5(V-1}{(h(5V-1)+1)^2} \geq 0 			\tag*{for h and V in range [0..1]}
+\end{align*}
+
+positive slope implies a monotony increasing limit-function. QED
+
 \end{proof}
 
 \section{Predictions}
