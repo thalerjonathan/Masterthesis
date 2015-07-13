@@ -21,7 +21,9 @@ public class Markets {
 	public final static double TRADING_UNIT_ASSET = 0.1;
 	public final static double TRADING_UNIT_LOAN = 0.2;
 
-	public final static double TRADING_EPSILON = 0.0000001;
+	// not too small otherwise would trade Bond/Cash for very long time 
+	// as fractions get smaller and smaller
+	public final static double TRADING_EPSILON = 0.0001;
 
 	private final static double UP_STATE_DEFAULT = 1.0;
 	private final static double DOWN_STATE_DEFAULT = 0.2;

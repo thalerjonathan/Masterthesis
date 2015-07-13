@@ -404,8 +404,7 @@ public class Agent {
 	private void calcBidOfferings( BidOffering[] offerings ) {		
 		// the price for 1.0 Units of asset - will be normalized during a Match
 		// to the given amount below - the unit of this variable is CASH
-		//double assetPriceInCash = randomRange( minAssetPriceInCash, limitPriceAsset );
-		double assetPriceInCash = randomRangeBid( assetLimits[ 0 ][ 0 ], assetLimits[ 0 ][ 1 ] );
+		double assetPriceInCash = randomRange( assetLimits[ 0 ][ 0 ], assetLimits[ 0 ][ 1 ] );
 		
 		// if there is enough cash left to buy the given amount of assets
 		if ( this.cash >= Markets.TRADING_UNIT_ASSET * assetPriceInCash ) {
@@ -420,9 +419,12 @@ public class Agent {
 		} else {
 			offerings[ MarketType.ASSET_CASH.ordinal() ] = null;
 		}
-
+		
 		// loan-market is open AND there is still cash left for buying a bond
-		if ( this.markets.isLoanMarket() && this.cash > Markets.TRADING_EPSILON ) {
+		// IMPORTANT: only generate offers if face-value V of traded bond is larger
+		// than the down-value pD as in the other case the limit-function is not monotony increasing
+		if ( this.markets.isLoanMarket() && this.cash > Markets.TRADING_EPSILON && 
+				this.markets.V() > this.markets.pD() ) {
 			// want to BUY a loan against cash: GIVING the seller a loan, lending money to seller
 			// => paying cash to seller (lending money to seller)
 			// => getting bond from seller (giving loan to seller)
@@ -430,8 +432,7 @@ public class Agent {
 			
 			// the price for 1.0 Units of loans - will be normalized during a Match
 			// to the given amount below - the unit of this variable is CASH
-			//double loanPriceInCash = randomRange( minLoanPriceInCash, limitPriceLoan );
-			double loanPriceInCash = randomRangeBid( loanLimits[ 0 ][ 0 ], loanLimits[ 0 ][ 1 ] );
+			double loanPriceInCash = randomRange( loanLimits[ 0 ][ 0 ], loanLimits[ 0 ][ 1 ] );
 			
 			// calculate which amount of loans we can buy MAX
 			double loanAmount = this.cash / loanPriceInCash;
@@ -455,7 +456,7 @@ public class Agent {
 			
 			// the price for 1.0 unit of assets in loans => the unit of this variable is LOANS
 			//double assetPriceInLoans = randomRange( minAssetPriceInLoans, expectedAssetPriceInLoans );
-			double assetPriceInLoans = randomRangeBid( assetLoanLimits[ 0 ][ 0 ], assetLoanLimits[ 0 ][ 1 ] );
+			double assetPriceInLoans = randomRange( assetLoanLimits[ 0 ][ 0 ], assetLoanLimits[ 0 ][ 1 ] );
 			// calculate how much loans will be taken (because selling a loan)
 			double loanTakenAmount = Markets.TRADING_UNIT_ASSET * assetPriceInLoans;
 
@@ -483,7 +484,7 @@ public class Agent {
 		// collateral-cash market is open, can only place an offer if there is enough cash left
 		if ( this.markets.isCollateralMarket() && this.cash > Markets.TRADING_EPSILON ) {
 			// pick random asset price from range: is the price of 1.0 unit of assets
-			assetPriceInCash = randomRangeBid( minCollateralPriceInCash, limitPriceCollateral );
+			assetPriceInCash = randomRange( minCollateralPriceInCash, limitPriceCollateral );
 			// calculate how much assets could be bought with the cash owned
 			double assetAmount = this.cash / assetPriceInCash;
 			// trade in chunks of TRADING_UNIT_ASSET but if TRADING_UNIT_ASSET > than the
@@ -510,20 +511,21 @@ public class Agent {
 
 			// this is always the price for 1.0 Units of asset - will be normalized during a Match
 			// to the given amount below - the unit of this variable is CASH
-			//double assetPriceInCash = randomRange( limitPriceAsset, maxAssetPriceInCash );
-			double assetPriceInCash = randomRangeAsk( assetLimits[ 1 ][ 0 ], assetLimits[ 1 ][ 1 ] );
+			double assetPriceInCash = randomRange( assetLimits[ 1 ][ 0 ], assetLimits[ 1 ][ 1 ] );
 			offerings[ MarketType.ASSET_CASH.ordinal() ] = new AskOffering( assetPriceInCash, Markets.TRADING_UNIT_ASSET, this, MarketType.ASSET_CASH );
 			
 		// no more (not enough) uncollateralized assets left, can't sell anymore, don't place a sell-offer
 		} else {
 			offerings[ MarketType.ASSET_CASH.ordinal() ] = null;
 		}
-			
-		//if ( this.markets.isLoanMarket() && this.assetEndow - Math.max( 0, tmp ) > Markets.TRADING_EPSILON ) {
+
 		// loan-market is open AND there are still uncollateralized assets left
 		// agent can place a sell-offer because when selling a loan, it needs to be secured by collateralizing 
 		// the same amount of assets
-		if ( this.markets.isLoanMarket() && uncollAssets > Markets.TRADING_EPSILON ) {
+		// IMPORTANT: only generate offers if face-value V of traded bond is larger
+		// than the down-value pD as in the other case the limit-function is not monotony increasing
+		if ( this.markets.isLoanMarket() && uncollAssets > Markets.TRADING_EPSILON && 
+				this.markets.V() > this.markets.pD() ) {
 			// want to SELL a loan against cash: borrowing money from buyer by TAKING a loan
 			// => collateralize assets of the same amount as security (taking loan)
 			// => getting money from buyer  (borrowing money from buyer) 
@@ -531,14 +533,12 @@ public class Agent {
 			
 			// this is always the price for 1.0 Units of loans - will be normalized during a Match
 			// to the given amount below - the unit of this variable is CASH
-			//double loanPriceInCash = randomRange( limitPriceLoan, maxLoanPriceInCash );
-			double loanPriceInCash = randomRangeAsk( loanLimits[ 1 ][ 0 ], loanLimits[ 1 ][ 1 ] );
+			double loanPriceInCash = randomRange( loanLimits[ 1 ][ 0 ], loanLimits[ 1 ][ 1 ] );
 			
-			//double loanAmount = this.assetEndow - Math.max( 0, tmp );
 			// the maximum of loans we can sell is the uncollateralized assets left (1:1 relationship when collateralizing)
 			// but don't trad everything at once, break down into small chungs: Markets.TRADING_UNIT_LOAN
 			double loanAmount = Math.min( uncollAssets, Markets.TRADING_UNIT_LOAN );
-			
+
 			offerings[ MarketType.LOAN_CASH.ordinal() ] = new AskOffering( loanPriceInCash, loanAmount, this, MarketType.LOAN_CASH );
 			
 		// either no more uncollaterlized assets left, can't sell loans because don't have assets to
@@ -556,7 +556,7 @@ public class Agent {
 			
 			// the price for 1.0 unit of assets in loans => the unit of this variable is LOANS
 			//double assetPriceInLoans = randomRange( expectedAssetPriceInLoans, maxAssetPriceInLoans );
-			double assetPriceInLoans = randomRangeAsk( assetLoanLimits[ 1 ][ 0 ], assetLoanLimits[ 1 ][ 1 ] );
+			double assetPriceInLoans = randomRange( assetLoanLimits[ 1 ][ 0 ], assetLoanLimits[ 1 ][ 1 ] );
 			// calculating the amount loans which will be given to buyer
 			double loanGivingAmount = Markets.TRADING_UNIT_ASSET * assetPriceInLoans;
 			
@@ -584,7 +584,7 @@ public class Agent {
 		// collateral-cash market is open, can only place offer if there are any collateralized assets around
 		if ( this.markets.isCollateralMarket() && currentObligations > Markets.TRADING_EPSILON ) {
 			// pick a random price from range: is the price for 1.0 Unit of (collateral) assets
-			double assetPriceInCash = randomRangeAsk( limitPriceCollateral, maxCollateralPriceInCash );
+			double assetPriceInCash = randomRange( limitPriceCollateral, maxCollateralPriceInCash );
 			// calculate the amount of assets to trade: don't trade all but in small chunks of TRADING_UNIT_ASSET
 			// if TRADING_UNIT_ASSET > than the tradeable amount of currentObligations take the rest of 
 			// currentObligations to trade down to 0
@@ -634,19 +634,7 @@ public class Agent {
 		this.limitPriceCollateral = this.limitPriceAsset - this.limitPriceLoan;
 	}
 	
-	// increase the asking-offers by a given epsilon because if min and max are the same as in the bidding-offer then no match should happen
-	private static double randomRangeAsk( double min, double max ) {
-		min = min + Markets.TRADING_EPSILON;
-		max = max + Markets.TRADING_EPSILON;
-		
-		return min + Utils.THREADLOCAL_RANDOM.get().nextDouble() * ( max - min );
-	}
-	
-	// reduce the bidding-offers by a given epsilon because if min and max are the same as in the asking-offer then no match should happen
-	private static double randomRangeBid( double min, double max ) {
-		min = min - Markets.TRADING_EPSILON;
-		max = max - Markets.TRADING_EPSILON;
-		
+	private static double randomRange( double min, double max ) {
 		return min + Utils.THREADLOCAL_RANDOM.get().nextDouble() * ( max - min );
 	}
 }

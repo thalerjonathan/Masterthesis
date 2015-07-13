@@ -74,6 +74,8 @@ When replications are processed running ones can be inspected and information ca
 \subsection{Experiments}
 The experiments-feature allows to open experiment-files and result-files of replication- and experiment-runs. An experiment-file is just a collection of simulation-configurations to be run for a given number of replications. When an experiment-file is opened all simulation-configurations are displayed in a list an each of them can be opened as a new replication-tab which in turn can be run as explained in section "Replications". To be able to coneveniently run all simulation-configurations of an experiment-file without needing user-interaction a command-line feature was implemented. For this purpose the jar-file LeverageCycleCMD.jar was built. Start an experiment-run by using the following command:
 
+TODO: remove the commandline-starting. this is not a user-manual!
+
 \begin{center}
 \textit{java -jar LeverageCycleCMD.jar PATH-TO-EXPERIMENT-FILE MAX-THREADS-OPTIONAL}
 \end{center}
@@ -140,10 +142,11 @@ Each agent is characterized by its state where the main variables are:
 
 \begin{itemize}
 \item Id - the unique id of the agent in the range of the natural numbers in the range of [1..number of agents].
-\item Optimism-factor \textit{h} - defines how optimistic the agent is in the range of [0..1] where 0 is most pessimistic and 1 is most optimistic. The distribution of the optimism-factor among the agents is linearly ascending with the id and is defined through the following equation: 
+\item Optimism-factor \textit{h} - defines how optimistic the agent is in the range of [0..1]. The distribution of the optimism-factor among the agents is linearly ascending with the id and is defined through the following equation: 
 \begin{equation}
 \textit{optimism-factor} = \frac{id}{\textit{number of agents} + 1}
 \end{equation}
+It is important that no agent has the optimism-factor of 0 because then the first derivation of the limit-function of the Asset/Bond market becomes undefined and thus the limit-function is not monotony increasing if \textit{h} = 0. This property is ensured by starting with id 1 and dividing by \textit{number of agents} + 1.
 \item Cash holdings - the current cash holdings of the agent.
 \item Assets holdings - the current asset holdings of the agent not including the assets granted as securities for giving loans.
 \item Loan given - the amount of loans bought from / granted to other agents. For a given amount of loans the equal amount of assets are granted as security to the buyer of the loan. Thus this variable increases the amount of assets the agent can trade with.
@@ -260,6 +263,8 @@ Ask offers are generated only when the agent has at least one TRADING-UNIT of fr
 \end{table}
 
 \subsection{Bond/Cash}
+In chapter \ref{ch:hypothesis} it was proven that the limit-function of the Bond/Cash market is not monotony increasing if the face-value of the bond available is \textit{V = pD}. This needs to be covered by the implementation by ensuring no Bond/Cash market activity in this case as mathematically no match is possible as proven.
+
 \subsubsection{Products}
 Bonds are traded against cash. The buyer grants the seller a loan in buying a bond from the seller thus the buyer gets a given bond-amount from the seller and gives a given cash-amount to the seller. For a given amount of sold bonds the equal amount of assets need to be hold as securities.
 

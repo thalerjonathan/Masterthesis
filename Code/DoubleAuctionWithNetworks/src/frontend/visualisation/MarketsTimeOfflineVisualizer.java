@@ -34,7 +34,7 @@ public class MarketsTimeOfflineVisualizer extends MarketsVisualizer {
 	}
 	
 	public MarketsTimeOfflineVisualizer() {
-		this(new ArrayList<double[]>());
+		this(new ArrayList<double[]>() );
 	}
 
 	public MarketsTimeOfflineVisualizer( List<double[]> medianMarkets ) {

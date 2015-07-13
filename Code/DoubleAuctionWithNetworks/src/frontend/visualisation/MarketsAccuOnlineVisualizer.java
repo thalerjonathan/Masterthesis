@@ -20,7 +20,7 @@ public class MarketsAccuOnlineVisualizer extends MarketsVisualizer {
 	
 	protected List<MarketType> successfulMarkets;
 
-	public MarketsAccuOnlineVisualizer(List<MarketType> successfulMatches) {
+	public MarketsAccuOnlineVisualizer(List<MarketType> successfulMatches ) {
 		super();
 		
 		this.successfulMarkets = successfulMatches;

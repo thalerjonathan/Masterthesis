@@ -25,7 +25,7 @@ public class MarketsTimeOnlineVisualizer extends MarketsVisualizer {
 	
 	protected List<MarketType> successfulMarkets;
 
-	public MarketsTimeOnlineVisualizer(List<MarketType> successfulMatches) {
+	public MarketsTimeOnlineVisualizer(List<MarketType> successfulMatches ) {
 		super();
 		
 		this.successfulMarkets = successfulMatches;

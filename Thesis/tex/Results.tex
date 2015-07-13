@@ -6,14 +6,26 @@
 \chapter{Results}
 \label{ch:results}
 
-In this chapter the results of the experiments are given. Each topology-type introduced in appendix \ref{app:topologies} was simulated where in this chapter only Fully-Connected and Ascending-Connected topologies are handled as the Ascending-Connected topology - both with and without importance sampling - is the most minimal network which satisfies the requirements for the hypothesis. The results for the other topologies can be found in appendix \ref{app:results} for Hub-Based, Scale-Free and Small-World Topologies".
+In this chapter the results of the experiments are given. Each topology-type introduced in appendix \ref{app:topologies} was simulated where in this chapter only Fully-Connected and Ascending-Connected topologies are handled as the Ascending-Connected topology - both with and without importance sampling - is the most minimal network which satisfies the requirements for the hypothesis. The results for the other topologies can be found in appendix \ref{app:results}.
 
 Note: The numbers in tables resemble always a median-value with the standard-deviation given in parentheses.
 
-\section{Validating simulation results}
-As  a point-of-reference and as an experimental proof for the correctness of the implementation of the thesis-software the results of a validation against both the theoretical equilibrium and the equilibrium found in \cite{Breuer2015} are given. Because equilibrium differs across the number of agents and the type of bond traded to be comparable the same amount of agents and the same bond-type has to be used in the experiments. Thus 1000 agents and a bond with face-value of 0.5 were chosen because \cite{Breuer2015} report their equilibria for this number of agents and bonds with face-value between 0.1 to 0.5.
+\section{Validating thesis-software}
+As  a point-of-reference and as an experimental proof for the correctness of the implementation of the thesis-software the results of a validation against both the theoretical equilibrium and the equilibrium found in \cite{Breuer2015} are given. Because equilibrium differs across the number of agents and the type of bond traded to be comparable the same amount of agents and the same bond-type has to be used in the experiments. Thus 1,000 agents and a bond with face-value of 0.5 were chosen because \cite{Breuer2015} report their equilibria for this number of agents and bonds with face-value between 0.1 to 0.5.
 
-\subsection{References}
+\paragraph{Erroneous equations in \cite{Breuer2015}} During the implementation of the thesis-software an error was found in the software of the paper of \cite{Breuer2015} to which the author of this thesis has access. The calculations of the minimum and maximum range of the Asset/Bond market are erroneous as given by the equations:
+
+\begin{equation}
+minimum = \frac{pD}{V}
+\end{equation}
+
+\begin{equation}
+maximum = \frac{pU}{pD} 
+\end{equation}\\
+
+It is easy to see that in this case not the full range is covered by the limit-ranges with optimism-factor \textit{h} between [0..1] because the minimum agent has its limit-price at $\frac{pD}{pD} = 1.0$ and the maximum agent has its limit-price at $\frac{pU}{V}$.  These equations lead to a different distribution of price-ranges and thus to a different wealth-distribution. This creates the problematic situation where the original results can not be used to validate whether the thesis-software is working correctly or not. As a fall-back the erroneous equations were used for validation purposes and were then replaced by the correct equations as shown in chapter \ref{ch:implementation} for the remainder of the thesis. 
+
+\subsection{References for 1,000 agents with 0.5 bond}
 
 \begin{table}[H]
 	\centering
@@ -47,7 +59,8 @@ As  a point-of-reference and as an experimental proof for the correctness of the
 	\label{tab:equilibrium_BREUER_1000}
 \end{table}
 
-\subsection{Thesis results}
+\subsection{Thesis-software result for 1,000 agents with 0.5 bond}
+Note that this result was created with the erroneous equations for the minimum and maximum of the Asset/Bond market to be comparable to the paper of \cite{Breuer2015}.
 
 \begin{figure}[H]
 	\centering
@@ -103,7 +116,9 @@ As  a point-of-reference and as an experimental proof for the correctness of the
 
 Although marginal agent i1 and bond-price q are quite different than from theoretical equilibrium and the pessimists wealth is 7.8\% less than given in \cite{Breuer2015} these results are nonetheless accepted as reaching the equilibrium. The differences emerge from the reasons that the thesis-simulation runs were terminated earlier than in \cite{Breuer2015} which results in the i1 and i2 edges to be not as sharp as reported in \cite{Breuer2015}. It would be necessary to run the simulation an order of magnitude longer as the matching probabilities are reduced rapidly when only direct neighbours are able to trade any more within a network of 1000 agents. See section \ref{sec:implementation_performanceImprovement} for details on matching-probabilities.
 
-\subsection{Performance and termination measurements}
+TODO HV: eine solche Erklaerung einer Abweichung kann nicht dazu fuehren, die Abweichung auf 0 zu setzen. Warum nimmst du nicht 100 Agenten, fuer die wir auch ein theoretisches Gleichgewicht berechnen koennen? Es geht hier ja nur um Validierung deines Simulators, nicht um Validierung der Theorie.
+
+\section{Performance and termination measurements}
 As noted in section \ref{sec:implementation_sweepingAndMatching} a matching-round performs up to 500 offering-rounds where during one round all agents make an offer to find a match. If a match occurs during one offering-round the current matching-round is terminated and marked as successful. If no match occurs during all 500 offering-rounds the current matching-round is terminated too but marked as failed. Thus the following terminology is defined:
 
 \paragraph{Successful matching-round} a match occurred within maximal 500 offering-rounds where in each offering-round all agents make an offer.
@@ -125,9 +140,8 @@ As noted in section \ref{sec:implementation_sweepingAndMatching} a matching-roun
 	\end{tabular}
 \end{table}
 
-
 \section{Experiments configuration}
-In the following experiments 100 agents were used, all markets (Asset/Cash, Bond/Cash, Asset/Bond) were enabled, a bond with face-value of 0.5 was selected and in each experiment 50 replications were run. A replication was terminated after 1000 failed matching-rounds in a row. Note that if trading is not possible any more before this criteria is met the simulation is terminated and thus it is possible that it halts earlier as can be seen for the Ascending-Connected Importance Sampling topology.
+In the following experiments 100 agents were used, all markets (Asset/Cash, Bond/Cash, Asset/Bond) were enabled, a bond with face-value of 0.5 was selected and in each experiment 50 replications were run. A replication was terminated after 1000 failed matching-rounds in a row. Note that if trading is not possible any more before this criteria is met the simulation is terminated and thus it is possible that it halts earlier as can be seen for the Ascending-Connected topology with Importance Sampling.
 
 \bigskip 
 
@@ -137,9 +151,11 @@ In the following experiments 100 agents were used, all markets (Asset/Cash, Bond
 
 The 0.5 bond was selected because it is a risky one which is important as with risk-less loans which have a face-value less than or equal 0.2 the results are indifferent and not unique and won't show the characteristic distribution of equilibrium.
 
+TODO HV: indifferent: ??
+
 \medskip
 
-As already described in section \ref{sec:implementation_sweepingAndMatching} the whole simulation-process is a random-process with an equilibrium different for each topology as the fixed-point solution thus one needs replications to reduce noise. The number of 50 replications was chosen because it is a good match between processing-power requirements and overall reduction of noise. Thus increasing the number e.g. to 100 or 200 would not result in much better results - both visual and numerical - but would need much longer to run. All facts can already be seen and derived when using 50 replications thus for all figures 50 replications were used unless stated otherwise e.g. a single run.
+As already described in section \ref{sec:implementation_sweepingAndMatching} the simulation is a random-process thus one needs replications to reduce noise. The number of 50 replications was chosen because it is a good match between processing-power requirements and overall reduction of noise. Thus increasing the number e.g. to 100 or 200 would not result in much better results - both visual and numerical - but would need much longer to run. All facts can already be seen and derived when using 50 replications thus for all figures 50 replications were used unless stated otherwise e.g. a single run.
 
 \begin{table}[H]
 	\centering
@@ -300,16 +316,16 @@ This topology serves as the major point-of-reference for the other experiments a
 	\end{tabular}
 \end{table}
 
-\subsection{Ascending-Connected Importance Sampling}
+\subsection{Ascending-Connected with Importance Sampling}
 \begin{figure}[H]
 	\centering
   \includegraphics[width=1.0\textwidth, angle=0]{ASCENDINGCONNECTED_IS_100_NOCOLLATERALMARKET_REPL.png}
-	\caption{Wealth-distribution of Ascending-Connected Importance Sampling topology}
+	\caption{Wealth-distribution of Ascending-Connected toplogy with Importance Sampling}
 	\label{fig:wealth_ASCENDINGCONNECTED_IS_100_NOCOLLATERALMARKET_REPL}
 \end{figure}
 
 \begin{table}[H]
-	\caption{Equilibrium of Ascending-Connected Importance Sampling topology}
+	\caption{Equilibrium of Ascending-Connected topology with Importance Sampling}
 	\centering
 	\begin{tabular} { l c r }
 		\hline
@@ -326,7 +342,7 @@ This topology serves as the major point-of-reference for the other experiments a
 \end{table} 
 
 \begin{table}[H]
-	\caption{Performance of Ascending-Connected Importance Sampling topology}
+	\caption{Performance of Ascending-Connected topology with Importance Sampling}
 	\centering
 	\begin{tabular} { l c r }
 		\hline

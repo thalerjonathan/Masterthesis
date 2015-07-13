@@ -180,11 +180,11 @@ public class InspectionPanel extends JPanel {
 		JPanel txInfoPanel = new JPanel( new GridBagLayout() );
 
 		this.topologySelection = new JComboBox<NetworkCreator>();
+		this.topologySelection.addItem( new FullyConnectedCreator() );
 		this.topologySelection.addItem( new AscendingConnectedCreator() );
 		this.topologySelection.addItem( new AscendingFullShortcutsCreator() );
 		this.topologySelection.addItem( new AscendingRegularShortcutsCreator() );
 		this.topologySelection.addItem( new AscendingRandomShortcutsCreator() );
-		this.topologySelection.addItem( new FullyConnectedCreator() );
 		this.topologySelection.addItem( new HalfFullyConnectedCreator() );
 		this.topologySelection.addItem( new HubConnectedCreator() );
 		this.topologySelection.addItem( new MedianHubCreator() );
@@ -705,6 +705,10 @@ public class InspectionPanel extends JPanel {
 		this.markets.setLoanMarket( this.loanCashMarketCheck.isSelected() );
 		this.markets.setCollateralMarket( this.collateralMarketCheck.isSelected() );
 		this.markets.setBP( this.bpMechanismCheck.isSelected() );
+		
+		this.agentWealthPanel.setMarkets( this.markets );
+		this.marketsTimeVisualizer.setMarkets( this.markets );
+		this.marketsAccuVisualizer.setMarkets( this.markets );
 	}
 	
 	private void handleImportanceSampling() {

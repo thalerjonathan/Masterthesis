@@ -5,52 +5,62 @@
 
 \newglossaryentry{auction}{
 	name=auction,
-	description={Is a market institution in which messages from traders include some price information}
+	description={Is a market institution in which messages from traders include some price information},
+	plural=auctions
 }
 
 \newglossaryentry{market institution}{
 	name=market institution,
-	description={Defines how exchange between traders takes place by defining rules what traders can do}
+	description={Defines how exchange between traders takes place by defining rules what traders can do},
+	plural=market institutions
 }
 
 \newglossaryentry{limit-price}{
 	name=limit-price,
-	description={Is the private price a trader assigns to a good they want to exchange. It is different from the price in the offering and is higher in case of the buyer and lower in the case of the seller. Note that the limit-price is a private price and thus unknown to other traders}
+	description={Is the private price a trader assigns to a good they want to exchange. It is different from the price in the offering and is higher in case of the buyer and lower in the case of the seller. Note that the limit-price is a private price and thus unknown to other traders},
+	plural=limit-prices
 }
 
 \newglossaryentry{trader}{
 	name=trader,
-	description={Is an agent who wants to exchange goods with other agents}
+	description={Is an agent who wants to exchange goods with other agents},
+	plural=traders
 }
 
 \newglossaryentry{good}{
 	name=good,
-	description={A generic object which is traded between agents. Can be an asset, food, gold }
+	description={A generic object which is traded between agents. Can be an asset, food, gold },
+	plural=goods
 }
 
 \newglossaryentry{seller}{
 	name=seller,
-	description={A trader who is willing to sell a given amount of good for a given price}
+	description={A trader who is willing to sell a given amount of good for a given price},
+	plural=sellers
 }
 
 \newglossaryentry{buyer}{
 	name=buyer,
-	description={A trader who is willing to buy a given amount of good for a given price}
+	description={A trader who is willing to buy a given amount of good for a given price},
+	plural=buyers
 }
 
 \newglossaryentry{offer}{
 	name=offer,
-	description={A tuple of price and quantity on a given market which signals the willingness to trade by these given quantities}
+	description={A tuple of price and quantity on a given market which signals the willingness to trade by these given quantities},
+	plural=offers
 }
 
 \newglossaryentry{bid}{
 	name=bid,
-	description={Is an offer placed by a buyer}
+	description={Is an offer placed by a buyer},
+	plural=bids
 }
 
 \newglossaryentry{ask}{
 	name=ask,
-	description={Is an offer placed by a seller}
+	description={Is an offer placed by a seller},
+	plural=asks
 }
 
 \newglossaryentry{clearing}{
@@ -65,17 +75,20 @@
 
 \newglossaryentry{round} {
 	name=round,
-	description={In each round all traders have the opportunity to place an offer. At the end of each round matching is applied and if a successful match is found the unmatched offers are deleted from the offer-book}
+	description={In each round all traders have the opportunity to place an offer. At the end of each round matching is applied and if a successful match is found the unmatched offers are deleted from the offer-book},
+	plural=rounds
 }
 
 \newglossaryentry{transaction-price} {
 	name=transaction-price,
-	description={Is the price upon a buyer and a seller agree when trading with each other}
+	description={Is the price upon a buyer and a seller agree when trading with each other},
+	plural=transactions-prices
 }
 
 \newglossaryentry{offer-book} {
 	name=offer-book,
-	description={Keeps all offers made by the traders}
+	description={Keeps all offers made by the traders},
+	plural=offer-books
 }
 
 \newglossaryentry{zero-intelligence agents} {
@@ -101,7 +114,7 @@ The continuous double-auction (CDA) is a type of auction upon which the model of
 \end{quote}
 
 \subsection{Definition}
-To explain the details of a \textit{continuous} double-auction one has to start with the double-auction (DA) alone. Generally speaking the DA is a \gls{market institution} which defines rules how traders can exchange \gls{good} for some \gls{numeraire} between each other. It is an \gls{auction} process which coordinates messages between traders which include some price information. Thus a DA is a multilateral process in which during multiple \gls{round} TODO: plural traders can enter \gls{offer} TODO: plural into an \gls{offer-book} and accept offers made by others. Traders can be distinguished between \gls{seller} and \gls{buyer} and send their messages/place their offers in a given price-range according to their \gls{limit-price}. Depending on the type of the DA at some point a \gls{clearing} of the market happens thus leading to the actual exchange between the traders and thus a change in the allocation of their goods and cash. \cite{Parsons2006}
+To explain the details of a \textit{continuous} double-auction one has to start with the double-auction (DA) alone. Generally speaking the DA is a \gls{market institution} which defines rules how traders can exchange \gls{good} for some \gls{numeraire} between each other. It is an \gls{auction} process which coordinates messages between traders which include some price information. Thus a DA is a multilateral process in which during multiple \glspl{round} traders can enter \glspl{offer} into an \gls{offer-book} and accept offers made by others. Traders can be distinguished between \gls{seller} and \gls{buyer} and send their messages/place their offers in a given price-range according to their \gls{limit-price}. Depending on the type of the DA at some point a \gls{clearing} of the market happens thus leading to the actual exchange between the traders and thus a change in the allocation of their goods and cash. \cite{Parsons2006}
 
 \subsection{Characterization}
 It is important to note that there does not exist such a single thing as the "double auction" as there are many variants of it where they can all be differentiated in the way when and how traders place their offers and when and how the auction clears the market. According to \cite{Parsons2006} the following questions must be answered when characterizing a double-auction instance:

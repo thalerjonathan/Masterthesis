@@ -662,6 +662,10 @@ public class ReplicationPanel extends JPanel {
 		this.markets.setLoanMarket( this.loanCashMarketCheck.isSelected() );
 		this.markets.setCollateralMarket( this.collateralMarketCheck.isSelected() );
 		this.markets.setBP( this.bpMechanismCheck.isSelected() );
+		
+		this.agentWealthPanel.setMarkets( this.markets );
+		this.marketsTimeVisualizer.setMarkets( this.markets );
+		this.marketsAccuVisualizer.setMarkets( this.markets );
 	}
 	
 }

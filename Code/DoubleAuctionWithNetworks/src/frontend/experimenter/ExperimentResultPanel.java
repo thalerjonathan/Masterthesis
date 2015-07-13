@@ -85,6 +85,10 @@ public class ExperimentResultPanel extends JPanel {
 		MarketsTimeOfflineVisualizer marketsTimeVisualizer = new MarketsTimeOfflineVisualizer( bean.getMedianMarkets() );
 		MarketsAccuOfflineVisualizer marketsAccuVisualizer = new MarketsAccuOfflineVisualizer( bean.getMedianMarkets() );
 
+		wealthvisualizer.setMarkets( markets );
+		marketsTimeVisualizer.setMarkets( markets );
+		marketsAccuVisualizer.setMarkets( markets );
+		
 		wealthvisualizer.setAgents( agents );
 		equilibriumInfoPanel.setMeanAndVariance( equilibriumMean, equilibriumVariance );
 

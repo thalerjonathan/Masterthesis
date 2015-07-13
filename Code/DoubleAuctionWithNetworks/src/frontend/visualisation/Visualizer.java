@@ -13,11 +13,14 @@ import javax.swing.JFileChooser;
 import javax.swing.JPanel;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
+import backend.markets.Markets;
 import utils.Utils;
 
 @SuppressWarnings("serial")
 public class Visualizer extends JPanel {
-
+	
+	protected Markets markets;
+	
 	protected final static Font RENDER_FONT = new Font( "Helvetica", Font.BOLD, 16 );
 	
 	public Visualizer() {
@@ -27,6 +30,12 @@ public class Visualizer extends JPanel {
 				storeAsPng();
 			}
 		} );
+	}
+
+	public void setMarkets( Markets markets ) {
+		this.markets = markets;
+		
+		this.repaint();
 	}
 	
 	public void storeAsPng() {

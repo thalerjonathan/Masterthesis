@@ -103,21 +103,18 @@ The Asset/Bond market trades assets against bonds thus the utility-function is j
 \ell_{asset/bond} = \frac{\ell_{asset}}{\ell_{bond}}
 \end{equation}
 
-\subsection{Agent Utilitiy}
-TODO: move to next section of utility
-The utility of an agent is a generic measure to define .
-It is defined as an equation into which the holdings of the agent are multiplied by the expected value the agent assigns to each.
+\subsection{Agent utilitiy}
+The utility of an agent is a generic measure to calculate the trading-preferences of the agent. In the case of this thesis it calculates the potential earning of a given configuration of goods by multiplying the holdings of a good with its limit-function. In equilibrium theory a configuration is found which clears the markets.
 
-In this section the utility-functions of an agent for each market are given. See chapter \ref{ch:implementation} for more details on the markets. TODO: the functions below are NOT the utility-function but the limit-functions of an agent on each market. The utility-function is just a SINGLE one (no plural) and give a single utility-value. it includes the current holdings of cash, loan and assets and multiplies it by the limit-value of each market. The limit-functions are defined first, then the utility-function
+\medskip
 
-total utility
+Agents can hold cash, assets and bonds thus for each of this goods a separate utility-function exists and thus the total utility of an agent is given as the sum of all separate utilities.
+
 \begin{equation}
 u_{agent} = u_{cash} + u_{asset} + u_{bond}
 \end{equation}
 
 \subsubsection{Cash utility}
-utility cash = (assets selling - assets buying) * asset-price + (bonds giving - bonds taking) * bond-price + cash endowment
-
 $s_{asset} \dots \textit{selling amount asset}$ \\
 $g_{bond} \dots \textit{giving amount bond}$ \\
 $b_{asset} \dots \textit{buying amount asset}$ \\
@@ -131,17 +128,13 @@ u_{cash} = (s_{asset} - b_{asset} ) p_{asset} + (g_{bond} - t_{bond}) p_{bond} +
 \end{equation}
 
 \subsubsection{Asset utility}
-utility asset = asset holdings * asset limit 
-
-$h_{asset} \dots \textit{holdings asset}$ \\
+$h_{asset} \dots \textit{holdings asset}$ 
 
 \begin{equation}
 u_{asset} = h_{asset} * \ell_{asset}
 \end{equation}
 
 \subsubsection{Bond utility}
-utility bond = bond holdings * bond limit
-
 $h_{bond} \dots \textit{holdings bond}$ 
 
 \begin{equation}
