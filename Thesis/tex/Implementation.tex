@@ -68,25 +68,32 @@ Inspection allows for a given simulation-configuration to step through the whole
 This functionality allows to model different kind of network-topologies as described in appendix \ref{app:topologies} to restrict trading only to this kind of neighbourhood. Obviously network-topologies are graphs and thus it would have been required to implement a graph-library but that was not implemented self but the graph-library JUNG was used as it supported all the required features like visualisation, neighbourhood- and path-queries.
 
 \subsection{Replications}
+\label{sec:REPLICATIONS}
 To get robust results replications are used to reduce the influence of random noise. This feature allows to let run a specific simulation configuration for a given number of replications in parallel. The specific simulation-configuration serves as a template - especially the network-topology - and each replication does a clone of the network together with the agents to be able to run in parallel without the need of synchronization. It was tried to implement the network as a shared network between all replications but because the agents serve as nodes this was not feasible and would have required a very fundamental re-factoring of already existing functionality. Thus the higher requirements in memory and time for cloning was accepted for a more elegant solution.
 When replications are processed running ones can be inspected and information can be queried using the GUI. It is possible to cancel one replication, cancel a whole task which reduces thread-load, inspect wealth-distribution, see the failed and successful matches and statistics of already finished replications. Whenever a replication is finished it is added to the pool of results and the median result is re-calculated and visualized and informations updated. When all replications have finished the results are written to a new XML-file in the results-folder of the software. This result-file can be opened using the experiments-feature which is described next. A simulation-configuration can be saved as a separate new experiment-file or added to an existing experiment-file - see next section for experiments.
 
 \subsection{Experiments}
-The experiments-feature allows to open experiment-files and result-files of replication- and experiment-runs. An experiment-file is just a collection of simulation-configurations to be run for a given number of replications. When an experiment-file is opened all simulation-configurations are displayed in a list an each of them can be opened as a new replication-tab which in turn can be run as explained in section "Replications". To be able to coneveniently run all simulation-configurations of an experiment-file without needing user-interaction a command-line feature was implemented. For this purpose the jar-file LeverageCycleCMD.jar was built. Start an experiment-run by using the following command:
-
-TODO: remove the commandline-starting. this is not a user-manual!
-
-\begin{center}
-\textit{java -jar LeverageCycleCMD.jar PATH-TO-EXPERIMENT-FILE MAX-THREADS-OPTIONAL}
-\end{center}
-
-Note that the number of threads to use is optional and when omitted the number of CPU-cores found on the system is used. 
+The experiments-feature allows to open experiment-files and result-files of replication- and experiment-runs. An experiment-file is just a collection of simulation-configurations to be run for a given number of replications. When an experiment-file is opened all simulation-configurations are displayed in a list and each of them can be opened as a new replication-tab which in turn can be run as explained in section "Replications". To be able to conveniently run all simulation-configurations of an experiment-file without needing user-interaction a command-line feature was implemented.
 
 \medskip
 
-Each replication-run of a given simulation-configuration in the experiment-file produces a result-file with the name provided in the configuration. These result-files are dubbed result-files of experiment-runs as previously stated but are the same as the result-file of a replication-run as discussed in the section "Replications"
-When opening a result-file a new tab is added to the main-window and the statistics of the run together with equilibrium-statistics are displayed. Furthermore the wealth-distirbution and market-acitivities are visualized and it is possible to view the statistics of each individual replication. Furthermore the user can display the network-topology used for this simulation-configuration which is important as random networks are different when created new.
+Each replication-run of a given simulation-configuration in the experiment-file produces a result-file with the name provided in the configuration. These result-files are dubbed result-files of experiment-runs as previously stated but are the same as the result-file of a replication-run as discussed in the section \ref{sec:REPLICATIONS}.
+When opening a result-file a new tab is added to the main-window and the statistics of the run together with equilibrium-statistics are displayed. Furthermore the wealth-distribution and market-activities are visualized and it is possible to view the statistics of each individual replication. Furthermore the user can display the network-topology used for this simulation-configuration which is important as random networks are different when created new.
 
+\subsection{Result-file}
+Because an experiment-run can take a lot of time to save the results for later investigation all necessary data is automatically stored as XML in a result-file when a replication has finished. Note that an experiment will thus write the result-file multiple times if it has multiple replications. It contains the following information:
+
+\begin{itemize}
+\item Agents wealth-distribution - mean of final wealth-distribution of all agents over all replications.
+\item Starting-, ending-time and duration in seconds of experiment.
+\item Experiment-configuration.
+\item Mean and standard-deviation of equilibrium.
+\item Graph-structure - some topologies create random-graphs thus the structure is stored to allow an inspection.
+\item Mean of successful, failed and total matching-rounds.
+\item Mean duration of a replication.
+\item Mean of market-activity.
+\item Meta-information of each replication: equilibrium, starting- and ending-time, duration.
+\end{itemize}
 
 \section{Architecture}
 In this section the basic architecture of the thesis-software is discussed. It is important to note that this thesis is a fat-client and has its major emphasis not on the software-development aspect but on the visual- and numerical results where the accompanying software is just a tool for the means to calculate theses required results. Thus the architecture is guided by a simple division of layers into front-end, controller and back-end. The front-end is responsible for input and output of the user through GUI or command-line. The controller-layer provides encapsulated chunks of functionality of the back-end to the front-end. It is necessary to abstract, encapsulate and combine the stateful nature of communication with the back-end into a separate layer instead of polluting the front-end with it and creating unnecessary dependencies. The back-end layer provides the functionality where the real work is done e.g. simulation is executed.

@@ -227,6 +227,7 @@ public class ReplicationsRunner {
 	private synchronized void replicationFinished( ReplicationData data ) {
 		this.replicationData.add( data );
 		this.currentStats = this.calculateStatistics();
+		this.writeResults();
 		
 		// NOTE: need to copy markets because gui-thread will use it concurrently and may be cleared during replicationFinished 
 		List<double[]> copyMarkets = new ArrayList<double[]>( this.medianMarkets );
