@@ -42,13 +42,15 @@ public class EquilibriumInfoPanel extends JPanel {
 		JLabel assetLoanPriceInfoLabel = new JLabel( "Asset/Loan-Price: ");
 		JLabel collateralPriceInfoLabel = new JLabel( "Collateral/Cash-Price: ");
 
-		JLabel i0InfoLabel = new JLabel( "i0: ");
-		JLabel i1InfoLabel = new JLabel( "i1: ");
-		JLabel i2InfoLabel = new JLabel( "i2: ");
+		// NOTE: renamed i0 to i1 and i1 to i2 and i2 to last traders
+		// problem: would have need to change all result-xmls
+		JLabel i0InfoLabel = new JLabel( "i1: ");
+		JLabel i1InfoLabel = new JLabel( "i2: ");
+		JLabel i2InfoLabel = new JLabel( "last Trader: ");
 
-		JLabel i0IndexInfoLabel = new JLabel( "i0 Index: ");
-		JLabel i1IndexInfoLabel = new JLabel( "i1 Index: ");
-		JLabel i2IndexInfoLabel = new JLabel( "i2 Index: ");
+		JLabel i0IndexInfoLabel = new JLabel( "i1 Index: ");
+		JLabel i1IndexInfoLabel = new JLabel( "i2 Index: ");
+		JLabel i2IndexInfoLabel = new JLabel( "last Trader Index: ");
 
 		JLabel pessimistInfoLabel = new JLabel( "Pessimist Wealth: ");
 		JLabel mediumInfoLabel = new JLabel( "Medianist Wealth: ");

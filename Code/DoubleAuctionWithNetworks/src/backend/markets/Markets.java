@@ -23,7 +23,7 @@ public class Markets {
 
 	// not too small otherwise would trade Bond/Cash for very long time 
 	// as fractions get smaller and smaller
-	public final static double TRADING_EPSILON = 0.0001;
+	public final static double TRADING_EPSILON = 1e-8;
 
 	private final static double UP_STATE_DEFAULT = 1.0;
 	private final static double DOWN_STATE_DEFAULT = 0.2;

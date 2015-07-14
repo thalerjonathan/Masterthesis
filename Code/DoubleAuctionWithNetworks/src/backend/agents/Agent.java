@@ -500,7 +500,6 @@ public class Agent {
 
 	private void calcAskOfferings( AskOffering[] offerings ) {
 		double uncollAssets = this.getUncollateralizedAssets();
-		double currentObligations = this.getCurrentObligations();
 		
 		// if there are still uncollateralized assets left, create a sell-offer
 		if ( uncollAssets > Markets.TRADING_UNIT_ASSET ) {
@@ -518,27 +517,36 @@ public class Agent {
 		} else {
 			offerings[ MarketType.ASSET_CASH.ordinal() ] = null;
 		}
-
+		
+		double tradeableLoans = 0;
+		if ( this.markets.isBP() ) {
+			tradeableLoans = this.getLoans();
+		} else {
+			tradeableLoans = -this.loansTaken;
+		}
+		
 		// loan-market is open AND there are still uncollateralized assets left
 		// agent can place a sell-offer because when selling a loan, it needs to be secured by collateralizing 
 		// the same amount of assets
 		// IMPORTANT: only generate offers if face-value V of traded bond is larger
 		// than the down-value pD as in the other case the limit-function is not monotony increasing
-		if ( this.markets.isLoanMarket() && uncollAssets > Markets.TRADING_EPSILON && 
+		if ( this.markets.isLoanMarket() && 
+				tradeableLoans > Markets.TRADING_EPSILON &&
 				this.markets.V() > this.markets.pD() ) {
+
 			// want to SELL a loan against cash: borrowing money from buyer by TAKING a loan
 			// => collateralize assets of the same amount as security (taking loan)
 			// => getting money from buyer  (borrowing money from buyer) 
 			// => need to have enough uncollateralized assets
-			
+
 			// this is always the price for 1.0 Units of loans - will be normalized during a Match
 			// to the given amount below - the unit of this variable is CASH
 			double loanPriceInCash = randomRange( loanLimits[ 1 ][ 0 ], loanLimits[ 1 ][ 1 ] );
 			
 			// the maximum of loans we can sell is the uncollateralized assets left (1:1 relationship when collateralizing)
 			// but don't trad everything at once, break down into small chungs: Markets.TRADING_UNIT_LOAN
-			double loanAmount = Math.min( uncollAssets, Markets.TRADING_UNIT_LOAN );
-
+			double loanAmount = Math.min( tradeableLoans, Markets.TRADING_UNIT_LOAN );
+			
 			offerings[ MarketType.LOAN_CASH.ordinal() ] = new AskOffering( loanPriceInCash, loanAmount, this, MarketType.LOAN_CASH );
 			
 		// either no more uncollaterlized assets left, can't sell loans because don't have assets to
@@ -581,8 +589,15 @@ public class Agent {
 			offerings[ MarketType.ASSET_LOAN.ordinal() ] = null;
 		}
 
+		double currentObligations = this.loansTaken;
+		
+		if ( this.markets.isBP() ) {
+			currentObligations -= this.loansGiven;
+		}
+		
 		// collateral-cash market is open, can only place offer if there are any collateralized assets around
-		if ( this.markets.isCollateralMarket() && currentObligations > Markets.TRADING_EPSILON ) {
+		if ( this.markets.isCollateralMarket() && 
+				currentObligations > Markets.TRADING_EPSILON ) {
 			// pick a random price from range: is the price for 1.0 Unit of (collateral) assets
 			double assetPriceInCash = randomRange( limitPriceCollateral, maxCollateralPriceInCash );
 			// calculate the amount of assets to trade: don't trade all but in small chunks of TRADING_UNIT_ASSET
