@@ -387,13 +387,9 @@ public class Agent {
 		// assets as collateral 
 		double collateral = this.getLoansTaken();
 		
-		// when using Bonds-Pledgeability (BP) Mechanism, then it is possible
-		// to trade assets aquired by loans given to other agents
-		if ( this.markets.isBP() ) {
-			// loanGiven decreases the collateral in case of BP because it is available for trades
-			collateral -= this.getLoansGiven();
-		}
-		
+		// loanGiven decreases the collateral in case of BP because it is available for trades
+		collateral -= this.getLoansGiven();
+
 		return Math.max( 0.0, collateral + collateralTraded );
 	}
 	
@@ -423,7 +419,8 @@ public class Agent {
 		// loan-market is open AND there is still cash left for buying a bond
 		// IMPORTANT: only generate offers if face-value V of traded bond is larger
 		// than the down-value pD as in the other case the limit-function is not monotony increasing
-		if ( this.markets.isLoanMarket() && this.cash > Markets.TRADING_EPSILON && 
+		if ( this.markets.isLoanMarket() && 
+				this.cash > Markets.TRADING_EPSILON && 
 				this.markets.V() > this.markets.pD() ) {
 			// want to BUY a loan against cash: GIVING the seller a loan, lending money to seller
 			// => paying cash to seller (lending money to seller)
@@ -448,7 +445,7 @@ public class Agent {
 		}
 		
 		// asset-against-bond market is open, check if agent can place buy-offers
-		if ( this.markets.isABM() ) {
+		if ( this.markets.isAssetBondMarket() ) {
 			// want to BUY an asset against loan
 			// => getting asset from seller
 			// => paying with a loan: taking loan from seller
@@ -482,7 +479,8 @@ public class Agent {
 		}
 		
 		// collateral-cash market is open, can only place an offer if there is enough cash left
-		if ( this.markets.isCollateralMarket() && this.cash > Markets.TRADING_EPSILON ) {
+		if ( this.markets.isCollateralMarket() && 
+				this.cash > Markets.TRADING_EPSILON ) {
 			// pick random asset price from range: is the price of 1.0 unit of assets
 			assetPriceInCash = randomRange( minCollateralPriceInCash, limitPriceCollateral );
 			// calculate how much assets could be bought with the cash owned
@@ -500,7 +498,10 @@ public class Agent {
 
 	private void calcAskOfferings( AskOffering[] offerings ) {
 		double uncollAssets = this.getUncollateralizedAssets();
-		
+		// how many assets are bound through bonds
+		double currentObligations = this.getCurrentObligations();
+		double tradeableLoans = this.getLoans();
+
 		// if there are still uncollateralized assets left, create a sell-offer
 		if ( uncollAssets > Markets.TRADING_UNIT_ASSET ) {
 			// want to SELL an asset against cash 
@@ -516,13 +517,6 @@ public class Agent {
 		// no more (not enough) uncollateralized assets left, can't sell anymore, don't place a sell-offer
 		} else {
 			offerings[ MarketType.ASSET_CASH.ordinal() ] = null;
-		}
-		
-		double tradeableLoans = 0;
-		if ( this.markets.isBP() ) {
-			tradeableLoans = this.getLoans();
-		} else {
-			tradeableLoans = -this.loansTaken;
 		}
 		
 		// loan-market is open AND there are still uncollateralized assets left
@@ -556,7 +550,7 @@ public class Agent {
 		}
 		
 		// asset-against-bond market is open, check if this agent can place sell-offers
-		if ( this.markets.isABM() ) {
+		if ( this.markets.isAssetBondMarket() ) {
 			// want to SELL a loan against an asset 
 			// => giving asset to buyer
 			// => getting bond from buyer: giving loan
@@ -589,12 +583,6 @@ public class Agent {
 			offerings[ MarketType.ASSET_LOAN.ordinal() ] = null;
 		}
 
-		double currentObligations = this.loansTaken;
-		
-		if ( this.markets.isBP() ) {
-			currentObligations -= this.loansGiven;
-		}
-		
 		// collateral-cash market is open, can only place offer if there are any collateralized assets around
 		if ( this.markets.isCollateralMarket() && 
 				currentObligations > Markets.TRADING_EPSILON ) {
@@ -635,12 +623,10 @@ public class Agent {
 		this.minAssetPriceInCash = pD;
 		this.minLoanPriceInCash = pD;
 		this.minAssetPriceInLoans = 1.0; // pD / pD 
-		//this.minAssetPriceInLoans = pD / V;
 		
 		this.maxAssetPriceInCash = pU;
 		this.maxLoanPriceInCash = V;
 		this.maxAssetPriceInLoans = pU / V;
-		//this.maxAssetPriceInLoans = pU / pD;
 		
 		this.minCollateralPriceInCash = 0.0; // this.minAssetPriceInCash - this.minLoanPriceInCash 
 		this.maxCollateralPriceInCash = this.maxAssetPriceInCash - this.maxLoanPriceInCash;

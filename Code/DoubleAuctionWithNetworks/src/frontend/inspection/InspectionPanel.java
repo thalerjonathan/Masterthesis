@@ -81,7 +81,6 @@ public class InspectionPanel extends JPanel {
 	private JCheckBox abmMarketCheck;
 	private JCheckBox loanCashMarketCheck;
 	private JCheckBox collateralMarketCheck;
-	private JCheckBox bpMechanismCheck;
 	private JCheckBox importanceSamplingCheck;
 	
 	private JCheckBox keepAgentHistoryCheck;
@@ -221,7 +220,6 @@ public class InspectionPanel extends JPanel {
 		this.abmMarketCheck = new JCheckBox( "Asset/Loan Market" );
 		this.loanCashMarketCheck = new JCheckBox( "Loan/Cash Market" );
 		this.collateralMarketCheck = new JCheckBox( "Collateral/Cash Market" );
-		this.bpMechanismCheck = new JCheckBox( "Bonds Pledgeability" );
 		this.importanceSamplingCheck = new JCheckBox( "Importance-Sampling" );
 		
 		this.keepAgentHistoryCheck = new JCheckBox( "Keep Agent History" );
@@ -239,10 +237,9 @@ public class InspectionPanel extends JPanel {
 		
 		this.loanTypeSelection.setSelectedItem( LoanType.LOAN_05 );
 		
-		this.abmMarketCheck.setSelected( this.markets.isABM() );
+		this.abmMarketCheck.setSelected( this.markets.isAssetBondMarket() );
 		this.loanCashMarketCheck.setSelected( this.markets.isLoanMarket() );
 		this.collateralMarketCheck.setSelected( this.markets.isCollateralMarket() );
-		this.bpMechanismCheck.setSelected( this.markets.isBP() );
 		this.keepAgentHistoryCheck.setSelected( false );
 		
 		this.nextTxButton.setEnabled( false );
@@ -394,14 +391,12 @@ public class InspectionPanel extends JPanel {
 				if ( false == InspectionPanel.this.abmMarketCheck.isSelected() ) {
 					InspectionPanel.this.loanCashMarketCheck.setSelected( false );
 					InspectionPanel.this.collateralMarketCheck.setSelected( false );
-					InspectionPanel.this.bpMechanismCheck.setSelected( false );
 				}
 				
 				InspectionPanel.this.setMarketMechanisms();
 			}
 		};
 		
-		this.bpMechanismCheck.addActionListener( checkListener );
 		this.abmMarketCheck.addActionListener( checkListener );
 		this.collateralMarketCheck.addActionListener( checkListener );
 		this.loanCashMarketCheck.addActionListener( checkListener );
@@ -421,7 +416,6 @@ public class InspectionPanel extends JPanel {
 		controlsPanel.add( this.abmMarketCheck );
 		controlsPanel.add( this.loanCashMarketCheck );
 		controlsPanel.add( this.collateralMarketCheck );
-		controlsPanel.add( this.bpMechanismCheck );
 		controlsPanel.add( this.importanceSamplingCheck );
 		controlsPanel.add( this.inspectionButton );
 		
@@ -701,10 +695,9 @@ public class InspectionPanel extends JPanel {
 	}
 	
 	private void setMarketMechanisms() {
-		this.markets.setABM( this.abmMarketCheck.isSelected() );
+		this.markets.setAssetBondMaret( this.abmMarketCheck.isSelected() );
 		this.markets.setLoanMarket( this.loanCashMarketCheck.isSelected() );
 		this.markets.setCollateralMarket( this.collateralMarketCheck.isSelected() );
-		this.markets.setBP( this.bpMechanismCheck.isSelected() );
 		
 		this.agentWealthPanel.setMarkets( this.markets );
 		this.marketsTimeVisualizer.setMarkets( this.markets );

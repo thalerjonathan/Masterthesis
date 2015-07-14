@@ -145,9 +145,8 @@ public class ExperimentCMDRunner {
 	
 	private static Markets createMarkets( ExperimentBean bean ) {
 		Markets markets = new Markets();
-		markets.setABM( bean.isAssetLoanMarket() );
+		markets.setAssetBondMaret( bean.isAssetLoanMarket() );
 		markets.setLoanMarket( bean.isLoanCashMarket() );
-		markets.setBP( bean.isBondsPledgeability() );
 		markets.setLoanType( bean.getLoanType() );
 		markets.setCollateralMarket( bean.isCollateralCashMarket() );
 		

@@ -9,7 +9,6 @@ public class Markets {
 	private LoanType loanType = LoanType.LOAN_05;
 	
 	private boolean abm;
-	private boolean bp;
 	private boolean loanMarket;
 	private boolean collateralMarket;
 	
@@ -30,7 +29,6 @@ public class Markets {
 	
 	public Markets() {
 		this.abm = true;
-		this.bp = true;
 		this.loanMarket = true;
 		this.collateralMarket = true;
 	}
@@ -54,12 +52,8 @@ public class Markets {
 		return h * this.loanType.V() + ( 1.0 - h ) * this.pD;
 	}
 	
-	public void setABM(boolean abm) {
+	public void setAssetBondMaret(boolean abm) {
 		this.abm = abm;
-	}
-
-	public void setBP(boolean bp) {
-		this.bp = bp;
 	}
 
 	public void setLoanMarket(boolean loanMarket) {
@@ -70,14 +64,10 @@ public class Markets {
 		this.collateralMarket = collateralMarket;
 	}
 	
-	public boolean isABM() {
+	public boolean isAssetBondMarket() {
 		return abm;
 	}
 
-	public boolean isBP() {
-		return bp;
-	}
-	
 	public boolean isLoanMarket() {
 		return loanMarket;
 	}

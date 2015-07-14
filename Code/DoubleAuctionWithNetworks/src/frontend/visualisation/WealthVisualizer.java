@@ -169,7 +169,7 @@ public class WealthVisualizer extends Visualizer {
 			g.drawChars( "Loans".toCharArray(), 0, "Loans".length(), LEGEND_BOX_X + 60, d.height - LEGEND_BOX_Y + 58 );
 		}
 	
-		if ( markets == null || markets.isABM() ) {
+		if ( markets == null || markets.isAssetBondMarket() ) {
 			g.setColor( DARK_CYAN );
 			g.drawLine( LEGEND_BOX_X + 5, d.height - LEGEND_BOX_Y + 73, LEGEND_BOX_X + 50, d.height - LEGEND_BOX_Y + 73 );
 			g.setColor( Color.BLACK );

@@ -16,7 +16,6 @@ public class AgentBean {
 	private double loanTaken;
 	
 	public AgentBean() {
-		
 	}
 	
 	public AgentBean( Agent a ) {

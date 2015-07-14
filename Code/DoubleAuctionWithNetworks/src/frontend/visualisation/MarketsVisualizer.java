@@ -66,7 +66,7 @@ public abstract class MarketsVisualizer extends Visualizer {
 			g.drawChars( "Loan/Cash".toCharArray(), 0, "Loan/Cash".length(), topX + 60, topY + 38 );
 		}
 		
-		if ( markets == null || markets.isABM() ) {
+		if ( markets == null || markets.isAssetBondMarket() ) {
 			g.setColor( MarketsAccuOnlineVisualizer.MARKET_COLORS[ MarketType.ASSET_LOAN.ordinal() ] );
 			g.drawLine( topX + 5, topY + 53, topX + 50, topY + 53 );
 			g.setColor( Color.BLACK );

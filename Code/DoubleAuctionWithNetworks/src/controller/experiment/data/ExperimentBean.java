@@ -15,7 +15,6 @@ public class ExperimentBean {
 	private boolean assetLoanMarket;
 	private boolean loanCashMarket;
 	private boolean collateralCashMarket;
-	private boolean bondsPledgeability;
 	private boolean importanceSampling;
 	private TerminationMode terminationMode;
 	private int maxTx;
@@ -77,15 +76,6 @@ public class ExperimentBean {
 	@XmlElement
 	public void setLoanCashMarket(boolean loanCashMarket) {
 		this.loanCashMarket = loanCashMarket;
-	}
-	
-	public boolean isBondsPledgeability() {
-		return bondsPledgeability;
-	}
-	
-	@XmlElement
-	public void setBondsPledgeability(boolean bondsPledgeability) {
-		this.bondsPledgeability = bondsPledgeability;
 	}
 	
 	public boolean isImportanceSampling() {

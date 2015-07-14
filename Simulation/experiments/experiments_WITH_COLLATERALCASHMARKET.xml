@@ -3,7 +3,6 @@
     <experiment>
         <agentCount>100</agentCount>
         <assetLoanMarket>true</assetLoanMarket>
-        <bondsPledgeability>true</bondsPledgeability>
         <collateralCashMarket>true</collateralCashMarket>
         <importanceSampling>false</importanceSampling>
         <loanCashMarket>true</loanCashMarket>
@@ -17,7 +16,6 @@
     <experiment>
         <agentCount>100</agentCount>
         <assetLoanMarket>true</assetLoanMarket>
-        <bondsPledgeability>true</bondsPledgeability>
         <collateralCashMarket>true</collateralCashMarket>
         <importanceSampling>false</importanceSampling>
         <loanCashMarket>true</loanCashMarket>
@@ -31,7 +29,6 @@
 	<experiment>
         <agentCount>100</agentCount>
         <assetLoanMarket>true</assetLoanMarket>
-        <bondsPledgeability>true</bondsPledgeability>
         <collateralCashMarket>true</collateralCashMarket>
         <importanceSampling>false</importanceSampling>
         <loanCashMarket>true</loanCashMarket>
@@ -52,7 +49,6 @@
     <experiment>
         <agentCount>100</agentCount>
         <assetLoanMarket>true</assetLoanMarket>
-        <bondsPledgeability>true</bondsPledgeability>
         <collateralCashMarket>true</collateralCashMarket>
         <importanceSampling>false</importanceSampling>
         <loanCashMarket>true</loanCashMarket>
@@ -66,7 +62,6 @@
 	<experiment>
         <agentCount>100</agentCount>
         <assetLoanMarket>true</assetLoanMarket>
-        <bondsPledgeability>true</bondsPledgeability>
         <collateralCashMarket>true</collateralCashMarket>
         <importanceSampling>false</importanceSampling>
         <loanCashMarket>true</loanCashMarket>
@@ -87,7 +82,6 @@
     <experiment>
         <agentCount>100</agentCount>
         <assetLoanMarket>true</assetLoanMarket>
-        <bondsPledgeability>true</bondsPledgeability>
         <collateralCashMarket>true</collateralCashMarket>
         <importanceSampling>false</importanceSampling>
         <loanCashMarket>true</loanCashMarket>
@@ -108,7 +102,6 @@
     <experiment>
         <agentCount>100</agentCount>
         <assetLoanMarket>true</assetLoanMarket>
-        <bondsPledgeability>true</bondsPledgeability>
         <collateralCashMarket>true</collateralCashMarket>
         <importanceSampling>false</importanceSampling>
         <loanCashMarket>true</loanCashMarket>

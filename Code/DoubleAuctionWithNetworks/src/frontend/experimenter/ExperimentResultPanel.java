@@ -55,8 +55,7 @@ public class ExperimentResultPanel extends JPanel {
 		EquilibriumStatistics equilibriumVariance = new EquilibriumStatistics( bean.getEquilibriumVariance() );
 		
 		Markets markets = new Markets();
-		markets.setABM( bean.getExperiment().isAssetLoanMarket() );
-		markets.setBP( bean.getExperiment().isBondsPledgeability() );
+		markets.setAssetBondMaret( bean.getExperiment().isAssetLoanMarket() );
 		markets.setCollateralMarket( bean.getExperiment().isCollateralCashMarket() );
 		markets.setLoanMarket( bean.getExperiment().isLoanCashMarket() );
 		
