@@ -13,6 +13,19 @@
         <terminationMode>FAIL_SUCCESSIVE_TX</terminationMode>
         <topology class="frontend.networkCreators.FullyConnectedCreator"/>
     </experiment>
+	    <experiment>
+        <agentCount>100</agentCount>
+        <assetLoanMarket>true</assetLoanMarket>
+        <collateralCashMarket>true</collateralCashMarket>
+        <importanceSampling>false</importanceSampling>
+        <loanCashMarket>true</loanCashMarket>
+        <loanType>LOAN_05</loanType>
+        <maxTx>1000</maxTx>
+        <name>Fully-Connected with Collateral-Cash</name>
+        <replications>50</replications>
+        <terminationMode>FAIL_SUCCESSIVE_TX</terminationMode>
+        <topology class="frontend.networkCreators.FullyConnectedCreator"/>
+    </experiment>
     <experiment>
         <agentCount>100</agentCount>
         <assetLoanMarket>true</assetLoanMarket>
@@ -39,7 +52,19 @@
         <terminationMode>FAIL_SUCCESSIVE_TX</terminationMode>
         <topology class="frontend.networkCreators.AscendingConnectedCreator"/>
     </experiment>
-	
+	<experiment>
+        <agentCount>100</agentCount>
+        <assetLoanMarket>true</assetLoanMarket>
+        <collateralCashMarket>true</collateralCashMarket>
+        <importanceSampling>false</importanceSampling>
+        <loanCashMarket>true</loanCashMarket>
+        <loanType>LOAN_05</loanType>
+        <maxTx>1000</maxTx>
+        <name>Ascending-Connected with Collateral-Cash</name>
+        <replications>50</replications>
+        <terminationMode>FAIL_SUCCESSIVE_TX</terminationMode>
+        <topology class="frontend.networkCreators.AscendingConnectedCreator"/>
+    </experiment>
     <experiment>
         <agentCount>100</agentCount>
         <assetLoanMarket>true</assetLoanMarket>

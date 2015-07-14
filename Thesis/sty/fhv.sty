@@ -173,6 +173,11 @@ sort={#3}}
   	
 \listoffigures
 
+
+\ifthenelse{\equal{\getLanguage}{english}}
+  		{\addcontentsline{toc}{chapter}{List of Tables}}
+  		{\addcontentsline{toc}{chapter}{Tabellenverzeichnis}}	
+  	
 \listoftables
 
 % Anything following the further research must not have a chapternumber
