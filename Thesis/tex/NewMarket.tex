@@ -33,10 +33,10 @@ To calculate the maximum price of a collateralized asset - that is how much is t
 \end{equation}
 
 \paragraph{limit}
-Applying the same rules as in minimum and maximum to the limit price calculation one needs to subract the limit-price of loans from the limit-price of asset to receive the limit-price of a collateralized asset. This value is individual for each agent as the limit-prices differ across the agents both for assets and loans.
+Applying the same rules as in minimum and maximum to the limit price calculation one needs to subract the limit-price of bonds from the limit-price of asset to receive the limit-price of a collateralized asset. This value is individual for each agent as the limit-prices differ across the agents both for assets and bonds.
 
 \begin{equation}
-\textit{limit-price of collateralized asset} = \textit{limit-price of asset} - \textit{limit-price of loan}
+limit_{collateral} = limit_{asset} - limit_{loan}
 \end{equation}
 
 \subsection{Bid-Offering}
@@ -80,13 +80,15 @@ Below the wealth-exchange table is given in case of a match between two agents o
 	\begin{tabular} { l c c }
 		& Seller & Buyer \\
 		\hline
-		Loan Given & + matching-amount & N/A \\
+		Loans Given & + matching-amount & N/A \\
 		Loans Taken & N/A & - matching-amount \\
 		Assets holdings & - matching-amount & + matching-amount \\
 		Cash holdings  & + matching-price & - matching-price \\
 		\hline
 	\end{tabular}
 \end{table}
+
+Note that regarding these formulas it is clear that the Collateral/Cash market can't work without the BP-mechanism because only with it is it allowed to increment the net-loans variable \textit{loan} by incrementing \textit{loans given}. Without the BP-mechanism incrementing \textit{loans given} would simply be forbidden thus making this market unable to work. Because of this the thesis has the BP-mechanism hard-wired into the implementation and does not provide the user with an option to run the simulation without it.
 
 \section{Results}
 Of most importance are the results of the simulation when using the new market. The plain results are given in this section where the interpretation of the results are given in the following section.
@@ -302,7 +304,7 @@ In this stage the pessimists become visible rapidly as they sell their assets an
 \medskip
 
 The Asset/Cash market dominates but goes down slowly as fewer and fewer pessimists trade assets against cash compared to the very beginning. 
-The Bond/Cash market fluctuates around the same point as loans are traded more or less equally the same.
+The Bond/Cash market fluctuates around the same point as bonds are traded more or less equally the same.
 The Collateral/Cash market begins quite low and raises as more and more collateralized assets are created by pessimists and need to be sold again using the new market.
 The Asset/Bond market is hardly active as there is no strong need for its features yet.
 

@@ -21,7 +21,7 @@ To prevent a too specific distinction between the natural buyer and the public G
 Geanakoplos then introduces a two-period economy. In the first period each agent of the previously mentioned continuum \textit{H} is endowed with one consumption good C and one asset Y and can then trade with each other. The second period can be one of two states: U(p) and D(own) whereas in the up-state the asset Y is worth 1.0 and in the down-state only 0.2. The agents differ only in their optimism \textit{h} by which they assign the probability that the up-state will happen tomorrow in the second period. According to this they trade on the market according to their utility-function which depends on their optimism \textit{h}. The following formula gives the utility-function of an agent according to Geanakoplos. It gives the price of an asset, that is how much an agent values it - obviously the more optimistic the higher the price.
 
 \begin{equation}
-price = h + (1 - h)0.2
+price = h + (1 - h) \; 0.2
 \end{equation}
 
 Now if \textit{price} is larger than some offered price \textit{p} then the agent is going to buy the asset for the offered price \textit{p} as the agent values it more thus when buying the asset the agent will make an expected profit. If the \textit{price} is less than the offered price \textit{p} the agent is going to sell the asset as the value the agent assigns to it is lower than the offered price \textit{p} thus the agent can make an expected profit in selling it.
@@ -84,7 +84,7 @@ Both the up- and the down-state are the same as in Geanakoplos where the up-stat
 The asset market is the same as in \cite{Geanakoplos2009} where assets are just bought and sold against cash.
 
 \begin{equation}
-\ell_{asset} = h + ( 1 - h )pD
+limit_{asset} = h + ( 1 - h ) \; pD
 \end{equation}
 
 \paragraph{Bond/Cash market}
@@ -93,14 +93,14 @@ The bond market acts the same way as described in \cite{Geanakoplos2009}. Collat
 Risk-less as well as risky bonds are available in the model of \cite{Breuer2015} where the risky bonds are those with face-value \textit{V} $>$ 0.2. Although Breuer et al. allowed more than one bond-types simultaneously in their model this is not implemented in the thesis-software as it is not the primary focus of this work and would have required substantial changes in the software.
 
 \begin{equation}
-\ell_{bond} = h V + ( 1 - h )pD
+limit_{bond} = h V + ( 1 - h ) \; pD
 \end{equation}
 
 \paragraph{Asset/Bond market}
 The Asset/Bond market trades assets against bonds thus the utility-function is just the ratio of the Asset/Cash utility to the Bond/Cash utility which gives the amount of bonds one asset is worth for a given optimism \textit{h}.
 
 \begin{equation}
-\ell_{asset/bond} = \frac{\ell_{asset}}{\ell_{bond}}
+limit_{asset/bond} = \frac{limit_{asset}}{limit_{bond}}
 \end{equation}
 
 \subsection{Agent utilitiy}

@@ -221,7 +221,7 @@ The maximum value of one asset in cash is the up-value pU tomorrow as defined in
 The limit-price of an asset in cash depends on the optimism-factor \textit{h} of the agent where the most optimistic agent assigns pU and the most pessimistic pD as the price. Thus applying linear interpolation one receives the following equation.
 
 \begin{equation}
-\textit{limit-price asset} = h * pU + ( 1.0 - h ) * pD
+limit_{asset} = h \; pU + ( 1.0 - h ) \; pD
 \end{equation}
 
 \subsubsection{Bid-Offering}
@@ -253,7 +253,6 @@ Ask offers are generated only when the agent has at least one TRADING-UNIT of fr
 		\hline
 	\end{tabular}
 \end{table}
-
 
 \subsubsection{Match}
 
@@ -295,7 +294,7 @@ The maximum value of one bond in cash is the face-value V tomorrow as defined in
 The limit-price of a bond in cash depends on the optimism-factor \textit{h} of the agent where the most optimistic agent assigns \textit{facevalue V} and the most pessimistic \textit{pD} as the price. Thus applying linear interpolation one receives the following equation.
 
 \begin{equation}
-\textit{limit-price bond} = h * V + ( 1.0 - h ) * pD
+limit_{bond} = h \; V + ( 1.0 - h ) \; pD
 \end{equation}
 
 \subsubsection{Bid-Offering}
@@ -314,14 +313,14 @@ Bid offers are generated only when the agent has any cash holdings. As amount on
 \end{table}
 
 \subsubsection{Ask-Offering}
-Ask offers are generated only when the agent has any free assets because when selling the agent needs to reserve as many free assets as security as bonds sold. As amount one TRADING-UNIT of bonds is selected but if there are fewer free assets left then the remaining amount of free assets is selected.
+Ask offers are generated only when the agent has a positive amount of loans. As amount one TRADING-UNIT of bonds is selected but if there are fewer loans left then the remaining amount of loans is selected.
 
 \begin{table}[H]
 	\centering
 	\caption{Ask-Offering parameters of Bond/Cash market}
 	\begin{tabular} { l c r }
 		\hline
-		Pre-Condition & $\textit{free assets} > 0$  \\
+		Pre-Condition & $\textit{loans} > 0$  \\
 		Bond-Price & $\mathrm{random}(\textit{limit-price of bonds}, \textit{max bond-price})$ \\
 		Bond-Amount & $\min ({\textit{free assets} }, \textit{TRADING-UNIT} )$ \\
 		\hline
@@ -344,6 +343,7 @@ Ask offers are generated only when the agent has any free assets because when se
 \end{table}
 
 \subsection{Asset/Bond}
+\label{sec:ASSET_BOND_MARKET}
 \subsubsection{Products}
 Assets are traded against bonds. The buyer gets a specific amount of free assets for a given amount of bonds where the seller gives away the specific amount of free assets and gets the given amount of bonds.
 
@@ -364,10 +364,10 @@ The maximum value of one asset in bonds is defined in the ratio of the maximum a
 \end{equation}
 
 \paragraph{limit}
-The limit-price in bonds of an asset in bonds depends on the optimism-factor \textit{h} and is just the ratio of the limit-price of the asset to the limit-price of the loans.
+The limit-price in bonds of an asset in bonds depends on the optimism-factor \textit{h} and is just the ratio of the limit-price of the asset to the limit-price of the bond.
 
 \begin{equation}
-\textit{limit-price asset/bond} = \frac{\textit{limit-price asset}}{\textit{limit-price bonds}}
+limit_{asset/bond} = \frac{limit_{asset}}{limit_{bond}}
 \end{equation}
 
 \subsubsection{Bid-Offering}
@@ -418,7 +418,7 @@ Bid offers are generated only when the agent is not negative on free assets afte
 
 \begin{table}[H]
 	\centering
-	\caption{Wealth-Exchange during a match on Asset/Loan market}
+	\caption{Wealth-Exchange during a match on Asset/Bond market}
 	\begin{tabular} { l c c }
 		& Seller & Buyer \\
 		\hline
@@ -430,20 +430,21 @@ Bid offers are generated only when the agent is not negative on free assets afte
 \end{table}
 
 \section{Bond pledgeability (BP) mechanism}
-As already defined in chapter \ref{ch:leverageCycle} the BP-mechanism allows to free a collateralized asset by buying a bond. \cite{Breuer2015} define it technically: 
+Simply put without BP an agent can only increase the loans taken from other agents but never reduces them. \cite{Breuer2015} define the BP-mechanism technically as: 
 
 \begin{quote}
 This amounts to a collateral constraint requiring the negative \textit{net} number of bonds (short minus long) to be less or equal the number of assets.
 \end{quote}
 
-Thus to implement the BP-mechanism one must be able to differentiate between the amount of loans the agent has taken (short) and the amount of loans the agent has given (long). The collateralized assets are then calculated by subtracting the long bonds from the short bonds where the result must be $\geq 0$ to satisfy the collateral constraint. As can be seen in section \ref{sec:AGENTS} this is already implemented. An agent has two loan-variables: \textit{loan given} and \textit{loan taken} and thus the collateralized assets are calculated as given in equation \ref{eq:COLLATERALIZED_ASSETS_WITH_BP}.
+Thus to implement the BP-mechanism one must be able to differentiate between the amount of loans the agent has taken (short) and the amount of loans the agent has given (long) which is already done through the two loan-variables \textit{loan given} and \textit{loan taken}.
+ 
 \medskip
-When ignoring the BP-mechanism this equation would skip the subtraction of the \textit{loans given} which in this case ignores the "pledgeability"-part. In this case the loan-obligations can only increase - and thus the amount of collateralized assets - but never be reduced because \textit{loan given} is not included any more in this equation. Thus the only difference when ignoring the BP-mechanism is a change in the equation of the collateral constraint of an agent. The equation without BP is:
 
-\begin{equation}
-\textit{collateralized assets} = max(0, \textit{loans taken})
-\label{eq:COLLATERALIZED_ASSETS_WITHOUT_BP}
-\end{equation}
+In the next step the equation of the collateralized assets must include both the given and taken loans - see equation \ref{eq:COLLATERALIZED_ASSETS_WITH_BP}. Without BP the given loans would be omitted and loan-obligations could only increase. This implies that the amount of free assets is affected too by BP because the variable \textit{free assets} depends on the amount of collateralized assets. 
+
+\medskip
+
+Another implication of BP is that it enables agents with a positive net-amount of loans to place ask-offers on the Bond/Cash market although they have no more free assets - see section \ref{sec:ASSET_BOND_MARKET}. The positive amount of loans is backed by the agents which have taken the loans by their securities thus one can view the positive amount of loans as an additional amount of assets which cannot be traded freely but are backing the loans. Thus it is allowed to sell a loan to another agent which is effectively just a transfer of the loan and its virtual security back-up to the buyer.
 
 \section{Simulation}
 In this section a few details of the simulation-implementation are discussed as they are not so obvious but interesting and important enough to be mentioned.
