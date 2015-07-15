@@ -518,13 +518,14 @@ public class Agent {
 		} else {
 			offerings[ MarketType.ASSET_CASH.ordinal() ] = null;
 		}
-		
+
 		// loan-market is open AND there are still uncollateralized assets left
 		// agent can place a sell-offer because when selling a loan, it needs to be secured by collateralizing 
 		// the same amount of assets
 		// IMPORTANT: only generate offers if face-value V of traded bond is larger
 		// than the down-value pD as in the other case the limit-function is not monotony increasing
 		if ( this.markets.isLoanMarket() && 
+				//( tradeableLoans > Markets.TRADING_EPSILON || this.getUncollateralizedAssets() > Markets.TRADING_EPSILON ) &&
 				tradeableLoans > Markets.TRADING_EPSILON &&
 				this.markets.V() > this.markets.pD() ) {
 
@@ -539,6 +540,7 @@ public class Agent {
 			
 			// the maximum of loans we can sell is the uncollateralized assets left (1:1 relationship when collateralizing)
 			// but don't trad everything at once, break down into small chungs: Markets.TRADING_UNIT_LOAN
+			//double loanAmount = Math.min( Math.max( tradeableLoans, this.getUncollateralizedAssets() ), Markets.TRADING_UNIT_LOAN );
 			double loanAmount = Math.min( tradeableLoans, Markets.TRADING_UNIT_LOAN );
 			
 			offerings[ MarketType.LOAN_CASH.ordinal() ] = new AskOffering( loanPriceInCash, loanAmount, this, MarketType.LOAN_CASH );

@@ -13,37 +13,11 @@ Note: The numbers in tables resemble always a median-value with the standard-dev
 \section{Validating thesis-software}
 As  a point-of-reference and as an experimental proof for the correctness of the implementation of the thesis-software the results of a validation against both the theoretical equilibrium and the equilibrium found in \cite{Breuer2015} are given. Because equilibrium differs across the number of agents and the type of bond traded to be comparable the same amount of agents and the same bond-type has to be used in the experiments. Thus 1,000 agents and a bond with face-value of 0.5 were chosen because \cite{Breuer2015} report their equilibria for this number of agents and bonds with face-value between 0.1 to 0.5.
 
-\paragraph{Erroneous equations in \cite{Breuer2015}} During the implementation of the thesis-software an error was found in the software of the paper of \cite{Breuer2015} to which the author of this thesis has access. The calculations of the minimum and maximum range of the Asset/Bond market are erroneous as given by the equations:
-
-\begin{equation}
-minimum = \frac{pD}{V}
-\end{equation}
-
-\begin{equation}
-maximum = \frac{pU}{pD} 
-\end{equation}\\
-
-It is easy to see that in this case not the full range is covered by the limit-ranges with optimism-factor \textit{h} between [0..1] because the minimum agent has its limit-price at $\frac{pD}{pD} = 1.0$ and the maximum agent has its limit-price at $\frac{pU}{V}$.  These equations lead to a different distribution of price-ranges and thus to a different wealth-distribution. This creates the problematic situation where the original results can not be used to validate whether the thesis-software is working correctly or not. As a fall-back the erroneous equations were used for validation purposes and were then replaced by the correct equations as shown in chapter \ref{ch:implementation} for the remainder of the thesis. 
-
 \subsection{References for 1,000 agents with 0.5 bond}
 
 \begin{table}[H]
 	\centering
-	\caption{Theoretical equilibrium for 1,000 agents and 0.5 bond}
-	\begin{tabular} { l c r }
-		\hline
-		Asset-Price p & 0.715 \\
-		Bond-Price q & 0.374 \\
-		Marginal agent i1 & 0.583 \\
-		Marginal agent i2 & 0.802 \\
-		\hline
-	\end{tabular}
-	\label{tab:equilibrium_THEORY_1000}
-\end{table}
-
-\begin{table}[H]
-	\centering
-	\caption{Equilibrium in \cite{Breuer2015} for 1,000 agents and 0.5 bond}
+	\caption{Equilibrium predictions in \cite{Breuer2015} for 1,000 agents and 0.5 bond}
 	\begin{tabular} { l c r }
 		\hline
 		Asset-Price p & 0.716 \\
@@ -60,8 +34,6 @@ It is easy to see that in this case not the full range is covered by the limit-r
 \end{table}
 
 \subsection{Thesis-software result for 1,000 agents with 0.5 bond}
-Note that this result was created with the erroneous equations for the minimum and maximum of the Asset/Bond market to be comparable to the paper of \cite{Breuer2015}.
-
 \begin{figure}[H]
 	\centering
   \includegraphics[width=1.0\textwidth, angle=0]{FULLYCONNECTED_1000_NOCOLLATERALMARKET_REPL.png}
@@ -74,42 +46,33 @@ Note that this result was created with the erroneous equations for the minimum a
 	\caption{Equilibrium of thesis-implementation for 1,000 agents and 0.5 bond}
 	\begin{tabular} { l c r }
 		\hline
-		Asset-Price p & 0.700 (0.005) \\
-		Bond-Price q & 0.389 (0.002) \\
-		Marginal agent i1 & 0.616 (0.004) \\
-		Marginal agent i2 & 0.805 (0.001) \\
+		Asset-price p & 0.730 (0.011) \\
+		Bond-price q & 0.382 (0.000) \\
+		Marginal agent i1 & 0.605 (0.001) \\
+		Marginal agent i2 & 0.807 (0.001) \\
 		\hline
-		Pessimist Wealth & 1.582 (0.01) \\
-		Medianist Wealth & 4.578 (0.031) \\
-		Optimist Wealth & 5.105 (0.025) \\
+		Pessimist wealth & 1.649 (0.001) \\
+		Medianist wealth & 4.895 (0.014) \\
+		Optimist wealth & 5.160 (0.018) \\
 		\hline
 	\end{tabular}
 	\label{tab:equilibrium_THESIS_1000_50_REPL}
 \end{table}
 
 \begin{table}[H]
-	\caption{Difference of Fully-Connected topology price-equilibrium as given in table \ref{tab:equilibrium_THESIS_1000_50_REPL} to theoretical equilibrium as given in table \ref{tab:equilibrium_THEORY_1000}}
+	\caption{Difference of Fully-Connected topology wealth-equilibrium as given in table \ref{tab:equilibrium_THESIS_1000_50_REPL} to wealth-equilibrium as predicted in \cite{Breuer2015} from table \ref{tab:equilibrium_BREUER_1000}}
 	\centering
 	\begin{tabular} { l c c c r }
 		& Result & Reference & difference to Reference \\
 		\hline
-		Asset-Price p & 0.700 & 0.715 & -2.1\% \\
-		Bond-Price q & 0.389 & 0.374 & +4.0\% \\
-		Marginal agent i1 & 0.616  & 0.583 & +5.6\% \\
-		Marginal agent i2 & 0.805 & 0.802 & +0.4\% \\
+		Asset-Price p & 0.730 & 0.716 & +2.0\% \\
+		Bond-Price q & 0.382 & 0.375 & +1.9\% \\
+		Marginal agent i1 & 0.605  & 0.583 & +3.8\% \\
+		Marginal agent i2 & 0.807 & 0.801 & +0.7\% \\
 		\hline
-	\end{tabular}
-\end{table} 
-
-\begin{table}[H]
-	\caption{Difference of Fully-Connected topology wealth-equilibrium as given in table \ref{tab:equilibrium_THESIS_1000_50_REPL} to wealth-equilibrium as given in \cite{Breuer2015} from table \ref{tab:equilibrium_BREUER_1000}}
-	\centering
-	\begin{tabular} { l c c c r }
-		& Result & Reference & difference to Reference \\
-		\hline
-		Pessimist Wealth  & 1.582 & 1.716 & -7.8\% \\
-		Medianist Wealth & 4.578 & 4.578 & 0.0\% \\
-		Optimist Wealth & 5.105 & 5.032 & +1.5\% \\
+		Pessimist Wealth  & 1.649 & 1.716 & -3.9\% \\
+		Medianist Wealth & 4.895 & 4.578 & +6.9\% \\
+		Optimist Wealth & 5.160 & 5.032 & +2.5\% \\
 		\hline
 	\end{tabular}
 \end{table} 
@@ -127,15 +90,15 @@ As noted in section \ref{sec:implementation_sweepingAndMatching} a matching-roun
 
 \begin{table}[H]
 	\centering
-	\caption{Performance of thesis-implementation with 1000 agents and 0.5 bond}
+	\caption{Performance of thesis-implementation with 1,000 agents and 0.5 bond}
 	\begin{tabular} { l c r }
 		\hline
-		Successful matching-rounds & 19,300.04 (101.68) \\
-		Failed matching-rounds & 10,306.78 (2914.11) \\
-		Total matching-rounds & 29,606.82 (2938.82) \\
+		Successful matching-rounds & 18,167.86 (72.60) \\
+		Failed matching-rounds & 757.44 (251.21) \\
+		Total matching-rounds & 18,925.30 (268.15) \\
 		\hline
-		Ratio successful/total & 0.65 \\
-		Ratio failed/total & 0.35 \\
+		Ratio successful/total & 0.96 \\
+		Ratio failed/total & 0.04 \\
 		\hline
 	\end{tabular}
 \end{table}
@@ -200,14 +163,14 @@ This topology serves as the major point-of-reference for the other experiments a
 	\centering
 	\begin{tabular} { l c r }
 		\hline
-		Asset-Price p & 0.689 (0.01) \\
-		Bond-Price q & 0.384 (0.004) \\
-		Marginal agent i1 & 0.603 (0.007) \\
-		Marginal agent i2 & 0.803 (0.003) \\
+		Asset-price p & 0.717 (0.015) \\
+		Bond-price q & 0.382 (0.001) \\
+		Marginal agent i1 & 0.596 (0.004) \\
+		Marginal agent i2 & 0.810 (0.004) \\
 		\hline
-		Pessimist Wealth & 1.597 (0.015) \\
-		Medianist Wealth & 4.565 (0.113) \\
-		Optimist Wealth & 5.021 (0.064) \\
+		Pessimist wealth & 1.646 (0.004) \\
+		Medianist wealth & 4.736 (0.089) \\
+		Optimist wealth & 5.179 (0.082) \\
 		\hline
 	\end{tabular}
 	\label{tab:fullyconnected_equilibrium_100Agents_05Bond}
@@ -218,12 +181,12 @@ This topology serves as the major point-of-reference for the other experiments a
 	\centering
 	\begin{tabular} { l c r }
 		\hline
-		Successful matching-rounds & 1916.14 (31.42) \\
-		Failed matching-rounds & 4448.66 (1668.93) \\
-		Total matching-rounds & 6364.8 (1679.21) \\
+		Successful matching-rounds & 1,812.20 (22.76) \\
+		Failed matching-rounds & 1,287.68 (129.55) \\
+		Total matching-rounds & 3,099.88 (135.68) \\
 		\hline
-		Ratio successful/total & 0.3 \\
-		Ratio failed/total & 0.7 \\
+		Ratio successful/total & 0.58 \\
+		Ratio failed/total & 0.42 \\
 		\hline
 	\end{tabular}
 \end{table}
@@ -234,10 +197,10 @@ This topology serves as the major point-of-reference for the other experiments a
 	\begin{tabular} { l c c c r }
 		& Result & Reference & difference to Reference \\
 		\hline
-		Asset-Price p & 0.689 & 0.717 & -3.9\% \\
-		Bond-Price q & 0.384 & 0.375 & +2.4\% \\
-		Marginal agent i1 & 0.603  & 0.584 & +3.2\% \\
-		Marginal agent i2 & 0.803 & 0.802 & +0.1\% \\
+		Asset-Price p & 0.717 & 0.717 & 0.0\% \\
+		Bond-Price q & 0.382 & 0.375 & +1.9\% \\
+		Marginal agent i1 & 0.596  & 0.584 & +2.0\% \\
+		Marginal agent i2 & 0.810 & 0.802 & +1.0\% \\
 		\hline
 	\end{tabular}
 \end{table}
@@ -256,14 +219,14 @@ This topology serves as the major point-of-reference for the other experiments a
 	\centering
 	\begin{tabular} { l c r }
 		\hline
-		Asset-Price p & 0.711 (0.016) \\
-		Bond-Price q & 0.391 (0.005) \\
-		Marginal agent i1 & 0.646 (0.012) \\
-		Marginal agent i2 & 0.850 (0.008) \\
+		Asset-price p & 0.698 (0.034) \\
+		Bond-price q & 0.375 (0.018) \\
+		Marginal agent i1 & 0.629 (0.054) \\
+		Marginal agent i2 & 0.675 (0.130) \\
 		\hline
-		Pessimist Wealth & 1.166 (0.072) \\
-		Medianist Wealth & 1.869 (0.243) \\
-		Optimist Wealth & 4.307 (0.07) \\
+		Pessimist wealth & 1.545 (0.147) \\
+		Medianist wealth & 4.628 (0.632) \\
+		Optimist wealth & 3.428 (1.293) \\
 		\hline
 	\end{tabular}
 	\label{tab:ascendingconnected_equilibrium_100Agents_05Bond}
@@ -274,12 +237,12 @@ This topology serves as the major point-of-reference for the other experiments a
 	\centering
 	\begin{tabular} { l c r }
 		\hline
-		Successful matching-rounds & 36,940.96 (1948.69) \\
-		Failed matching-rounds & 1176.08 (98.01) \\
-		Total matching-rounds & 38,117.04 (1934.06) \\
+		Successful matching-rounds & 47,021.48 (4,202.62) \\
+		Failed matching-rounds & 1,001.06 (2.73) \\
+		Total matching-rounds & 48,022.54 (4,201.62) \\
 		\hline
-		Ratio successful/total & 0.97 \\
-		Ratio failed/total & 0.03 \\
+		Ratio successful/total & 0.98 \\
+		Ratio failed/total & 0.02 \\
 		\hline
 	\end{tabular}
 \end{table}
@@ -290,10 +253,10 @@ This topology serves as the major point-of-reference for the other experiments a
 	\begin{tabular} { l c c c r }
 		& Result & Reference & difference to Reference \\
 		\hline
-		Asset-Price p & 0.711 & 0.717 & -0.8\% \\
-		Bond-Price q & 0.391 & 0.375 & +4.2\% \\
-		Marginal agent i1 & 0.646  & 0.584 & +10.6\% \\
-		Marginal agent i2 & 0.850 & 0.802 & +6.0\% \\
+		Asset-Price p & 0.698 & 0.717 & -2.6\% \\
+		Bond-Price q & 0.375 & 0.375 & 0.0\% \\
+		Marginal agent i1 & 0.629  & 0.584 & +7.7\% \\
+		Marginal agent i2 & 0.675 & 0.802 & -15.8\% \\
 		\hline
 	\end{tabular}
 \end{table}
@@ -304,14 +267,14 @@ This topology serves as the major point-of-reference for the other experiments a
 	\begin{tabular} { l c c c r }
 		& Result & Reference & difference to Reference \\
 		\hline
-		Asset-Price p & 0.711 (0.016) & 0.689 (0.01) & +3.2\% (+60\%) \\
-		Bond-Price q & 0.391 (0.005) & 0.384 (0.004) & +1.8\% (+25\%) \\
-		Marginal agent i1 & 0.646 (0.012) & 0.603 (0.007) & +6.9\% (+71\%) \\
-		Marginal agent i2 & 0.850 (0.008) & 0.803 (0.003) & +6.0\% (+166\%) \\
+		Asset-Price p & 0.698 (0.034) & 0.717 (0.015) & -2.6\% (+126\%) \\
+		Bond-Price q & 0.375 (0.018) & 0.382 (0.001) & -1.8\% (+1700\%) \\
+		Marginal agent i1 & 0.675 (0.054) & 0.596 (0.004) & +13.2\% (+1250\%) \\
+		Marginal agent i2 & 0.850 (0.130) & 0.810 (0.004) & +4.9\% (+3150\%) \\
 		\hline
-		Pessimist Wealth & 1.166 (0.072) & 1.597 (0.015) & -27.0\% (+380\%) \\
-		Medianist Wealth & 1.869 (0.243) & 4.565 (0.113) & -59\% (+115\%) \\
-		Optimist Wealth & 4.307 (0.070) & 5.021 (0.064) & -14.2\% (+9.3\%) \\
+		Pessimist Wealth & 1.545 (0.147) & 1.646 (0.004) & -6.1\% (+3575\%) \\
+		Medianist Wealth & 4.628 (0.632) & 4.736 (0.089) & -2.2\% (+610\%) \\
+		Optimist Wealth & 3.428 (1.293) & 5.179 (0.082) & -33.8\% (+1476\%) \\
 		\hline
 	\end{tabular}
 \end{table}
@@ -329,14 +292,14 @@ This topology serves as the major point-of-reference for the other experiments a
 	\centering
 	\begin{tabular} { l c r }
 		\hline
-		Asset-Price p & 0.691 (0.009) \\
-		Bond-Price q & 0.383 (0.004) \\
-		Marginal agent i1 & 0.614 (0.009) \\
-		Marginal agent i2 & 0.799 (0.006) \\
+		Asset-price p & 0.710 (0.006) \\
+		Bond-price q & 0.379 (0.002) \\
+		Marginal agent i1 & 0.586 (0.014) \\
+		Marginal agent i2 & 0.779 (0.022) \\
 		\hline
-		Pessimist Wealth & 1.497 (0.072) \\
-		Medianist Wealth & 3.934 (0.505) \\
-		Optimist Wealth & 4.519 (0.051) \\
+		Pessimist wealth & 1.666 (0.035) \\
+		Medianist wealth & 5.094 (0.109) \\
+		Optimist wealth & 4.501 (0.291) \\
 		\hline
 	\end{tabular}
 \end{table} 
@@ -346,12 +309,12 @@ This topology serves as the major point-of-reference for the other experiments a
 	\centering
 	\begin{tabular} { l c r }
 		\hline
-		Successful matching-rounds & 49,881.6 (1733.33) \\
-		Failed matching-rounds & 1.0 (0.00) \\
-		Total matching-rounds & 49,882.6 (1733.33) \\
+		Successful matching-rounds & 50,989.30 (637.48) \\
+		Failed matching-rounds & 1.00 (0.00) \\
+		Total matching-rounds & 50,990.30 (637.48) \\
 		\hline
-		Ratio successful/total & 0.9999 \\
-		Ratio failed/total & 0.0001 \\
+		Ratio successful/total & 1.00 \\
+		Ratio failed/total & 0.00 \\
 		\hline
 	\end{tabular}
 \end{table}
@@ -364,10 +327,10 @@ Note that in this case the matching-probabilities are such that upon the first f
 	\begin{tabular} { l c c c r }
 		& Result & Reference & difference to Reference \\
 		\hline
-		Asset-Price p & 0.691 & 0.717 & -3.6\% \\
-		Bond-Price q & 0.383 & 0.375 & +2.1\% \\
-		Marginal agent i1 & 0.614 & 0.584 & 5.1\% \\
-		Marginal agent i2 & 0.799 & 0.802 & -0.4\% \\
+		Asset-Price p & 0.710 & 0.717 & -0.9\% \\
+		Bond-Price q & 0.379 & 0.375 & +1.0\% \\
+		Marginal agent i1 & 0.586 & 0.584 & +0.3\% \\
+		Marginal agent i2 & 0.779 & 0.802 & -2.8\% \\
 		\hline
 	\end{tabular}
 \end{table}
@@ -378,14 +341,14 @@ Note that in this case the matching-probabilities are such that upon the first f
 	\begin{tabular} { l c c c r }
 		& Result & Reference & difference to Reference \\
 		\hline
-		Asset-Price p & 0.691 (0.009) & 0.689 (0.01) & +0.3\% (-10\%) \\
-		Bond-Price q & 0.383 (0.004) & 0.384 (0.004) & -0.3\% (0.0\%) \\
-		Marginal agent i1 & 0.614 (0.009) & 0.603 (0.007) & +1.8\% (28.6\%) \\
-		Marginal agent i2 & 0.799 (0.006) & 0.803 (0.003) & -0.5\% (+100\%) \\
+		Asset-Price p & 0.710 (0.006) & 0.717 (0.015) & -0.9\% (-60\%) \\
+		Bond-Price q & 0.379 (0.002) & 0.384 (0.001) & -1.3\% (+100.0\%) \\
+		Marginal agent i1 & 0.586 (0.014) & 0.603 (0.004) & -2.8\% (+250\%) \\
+		Marginal agent i2 & 0.779 (0.022) & 0.803 (0.004) & -2.9\% (+450\%) \\
 		\hline
-		Pessimist Wealth & 1.497 (0.072) & 1.597 (0.015) & -6.2\% (+380\%) \\
-		Medianist Wealth & 3.934 (0.505) & 4.565 (0.113) & -13.8\% (+346\%) \\
-		Optimist Wealth & 4.519 (0.051) & 5.021 (0.064) & -10\% (-20.3\%) \\
+		Pessimist Wealth & 1.666 (0.035) & 1.646 (0.004) & +1.2\% (+775\%) \\
+		Medianist Wealth & 5.094 (0.109) & 4.736 (0.089) & +7.5\% (+22\%) \\
+		Optimist Wealth & 4.501 (0.291) & 5.179 (0.082) & -13.0\% (+254\%) \\
 		\hline
 	\end{tabular}
 \end{table}
