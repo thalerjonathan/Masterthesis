@@ -2,6 +2,8 @@ package frontend.replication;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.text.NumberFormat;
+import java.util.Locale;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -208,6 +210,25 @@ public class EquilibriumInfoPanel extends JPanel {
 		this.setPessimist( mean.pessimistWealth, variance.pessimistWealth );
 		this.setMedium( mean.medianistWealth, variance.medianistWealth );
 		this.setOptimist( mean.optimistWealth, variance.optimistWealth );
+
+		NumberFormat formatter = NumberFormat.getInstance(Locale.US);
+		formatter.setMaximumFractionDigits(3);
+		formatter.setMinimumFractionDigits(3);
+
+		/* NOTE: this writes a part of a table out to system.out to prevent tiresome typing of statistics to latex
+		System.out.println("\\hline");
+		System.out.println("Asset-price p & " + formatter.format(mean.assetPrice) + " (" + formatter.format(variance.assetPrice) + ") \\\\");
+		System.out.println("Bond-price q & " + formatter.format(mean.loanPrice) + " (" + formatter.format(variance.loanPrice) + ") \\\\");
+		System.out.println("Marginal agent i1 & " + formatter.format(mean.i0) + " (" + formatter.format(variance.i0) + ") \\\\");
+		System.out.println("Marginal agent i2 & " + formatter.format(mean.i1) + " (" + formatter.format(variance.i1) + ") \\\\");
+		System.out.println("\\hline");
+		System.out.println("Pessimist wealth & " + formatter.format(mean.pessimistWealth) + " (" + formatter.format(variance.pessimistWealth) + ") \\\\");
+		System.out.println("Medianist wealth & " + formatter.format(mean.medianistWealth) + " (" + formatter.format(variance.medianistWealth) + ") \\\\");
+		System.out.println("Optimist wealth & " + formatter.format(mean.optimistWealth) + " (" + formatter.format(variance.optimistWealth) + ") \\\\");
+		System.out.println("\\hline");
+		
+		System.out.println("\n\n");
+		*/
 	}
 	
 	public void setAssetPrice( double v ) {

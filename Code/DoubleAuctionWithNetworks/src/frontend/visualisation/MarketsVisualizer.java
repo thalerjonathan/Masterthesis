@@ -63,14 +63,14 @@ public abstract class MarketsVisualizer extends Visualizer {
 			g.setColor( MarketsAccuOnlineVisualizer.MARKET_COLORS[ MarketType.LOAN_CASH.ordinal() ] );
 			g.drawLine( topX + 5, topY + 33, topX + 50, topY + 33 );
 			g.setColor( Color.BLACK );
-			g.drawChars( "Loan/Cash".toCharArray(), 0, "Loan/Cash".length(), topX + 60, topY + 38 );
+			g.drawChars( "Bond/Cash".toCharArray(), 0, "Bond/Cash".length(), topX + 60, topY + 38 );
 		}
 		
 		if ( markets == null || markets.isAssetBondMarket() ) {
 			g.setColor( MarketsAccuOnlineVisualizer.MARKET_COLORS[ MarketType.ASSET_LOAN.ordinal() ] );
 			g.drawLine( topX + 5, topY + 53, topX + 50, topY + 53 );
 			g.setColor( Color.BLACK );
-			g.drawChars( "Asset/Loans".toCharArray(), 0, "Asset/Loans".length(), topX + 60, topY + 58 );
+			g.drawChars( "Asset/Bond".toCharArray(), 0, "Asset/Bond".length(), topX + 60, topY + 58 );
 		}
 		
 		if ( markets == null || markets.isCollateralMarket() ) {

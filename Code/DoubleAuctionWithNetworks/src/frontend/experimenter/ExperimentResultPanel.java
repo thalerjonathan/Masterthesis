@@ -6,8 +6,10 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -195,6 +197,21 @@ public class ExperimentResultPanel extends JPanel {
 		this.add( northPanel, BorderLayout.NORTH );
 		this.add( visualizersTabbedPane, BorderLayout.CENTER );
 		this.add( equilibriumInfoPanel, BorderLayout.SOUTH );
+		
+		NumberFormat formatter = NumberFormat.getInstance(Locale.US);
+		formatter.setMaximumFractionDigits(2);
+		formatter.setMinimumFractionDigits(2);
+		
+		/* NOTE: this writes a part of a table out to system.out to prevent tiresome typing of statistics to latex
+		System.out.println("\\hline");
+		System.out.println("Successful matching-rounds & " + formatter.format( bean.getMeanSuccessfulTransactions() ) + " (" + formatter.format(bean.getStdSuccessfulTransactions() ) + ") \\\\");
+		System.out.println("Failed matching-rounds & " + formatter.format(bean.getMeanFailedTransactions() ) + " (" + formatter.format(bean.getStdFailedTransactions())  + ") \\\\");
+		System.out.println("Total matching-rounds & " + formatter.format(bean.getMeanTotalTransactions() ) + " (" + formatter.format(bean.getStdTotalTransactions() ) + ") \\\\");
+		System.out.println("\\hline");
+		System.out.println("Ratio successful/total & " + formatter.format(bean.getMeanSuccessfulTransactions() / bean.getMeanTotalTransactions() ) + " \\\\" );
+		System.out.println("Ratio failed/total & " + formatter.format(bean.getMeanFailedTransactions() / bean.getMeanTotalTransactions() ) + " \\\\" );
+		System.out.println("\\hline");
+		*/
 	}
 	
 	private void showNetwork() {
