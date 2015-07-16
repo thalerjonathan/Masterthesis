@@ -16,20 +16,20 @@ The initial idea for this market was by the supervisor of this thesis Mr. Hans-J
 Collateralized assets are traded against cash. The buyer gets a specific amount of collateralized assets for a given amount of cash where the seller gives away the specific amount of collateralized assets and gets the given amount of cash.
 
 \subsection{Price-Range}
-As within all other three markets the price-ranges of the offers must be defined. Note that all prices must be obviously in the unit of cash according to the previously defined products.
+As with all other three markets the price-ranges of the offers must be defined. Note that all prices must be obviously in the unit of cash according to the previously defined products.
 
 \paragraph{minimum}
 When calculating the minimum price of a collateralized asset - that is how much is the collateralized asset minimally worth - it is important to include the collateral-aspect of the asset. Thus one starts with the minimum asset-price in cash which is the down-price \textit{pD} and subtracts the minimum amount of cash which is bound through a bond as collateral which is \textit{pD}. This value is a constant for all agents.
 
 \begin{equation}
-\textit{min collateralized asset-price} = \textit{pD} - \textit{pD} = 0
+min_{collateral} = \textit{pD} - \textit{pD} = 0
 \end{equation}
  
 \paragraph{maximum}
 To calculate the maximum price of a collateralized asset - that is how much is the collateralized asset maximally worth - one needs to include the collateral-aspect of the asset too. Equal to calculating the minimum one starts now with the maximum asset-price in cash which is the up-price \textit{pU} and subtracts the maximum possible amount of cash which is bound through a bond as collateral which is the face-value \textit{V}. This value is a constant for all agents.
 
 \begin{equation}
-\textit{max collateralized asset-price} = \textit{pU} - \textit{V}
+max_{collateral} = \textit{pU} - \textit{V}
 \end{equation}
 
 \paragraph{limit}
@@ -48,8 +48,8 @@ The way bid-offers are generated is very similar to the Bond/Cash market. Bid of
 	\begin{tabular} { l c r }
 		\hline
 		Pre-Condition & $\textit{cash holdings} > 0$  \\
-		Asset-Price & $\mathrm{random}(\textit{min coll. asset-price}, \textit{limit-price of coll. asset})$ \\
-		Asset-Amount & $\min ( \frac{ \textit{cash holdings} }{ \textit{Asset-Price} }, \textit{TRADING-UNIT} )$ \\
+		Asset-Price & $\mathrm{random}(min_{collateral}, limit_{collateral})$ \\
+		Asset-Amount & $\min ( \frac{ \textit{cash holdings} }{ \textit{asset-price} }, \textit{TRADING-UNIT} )$ \\
 		\hline
 	\end{tabular}
 \end{table}
@@ -57,14 +57,14 @@ The way bid-offers are generated is very similar to the Bond/Cash market. Bid of
 
 \subsection{Ask-Offering}
 The way ask-offers are generated is very similar to the Bond/Cash market. Ask offers are generated only when the agent has any collateralized assets. The price is drawn randomly between the limit-price and maximum price because when selling one wants to sell above the expected value to make a profit. As amount one TRADING-UNIT of an asset is selected - in the thesis-implementation 0.1 - but if there are fewer collateralized assets left then the remaining amount of collateral is selected.
-See Chapter \ref{ch:implementation} for the equation of collateral holdings.
+See chapter \ref{ch:implementation} for the equation of the amount of collateralized assets.
 
 \begin{table}[H]
 	\centering
 	\caption{Ask-Offering parameters}
 	\begin{tabular} { l c r }
 		\hline
-		Pre-Condition & $\textit{collateralized assets} > 0$  \\
+		Pre-Condition & $\textit{collateral} > 0$  \\
 		Asset-Price & $\mathrm{random}(\textit{limit-price of coll. asset}, \textit{max coll. asset-price})$ \\
 		Asset-Amount & $\min ( { \textit{collateralized assets} }, \textit{TRADING-UNIT} )$ \\
 		\hline
@@ -91,11 +91,11 @@ Below the wealth-exchange table is given in case of a match between two agents o
 Note that regarding these formulas it is clear that the Collateral/Cash market can't work without the BP-mechanism because only with it is it allowed to increment the net-loans variable \textit{loan} by incrementing \textit{loans given}. Without the BP-mechanism incrementing \textit{loans given} would simply be forbidden thus making this market unable to work. Because of this the thesis has the BP-mechanism hard-wired into the implementation and does not provide the user with an option to run the simulation without it.
 
 \section{Results}
-Of most importance are the results of the simulation when using the new market. The plain results are given in this section where the interpretation of the results are given in the following section.
+The plain results of the simulation with using the new market are given in this section where the interpretation of the results are given in the following one.
 
 \medskip
 
-As experiment-configuration the same is used as given in Chapter \ref{ch:results} except that the new market is now activated too.
+As experiment-configuration the same is used as given in chapter \ref{ch:results} except that the new market is now activated too.
 
 \begin{table}[H]
 	\centering
@@ -116,12 +116,13 @@ As experiment-configuration the same is used as given in Chapter \ref{ch:results
 \begin{figure}[H]
 	\centering
   \includegraphics[width=1.0\textwidth, angle=0]{FULLYCONNECTED_100_WITHCOLLATERALMARKET_REPL.png}
-	\caption{Wealth-Distribution of Fully-Connected topology with Collateral/Cash market}
+	\caption{Wealth-Distribution of Fully-Connected topology with Collateral/Cash market enabled.}
 	\label{fig:wealth_FULLYCONNECTED_100_WITHCOLLATERALMARKET_REPL}
 \end{figure}
 
 \begin{table}[H]
-	\caption{Equilibrium of Fully-Connected topology with Collateral/Cash market}
+	\caption{Equilibrium of Fully-Connected topology with Collateral/Cash market enabled}
+	\label{tab:equilibrium_FULLY_CONNECTED_WITH_COLLATERALCASH}
 	\centering
 	\begin{tabular} { l c r }
 		\hline
@@ -138,7 +139,7 @@ As experiment-configuration the same is used as given in Chapter \ref{ch:results
 \end{table} 
 
 \begin{table}[H]
-	\caption{Performance of Fully-Connected topology with Collateral/Cash market}
+	\caption{Performance of Fully-Connected topology with Collateral/Cash market enabled}
 	\centering
 	\begin{tabular} { l c r }
 		\hline
@@ -188,7 +189,7 @@ As experiment-configuration the same is used as given in Chapter \ref{ch:results
 \begin{figure}[H]
 	\centering
   \includegraphics[width=1.0\textwidth, angle=0]{ASCENDINGCONNECTED_100_WITHCOLLATERALMARKET_REPL.png}
-	\caption{Wealth-Distribution of Ascending-Connected topology with Collateral/Cash market}
+	\caption{Wealth-Distribution of Ascending-Connected topology with Collateral/Cash market enabled.}
 	\label{fig:wealth_ASCENDINGCONNECTED_100_WITHCOLLATERALMARKET_REPL}
 \end{figure}
 
@@ -239,7 +240,7 @@ As experiment-configuration the same is used as given in Chapter \ref{ch:results
 \end{table} 
 
 \begin{table}[H]
-	\caption{Difference of Ascending-Connected topology to equilibrium of Fully-Connected topology with Collateral/Cash as given in Table \ref{tab:ascendingconnected_equilibrium_100Agents_05Bond} TODO: correct table}
+	\caption{Difference of Ascending-Connected topology to equilibrium of Fully-Connected topology with Collateral/Cash as given in table \ref{tab:equilibrium_FULLY_CONNECTED_WITH_COLLATERALCASH}}
 	\centering
 	\begin{tabular} { l c c c r }
 		& Result & Reference & difference to Reference \\
@@ -260,19 +261,19 @@ As experiment-configuration the same is used as given in Chapter \ref{ch:results
 When interpreting the results the following questions must be answered:
 
 \begin{itemize}
-\item Does the Fully-Connected topology reach the theoretical equilibrium as well?
-\item Does the new market repair the miss-allocation of wealth in the pessimists-range?
+\item Does the Fully-Connected topology reach the theoretical equilibrium as well with Collateral/Cash market enabled?
+\item Does the new market repair the miss-allocation of wealth in the pessimists-range of the Ascending-Connected topology?
 \item If not why? If yes, does the Ascending-Connected topology approach theoretical equilibrium now?
 \end{itemize}
 
-\paragraph{Does the Fully-Connected topology reach the theoretical equilibrium as well?}
+\paragraph{Does the Fully-Connected topology reach the theoretical equilibrium as well with Collateral/Cash market enabled?}
 Yes it does. Both visual and statistical results show that it reaches the theoretical equilibrium. The medianist wealth is slightly higher with the new market but that difference, as well as the variations in the other variables are not statistically significant.
 
-\paragraph{Does the new market repair the miss-allocation of wealth in the pessimists-range?}
+\paragraph{Does the new market repair the miss-allocation of wealth in the pessimists-range of the Ascending-Connected topology?}
 Yes it does. The visual results are clear with no miss-allocations showing up within 50 replications. If there would have been miss-allocations within any replication they would have shown up in the final result.
 
 \paragraph{If yes, does the Ascending-Connected topology approach theoretical equilibrium now?}
-The miss-allocations are repaired but it does does not approach theoretical equilibrium. Both visual and statistical results show that it misses to reach the theoretical and Fully-Connected topology with or without new market equilibrium. Because of the way the new market works the wealth-distributions in medianists and pure optimists show a different shape than in Fully-Connected and thus the theoretical equilibrium is not reached. The reason for the different shape of the wealth-distributions is rooted in the way the market-dynamics work which is discussed in the following section.
+The miss-allocations are repaired but it does does not approach theoretical equilibrium. Both visual and statistical results show that it misses to reach the theoretical and Fully-Connected topology. Although p,q,i1 and i2 do not differ significant the wealth of the optimists and medianists are substantially different and show a different shape than in the Fully-Connected case and thus the theoretical equilibrium is not reached.
 
 \section{Simulation and Market dynamics}
 When implementing a new market the market-dynamics are of very importance and thus the following questions must be answered.
@@ -289,170 +290,186 @@ To answer these questions one must look closely at the market-dynamics. There ar
 
 \subsection{Fully-Connected with new Market}
 
-4 Stages were identified which are quite different from the ones given in \cite{Breuer2015} as the new market makes quite a big impact.
+\begin{figure}[H]
+	\centering
+  \includegraphics[width=1.0\textwidth, angle=0]{fc/FULLYCONNECTED_100_WITHCOLLATERALMARKET_WEALTH_SINGLE.png}
+  	\caption{Final wealth-distribution of a single run of the Fully-Connected topology with Collateral/Cash market.}
+	\label{fig:wealth_FULLYCONNECTED_100_WITHCOLLATERALMARKET_WEALTH_SINGLE}
+\end{figure}
 
 \begin{figure}[H]
 	\centering
   \includegraphics[width=1.0\textwidth, angle=0]{fc/FULLYCONNECTED_100_WITHCOLLATERALMARKET_MARKET_STAGES.png}
-  	\caption{Market-activity stages of Fully-Connected topology with Collateral/Cash market}
+  	\caption{Market-activity stages of the single run of figure \ref{fig:wealth_FULLYCONNECTED_100_WITHCOLLATERALMARKET_WEALTH_SINGLE}.}
 	\label{fig:markets_FULLYCONNECTED_100_WITHCOLLATERALMARKET_MARKET_STAGES}
 \end{figure}
 
+4 Stages were identified which resemble roughly the ones given in \cite{Breuer2015} as the new market doesn't make a big impact due to the fully-connectedness.
+
+
 \paragraph{Stage 1}
-In this stage the pessimists become visible rapidly as they sell their assets and increase their cash wealth. One can get also a sense of the more optimistic range of agents as they gather assets both free and collateralized. The medianists are not visible yet.
+In this stage the pessimists become visible rapidly as they sell their assets and increase their cash wealth. One can get also a sense of the more optimistic range of agents as they gather assets both free and collateralized. The medianists are not visible yet. This picture is in stark contrast to the one given in Ascending-Connected topology where the wealth stabilizes from both the left and right ends towards the marginal agent i2. This is obviously due to the different topology as in the fully-connected one all agents can trade with each other thus the wealth-distribution approaches the theoretical equilibrium over all agents and not only on two frontiers from left and right.
 
 \medskip
 
-The Asset/Cash market dominates but goes down slowly as fewer and fewer pessimists trade assets against cash compared to the very beginning. 
-The Bond/Cash market fluctuates around the same point as bonds are traded more or less equally the same.
-The Collateral/Cash market begins quite low and raises as more and more collateralized assets are created by pessimists and need to be sold again using the new market.
-The Asset/Bond market is hardly active as there is no strong need for its features yet.
+The Asset/Cash market dominates but goes down slowly as fewer and fewer pessimists trade assets against cash compared to the very beginning. The Bond/Cash market is slightly increasing as more and more bonds are traded because they remain the alternative method of payment for assets and because the pessimists trade them up towards the optimists using the BP-mechanism. The Collateral/Cash market begins quite low and stays in the range of a 10\% share as it is not heavily required for the pessimists due to the fully-connectedness. The Asset/Bond market starts quite strong and stays at this level as pessimists trade assets with optimists against bonds.
 
 \begin{figure}[H]
 	\centering
   \includegraphics[width=1.0\textwidth, angle=0]{fc/FULLYCONNECTED_100_WITHCOLLATERALMARKET_WEALTH_STAGE_1.png}
-  	\caption{Wealth-Distribution of Fully-Connected topology with Collateral/Cash market during Stage 1}
+  	\caption{Wealth-Distribution during Stage 1 of the single run of figure \ref{fig:wealth_FULLYCONNECTED_100_WITHCOLLATERALMARKET_WEALTH_SINGLE}.}
 	\label{fig:markets_FULLYCONNECTED_100_WITHCOLLATERALMARKET_WEALTH_STAGE_1}
 \end{figure}
 
 \paragraph{Stage 2}
-The collateralized assets are traded from the pessimists towards the optimists and the optimists crystallize themselves even more but no medianists are visible yet.
+The bonds, free- and collateralized assets are all traded from the pessimists towards the optimists and the optimists crystallize themselves even more but no medianists are visible yet.
 
 \medskip
 
-The Asset/Cash market continues to go down as the cash holdings of the pessimists begin to decline. The Bond/Cash market fluctuates around the same point as before. Now the Collateral/Cash market becomes very active as more and more collateralized assets need to be traded towards the optimists.
-At the beginning of this stage the Asset/Bond market is hardly active but raises fast towards the end of it as the optimists are then out of cash and need to distribute the collateralized assets between each other and the yet to come medianists.
+The Asset/Cash market continues to go down as the cash holdings of the pessimists begin to decline. The Bond/Cash market raises even further as agents switch to this market because the pessimists have ran out of cash. The Collateral/Cash market is still in the range of the 10\% share because its not really needed in the Fully-Connected topology. The Asset/Bond market raises fast towards the end of the stage as the optimists are then out of cash and need to distribute the collateralized assets between each other and the yet to come medianists.
 
 \begin{figure}[H]
 	\centering
   \includegraphics[width=1.0\textwidth, angle=0]{fc/FULLYCONNECTED_100_WITHCOLLATERALMARKET_WEALTH_STAGE_2.png}
-  	\caption{Wealth-Distribution of Fully-Connected topology with Collateral/Cash market during Stage 2}
+  	\caption{Wealth-Distribution during Stage 2 of the single run of figure \ref{fig:wealth_FULLYCONNECTED_100_WITHCOLLATERALMARKET_WEALTH_SINGLE}.}
 	\label{fig:markets_FULLYCONNECTED_100_WITHCOLLATERALMARKET_WEALTH_STAGE_2}
 \end{figure}
 
 \paragraph{Stage 3}
-The pessimists have gone inactive as they hold no more wealth they can trade. The i1-point is emerging and the medianists and pure optimists begin to show up.
+The pessimists are now nearly inactive as only the more optimistic pessimists hold a few bonds which they trade towards the now emerging medianists. The i1-point is beginning to show up but is not yet refined. 
 
 \medskip
 
-Because the pessimists are inactive now and hold no more assets the Asset/Cash and Collateral/Cash markets go down and decline completely. The Bond/Cash market goes down but does not decline as bonds are still traded because of the emerging of medianists. The medianists and pure optimists which are emerging have no other possibility than to trade on the Asset/Bond market to further distribute their collateralized assets among each other which is the reason for the raise of the Asset/Bond market above all others and its heavy domination. Despite the heavy domination of the Asset/Bond market still a few bonds are traded against cash in the range of the medianists.
+Because the pessimists are nearly inactive now and hold no more assets and cash the Asset/Cash and Collateral/Cash markets go down and decline completely. The Bond/Cash market goes down but does not decline as bonds are still traded because of the emerging of medianists. The medianists and pure optimists which are emerging have no other possibility than to trade on the Asset/Bond market to further distribute their collateralized assets among each other which is the reason for the rise of the Asset/Bond market above all others and its heavy domination. Despite the heavy domination of the Asset/Bond market still a few bonds are traded against cash between the most optimistic pessimists and the medianist to refine the i1 point.
 
 \begin{figure}[H]
 	\centering
   \includegraphics[width=1.0\textwidth, angle=0]{fc/FULLYCONNECTED_100_WITHCOLLATERALMARKET_WEALTH_STAGE_3.png}
-  	\caption{Wealth-Distribution of Fully-Connected topology with Collateral/Cash market during Stage 3}
+  	\caption{Wealth-Distribution during Stage 3 of the single run of figure \ref{fig:wealth_FULLYCONNECTED_100_WITHCOLLATERALMARKET_WEALTH_SINGLE}.}
 	\label{fig:markets_FULLYCONNECTED_100_WITHCOLLATERALMARKET_WEALTH_STAGE_3}
 \end{figure}
 
 \paragraph{Stage 4}
-Finally the i2-point has emerged and both i1 and i2 are finalizing. The only active agents remaining are around these two points where the pure optimists trade with the medianists to finalize i2 and the medianists with the next closest pessimists to finalize i1 where the very last transactions occur around i1.
+The pessimists are finally inactive except a couple of most optimistic pessimists around the i1 point which still trade with the medianists on the Bond/Cash market to refine the i1 point to the final allocation as can be seen in figure \ref{fig:wealth_FULLYCONNECTED_100_WITHCOLLATERALMARKET_WEALTH_SINGLE}. Also the i2 is now emerging and a couple of medianists and optimists are trading around it on the Asset/Bond market to achieve the final allocation.
 
 \medskip
 
-The Asset/Bond market goes down until i2 has finalized as the collateralized asset allocation has nearly reached its equilibrium. The Bond/Cash market goes up as agents around i1 are still refining the point as the equilibrium of the medianists is not reached yet. Thus bonds are traded against cash as i1 is the connecting point between pessimists with cash and medianists with bonds which enables the Bond/Cash market to trade again.
+Only the Bond/Cash and Asset/Bond markets are active any more. The Bond/Cash market is active due to the final transactions between the most optimistic pessimists which want to sell their final bonds to the medianists which is only possible through cash which the most pessimistic medianists still own. The Asset/Bond market is active due to the final transactions between the most optimistic medianists which want to sell their free assets to the optimists which is only possible through bonds because the most pessimistic optimists have no more cash left thus they have to trade assets against bonds.
 
 \begin{figure}[H]
 	\centering
   \includegraphics[width=1.0\textwidth, angle=0]{fc/FULLYCONNECTED_100_WITHCOLLATERALMARKET_WEALTH_STAGE_4.png}
-  	\caption{Wealth-Distribution of Fully-Connected topology with Collateral/Cash market during Stage 4}
+  	\caption{Wealth-Distribution during Stage 4 of the single run of figure \ref{fig:wealth_FULLYCONNECTED_100_WITHCOLLATERALMARKET_WEALTH_SINGLE}.}
 	\label{fig:markets_FULLYCONNECTED_100_WITHCOLLATERALMARKET_WEALTH_STAGE_4}
 \end{figure}
 
 \subsection{Deferred new market enabling}
-Using the thesis-software it is possible to start a simulation-run on Ascending-Connected topology without the Collateral/Cash market and enabling it after 1,000 successive failed matching-rounds which gives interesting hints about how the spikes of collateralized assets in the pessimists-range are resolved and distributed over the already existing pure optimists.
+Using the thesis-software it is possible to start a simulation-run with Ascending-Connected topology without the Collateral/Cash market and enabling it after 1,000 successive failed matching-rounds which gives interesting hints about how the spikes of collateralized assets in the pessimists-range are resolved and distributed over the already existing pure optimists.
 
 \medskip
 
-Of course there are the same 3 stages to be found as described already in section \ref{sub:dynamics_singlerun} whereas the deferred enabling of the Collateral/Cash market adds 2 new stages.
+\begin{figure}[H]
+	\centering
+  \includegraphics[width=1.0\textwidth, angle=0]{ac/ASCENDINGCONNECTED_100_DEFERREDCOLLATERALMARKET_SINGLE_MISSALLOCATED.png}
+  	\caption{Wealth-distribution of a single run of Ascending-Connected topology before enabling the Collateral/Cash market.}
+	\label{fig:wealth_ASCENDINGCONNECTED_100_DEFERREDCOLLATERALMARKET_SINGLE_MISSALLOCATED}
+\end{figure}
+
+\begin{figure}[H]
+	\centering
+  \includegraphics[width=1.0\textwidth, angle=0]{ac/ASCENDINGCONNECTED_100_DEFERREDCOLLATERALMARKET_SINGLE_FINAL.png}
+  	\caption{Final wealth-distribution after enabling of the Collateral/Cash market of the single run of figure \ref{fig:wealth_ASCENDINGCONNECTED_100_DEFERREDCOLLATERALMARKET_SINGLE_MISSALLOCATED}.}
+	\label{fig:wealth_ASCENDINGCONNECTED_100_DEFERREDCOLLATERALMARKET_SINGLE_FINAL}
+\end{figure}
 
 \begin{figure}[H]
 	\centering
   \includegraphics[width=1.0\textwidth, angle=0]{ac/ASCENDINGCONNECTED_100_DEFERREDCOLLATERALMARKET_MARKET_STAGES.png}
-  	\caption{Market-activity stages of Ascending-Connected topology with deferred activated Collateral/Cash market}
+  	\caption{Market-activity stages of the single run of figure \ref{fig:wealth_ASCENDINGCONNECTED_100_DEFERREDCOLLATERALMARKET_SINGLE_FINAL}.}
 	\label{fig:markets_ASCENDINGCONNECTED_100_DEFERREDCOLLATERALMARKET_MARKET_STAGES}
 \end{figure}
 
+Of course there are the same 3 stages to be found as described already in section \ref{sub:dynamics_singlerun} whereas the deferred enabling of the Collateral/Cash market adds 2 new stages.
+
 \paragraph{Stage 4}
-The collateralized assets are traded against cash and sum up at the i1-point where the first agent has no more cash. 
+The free- and collateralized assets and bonds are traded by the pessimists towards the medianists and optimists and lead to a pattern similar to the end of stage 3.
+
+\medskip
+
+The Collateral/Cash market kicks in and allows the blocked goods to be traded again thus changing the activity of the other markets too. The Asset/Bond market initially drops rapidly just to recover shortly after. The Asset/Cash market previously dormant becomes active again because the pessimists have freed their collateral first because of selling it through the Collateral/Cash market and then through the Asset/Bond market or Bond/Cash market. Thus they have free assets they don't want and thus trade them against cash towards the medianists.
 
 \begin{figure}[H]
 	\centering
   \includegraphics[width=1.0\textwidth, angle=0]{ac/ASCENDINGCONNECTED_100_DEFERREDCOLLATERALMARKET_WEALTH_STAGE_4.png}
-  	\caption{Wealth-Distribution of Ascending-Connected topology with deferred activated Collateral/Cash market during Stage 4}
+  	\caption{Wealth-Distribution during Stage 4 of the single run of figure \ref{fig:wealth_ASCENDINGCONNECTED_100_DEFERREDCOLLATERALMARKET_SINGLE_FINAL}.}
 	\label{fig:markets_ASCENDINGCONNECTED_100_DEFERREDCOLLATERALMARKET_WEALTH_STAGE_4}
 \end{figure}
 
 \paragraph{Stage 5}
-Now the Asset/Bond market becomes 100\% dominant again and the collateralized assets are traded through the medianists towards the pure optimists as they have no more cash and can only trade anymore on this remaining active market.
-
+The i1-point has finalized as no more pessimists are able to trade with their next medianists. Now only free assets in the range of medianists are traded towards the optimists which can only happen on the Asset/Bond market because both are out of cash. This will lead to the finalizing of the i2-point which can be seen in figure \ref{fig:wealth_ASCENDINGCONNECTED_100_DEFERREDCOLLATERALMARKET_SINGLE_FINAL}.
+ 
 \begin{figure}[H]
 	\centering
   \includegraphics[width=1.0\textwidth, angle=0]{ac/ASCENDINGCONNECTED_100_DEFERREDCOLLATERALMARKET_WEALTH_STAGE_5.png}
-  	\caption{Wealth-Distribution of Ascending-Connected topology with deferred activated Collateral/Cash market during Stage 5}	\label{fig:markets_ASCENDINGCONNECTED_100_DEFERREDCOLLATERALMARKET_WEALTH_STAGE_5}
+  	\caption{Wealth-Distribution during Stage 5 of the single run of figure \ref{fig:wealth_ASCENDINGCONNECTED_100_DEFERREDCOLLATERALMARKET_SINGLE_FINAL}.}
+  	\label{fig:markets_ASCENDINGCONNECTED_100_DEFERREDCOLLATERALMARKET_WEALTH_STAGE_5}
 \end{figure}
 
 \subsection{Ascending-Connected with new Market}
 
-4 stages were identified where only 3 of them can be seen in the Market-Dynamics diagram as stage 3 and 4 have indifferent market-activities.
+\begin{figure}[H]
+	\centering
+  \includegraphics[width=1.0\textwidth, angle=0]{ac/ASCENDINGCONNECTED_100_WITHCOLLATERALMARKET_SINGLE.png}
+  	\caption{Final wealth-distribution of a single run of Ascending-Connected topology with Collateral/Cash market enabled.}
+	\label{fig:wealth_ASCENDINGCONNECTED_100_WITHCOLLATERALMARKET_SINGLE}
+\end{figure}
 
 \begin{figure}[H]
 	\centering
   \includegraphics[width=1.0\textwidth, angle=0]{ac/ASCENDINGCONNECTED_100_WITHCOLLATERALMARKET_MARKET_STAGES.png}
-  	\caption{Market-activity stages of Ascending-Connected topology with Collateral/Cash market}
+  	\caption{Market-activity stages of the single run of figure \ref{fig:wealth_ASCENDINGCONNECTED_100_WITHCOLLATERALMARKET_SINGLE}.}
 	\label{fig:markets_ASCENDINGCONNECTED_100_WITHCOLLATERALMARKET_MARKET_STAGES}
 \end{figure}
 
+3 stages were identified as can be seen in the Market-Dynamics diagram in figure \ref{fig:markets_ASCENDINGCONNECTED_100_WITHCOLLATERALMARKET_MARKET_STAGES}.
+
 \paragraph{Stage 1}
-Pessimists and optimists begin to emerge where the pessimists are gathering cash and collateralized assets and the optimists are gathering free assets against cash and a few collateralized assets. There are no medianists visible yet.
+Pessimists and optimists are emerge where the pessimists are gathering cash and selling all other goods. The optimists are gathering assets against cash and against bonds. There are no medianists visible yet.
 
 \medskip
-
-The Asset/Cash and Bond/Cash markets start around 40\% slightly decreasing because the pessimists are slowly going low on assets. The Collateral/Cash market starts around 10\% with increasing tendency because the amount of collateralized assets which move towards the optimists increases. The Asset/Bond market is hardly active as its features are not yet very necessary.
-		
+TODO: märkte beschreiben
+	
 \begin{figure}[H]
 	\centering
   \includegraphics[width=1.0\textwidth, angle=0]{ac/ASCENDINGCONNECTED_100_WITHCOLLATERALMARKET_WEALTH_STAGE_1.png}
-  	\caption{Wealth-Distribution of Ascending-Connected topology with Collateral/Cash market during Stage 1}
+  	\caption{Wealth-Distribution during Stage 1 of the single run of figure \ref{fig:wealth_ASCENDINGCONNECTED_100_WITHCOLLATERALMARKET_SINGLE}.}
 	\label{fig:wealth_ASCENDINGCONNECTED_100_WITHCOLLATERALMARKET_WEALTH_STAGE_1}
 \end{figure}
 
 \paragraph{Stage 2}
-In the pessimist-range large amount of collateralized assets have gathered which are traded now towards the optimists as the pessimists try to get maximally short on any assets and maximally plus on cash. Those collateralized assets are traded towards the i1-point - that is the first agent who holds no more cash - which can be seen by a spike in the wealth-distribution of figure \ref{fig:wealth_ASCENDINGCONNECTED_100_WITHCOLLATERALMARKET_WEALTH_STAGE_2} around 0.65.
-There are no medianists visible yet.
+The pessimists are nearly final and hold only a few bonds which they trade towards the now emerging medianists. The medianists and optimists are approaching each other by trading towards the i2-point on the Asset/Bond market because both are out of cash and thus are only able to trade on this market with each other.
 
 \medskip
-
-The Collateral/Cash market raises above the Asset/Cash and Bond/Cash markets and either fluctuates or stays quite constant. In figure \ref{fig:markets_ASCENDINGCONNECTED_100_WITHCOLLATERALMARKET_MARKET_STAGES} the fluctuating variant is shown. If the market fluctuates the Asset/Cash and Bond/Cash fluctuate inverse in that if Collateral/Cash market raises they go down and vice versa. If the Collateral/Cash market stays quite constant in this stage it raises above 90\% and Asset/Cash and Bond/Cash markets decline to 0\%. Why the Collateral/Cash market either fluctuates or stays constant is not clear but is most probably dependent on the allocation of collateralized assets in the pessimists-range. The Asset/Bond market becomes a bit more active as more collateralized assets are traded.
+TODO: märkte beschreiben
 
 \begin{figure}[H]
 	\centering
   \includegraphics[width=1.0\textwidth, angle=0]{ac/ASCENDINGCONNECTED_100_WITHCOLLATERALMARKET_WEALTH_STAGE_2.png}
-  	\caption{Wealth-Distribution of Ascending-Connected topology with Collateral/Cash market during Stage 2}
+  	\caption{Wealth-Distribution during Stage 2 of the single run of figure \ref{fig:wealth_ASCENDINGCONNECTED_100_WITHCOLLATERALMARKET_SINGLE}.}
 	\label{fig:wealth_ASCENDINGCONNECTED_100_WITHCOLLATERALMARKET_WEALTH_STAGE_2}
 \end{figure}
 
 \paragraph{Stage 3}
-Pessimists are now final and won't change any more. The optimists-range is now clearly visible and holds a large amount of collateralized assets from the pessimists which needs now to be traded and distributed to the remaining optimists. Medianists are still not visible yet.
+Pessimists are now final and won't change any more and the i1-point has emerged and is final. Medianists and optimists trade on the Asset/Bond market to finalize i2-point which can be seen in the final wealth-distribution in figure \ref{fig:wealth_ASCENDINGCONNECTED_100_WITHCOLLATERALMARKET_SINGLE}
 
 \medskip
-
-Because the pessimists are no more able to trade and the optimists hold no more cash the activity of the Collateral/Cash market drops rapidly and Asset/Bond market raises to 100\% activity as only collateralized-assets are tradeable any more.
+TODO: märkte beschreiben
 
 \begin{figure}[H]
 	\centering
   \includegraphics[width=1.0\textwidth, angle=0]{ac/ASCENDINGCONNECTED_100_WITHCOLLATERALMARKET_WEALTH_STAGE_3.png}
-  	\caption{Wealth-Distribution of Ascending-Connected topology with Collateral/Cash market during Stage 3}
+  	\caption{Wealth-Distribution during Stage 3 of the single run of figure \ref{fig:wealth_ASCENDINGCONNECTED_100_WITHCOLLATERALMARKET_SINGLE}.}
 	\label{fig:wealth_ASCENDINGCONNECTED_100_WITHCOLLATERALMARKET_WEALTH_STAGE_3}
-\end{figure}
-
-\paragraph{Stage 4}
-Medianists begin to show up and to distinguish themselves from the pure optimists. This is no more visible on the market-dynamics as only Asset/Bonds are traded any more and thus only this market is active any more.
-
-\begin{figure}[H]
-	\centering
-  \includegraphics[width=1.0\textwidth, angle=0]{ac/ASCENDINGCONNECTED_100_WITHCOLLATERALMARKET_WEALTH_STAGE_4.png}
-  	\caption{Wealth-Distribution of Ascending-Connected topology with Collateral/Cash market during Stage 4}
-	\label{fig:wealth_ASCENDINGCONNECTED_100_WITHCOLLATERALMARKET_WEALTH_STAGE_4}
 \end{figure}
 
 After these observations made one can answer the questions.
