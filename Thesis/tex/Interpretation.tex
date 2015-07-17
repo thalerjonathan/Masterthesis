@@ -79,6 +79,29 @@ The Asset/Cash and Bond/Cash markets decline completely because the pessimists a
 \end{figure}
 
 \paragraph{Deriving the emerging of the artefacts}
+As already outlined the artefacts arise due to a blocking situation where trading becomes and \textit{stays} impossible between two neighbours. The seller places ask-offerings on a given market but due to trading constraints the only potential buyer which is the neighbour with the next higher optimism-factor can't place any potential matching bid-offering on the given market. In figure \ref{fig:wealth_ASCENDINGCONNECTED_100_NOCOLLATERALMARKET_SINGLE} this blocking-situation can be seen between the agent-pairs 55 (0.545) \& 56 (0.554), 57 (0.564) \& 58 (0.574), 62 (0.614) \& 63 (0.624), 64 (0.634) \& 65 (0.644) and 68 (0.673) \& 69 (0.683). In all pairs the seller, which is the agent with the lower optimism-factor, holds only collateralized assets and thus places ask-offers only on the Asset/Bond market. The buyer, which is the agent with the higher optimism-factor, holds only cash and places bid-offers only on the Asset/Cash and Bond/Cash market but not on the Asset/Bond market - trading has become impossible between the two agents. It is interesting to see that the wealth-distribution in the range of 0.455 - 0.554 already shows basic similarities to the global distribution because all wealth is traded up towards the blocking-point creating the small sub-distribution of pessimists, medianists and optimists. The blocking-situation will now be described formally, it will be shown formally that it can only occur on the Asset/Bond market and formally which holdings the agents must have.
+
+\medskip
+
+It is of very importance to note that an agent can never have a total utility of 0 in this simulation as per definition in chapter \ref{ch:leverageCycle} each trade results in a utility-increase.
+
+TODO:
+- formally describe the blocking situation
+- formally show that it is only possible on the asset/bond market
+- formally under which circumstance: wealth of the two agents
+
+TODO HV: Erklaere es mit Buchstaben fuer Preise und Mengen, und mit Ungleichungen auf diesen, welche Nebenbedingungen und positiven Utility Gewinn ausdruecken. Anschliessend kannst Du wieder versuchen, das Ganze in Woerter zu fassen - es ist nicht so leicht!
+
+
+
+
+
+
+
+
+
+
+
 TODO: nochmal überarbeiten
 TODO HV: zu lange und umstaendliche Erklaerung., ausserdem fehlt formale Beschreibung der Artefakte, alles ist viel zu intuitiv. Erst formal mit Formeln, dann ein paar Worte - siehe als Verbesserungsweg meinen Kommentar weiter unten.
 
@@ -111,7 +134,7 @@ It is important to understand that all agents independent of their optimism fact
 
 Thus pessimists gain wealth in collateralized assets too which can be seen by the green spikes with the same amount of negative bonds as those assets are bought against bond. Of course they try to sell it to neighbours with higher optimism factor but this is only possible if these neighbours are able to buy which they can only if they hold enough positive bonds to buy the offered asset for the offered amount of bonds.
 
-TODO HV: zu ungenaue Beschreibung. Erklaere es mit Buchstaben fuer Preise und Mengen, und mit Ungleichungen auf diesen, welche Nebenbedingungen und positiven Utility Gewinn ausdruecken. Anschliessend kannst Du wieder versuchen, das Ganze in Woerter zu fassen - es ist nicht so leicht!
+
 
 \medskip 
 
