@@ -78,91 +78,35 @@ The Asset/Cash and Bond/Cash markets decline completely because the pessimists a
 	\label{fig:markets_ASCENDINGCONNECTED_100_NOCOLLATERALMARKET_WEALTH_STAGE_3}
 \end{figure}
 
-\paragraph{Deriving the emerging of the artefacts}
-As already outlined the artefacts arise due to a blocking situation where trading becomes and \textit{stays} impossible between two neighbours. The seller places ask-offerings on a given market but due to trading constraints the only potential buyer which is the neighbour with the next higher optimism-factor can't place any potential matching bid-offering on the given market. In figure \ref{fig:wealth_ASCENDINGCONNECTED_100_NOCOLLATERALMARKET_SINGLE} this blocking-situation can be seen between the agent-pairs 55 (0.545) \& 56 (0.554), 57 (0.564) \& 58 (0.574), 62 (0.614) \& 63 (0.624), 64 (0.634) \& 65 (0.644) and 68 (0.673) \& 69 (0.683). In all pairs the seller, which is the agent with the lower optimism-factor, holds only collateralized assets and thus places ask-offers only on the Asset/Bond market. The buyer, which is the agent with the higher optimism-factor, holds only cash and places bid-offers only on the Asset/Cash and Bond/Cash market but not on the Asset/Bond market - trading has become impossible between the two agents. It is interesting to see that the wealth-distribution in the range of 0.455 - 0.554 already shows basic similarities to the global distribution because all wealth is traded up towards the blocking-point creating the small sub-distribution of pessimists, medianists and optimists. The blocking-situation will now be described formally, it will be shown formally that it can only occur on the Asset/Bond market and formally which holdings the agents must have.
+\section{Deriving the emerging of the artefacts}
 
-\medskip
+\paragraph{Blocking-Situation prevents trading} As already outlined the artefacts arise due to a blocking situation where trading becomes and \textit{stays} impossible between two neighbours. The seller places ask-offerings on a given market but due to trading constraints the only potential buyer which is the neighbour with the next higher optimism-factor can't place any potential matching bid-offering on the given market. In figure \ref{fig:wealth_ASCENDINGCONNECTED_100_NOCOLLATERALMARKET_SINGLE} this blocking-situation can be seen between the agent-pairs 55 (0.545) \& 56 (0.554), 57 (0.564) \& 58 (0.574), 62 (0.614) \& 63 (0.624), 64 (0.634) \& 65 (0.644) and 68 (0.673) \& 69 (0.683). In all pairs the seller, which is the agent with the lower optimism-factor, holds only collateralized assets and thus places ask-offers only on the Asset/Bond market. The buyer, which is the agent with the higher optimism-factor, holds only cash and places bid-offers only on the Asset/Cash and Bond/Cash market but not on the Asset/Bond market - trading has become impossible between the two agents. It is interesting to see that the wealth-distribution in the range of 0.455 - 0.554 already shows basic similarities to the global distribution because all wealth is traded up towards the blocking-point creating the small sub-distribution of pessimists, medianists and optimists.
 
-It is of very importance to note that an agent can never have a total utility of 0 in this simulation as per definition in chapter \ref{ch:leverageCycle} each trade results in a utility-increase. Thus because the blocking buyer has no assets at all because it is a pessimist, it will hold only cash for the asset it has sold. If it holds positive bonds then the blocking situation could not occur because then it could buy the assets against bonds. Thus the blocking agent can only be one which holds only cash.
+\paragraph{Situation can occur only on the Asset/Bond market.} It is of very importance to note that an agent can never have a total utility of 0 in this simulation as per definition in chapter \ref{ch:leverageCycle} each trade results in a utility-increase. Thus because the blocking buyer has no assets at all because it is a pessimist, it will hold only cash for the asset it has sold. A blocking situation can only occur if agents hold only extreme allocations of wealth which means only one kind of good and nothing else as in a mix of goods they can still trade TODO: formal beweisen. The following extreme allocations are possible: cash, free assets, positive bonds, collateralized assets only. When applying linear-combination to the extreme allocations the following situations could arise:
 
-An agent cannot hold positive bonds AND collateralized assets as assets are only collateralized if the agent owes more bonds than it granted to other agents.
-A mix of goods can be: cash, positive bonds an optionally free assets OR cash, collateralized assets and free assets. In both cases both agents can trade with each other and no blocking situation can occur. Linear-combination:
-
-seller: cash, buyer: any - trivial, seller cant sell anything, no blocking possible
-seller: positive bonds, buyer: cash - buyer can buy from seller: BP-mechanism
-seller: positive bonds, buyer: free assets - no trading between them but buyer will act as seller and will sell assets up to optimists, thus generating cash -> same as above
-seller: positive bonds, buyer: collateralized assets - final allocation: medianists and optimists
-seller: free assets, buyer: cash - buyer can buy from seller
-seller: free assets, buyer: positive bonds - buyer can by the assets against bonds
-seller: free assets, buyer: collateralized assets - ?
-seller: collateralized assets, buyer: cash - blocking situation
-seller: collateralized assets, buyer: positive bonds - buyer can buy assets against bonds
-seller: collateralized assets, buyer: collateralized assets - buyer can buy assets against bonds
-seller: collateralized assets, buyer: free assets - ?
-
+\begin{enumerate}
+\item Seller has cash only, buyer any \\ Seller does not sell anything thus no blocking possible. 
+\item Seller has positive bonds only, buyer has cash only \\ Buyer can buy from seller through the BP-mechanism.
+\item Seller has positive bonds only, buyer has free assets only \\ No trading between them but buyer will act as seller and will sell assets up to optimists, thus generating cash which creates then the same situation as in 2.
+\item Seller has positive bonds only, buyer has collateralized assets only \\ This is the final allocation of medianists which hold positive bonds only and optimists which hold collateralized assets only.
+\item Seller has free assets only, buyer has cash only \\ Buyer can buy assets from seller against cash.
+\item Seller free assets only, buyer has positive bonds only \\ Buyer can by the assets against bonds.
+\item Seller has free assets only, buyer has collateralized assets \\ Buyer can buy free assets against bonds. TODO: wirklich?
+\item Seller has collateralized assets only, buyer has positive bonds only \\ Buyer can buy assets against bonds.
+\item Seller has collateralized assets only, buyer has collateralized assets only \\ Buyer can buy assets against bonds. TODO: wirklich?
+\item Seller has collateralized assets, buyer has free assets \\ No trading between them but buyer will act as seller and will sell assets up to optimists against cash or bonds, thus generating cash or positive bonds which is then same as in 9 or 11.
+\item Seller: collateralized assets only, buyer has cash only \\ This is the blocking situation as the buyer has no possibility to buy the collateralized assets and cannot get its hands on bonds or assets any more as it is only the seller towards higher optimistic agents which would be the only one who could provide the buyer with those goods.
+\end{enumerate}
 
 TODO:
 - formally describe the blocking situation
-- formally show that it is only possible on the asset/bond market
-- formally under which circumstance: wealth of the two agents
+- explain that it is only possible on the asset/bond market
 
 TODO HV: Erklaere es mit Buchstaben fuer Preise und Mengen, und mit Ungleichungen auf diesen, welche Nebenbedingungen und positiven Utility Gewinn ausdruecken. Anschliessend kannst Du wieder versuchen, das Ganze in Woerter zu fassen - es ist nicht so leicht!
 
-
-
-
-
-
-
-
-
-
-
-TODO: nochmal überarbeiten
 TODO HV: zu lange und umstaendliche Erklaerung., ausserdem fehlt formale Beschreibung der Artefakte, alles ist viel zu intuitiv. Erst formal mit Formeln, dann ein paar Worte - siehe als Verbesserungsweg meinen Kommentar weiter unten.
 
-
-The wealth stabilizes from both the left and the right end of the optimism-scale towards the i2-point where medianists become optimists - around this point the last trades will happen.
-
-\medskip 
-
-Pessimists try to sell all their assets against cash to the neighbour with higher optimism-factor.
-
-\medskip 
-
-Optimists try to buy as much assets as they can get from the neighbour with lower optimism-factor. In the beginning they use cash and after they've run out of cash they buy assets against bonds.
-
-\medskip 
-
-The medianists serve as connection between the pessimists and optimists transferring the assets to the optimists by buying from agents with lower optimism and selling to higher ones either through asset against cash or asset against bond.
-
-\medskip 
-
-Thus the assets move from the pessimists through the ascending chain of optimism to the optimists as no direct connection between these two groups exists with the medianists in between. Thus waves of uncollateralized assets can be seen moving from pessimists to optimists.
-
-TODO HV: wo?? der Leser sieht hier keine Wellen!
-
-\medskip 
-
-It is important to understand that all agents independent of their optimism factor make offers on all markets if they are able to and their cash, collateral or bond constraints are satisfied. This implies that pessimists trade bonds as well as assets against bonds although they turn out to be pessimists. Note that the agents are not defined exogenous as pessimists/medianist/optimists but this property emerges during the simulation.
-
-\medskip 
-
-Thus pessimists gain wealth in collateralized assets too which can be seen by the green spikes with the same amount of negative bonds as those assets are bought against bond. Of course they try to sell it to neighbours with higher optimism factor but this is only possible if these neighbours are able to buy which they can only if they hold enough positive bonds to buy the offered asset for the offered amount of bonds.
-
-
-
-\medskip 
-
-Whether an agent has enough wealth to buy from a seller is more or less random and depends on its trading history. Matching happens randomly and thus it is possible that the neighbourhood of a seller "dries up" as the potential buyers sold all their goods to the next agent with higher optimism factor and become thus unable to buy from the potential seller because they have no more positive bonds to buy assets against bonds. In such a case a potential pessimist seller of collateralized assets is then cut from its environment and becomes unable to trade any more resulting in a miss-allocation in collateralized assets.
-
-\medskip 
-
-It is also possible for a group of agents to get cut from its environment through this random trading-process. In this case the agents within this "island" still trade between each other resulting in the uncollateralizing of assets which immediately are traded towards optimists but as soon as a point is reached where no buyer is available with enough positive bonds to buy collateralized assets this island is also incapable of trading any more resulting in an island of miss-allocated wealth.
-
-\medskip 
-
-An important fact to notice is that the artefacts must not necessarily show up. It is possible for a single run to finish without these artefacts showing up. This is due to the random-process of sweeping and matching and thus the artefacts are subject to this random process too as noted in section \ref{sec:implementation_performanceImprovement}. When looking at the result of Ascending-Connected topology with importance sampling in figure \ref{fig:wealth_ASCENDINGCONNECTED_IS_100_NOCOLLATERALMARKET_REPL} it seems that Importance sampling elevates this problem as no artefacts have shown up during an experiment with 50 replications. This however is no proof that importance sampling is the solution to this problem as the mechanism is still the same. We conjecture that due to the dramatically increased matching-probabilities the occurrence of such miss-allocations have become highly unlikely but are not guaranteed to never show up any more thus the importance sampling is not accepted as a remedy for the miss-allocations. In a special experiment with 200 replications artefacts have shown up which proofs that importance sampling is definitely not a remedy for the miss-allocations.
+\paragraph{Artefacts are random} An important fact to notice is that the artefacts must not necessarily show up. It is possible for a single run to finish without these artefacts showing up. This is due to the random-process of sweeping and matching and thus the artefacts are subject to this random process too as noted in section \ref{sec:implementation_performanceImprovement}. When looking at the result of Ascending-Connected topology with importance sampling in figure \ref{fig:wealth_ASCENDINGCONNECTED_IS_100_NOCOLLATERALMARKET_REPL} it seems that Importance sampling elevates this problem as no artefacts have shown up during an experiment with 50 replications. This however is no proof that importance sampling is the solution to this problem as the mechanism is still the same. We conjecture that due to the dramatically increased matching-probabilities the occurrence of such miss-allocations have become highly unlikely but are not guaranteed to never show up any more thus the importance sampling is not accepted as a remedy for the miss-allocations. In a special experiment with 200 replications artefacts have shown up which proofs that importance sampling is definitely not a remedy for the miss-allocations.
 
 \section{Extending the Hypothesis}
 After it has become clear that the hypothesis is not sufficient the question arises what needs to be done to approach the theoretical equilibrium anyway. It is clear that a mechanism needs to be found which prevents or resolves the arising of the artefacts within wealth-distribution. Obviously two solutions are available.
