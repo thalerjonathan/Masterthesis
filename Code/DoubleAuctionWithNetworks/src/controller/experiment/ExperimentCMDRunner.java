@@ -23,6 +23,8 @@ import frontend.networkCreators.AscendingFullShortcutsCreator;
 import frontend.networkCreators.AscendingRandomShortcutsCreator;
 import frontend.networkCreators.AscendingRegularShortcutsCreator;
 import frontend.networkCreators.BarbasiAlbertCreator;
+import frontend.networkCreators.BuyersAnd2SellersCreator;
+import frontend.networkCreators.BuyerHas2SellersCreator;
 import frontend.networkCreators.ErdosRenyiCreator;
 import frontend.networkCreators.FullyConnectedCreator;
 import frontend.networkCreators.HalfFullyConnectedCreator;
@@ -30,6 +32,7 @@ import frontend.networkCreators.HubConnectedCreator;
 import frontend.networkCreators.MaximumHubCreator;
 import frontend.networkCreators.MedianHubCreator;
 import frontend.networkCreators.NetworkCreator;
+import frontend.networkCreators.SellerHas2BuyersCreator;
 import frontend.networkCreators.ThreeMedianHubsCreator;
 import frontend.networkCreators.WattStrogatzCreator;
 
@@ -78,6 +81,9 @@ public class ExperimentCMDRunner {
 		this.networkCreators.add( new ErdosRenyiCreator() );
 		this.networkCreators.add( new BarbasiAlbertCreator() );
 		this.networkCreators.add( new WattStrogatzCreator() );
+		this.networkCreators.add( new SellerHas2BuyersCreator() );
+		this.networkCreators.add( new BuyerHas2SellersCreator() );
+		this.networkCreators.add( new BuyersAnd2SellersCreator() );
 	}
 	
 	public void runAllExperiments() {

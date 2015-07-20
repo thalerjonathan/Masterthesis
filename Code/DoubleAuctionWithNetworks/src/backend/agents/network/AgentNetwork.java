@@ -299,6 +299,64 @@ public class AgentNetwork {
 		return network;
 	}
 
+	public static AgentNetwork createSellerHas2Buyers( IAgentFactory agentFactory, int index ) {
+		AgentNetwork network = AgentNetwork.createAscendingConnectedWithRandomShortcuts( 0.0, agentFactory );
+		
+		if ( index >= network.size() ) {
+			index = 0;
+		}
+		
+		Agent a1 = network.get( index );
+		Agent a2 = network.get( index + 1 );
+		Agent a3 = network.get( index + 2 );
+		
+		AgentConnection conn = network.graph.findEdge( a2, a3 );
+		network.graph.removeEdge( conn );
+		
+		network.graph.addEdge( new AgentConnection(), a1, a3 );
+		
+		return network;
+	}
+	
+	public static AgentNetwork createBuyerHas2Sellers( IAgentFactory agentFactory, int index ) {
+		AgentNetwork network = AgentNetwork.createAscendingConnectedWithRandomShortcuts( 0.0, agentFactory );
+
+		if ( index >= network.size() ) {
+			index = 0;
+		}
+		
+		Agent a1 = network.get( index );
+		Agent a2 = network.get( index + 1 );
+		Agent a3 = network.get( index + 2 );
+		
+		AgentConnection conn = network.graph.findEdge( a1, a2 );
+		network.graph.removeEdge( conn );
+		
+		network.graph.addEdge( new AgentConnection(), a1, a3 );
+		
+		return network;
+	}
+	
+	public static AgentNetwork create2BuyersAnd2Sellers( IAgentFactory agentFactory, int index ) {
+		AgentNetwork network = AgentNetwork.createAscendingConnectedWithRandomShortcuts( 0.0, agentFactory );
+		
+		if ( index >= network.size() ) {
+			index = 0;
+		}
+		
+		Agent a1 = network.get( index );
+		Agent a2 = network.get( index + 1 );
+		Agent a3 = network.get( index + 2 );
+		Agent a4 = network.get( index + 4 );
+		
+		AgentConnection conn = network.graph.findEdge( a2, a3 );
+		network.graph.removeEdge( conn );
+		
+		network.graph.addEdge( new AgentConnection(), a1, a4 );
+		
+		return network;
+	}
+	
 	public static AgentNetwork createErdosRenyiConnected( double p, IAgentFactory agentFactory ) {
 		AgentNetwork network = new AgentNetwork( "ErdosRenyi", true );
 		network.populate( agentFactory );
@@ -641,164 +699,4 @@ public class AgentNetwork {
 			}
 		}
 	}
-	
-	/*
-	public void createHistogramm() {
-		int i = 0;
-		
-		double[] totalDegree = new double[ graph.getVertexCount() ];
-		double[] inDegree = new double[ graph.getVertexCount() ];
-		double[] outDegree = new double[ graph.getVertexCount() ];
-		
-		double totalDegreeMin = Double.MAX_VALUE;
-		double totalDegreeMax = 0.0;
-		
-		double inDegreeMin = Double.MAX_VALUE;
-		double inDegreeMax = 0.0;
-		
-		double outDegreeMin = Double.MAX_VALUE;
-		double outDegreeMax = 0.0;
-		
-		Iterator<Agent> iter = graph.getVertices().iterator();
-		while ( iter.hasNext() ) {
-			Agent a = iter.next();
-			
-			totalDegree[ i ] = graph.degree( a );
-			inDegree[ i ] = graph.inDegree( a );
-			outDegree[ i ] = graph.outDegree( a );
-			
-			if ( totalDegree[ i ] < totalDegreeMin )
-				totalDegreeMin = totalDegree[ i ];
-			else if ( totalDegree[ i ] > totalDegreeMax )
-				totalDegreeMax = totalDegree[ i ];
-			
-			if ( inDegree[ i ] < inDegreeMin )
-				inDegreeMin = inDegree[ i ];
-			else if ( inDegree[ i ] > inDegreeMax )
-				inDegreeMax = inDegree[ i ];
-			
-			if ( outDegree[ i ] < outDegreeMin )
-				outDegreeMin = outDegree[ i ];
-			else if ( outDegree[ i ] > outDegreeMax )
-				outDegreeMax = outDegree[ i ];
-			
-			++i;
-		}
-		
-		HistogramDataset totalDegreeDS = new HistogramDataset();
-		HistogramDataset inDegreeDS = new HistogramDataset();
-		HistogramDataset outDegreeDS = new HistogramDataset();
-		
-		totalDegreeDS.addSeries("Total Degree Distribution", totalDegree, 20, totalDegreeMin, totalDegreeMax);
-		inDegreeDS.addSeries("In-Degree Distribution", inDegree, 20, inDegreeMin, inDegreeMax);
-		outDegreeDS.addSeries("Out-Degree Distribution", outDegree, 20, outDegreeMin, outDegreeMax);
-
-		writeHistogramm( this.networkName + " Total-Degree Distribution", this.networkName + "_totalDegreeHist.png", totalDegreeDS );
-		writeHistogramm( this.networkName + " In-Degree Distribution", this.networkName + "_inDegreeHist.png", inDegreeDS );
-		writeHistogramm( this.networkName + " Out-Degree Distribution", this.networkName + "_outDegreeHist.png", outDegreeDS );
-	}
-	
-	public ChartPanel createDegreeToOptDiagram() {
-		XYSeries totalDegreeSeries = new XYSeries("Total-Degre");
-		XYSeries inDegreeSeries = new XYSeries("In-Degree");
-		XYSeries outDegreeSeries = new XYSeries("Out-Degree");
-		
-		XYSeriesCollection dataset = new XYSeriesCollection();
-
-		Iterator<Agent> iter = graph.getVertices().iterator();
-		while ( iter.hasNext() ) {
-			Agent a = iter.next();
-			
-			totalDegreeSeries.add( a.getH(), graph.degree( a ) );
-			inDegreeSeries.add( a.getH(), graph.inDegree( a ) );
-			outDegreeSeries.add( a.getH(), graph.outDegree( a ) );
-		}
-		
-		dataset.addSeries(totalDegreeSeries);
-		dataset.addSeries(inDegreeSeries);
-		dataset.addSeries(outDegreeSeries);
-		
-		JFreeChart chart = writeChart( this.networkName + " Degree To Optimism-Factor", this.networkName + "_degreeToOptFactor.PNG", dataset );
-		
-		return new ChartPanel( chart );
-	}
-
-	public ChartPanel createWeightsToOptDiagram() {
-		XYSeries totalWeightsSeries = new XYSeries("Total-Weights");
-		XYSeries inWeightsSeries = new XYSeries("In-Weights");
-		XYSeries outWeightsSeries = new XYSeries("Out-Weights");
-		
-		XYSeriesCollection dataset = new XYSeriesCollection();
-		
-		Iterator<Agent> iter = graph.getVertices().iterator();
-		while ( iter.hasNext() ) {
-			Agent a = iter.next();
-			double inWeight = 0.0;
-			double outWeight = 0.0;
-
-        	Iterator<AgentConnection> connIter = graph.getIncidentEdges( a ).iterator();
-        	while ( connIter.hasNext() ) {
-        		inWeight += connIter.next().getWeight();
-        	}
-        	
-        	connIter = graph.getOutEdges( a ).iterator();
-        	while ( connIter.hasNext() ) {
-        		outWeight += connIter.next().getWeight();
-        	}
-
-        	inWeightsSeries.add( a.getH(), inWeight );
-        	outWeightsSeries.add( a.getH(), outWeight );
-        	totalWeightsSeries.add( a.getH(), inWeight + outWeight );
-		}
-		
-		dataset.addSeries(totalWeightsSeries);
-		dataset.addSeries(inWeightsSeries);
-		dataset.addSeries(outWeightsSeries);
-		
-		String plotTitle = this.networkName + " Connection-Weights To Optimism-Factor"; 
-		String xaxis = "Optimism-Factor";
-		String yaxis = "Weights"; 
-		JFreeChart chart = ChartFactory.createXYLineChart( plotTitle, xaxis, yaxis, dataset);
-		int width = 800;
-		int height = 600; 
-		try {
-			ChartUtilities.saveChartAsPNG(new File("img\\" + this.networkName + "_weightsToOptFactor.PNG"), chart, width, height);
-		} catch (IOException e) {
-		}
-		
-		return new ChartPanel( chart );
-	}
-
-	private JFreeChart writeHistogramm(String plotTitle, String fileName, HistogramDataset dataset) {
-		String xaxis = "Degree";
-		String yaxis = "Count"; 
-		PlotOrientation orientation = PlotOrientation.VERTICAL; 
-		boolean show = false; 
-		boolean toolTips = false;
-		boolean urls = false; 
-		JFreeChart chart = ChartFactory.createHistogram( plotTitle, xaxis, yaxis, dataset, orientation, show, toolTips, urls);
-		int width = 800;
-		int height = 600; 
-		try {
-			ChartUtilities.saveChartAsPNG(new File("img\\" + fileName), chart, width, height);
-		} catch (IOException e) {
-		}
-		
-		return chart;
-	}
-	
-	private JFreeChart writeChart(String plotTitle, String fileName, XYSeriesCollection dataset) {
-		String xaxis = "Optimism-Factor";
-		String yaxis = "Degree"; 
-		JFreeChart chart = ChartFactory.createXYLineChart( plotTitle, xaxis, yaxis, dataset);
-		int width = 800;
-		int height = 600; 
-		try {
-			ChartUtilities.saveChartAsPNG(new File("img\\" + fileName), chart, width, height);
-		} catch (IOException e) {
-		}
-		
-		return chart;
-	}
-	 */
 }

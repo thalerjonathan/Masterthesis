@@ -83,7 +83,23 @@ As already outlined the artefacts arise due to a blocking situation where tradin
 
 \medskip
 
-It is of very importance to note that an agent can never have a total utility of 0 in this simulation as per definition in chapter \ref{ch:leverageCycle} each trade results in a utility-increase.
+It is of very importance to note that an agent can never have a total utility of 0 in this simulation as per definition in chapter \ref{ch:leverageCycle} each trade results in a utility-increase. Thus because the blocking buyer has no assets at all because it is a pessimist, it will hold only cash for the asset it has sold. If it holds positive bonds then the blocking situation could not occur because then it could buy the assets against bonds. Thus the blocking agent can only be one which holds only cash.
+
+An agent cannot hold positive bonds AND collateralized assets as assets are only collateralized if the agent owes more bonds than it granted to other agents.
+A mix of goods can be: cash, positive bonds an optionally free assets OR cash, collateralized assets and free assets. In both cases both agents can trade with each other and no blocking situation can occur. Linear-combination:
+
+seller: cash, buyer: any - trivial, seller cant sell anything, no blocking possible
+seller: positive bonds, buyer: cash - buyer can buy from seller: BP-mechanism
+seller: positive bonds, buyer: free assets - no trading between them but buyer will act as seller and will sell assets up to optimists, thus generating cash -> same as above
+seller: positive bonds, buyer: collateralized assets - final allocation: medianists and optimists
+seller: free assets, buyer: cash - buyer can buy from seller
+seller: free assets, buyer: positive bonds - buyer can by the assets against bonds
+seller: free assets, buyer: collateralized assets - ?
+seller: collateralized assets, buyer: cash - blocking situation
+seller: collateralized assets, buyer: positive bonds - buyer can buy assets against bonds
+seller: collateralized assets, buyer: collateralized assets - buyer can buy assets against bonds
+seller: collateralized assets, buyer: free assets - ?
+
 
 TODO:
 - formally describe the blocking situation

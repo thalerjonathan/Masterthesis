@@ -51,6 +51,8 @@ import frontend.networkCreators.AscendingFullShortcutsCreator;
 import frontend.networkCreators.AscendingRandomShortcutsCreator;
 import frontend.networkCreators.AscendingRegularShortcutsCreator;
 import frontend.networkCreators.BarbasiAlbertCreator;
+import frontend.networkCreators.BuyersAnd2SellersCreator;
+import frontend.networkCreators.BuyerHas2SellersCreator;
 import frontend.networkCreators.ErdosRenyiCreator;
 import frontend.networkCreators.FullyConnectedCreator;
 import frontend.networkCreators.HalfFullyConnectedCreator;
@@ -58,6 +60,7 @@ import frontend.networkCreators.HubConnectedCreator;
 import frontend.networkCreators.MaximumHubCreator;
 import frontend.networkCreators.MedianHubCreator;
 import frontend.networkCreators.NetworkCreator;
+import frontend.networkCreators.SellerHas2BuyersCreator;
 import frontend.networkCreators.ThreeMedianHubsCreator;
 import frontend.networkCreators.WattStrogatzCreator;
 import frontend.networkVisualisation.NetworkRenderPanel;
@@ -218,6 +221,9 @@ public class ReplicationPanel extends JPanel {
 		this.topologySelection.addItem( new ErdosRenyiCreator() );
 		this.topologySelection.addItem( new BarbasiAlbertCreator() );
 		this.topologySelection.addItem( new WattStrogatzCreator() );
+		this.topologySelection.addItem( new SellerHas2BuyersCreator() );
+		this.topologySelection.addItem( new BuyerHas2SellersCreator() );
+		this.topologySelection.addItem( new BuyersAnd2SellersCreator() );
 		
 		this.abmMarketCheck.setSelected( this.markets.isAssetBondMarket() );
 		this.loanCashMarketCheck.setSelected( this.markets.isLoanMarket() );
