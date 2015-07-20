@@ -48,6 +48,7 @@ public class NetworkRenderPanel extends JPanel {
 		this.selectionObserver = selectionObserver;
 		this.keepTXHighlighted = false;
 
+		this.setBackground(Color.white);
 		this.initVisualizationViewer();
 	}
 	
@@ -141,6 +142,7 @@ public class NetworkRenderPanel extends JPanel {
 	        } );
 		}
 		
+		this.visualizationViewer.setBackground(Color.white);
 		this.add( this.visualizationViewer );
 	}
 	
