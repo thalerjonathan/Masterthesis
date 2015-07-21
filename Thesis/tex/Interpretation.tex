@@ -82,21 +82,111 @@ The Asset/Cash and Bond/Cash markets decline completely because the pessimists a
 
 \paragraph{Blocking-Situation prevents trading} As already outlined the artefacts arise due to a blocking situation where trading becomes and \textit{stays} impossible between two neighbours. The seller places ask-offerings on a given market but due to trading constraints the only potential buyer which is the neighbour with the next higher optimism-factor can't place any potential matching bid-offering on the given market. In figure \ref{fig:wealth_ASCENDINGCONNECTED_100_NOCOLLATERALMARKET_SINGLE} this blocking-situation can be seen between the agent-pairs 55 (0.545) \& 56 (0.554), 57 (0.564) \& 58 (0.574), 62 (0.614) \& 63 (0.624), 64 (0.634) \& 65 (0.644) and 68 (0.673) \& 69 (0.683). In all pairs the seller, which is the agent with the lower optimism-factor, holds only collateralized assets and thus places ask-offers only on the Asset/Bond market. The buyer, which is the agent with the higher optimism-factor, holds only cash and places bid-offers only on the Asset/Cash and Bond/Cash market but not on the Asset/Bond market - trading has become impossible between the two agents. It is interesting to see that the wealth-distribution in the range of 0.455 - 0.554 already shows basic similarities to the global distribution because all wealth is traded up towards the blocking-point creating the small sub-distribution of pessimists, medianists and optimists.
 
-\paragraph{Situation can occur only on the Asset/Bond market.} It is of very importance to note that an agent can never have a total utility of 0 in this simulation as per definition in chapter \ref{ch:leverageCycle} each trade results in a utility-increase. Thus because the blocking buyer has no assets at all because it is a pessimist, it will hold only cash for the asset it has sold. A blocking situation can only occur if agents hold only extreme allocations of wealth which means only one kind of good and nothing else as in a mix of goods they can still trade TODO: formal beweisen. The following extreme allocations are possible: cash, free assets, positive bonds, collateralized assets only. When applying linear-combination to the extreme allocations the following situations could arise:
+\paragraph{Situation can occur only on the Asset/Bond market.} An agent can hold a mix of cash, free assets and positive bonds or collateralized assets. To show that the situation can occur only on the Asset/Bond market one must investigate the combinations of allocations and possible trading options.
 
 \begin{enumerate}
-\item Seller has cash only, buyer any \\ Seller does not sell anything thus no blocking possible. 
-\item Seller has positive bonds only, buyer has cash only \\ Buyer can buy from seller through the BP-mechanism.
-\item Seller has positive bonds only, buyer has free assets only \\ No trading between them but buyer will act as seller and will sell assets up to optimists, thus generating cash which creates then the same situation as in 2.
-\item Seller has positive bonds only, buyer has collateralized assets only \\ This is the final allocation of medianists which hold positive bonds only and optimists which hold collateralized assets only.
-\item Seller has free assets only, buyer has cash only \\ Buyer can buy assets from seller against cash.
-\item Seller free assets only, buyer has positive bonds only \\ Buyer can by the assets against bonds.
-\item Seller has free assets only, buyer has collateralized assets \\ Buyer can buy free assets against bonds. TODO: wirklich?
-\item Seller has collateralized assets only, buyer has positive bonds only \\ Buyer can buy assets against bonds.
-\item Seller has collateralized assets only, buyer has collateralized assets only \\ Buyer can buy assets against bonds. TODO: wirklich?
-\item Seller has collateralized assets, buyer has free assets \\ No trading between them but buyer will act as seller and will sell assets up to optimists against cash or bonds, thus generating cash or positive bonds which is then same as in 9 or 11.
-\item Seller: collateralized assets only, buyer has cash only \\ This is the blocking situation as the buyer has no possibility to buy the collateralized assets and cannot get its hands on bonds or assets any more as it is only the seller towards higher optimistic agents which would be the only one who could provide the buyer with those goods.
+\item Seller has cash, buyer any goods \\ Seller does not sell anything. 
+\item Seller has positive bonds, buyer has cash \\ Buyer can buy from seller through the BP-mechanism.
+\item Seller has positive bonds, buyer has free assets \\ No direct trading with these goods but buyer will act as seller and can sell assets up to optimists on Asset/Cash market thus generating cash which creates then the same situation as in 2.
+\item Seller has positive bonds, buyer has collateralized assets \\ No trading with these goods but buyer will act as seller towards higher optimists on the Asset/Bond market thus creating uncollateralized assets and thus creating cash thus enabling to buy the positive bonds which creates then the same situation as in 2.
+\item Seller has free assets, buyer has cash \\ Buyer can buy assets from seller against cash.
+\item Seller free assets, buyer has positive bonds \\ Buyer can by the assets against bonds.
+\item Seller has free assets, buyer has collateralized assets \\ Buyer can buy free assets against bonds.
+\item Seller has collateralized assets, buyer has positive bonds \\ Buyer can buy assets against bonds.
+\item Seller has collateralized assets, buyer has free assets \\ No trading with these goods but buyer will act as seller and will sell assets up to optimists against cash or bonds, thus generating cash or positive bonds which is then same as in 8 or 10.
+\item Seller: collateralized assets, buyer has cash \\ No trading with these goods as the buyer has no possibility to buy the collateralized assets against cash. In the role of a seller it can't sell anything to transform cash to other goods which could potentially unlock this situation.
 \end{enumerate}
+
+The critical situation is the one given in the last point. As long as an agent has a mix of goods allocated then the blocking situation does not occur as trading is possible through a different channel than the last one. However if the allocations result in an extreme where the seller holds \textit{only} collateralized assets and the buyer \textit{only} cash then the blocking-situation occurs and is impossible to unlock any more.
+
+\paragraph{Artefacts are random} An important fact to notice is that the artefacts must not necessarily show up. It is possible for a single run to finish without these artefacts showing up. This is due to the random-process of sweeping and matching and thus the artefacts are subject to this random process too as noted in section \ref{sec:implementation_performanceImprovement}. When looking at the result of Ascending-Connected topology with importance sampling in figure \ref{fig:wealth_ASCENDINGCONNECTED_IS_100_NOCOLLATERALMARKET_REPL} it seems that Importance sampling elevates this problem as no artefacts have shown up during an experiment with 50 replications. This however is no proof that importance sampling is the solution to this problem as the mechanism is still the same. We conjecture that due to the dramatically increased matching-probabilities the occurrence of such miss-allocations have become highly unlikely but are not guaranteed to never show up any more thus the importance sampling is not accepted as a remedy for the miss-allocations. In a special experiment with 200 replications artefacts have shown up which proofs that importance sampling is definitely not a remedy for the miss-allocations.
+
+\paragraph{Formally}
+It is of very importance to note that an agent can never have a total utility of 0 in this simulation. Per definition in chapter \ref{ch:leverageCycle} each trade results in a utility-increase. If the agents start with the basic endowment of 1 unit of cash and 1 unit of assets as given in chapter \ref{ch:leverageCycle} then they will start already with a utility $\geq 0$. Thus it can never reach 0.
+
+\medskip
+
+\begin{proof}
+\begin{align*}
+	utility_{seller} = u_{asset} + u_{bond} + u_{cash}		\tag*{seller holds only assets, wants to sell them to buyer}
+	\\ = u_{asset} + u_{cash}
+	\\ = limit_{asset} \; holdings_{asset} + 
+			(sell_{asset} - buy_{asset}) \; price_{asset} + \\
+			(give_{bond} - take_{bond}) \; price_{bond} + \\
+			holdings_{cash} 									\tag*{will sell only assets}
+	\\ = limit_{asset} \; holdings_{asset} + \\
+		(sell_{asset} \; price_{asset} + holdings_{cash}
+\end{align*}
+\end{proof}
+
+\begin{proof}
+\begin{align*}
+	utility_{buyer} = u_{asset} + u_{bond} + u_{cash}		\tag*{buyer holds only cash, wants to buy assets from seller}
+	\\ = u_{asset} + u_{cash}
+	\\ = limit_{asset} \; holdings_{asset} + 
+			(sell_{asset} - buy_{asset}) \; price_{asset} + \\
+			(give_{bond} - take_{bond}) \; price_{bond} + \\
+			holdings_{cash} 									\tag*{will buy only assets}
+	\\ = limit_{asset} \; holdings_{asset} - buy_{asset} \; price_{asset} + holdings_{cash}
+\end{align*}
+\end{proof}
+
+
+$utiliy_{after} > utility_{before}$
+
+seller
+
+\begin{proof}
+\begin{align*}
+	utility_{before} = limit_{asset} \; holdings_{asset} + \\
+					sell_{asset} \; price_{asset} + holdings_{cash} \tag*{no cash and nothing sold before} 
+	\\ = limit_{asset} \; holdings_{asset}
+\end{align*}
+\end{proof}
+
+\begin{proof}
+\begin{align*}
+	utility_{after} = limit_{asset} \; holdings_{asset} + \\
+					sell_{asset} \; price_{asset} + holdings_{cash} \tag*{all assets sold and no cash before} 
+	\\ = sell_{asset} \; price_{asset}
+\end{align*}
+\end{proof}
+
+\begin{proof}
+\begin{align*}
+	utility_{after} > utility_{before}
+	sell_{asset} \; price_{asset} > limit_{asset} \; holdings_{asset}		\tag*{$| holdings_{asset} = sell_{asset}$} 
+	sell_{asset} \; price_{asset} > limit_{asset} \; sell_{asset}
+	\Rightarrow price_{asset} > limit_{asset}
+\end{align*}
+\end{proof}
+
+buyer
+
+\begin{proof}
+\begin{align*}
+	utility_{before} = limit_{asset} \; holdings_{asset} - \\
+					buy_{asset} \; price_{asset} + holdings_{cash} \tag*{only cash and nothing bought before} 
+	\\ = holdings_{cash}
+\end{align*}
+\end{proof}
+
+\begin{proof}
+\begin{align*}
+	utility_{after} = limit_{asset} \; holdings_{asset} - \\
+					buy_{asset} \; price_{asset} + holdings_{cash} \tag*{all assets bought against all cash} 
+	\\ = limit_{asset} \; buy_{asset} - buy_{asset} \; price_{asset}
+\end{align*}
+\end{proof}
+
+\begin{proof}
+\begin{align*}
+	utility_{after} > utility_{before}
+	limit_{asset} \; buy_{asset} - buy_{asset} \; price_{asset} > holdings_{cash} \tag*{$|:buy_{asset} > 0$}
+	limit_{asset} - price_{asset} > \frac{holdings_{cash}}{buy_{asset}}
+	\Rightarrow limit_{asset} > price_{asset}
+\end{align*}
+\end{proof}
 
 TODO:
 - formally describe the blocking situation
@@ -105,8 +195,6 @@ TODO:
 TODO HV: Erklaere es mit Buchstaben fuer Preise und Mengen, und mit Ungleichungen auf diesen, welche Nebenbedingungen und positiven Utility Gewinn ausdruecken. Anschliessend kannst Du wieder versuchen, das Ganze in Woerter zu fassen - es ist nicht so leicht!
 
 TODO HV: zu lange und umstaendliche Erklaerung., ausserdem fehlt formale Beschreibung der Artefakte, alles ist viel zu intuitiv. Erst formal mit Formeln, dann ein paar Worte - siehe als Verbesserungsweg meinen Kommentar weiter unten.
-
-\paragraph{Artefacts are random} An important fact to notice is that the artefacts must not necessarily show up. It is possible for a single run to finish without these artefacts showing up. This is due to the random-process of sweeping and matching and thus the artefacts are subject to this random process too as noted in section \ref{sec:implementation_performanceImprovement}. When looking at the result of Ascending-Connected topology with importance sampling in figure \ref{fig:wealth_ASCENDINGCONNECTED_IS_100_NOCOLLATERALMARKET_REPL} it seems that Importance sampling elevates this problem as no artefacts have shown up during an experiment with 50 replications. This however is no proof that importance sampling is the solution to this problem as the mechanism is still the same. We conjecture that due to the dramatically increased matching-probabilities the occurrence of such miss-allocations have become highly unlikely but are not guaranteed to never show up any more thus the importance sampling is not accepted as a remedy for the miss-allocations. In a special experiment with 200 replications artefacts have shown up which proofs that importance sampling is definitely not a remedy for the miss-allocations.
 
 \section{Extending the Hypothesis}
 After it has become clear that the hypothesis is not sufficient the question arises what needs to be done to approach the theoretical equilibrium anyway. It is clear that a mechanism needs to be found which prevents or resolves the arising of the artefacts within wealth-distribution. Obviously two solutions are available.
