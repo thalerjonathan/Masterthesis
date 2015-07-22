@@ -80,9 +80,9 @@ The Asset/Cash and Bond/Cash markets decline completely because the pessimists a
 
 \section{Deriving the emerging of the artefacts}
 
-\paragraph{Blocking-Situation prevents trading} As already outlined the artefacts arise due to a blocking situation where trading becomes and \textit{stays} impossible between two neighbours. The seller places ask-offerings on a given market but due to trading constraints the only potential buyer which is the neighbour with the next higher optimism-factor can't place any potential matching bid-offering on the given market. In figure \ref{fig:wealth_ASCENDINGCONNECTED_100_NOCOLLATERALMARKET_SINGLE} this blocking-situation can be seen between the agent-pairs 55 (0.545) \& 56 (0.554), 57 (0.564) \& 58 (0.574), 62 (0.614) \& 63 (0.624), 64 (0.634) \& 65 (0.644) and 68 (0.673) \& 69 (0.683). In all pairs the seller, which is the agent with the lower optimism-factor, holds only collateralized assets and thus places ask-offers only on the Asset/Bond market. The buyer, which is the agent with the higher optimism-factor, holds only cash and places bid-offers only on the Asset/Cash and Bond/Cash market but not on the Asset/Bond market - trading has become impossible between the two agents. It is interesting to see that the wealth-distribution in the range of 0.455 - 0.554 already shows basic similarities to the global distribution because all wealth is traded up towards the blocking-point creating the small sub-distribution of pessimists, medianists and optimists.
+\subsection{Blocking-Situation prevents trading} As already outlined the artefacts arise due to a blocking situation where trading becomes and \textit{stays} impossible between two neighbours. The seller places ask-offerings on a given market but due to trading constraints the only potential buyer which is the neighbour with the next higher optimism-factor can't place any potential matching bid-offering on the given market. In figure \ref{fig:wealth_ASCENDINGCONNECTED_100_NOCOLLATERALMARKET_SINGLE} this blocking-situation can be seen between the agent-pairs 55 (0.545) \& 56 (0.554), 57 (0.564) \& 58 (0.574), 62 (0.614) \& 63 (0.624), 64 (0.634) \& 65 (0.644) and 68 (0.673) \& 69 (0.683). In all pairs the seller, which is the agent with the lower optimism-factor, holds only collateralized assets and thus places ask-offers only on the Asset/Bond market. The buyer, which is the agent with the higher optimism-factor, holds only cash and places bid-offers only on the Asset/Cash and Bond/Cash market but not on the Asset/Bond market - trading has become impossible between the two agents. It is interesting to see that the wealth-distribution in the range of 0.455 - 0.554 already shows basic similarities to the global distribution because all wealth is traded up towards the blocking-point creating the small sub-distribution of pessimists, medianists and optimists.
 
-\paragraph{Situation can occur only on the Asset/Bond market.} An agent can hold a mix of cash, free assets and positive bonds or collateralized assets. To show that the situation can occur only on the Asset/Bond market one must investigate the combinations of allocations and possible trading options.
+\subsection{Situation can occur only on the Asset/Bond market.} An agent can hold a mix of cash, free assets and positive bonds or collateralized assets. To show that the situation can occur only on the Asset/Bond market one must investigate the combinations of allocations and possible trading options.
 
 \begin{enumerate}
 \item Seller has cash, buyer any goods \\ Seller does not sell anything. 
@@ -99,102 +99,172 @@ The Asset/Cash and Bond/Cash markets decline completely because the pessimists a
 
 The critical situation is the one given in the last point. As long as an agent has a mix of goods allocated then the blocking situation does not occur as trading is possible through a different channel than the last one. However if the allocations result in an extreme where the seller holds \textit{only} collateralized assets and the buyer \textit{only} cash then the blocking-situation occurs and is impossible to unlock any more.
 
-\paragraph{Artefacts are random} An important fact to notice is that the artefacts must not necessarily show up. It is possible for a single run to finish without these artefacts showing up. This is due to the random-process of sweeping and matching and thus the artefacts are subject to this random process too as noted in section \ref{sec:implementation_performanceImprovement}. When looking at the result of Ascending-Connected topology with importance sampling in figure \ref{fig:wealth_ASCENDINGCONNECTED_IS_100_NOCOLLATERALMARKET_REPL} it seems that Importance sampling elevates this problem as no artefacts have shown up during an experiment with 50 replications. This however is no proof that importance sampling is the solution to this problem as the mechanism is still the same. We conjecture that due to the dramatically increased matching-probabilities the occurrence of such miss-allocations have become highly unlikely but are not guaranteed to never show up any more thus the importance sampling is not accepted as a remedy for the miss-allocations. In a special experiment with 200 replications artefacts have shown up which proofs that importance sampling is definitely not a remedy for the miss-allocations.
+\subsection{Artefacts are random} An important fact to notice is that the artefacts must not necessarily show up. It is possible for a single run to finish without these artefacts showing up. This is due to the random-process of sweeping and matching and thus the artefacts are subject to this random process too as noted in section \ref{sec:implementation_performanceImprovement}. When looking at the result of Ascending-Connected topology with importance sampling in figure \ref{fig:wealth_ASCENDINGCONNECTED_IS_100_NOCOLLATERALMARKET_REPL} it seems that Importance sampling elevates this problem as no artefacts have shown up during an experiment with 50 replications. This however is no proof that importance sampling is the solution to this problem as the mechanism is still the same. We conjecture that due to the dramatically increased matching-probabilities the occurrence of such miss-allocations have become highly unlikely but are not guaranteed to never show up any more thus the importance sampling is not accepted as a remedy for the miss-allocations. In a special experiment with 200 replications artefacts have shown up which proofs that importance sampling is definitely not a remedy for the miss-allocations.
 
-\paragraph{Formally}
-It is of very importance to note that an agent can never have a total utility of 0 in this simulation. Per definition in chapter \ref{ch:leverageCycle} each trade results in a utility-increase. If the agents start with the basic endowment of 1 unit of cash and 1 unit of assets as given in chapter \ref{ch:leverageCycle} then they will start already with a utility $\geq 0$. Thus it can never reach 0.
+\subsection{Formal proof using utility-functions}
+It is of very importance to note that an agent can never have a total utility of 0 in this simulation. Per definition in chapter \ref{ch:leverageCycle} each trade results in an increase of the utility. If the agents start with the basic endowment of 1 unit of cash and 1 unit of assets as given in chapter \ref{ch:leverageCycle} then they will start already with a utility $\geq 0$. Thus it can never reach 0.
 
 \medskip
 
-\begin{proof}
+TODO: einleitende worte, wieso über utility-function
+
 \begin{align*}
-	utility_{seller} = u_{asset} + u_{bond} + u_{cash}		\tag*{seller holds only assets, wants to sell them to buyer}
-	\\ = u_{asset} + u_{cash}
-	\\ = limit_{asset} \; holdings_{asset} + 
-			(sell_{asset} - buy_{asset}) \; price_{asset} + \\
-			(give_{bond} - take_{bond}) \; price_{bond} + \\
-			holdings_{cash} 									\tag*{will sell only assets}
+	utility = u_{asset} + u_{bond} + u_{cash}
 	\\ = limit_{asset} \; holdings_{asset} + \\
-		(sell_{asset} \; price_{asset} + holdings_{cash}
-\end{align*}
-\end{proof}
-
-\begin{proof}
-\begin{align*}
-	utility_{buyer} = u_{asset} + u_{bond} + u_{cash}		\tag*{buyer holds only cash, wants to buy assets from seller}
-	\\ = u_{asset} + u_{cash}
-	\\ = limit_{asset} \; holdings_{asset} + 
+			limit_{bonds} \; holdings_{bonds} + \\
 			(sell_{asset} - buy_{asset}) \; price_{asset} + \\
-			(give_{bond} - take_{bond}) \; price_{bond} + \\
-			holdings_{cash} 									\tag*{will buy only assets}
-	\\ = limit_{asset} \; holdings_{asset} - buy_{asset} \; price_{asset} + holdings_{cash}
+			(give_{bonds} - take_{bonds}) \; price_{bonds} + \\
+			holdings_{cash} 
 \end{align*}
-\end{proof}
 
+Substituting allocations of seller with only collateralized assets and buyer with only cash to get the utility \textit{before} the potential trade.
 
-$utiliy_{after} > utility_{before}$
+\begin{align*}
+	utility_{seller} = limit_{asset} \; holdings_{asset} - \\
+			limit_{bond} \; holdings_{bond} \\
+\end{align*}
 
-seller
+Note that $holdings_{asset} = holdings_{bond}$ because all assets are collateralized and thus for all taken bonds the equal amount of assets is held as security.
+
+\begin{align*}
+	utility_{buyer} = holdings_{cash} 
+\end{align*}
+
+Regarding the utility-functions the following trades are theoretically possible:
+\begin{itemize}
+\item Buyer buys the assets only and leaves the bonds to the seller.
+\item Buyer buys the negative bonds only and leaves the assets to the seller.
+\item Buyer buys both the assets and the negative bonds from the seller. possibility would be to trade both the assets and the bonds, which amounts to trading collateralized assets, but that market exists not.
+\end{itemize}
+
+Now each possibility is investigated in regard to the utility-functions and we demand as defined in chapter \ref{ch:leverageCycle} that each trade results in a utility-gain thus $utiliy_{after} > utility_{before}$ must hold.
+
+\paragraph{Buyer buys all the assets only for cash and leaves the bonds to the seller.}
+The utilities \textit{after} the trade are
+
+\begin{align*}
+	utility_{buyer} = limit_{asset} \; holdings_{asset} - \\
+				buy_{asset} \; price_{asset} + \\
+				holdings_{cash}
+\end{align*}
 
 \begin{proof}
 \begin{align*}
-	utility_{before} = limit_{asset} \; holdings_{asset} + \\
-					sell_{asset} \; price_{asset} + holdings_{cash} \tag*{no cash and nothing sold before} 
-	\\ = limit_{asset} \; holdings_{asset}
+	utiliy_{after} > utility_{before} 
+		\\ = limit_{asset} \; holdings_{asset} - \\
+			buy_{asset} \; price_{asset} + \\
+			holdings_{cash} > holdings_{cash}		\tag*{$| -holdings_{cash}$}
+		\\ = limit_{asset} \; holdings_{asset} - \\
+			buy_{asset} \; price_{asset} > 0		\tag*{$| holdings_{asset} = buy_{asset}$}
+		\\ = limit_{asset} \; buy_{asset} - \\
+			buy_{asset} \; price_{asset} > 0		\tag*{$|:buy_{asset}$}
+		\\ = limit_{asset} - price_{asset} > 0
+		\\ = limit_{asset} > price_{asset}			
 \end{align*}
 \end{proof}
+
+\begin{align*}
+	utility_{seller} = -limit_{bond} \; holdings_{bond} + \\
+				sell_{asset} \; price_{asset}
+\end{align*}
 
 \begin{proof}
 \begin{align*}
-	utility_{after} = limit_{asset} \; holdings_{asset} + \\
-					sell_{asset} \; price_{asset} + holdings_{cash} \tag*{all assets sold and no cash before} 
-	\\ = sell_{asset} \; price_{asset}
+	utiliy_{after} > utility_{before} 
+		\\ = -limit_{bond} \; holdings_{bond} + \\
+				sell_{asset} \; price_{asset} > \\
+				limit_{asset} \; holdings_{asset} - \\
+				limit_{bond} \; holdings_{bond} 		
+		\\ = sell_{asset} \; price_{asset} > \\
+				limit_{asset} \; holdings_{asset}		\tag*{$| sell_{bond} = holdings_{asset}$}
+		\\ = sell_{asset} \; price_{asset} > \\
+				limit_{asset} \; sell_{asset}			\tag*{$|:sell_{asset}$}
+		\\ =  price_{asset} > limit_{asset}		
+		\\ =  limit_{asset}	< price_{asset}	
 \end{align*}
 \end{proof}
+	
+Thus it is proven that $limit_{buyer} > price_{asset} > limit_{seller}$ which is only possible if the buyer has a higher optimism-factor than the seller which was already proven in chapter \ref{ch:hypothesis}. Unfortunately this trade is not allowed as it would violate the collateral constraint which enforces that for each taken bond the same amount of assets must be hold as security. 
+
+\paragraph{Buyer buys the negative bonds only and leaves the assets to the seller.}
+The utilities \textit{after} the trade are
+
+\begin{align*}
+	utility_{buyer} = -limit_{bond} \; holdings_{bond} - \\
+				buy_{bond} \; price_{bond} + \\
+				holdings_{cash}
+\end{align*}
 
 \begin{proof}
 \begin{align*}
-	utility_{after} > utility_{before}
-	sell_{asset} \; price_{asset} > limit_{asset} \; holdings_{asset}		\tag*{$| holdings_{asset} = sell_{asset}$} 
-	sell_{asset} \; price_{asset} > limit_{asset} \; sell_{asset}
-	\Rightarrow price_{asset} > limit_{asset}
+	utiliy_{after} > utility_{before} 
+		\\ = -limit_{bond} \; holdings_{bond} - \\
+				buy_{bond} \; price_{bond} + \\
+				holdings_{cash} > holdings_{cash}		\tag*{$| -holdings_{cash}$}
+		\\ = -limit_{bond} \; holdings_{bond} - \\
+				buy_{bond} \; price_{bond} > 0			\tag*{$| \; holdings_{bond} = buy_{bond}$}
+		\\ = -limit_{bond} \; buy_{bond} - \\
+			buy_{bond} \; price_{bond} > 0				\tag*{$|:buy_{bond}$}
+		\\ = -limit_{bond} - price_{bond} > 0			\tag*{infeasible as limit-price and price are $> 0$}
 \end{align*}
 \end{proof}
 
-buyer
+The utility-gain for the buyer is impossible in this trade thus it is rejected.
+
+\paragraph{Buyer buys both the assets and the negative bonds from the seller.}
+\begin{align*}
+	utility_{buyer} = limit_{asset} \; holdings_{asset} - \\
+				limit_{bond} \; holdings_{bond} - \\
+				buy_{asset} \; price_{asset} - \\
+				buy_{bond} \; price_{bond} + \\
+				holdings_{cash}
+\end{align*}
 
 \begin{proof}
 \begin{align*}
-	utility_{before} = limit_{asset} \; holdings_{asset} - \\
-					buy_{asset} \; price_{asset} + holdings_{cash} \tag*{only cash and nothing bought before} 
-	\\ = holdings_{cash}
+	utiliy_{after} > utility_{before}
+		\\ = limit_{asset} \; holdings_{asset} - \\
+				limit_{bond} \; holdings_{bond} - \\
+				buy_{asset} \; price_{asset} - \\
+				buy_{bond} \; price_{bond} + \\
+				holdings_{cash} > holdings_{cash}	\tag*{$| -holdings_{cash}$}
+		\\ = limit_{asset} \; holdings_{asset} - \\
+				limit_{bond} \; holdings_{bond} - \\
+				buy_{asset} \; price_{asset} - \\
+				buy_{bond} \; price_{bond} > 0		\tag*{$|$ all holdings and buy are same = h}
+		\\ = limit_{asset} \; h - \\
+				limit_{bond} \; h - \\
+				h \; price_{asset} - \\
+				h \; price_{bond} > 0				\tag*{$|:h$}
+		\\ = limit_{asset} - limit_{bond} - \\
+				price_{asset} - price_{bond} > 0
 \end{align*}
 \end{proof}
+
+This is feasible as in case of the buyer $limit_{asset} > price_{asset}$ and $limit_{bond} > price_{bond}$ because the buyers limit-price is always above the final price as proven in \ref{ch:hypothesis}. Further $limit_{asset} > limit_{bond}$ holds.
+
+\begin{align*}
+	utility_{seller} = sell_{asset} \; price_{asset} + \\
+				sell_{bond} \; price_{bond}
+\end{align*}
 
 \begin{proof}
 \begin{align*}
-	utility_{after} = limit_{asset} \; holdings_{asset} - \\
-					buy_{asset} \; price_{asset} + holdings_{cash} \tag*{all assets bought against all cash} 
-	\\ = limit_{asset} \; buy_{asset} - buy_{asset} \; price_{asset}
+	utiliy_{after} > utility_{before}
+		\\ = sell_{asset} \; price_{asset} + \\
+				sell_{bond} \; price_{bond} >
+				limit_{asset} \; holdings_{asset} -
+				limit_{bond} \; holdings_{bond}		\tag*{$|$ all holdings and sell are same = h}
+		\\ = h \; price_{asset} + \\
+				h \; price_{bond} >
+				limit_{asset} \; h -
+				limit_{bond} \; h					\tag*{$|:h$}
+		\\ =  price_{asset} + price_{bond} >
+				limit_{asset} - limit_{bond} 
 \end{align*}
 \end{proof}
 
-\begin{proof}
-\begin{align*}
-	utility_{after} > utility_{before}
-	limit_{asset} \; buy_{asset} - buy_{asset} \; price_{asset} > holdings_{cash} \tag*{$|:buy_{asset} > 0$}
-	limit_{asset} - price_{asset} > \frac{holdings_{cash}}{buy_{asset}}
-	\Rightarrow limit_{asset} > price_{asset}
-\end{align*}
-\end{proof}
-
-TODO:
-- formally describe the blocking situation
-- explain that it is only possible on the asset/bond market
-
-TODO HV: Erklaere es mit Buchstaben fuer Preise und Mengen, und mit Ungleichungen auf diesen, welche Nebenbedingungen und positiven Utility Gewinn ausdruecken. Anschliessend kannst Du wieder versuchen, das Ganze in Woerter zu fassen - es ist nicht so leicht!
-
-TODO HV: zu lange und umstaendliche Erklaerung., ausserdem fehlt formale Beschreibung der Artefakte, alles ist viel zu intuitiv. Erst formal mit Formeln, dann ein paar Worte - siehe als Verbesserungsweg meinen Kommentar weiter unten.
+This is feasible as in case of seller $limit_{asset} < price_{asset}$ and $limit_{bond} < price_{bond}$ because the sellers limit-price is always below the final price as proven in \ref{ch:hypothesis}. Further $limit_{asset} > limit_{bond}$ holds. Unfortunately this trade is not possible as it amounts to trading collateralized assets where no market does exist for it.
 
 \section{Extending the Hypothesis}
 After it has become clear that the hypothesis is not sufficient the question arises what needs to be done to approach the theoretical equilibrium anyway. It is clear that a mechanism needs to be found which prevents or resolves the arising of the artefacts within wealth-distribution. Obviously two solutions are available.
