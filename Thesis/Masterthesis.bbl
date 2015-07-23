@@ -5,6 +5,12 @@ Albert, R. and lászló Barabási, A. (2002).
 \newblock Emergence of scaling in random networks.
 \newblock {\em Science}, page 286(5439):509–512.
 
+\bibitem[BBC, 2007]{SubprimeExplainedA}
+BBC (2007).
+\newblock The us sub-prime crisis in graphics.
+\newblock \url{http://news.bbc.co.uk/2/hi/business/7073131.stm}.
+\newblock [Online; accessed 23-July-2015].
+
 \bibitem[Breuer et~al., 2015]{Breuer2015}
 Breuer, T., Summer, M., and Vollbrecht, H.-J. (2015).
 \newblock Endogenous leverage and asset pricing in double auctions.
@@ -73,6 +79,13 @@ Newman, M. E.~J. (2003).
 Parsons, S., Marcinkiewicz, M., Niu, J., and Phelps, S. (2006).
 \newblock Everything you wanted to know about double auctions, but were afraid
   to (bid or) ask.
+
+\bibitem[StockMarketInvestors, 2007]{SubprimeExplainedB}
+StockMarketInvestors (2007).
+\newblock The subprime mortgage crisis explained.
+\newblock
+  \url{http://www.stock-market-investors.com/stock-investment-risk/the-subprime-mortgage-crisis-explained.html}.
+\newblock [Online; accessed 23-July-2015].
 
 \bibitem[Travers and Milgram, 1969]{TraverMilgram_StudySmallWorld}
 Travers, J. and Milgram, S. (1969).

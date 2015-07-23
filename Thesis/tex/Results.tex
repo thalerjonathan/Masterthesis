@@ -79,8 +79,6 @@ As  a point-of-reference and as an experimental proof for the correctness of the
 
 Although marginal agent i1 and bond-price q are quite different than from theoretical equilibrium and the pessimists wealth is 7.8\% less than given in \cite{Breuer2015} these results are nonetheless accepted as reaching the equilibrium. The differences emerge from the reasons that the thesis-simulation runs were terminated earlier than in \cite{Breuer2015} which results in the i1 and i2 edges to be not as sharp as reported in \cite{Breuer2015}. It would be necessary to run the simulation an order of magnitude longer as the matching probabilities are reduced rapidly when only direct neighbours are able to trade any more within a network of 1000 agents. See section \ref{sec:implementation_performanceImprovement} for details on matching-probabilities.
 
-TODO HV: eine solche Erklaerung einer Abweichung kann nicht dazu fuehren, die Abweichung auf 0 zu setzen. Warum nimmst du nicht 100 Agenten, fuer die wir auch ein theoretisches Gleichgewicht berechnen koennen? Es geht hier ja nur um Validierung deines Simulators, nicht um Validierung der Theorie.
-
 \section{Performance and termination measurements}
 As noted in section \ref{sec:implementation_sweepingAndMatching} a matching-round performs up to 500 offering-rounds where during one round all agents make an offer to find a match. If a match occurs during one offering-round the current matching-round is terminated and marked as successful. If no match occurs during all 500 offering-rounds the current matching-round is terminated too but marked as failed. Thus the following terminology is defined:
 

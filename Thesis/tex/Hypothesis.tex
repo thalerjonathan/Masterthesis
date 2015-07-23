@@ -61,6 +61,8 @@ $limit_S = h_S \, V + (1-h_S) \, pD = h_S \, V + \frac{1}{5} - \frac{h_S}{5}$
 \end{align*}
 \end{proof}
 
+\pagebreak
+
 \subsection{Asset/Bond}
 $limit_B = \frac{h_B + \frac{1}{5} - \frac{h_B}{5}}{h_B \, V + \frac{1}{5} - \frac{h_B}{5}}$ \\
 $limit_S = \frac{h_S + \frac{1}{5} - \frac{h_S}{5}}{h_S \, V + \frac{1}{5} - \frac{h_S}{5}}$ \\
@@ -198,7 +200,13 @@ There are basically 3 violations possible within the most minimal network. Note 
 	\label{fig:OPTIMISM_VIOLATION_SELLER}
 \end{figure}
 
-The seller $h_{i+1}$ is unable to sell to $h_i$ because of the lower optimism-factor and is unable to sell to $h_{i+2}$ obviously because of a non-existent connection. Thus $h_{i+1}$ gathers goods but cannot trade them further up the optimism-scale thus leading to a miss-allocation. TODO: genauer unterscheiden zwischen den märkten
+The seller $h_{i+1}$ is unable to sell to $h_i$ because of the lower optimism-factor and is unable to sell to $h_{i+2}$ obviously because of a non-existent connection. Depending on whether this violation happens in the pessimists, medianists or optimists different things happen.
+
+\begin{itemize}
+\item Asset/Cash - $h_{i+1}$ buys assets against cash but cannot sell them further up to $h_{i+2}$ because of the missing link. This is a problem in the range of pessimists as they try to get minimal on assets and maximal on cash. For medianists this is a problem too as they also try to get minimal on assets but maximal on bonds. Optimists try to get as much assets as possible thus no miss-allocation will show up there.
+\item Bond/Cash market - $h_{i+1}$ buys bonds but cannot sell them further up to $h_{i+2}$ because of the missing link. This is a problem in the range of pessimists as they try to get minimal on bonds but maximal on assets. This is also a problem in the range of optimimsts.
+\item Asset/Bond market - $h_{i+1}$ buys assets against bonds but cannot sell them further up to $h_{i+2}$ because of the missing link. This is a problem in the range of pessimists and medianists as they try to get maximally short on assets.
+\end{itemize}
 
 \begin{figure}[H]
 	\centering
@@ -207,7 +215,13 @@ The seller $h_{i+1}$ is unable to sell to $h_i$ because of the lower optimism-fa
 	\label{fig:OPTIMISM_VIOLATION_BUYER}
 \end{figure}
 
-The buyer $h_{i+2}$ is unable to buy from $h_{i+1}$ because of a non-existent connection. The buyer $h_{i+3}$ thus gathers a bit too much because it is not able to sell to $h_{i+2}$ because of the higher optimism-factor thus leading to a miss-allocation. TODO: genauer unterscheiden zwischen den märkten
+The buyer $h_{i+2}$ is unable to buy from $h_{i+1}$ because of a non-existent connection. Depending on whether this violation happens in the pessimists, medianists or optimists different things happen.
+
+\begin{itemize}
+\item Asset/Cash - $h_{i+2}$ sells assets up to $h_{i+3}$ transforming to cash but can't use the cash to buy goods because of the missing link to seller $h_{i+1}$. This is a problem in the range of optimists as they try to maximise their assets and minimize their cash. Its also a problem in the range of medianists as they try to maximise their bonds and minimize their cash. Pessimists try to sell all assets and get as much cash as possible thus no miss-allocation will show up there.
+\item Bond/Cash market - $h_{i+2}$ sells bonds up to $h_{i+3}$ transforming to cash but can't use the cash because of the missing link to seller $h_{i+1}$. Same as in Asset/Cash market.
+\item Asset/Bond market - $h_{i+2}$ sells assets against bonds up to $h_{i+3}$ transforming assets to bonds but can't use the bonds to buy goods because of the missing link to seller $h_{i+1}$.  Same as in Asset/Cash market.
+\end{itemize}
 
 \begin{figure}[H]
 	\centering
@@ -216,7 +230,7 @@ The buyer $h_{i+2}$ is unable to buy from $h_{i+1}$ because of a non-existent co
 	\label{fig:OPTIMISM_VIOLATION_DISCONNECTED}
 \end{figure}
 
-Obviously the buyer $h_{i+2}$ is unable to trade with the seller $h_{i+1}$ because of a non-existent connection thus $h_{i+1}$ will gather assets but is not able to trade them further up the optimism-scale. TODO: genauer unterscheiden zwischen den märkten
+Obviously the buyer $h_{i+2}$ is unable to trade with the seller $h_{i+1}$ because of a non-existent connection thus it is trivial to see that theoretical equilibrium cannot be reached.
 
 \section{Predictions}
 The following topologies found in appendix \ref{app:topologies} satisfy the definition of the hypothesis:
