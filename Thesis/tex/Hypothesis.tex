@@ -17,7 +17,7 @@ The motivation behind the hypothesis is the fact that according to the double-au
 
 \medskip
 
-In figure \ref{fig:MATCHING_BUYER_SELLER_RANGES} the price-ranges of both a seller and buyer are given where limit(s) and limitl(b) denote the limit-price of the seller and buyer respectively which are determined by their optimism-factor \textit{h}. The seller places its offerings in the price-range of [limit(s)..pU] as it wants to sell the good above the expected price to make a profit. The buyer places its offerings in the price-range of [pD..limit(b)] as it wants to buy the goods below the expected price to make a profit. The resulting matching-range on which the prices can meet - again buyer-price $\geq$ seller-price - is marked by the red rectangle. It is easy to see that a match with these mechanics can occur only if the optimism-factor of the buyer limit(b) is strictly higher than the one of the seller limit(s).
+In figure \ref{fig:MATCHING_BUYER_SELLER_RANGES} the price-ranges of both a seller and buyer are given where limit(s) and limit(b) denote the limit-price of the seller and buyer respectively which are determined by their optimism-factor \textit{h}. The seller places its offerings in the price-range of [limit(s)..pU] as it wants to sell the good above the expected price to make a profit. The buyer places its offerings in the price-range of [pD..limit(b)] as it wants to buy the goods below the expected price to make a profit. The resulting matching-range on which the prices can meet - again buyer-price $\geq$ seller-price - is marked by the red rectangle. It is easy to see that a match with these mechanics can occur only if the optimism-factor of the buyer limit(b) is strictly higher than the one of the seller limit(s).
 
 \begin{figure}[H]
 	\centering
@@ -200,7 +200,7 @@ There are basically 3 violations possible within the most minimal network. Note 
 	\label{fig:OPTIMISM_VIOLATION_SELLER}
 \end{figure}
 
-The seller $h_{i+1}$ is unable to sell to $h_i$ because of the lower optimism-factor and is unable to sell to $h_{i+2}$ obviously because of a non-existent connection. Depending on whether this violation happens in the pessimists, medianists or optimists different things happen.
+In figure \ref{fig:OPTIMISM_VIOLATION_SELLER} the seller $h_{i+1}$ is unable to sell to $h_i$ because of the lower optimism-factor and is unable to sell to $h_{i+2}$ obviously because of a non-existent connection. Depending on whether this violation happens in the pessimists, medianists or optimists different miss-allocations will happen.
 
 \begin{itemize}
 \item Asset/Cash - $h_{i+1}$ buys assets against cash but cannot sell them further up to $h_{i+2}$ because of the missing link. This is a problem in the range of pessimists as they try to get minimal on assets and maximal on cash. For medianists this is a problem too as they also try to get minimal on assets but maximal on bonds. Optimists try to get as much assets as possible thus no miss-allocation will show up there.
@@ -215,12 +215,12 @@ The seller $h_{i+1}$ is unable to sell to $h_i$ because of the lower optimism-fa
 	\label{fig:OPTIMISM_VIOLATION_BUYER}
 \end{figure}
 
-The buyer $h_{i+2}$ is unable to buy from $h_{i+1}$ because of a non-existent connection. Depending on whether this violation happens in the pessimists, medianists or optimists different things happen.
+In figure \ref{fig:OPTIMISM_VIOLATION_BUYER} the buyer $h_{i+2}$ is unable to buy from $h_{i+1}$ because of a non-existent connection. Depending on whether this violation happens in the pessimists, medianists or optimists different things happen.
 
 \begin{itemize}
 \item Asset/Cash - $h_{i+2}$ sells assets up to $h_{i+3}$ transforming to cash but can't use the cash to buy goods because of the missing link to seller $h_{i+1}$. This is a problem in the range of optimists as they try to maximise their assets and minimize their cash. Its also a problem in the range of medianists as they try to maximise their bonds and minimize their cash. Pessimists try to sell all assets and get as much cash as possible thus no miss-allocation will show up there.
-\item Bond/Cash market - $h_{i+2}$ sells bonds up to $h_{i+3}$ transforming to cash but can't use the cash because of the missing link to seller $h_{i+1}$. Same as in Asset/Cash market.
-\item Asset/Bond market - $h_{i+2}$ sells assets against bonds up to $h_{i+3}$ transforming assets to bonds but can't use the bonds to buy goods because of the missing link to seller $h_{i+1}$.  Same as in Asset/Cash market.
+\item Bond/Cash market - $h_{i+2}$ sells bonds up to $h_{i+3}$ transforming to cash but can't use the cash because of the missing link to seller $h_{i+1}$. This is the same situation as in Asset/Cash market.
+\item Asset/Bond market - $h_{i+2}$ sells assets against bonds up to $h_{i+3}$ transforming assets to bonds but can't use the bonds to buy goods because of the missing link to seller $h_{i+1}$. This is the same situation as in Asset/Cash market.
 \end{itemize}
 
 \begin{figure}[H]
@@ -230,7 +230,7 @@ The buyer $h_{i+2}$ is unable to buy from $h_{i+1}$ because of a non-existent co
 	\label{fig:OPTIMISM_VIOLATION_DISCONNECTED}
 \end{figure}
 
-Obviously the buyer $h_{i+2}$ is unable to trade with the seller $h_{i+1}$ because of a non-existent connection thus it is trivial to see that theoretical equilibrium cannot be reached.
+In figure \ref{fig:OPTIMISM_VIOLATION_DISCONNECTED} obviously the buyer $h_{i+2}$ is unable to trade with the seller $h_{i+1}$ because of a non-existent connection thus it is trivial to see that theoretical equilibrium cannot be reached.
 
 \section{Predictions}
 The following topologies found in appendix \ref{app:topologies} satisfy the definition of the hypothesis:

@@ -15,7 +15,7 @@ The work of Geanakoplos focuses on asset-pricing, the influence of leverage on a
 
 \subsection{The natural buyer}
 For Geanakoplos all crises start with scary bad news which are then the reason why asset-prices drop below a price which is lower than everyone expected. He introduces the so-called "natural buyer" which is an agent who values the asset more than the public. This can be because the agent is less risk averse, get more utility out of it, use the asset more efficient. In the end the details matter not, the natural buyer is just more optimistic than the public.
-To prevent a too specific distinction between the natural buyer and the public Geanakoplos introduces a range of optimism \textit{h} $\in$ \textit{H} = [0..1] in which all agents are ordered by their optimism \textit{h} where the extreme pessimists reside at the lower end of 0 and the extreme optimists ate the upper end of 1. Each agent assigns the probability that good news will occur according to its optimism \textit{h} where the extreme optimist thinks that good news will happen for sure and the extreme optimist think that it will never occur thus the more optimistic an agent, the more a natural buyer it is. If the natural buyers drops out of the business then the asset-prices drop as the natural buyers are the only ones willing to drive asset-prices up through leverage as they value the asset-prices the most. Thus the natural buyers buy as many assets they can both by cash and through borrowing and using the assets as security thus creating leverage. Because of this mechanics Geanakoplos emphasises that it is of very importance who lost money in a crisis - the public or the natural buyers whereas a loss for the natural buyers is the real catastrophe as no one is willing to drive up the asset-prices any more.
+To prevent a too specific distinction between the natural buyer and the public Geanakoplos introduces a range of optimism \textit{h} $\in$ \textit{H} = [0..1] in which all agents are ordered by their optimism \textit{h} where the extreme pessimists reside at the lower end at 0 and the extreme optimists ate the upper end at 1. Each agent assigns the probability that good news will occur according to its optimism \textit{h} where the extreme optimist thinks that good news will happen for sure and the extreme pessimist thinks that it will never occur thus the more optimistic an agent, the more a natural buyer it is. If the natural buyers drops out of the business then the asset-prices drop as the natural buyers are the only ones willing to drive asset-prices up through leverage as they value the asset-prices the most. Thus the natural buyers buy as many assets they can both by cash and through borrowing and using the assets as security thus creating leverage. Because of this mechanics Geanakoplos emphasises that it is of very importance who lost money in a crisis - the public or the natural buyers whereas a loss for the natural buyers is the real catastrophe as no one is willing to drive up the asset-prices any more.
 
 \subsection{Two-period economy}
 Geanakoplos then introduces a two-period economy. In the first period each agent of the previously mentioned continuum \textit{H} is endowed with one consumption good C and one asset Y and can then trade with each other. The second period can be one of two states: U(p) and D(own) whereas in the up-state the asset Y is worth 1.0 and in the down-state only 0.2. The agents differ only in their optimism \textit{h} by which they assign the probability that the up-state will happen tomorrow in the second period. According to this they trade on the market according to their utility-function which depends on their optimism \textit{h}. The following formula gives the utility-function of an agent according to Geanakoplos. It gives the price of an asset, that is how much an agent values it - obviously the more optimistic the higher the price.
@@ -39,7 +39,7 @@ Geanakoplos then predicts the so called \textit{marginal buyer} around \textit{h
 
 \medskip
 
-Geanakoplos then introduces loans with \textit{j} $>$ 0.2 where in the up-state they promise their initial value \textit{j} and in the down-state they deliver only 0.2. Thus loans with \textit{j} $>$ 0.2 are risky loans because a lender can loose money depending on the occurring state. If a lender granted a bond of type \textit{j} = 0.5 and the down-state will occur the borrower will either return 0.2 cash or the security-asset which is now only worth 0.2 - the lender has lost 0.3 cash.
+Geanakoplos then introduces loans with \textit{j} $>$ 0.2 where in the up-state they promise their initial value \textit{j} and in the down-state they deliver only 0.2 - the collateral assets which is worth 0.2 in the down-state. Thus loans with \textit{j} $>$ 0.2 are risky loans because a lender can loose money depending on the occurring state. If a lender granted a bond of type \textit{j} = 0.5 and the down-state will occur the borrower will either return 0.2 cash or the security-asset which is now only worth 0.2 - the lender has lost 0.3 cash.
 
 \medskip
 
@@ -47,14 +47,14 @@ In the classic equilibrium theory as outlined in chapter \ref{ch:theory} the onl
 The solution of Ganakoplos to modelling collateral is to
 
 \begin{quote}
-"... think of many loans, not one loan. Conceptually we must replace the notion of contracts as promises with the notion of contracts as ordered pairs of promises and collateral. Each ordered pair-contract will trade in a separate market with its own price"
+...think of many loans, not one loan. Conceptually we must replace the notion of contracts as promises with the notion of contracts as ordered pairs of promises and collateral. Each ordered pair-contract will trade in a separate market with its own price.
 
 \begin{equation}
 Contract_j = (Promise_j, Collateral_j) = (A_j, C_j)
 \end{equation}
 \end{quote}
 
-He then shows that if there exist markets for all type of bonds which include the risk-less bond \textit{j} = 0.2 then only the risk-less bond will be traded. The case with only risky bonds available are excluded by assumption.
+He then shows that if there exist markets for all type of bonds which include the risk-less bond \textit{j} = 0.2 then only the risk-less bond will be traded. The case with only risky bonds available are excluded by him by assumption.
 
 \medskip
 
@@ -151,7 +151,7 @@ One of the major inventions of the work of Breuer et al. is the introduction of 
 
 Breuer et al. proposed solutions to this two difficulties:
 \paragraph{ABM mechanism}
-The straight-forward solution to the coordination of the asset and bond markets would be to condition a buy offer of an asset to a sell offer of a bond. Breuer et al. reported that "Separate utility improvement in each of the coupled trades is more restrictive than a net sum utility improvement of all coupled trades." which prevents theoretical equilibrium to be reached. Thus they define the market to traded assets directly against bonds thus reducing the involved agents from three to two and removing the coordination-problem because only one product with one price is traded. This resolves the problem with the restrictiveness of utility in the case of two products.
+The solution to the coordination of the asset and bond markets would be to condition a buy offer of an asset to a sell offer of a bond. Breuer et al. reported that "Separate utility improvement in each of the coupled trades is more restrictive than a net sum utility improvement of all coupled trades." which prevents theoretical equilibrium to be reached. Thus they define the market to traded assets directly against bonds thus reducing the involved agents from three to two and removing the coordination-problem because only one product with one price is traded. This resolves the problem with the restrictiveness of utility in the case of two products.
 
 \paragraph{Bond pledgeability}
 The problem with the reversibility of suboptimal trades was solved in allowing to uncollateralize an asset by buying a bond. Breuer et al. called this mechanism "bond pledgeability" (BP) and showed that without this mechanism the simulation never converges towards the theoretical equilibrium. See chapter \ref{ch:implementation} "Implementation" for details on the implementation of this mechanism.
@@ -180,7 +180,7 @@ In this case the offers of all other agents which have not matched are deleted f
 \textit{matching-price} = \frac{\textit{buyer-price} + \textit{seller-price}}{2}
 \end{equation}
 
-If no match occurs with the current random agent pick another agent at random and continue as above with submitting its offers on all markets.
+If no match occurs with the current random agent pick another agent at random and continue with submitting its offers on all markets.
 
 \subsection{Equilibrium}
 \label{sec:EQUILIBRIUM}
@@ -238,7 +238,7 @@ q = p \frac{i_{2} - i{1}}{1 - i_{1}}
 Note that this case is not discussed in \cite{Geanakoplos2009} where it is excluded by assumption.
 
 \subsubsection{Calculating theoretical Equilibrium}
-Theoretical equilibrium can be calculated through the previously given equations for an infinite number of agents. In the simulation a finite set of agents is used for which the theoretical equilibrium must be found too to compare the results of the simulation to the theoretical equilibrium. For this purpose \cite{Breuer2015} developed an algorithm in MATLAB which searches the finite solution-space for the given equilibrium. Mr. Martin Jandacka wrote a short, unpublished documentation on the approach for risky bonds which is summarized here.
+Theoretical equilibrium can be calculated through the previously given equations for an infinite number of agents. In the simulation a finite set of agents is used for which the theoretical equilibrium must be found too to compare the results of the simulation with the theoretical equilibrium. For this purpose \cite{Breuer2015} developed an algorithm in MATLAB which searches the finite solution-space for the given equilibrium. Mr. Martin Jandacka wrote a short, unpublished documentation on the approach for risky bonds which is summarized here.
 
 \medskip
 
@@ -250,13 +250,13 @@ Endogenous leverage is the central topic of the models both of Geanakoplos and o
 \medskip
 In the work of \cite{Breuer2015} it is noted that 
 \begin{quote}
-"In this theory the amount that can be borrowed against a particular asset to purchase it is determined in the market."
+In this theory the amount that can be borrowed against a particular asset to purchase it is determined in the market.
 \end{quote}
 
 and furthermore
 
 \begin{quote}
-"Leverage, the percentage of the value of the real asset that can be borrowed to purchase it, is determined by contract selection through the market. Leverage is endogenous."
+Leverage, the percentage of the value of the real asset that can be borrowed to purchase it, is determined by contract selection through the market. Leverage is endogenous.
 \end{quote}
 
 \textit{Contract selection} amounts to the selection of the bond-types used by the agents to finance their trades. Geanakoplos and Breuer report that if multiple bonds are available which include risk-free bonds the agents will select the risk-free bond with the highest face-value which is 0.2. The reason is that buyers which are more optimistic towards the up-state expect that they would have to pay the face-value so they try to select a bond with the lowest possible face-value the sellers would accept. The sellers which are more pessimistic towards the up-state expect that they will more likely get back the down-state value of 0.2 and don't want to trade above this value as they expect to loose money in this case. So buyers and sellers select the risk-free bond with face-value of 0.2 endogenously through the mechanics of the model and not by parameters which are set exogenous by an experimenter. Thus Leverage is regarded as endogenous, coming from within the simulation-model itself.

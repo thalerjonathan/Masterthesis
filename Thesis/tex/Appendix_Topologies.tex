@@ -19,9 +19,7 @@ For each network the following metrics are given:
 
 \section{Fully-Connected}
 
-Each agent is connected with each other agent.
-\medskip
-Included as major point-of-reference as \cite{Breuer2015} developed their model and equilibrium for fully-connected networks.
+Each agent is connected with each other agent. Included as major point-of-reference as \cite{Breuer2015} developed their model and equilibrium for fully-connected networks.
 
 \begin{figure}[H]
 	\centering
@@ -44,10 +42,10 @@ Included as major point-of-reference as \cite{Breuer2015} developed their model 
 	\end{tabular}
 \end{table}
 
+\pagebreak
+
 \section{Half-Fully Connected}
-Agents with optimism-factor 0.5 to 1.0 are fully-connected and the others are connected to the agent with the next higher optimism-factor. The agents with highest and lowest optimism-factor are connected too, creating a closed circle.
-\medskip
-Included to investigate the influence of isolated agents.
+Agents with optimism-factor 0.5 to 1.0 are fully-connected and the others are connected to the agent with the next higher optimism-factor. The agents with highest and lowest optimism-factor are connected too, creating a closed circle. Included to investigate the influence of isolated agents.
 
 \begin{figure}[H]
 	\centering
@@ -70,10 +68,10 @@ Included to investigate the influence of isolated agents.
 	\end{tabular}
 \end{table}
 
+\pagebreak
+
 \section{Ascending-Connected}
-Each agent is connected to the agent with the next higher optimism-factor. The agents with highest and lowest optimism-factor are not connected thus this network is not a closed circle.
-\medskip
-Included because it is the most minimal network which satisfies the theory and is therefore the major network of interest throughout the thesis.
+Each agent is connected to the agent with the next higher optimism-factor. The agents with highest and lowest optimism-factor are not connected thus this network is not a closed circle. Included because it is the most minimal network which satisfies the property required by the hypothesis and is therefore the major network of interest throughout the thesis.
 
 \begin{figure}[H]
 	\centering
@@ -96,11 +94,11 @@ Included because it is the most minimal network which satisfies the theory and i
 	\end{tabular}
 \end{table}
 
+\pagebreak
+
 \section{Ascending-Connected with short-cuts}
 \subsection{Full short-cuts}
-Each agent is connected to the K next neighbours in the clockwise arrangement. Thus agent N - K + 1 is connected to K - 1 higher optimism-agents and wraps around to the agent with lowest optimism-factor.
-\medskip
-Included to analyse the influence of increasing connectivity.
+Each agent is connected to the K next neighbours in the clockwise arrangement. Thus agent N - K + 1 is connected to K - 1 higher optimism-agents and wraps around to the agent with lowest optimism-factor. Included to analyse the influence of increasing connectivity.
 
 \begin{figure}[H]
 	\centering
@@ -123,10 +121,10 @@ Included to analyse the influence of increasing connectivity.
 	\end{tabular}
 \end{table}
 
+\pagebreak
+
 \subsection{Regular short-cuts}
-The topology starts ascending-connected and each agent is additionally connected to one next neighbour in the clockwise arrangement where the distance to the next neighbour is K agents.
-\medskip
-Included to analyse the influence of trading-links to agents with much higher optimism-factor.
+The topology starts ascending-connected and each agent is additionally connected to one next neighbour in the clockwise arrangement where the distance to the next neighbour is K agents. Included to analyse the influence of trading-links to agents with much higher optimism-factor.
 
 \begin{figure}[H]
 	\centering
@@ -149,10 +147,10 @@ Included to analyse the influence of trading-links to agents with much higher op
 	\end{tabular}
 \end{table}
 
+\pagebreak
+
 \subsection{Random short-cuts}
-Starting with an ascending-connected network this topology adds one additional short-cut from each agent to another random agent with a given probability where a probability of 0.0 results in only the ascending-connectedness and a probability of 1.0 in each agent having an additional random short-cut. Self-loops and multi-edges are not allowed.
-\medskip
-Included to analyse the influence of randomness in ascending-connected topologies.
+Starting with an ascending-connected network this topology adds one additional short-cut from each agent to another random agent with a given probability where a probability of 0.0 results in only the ascending-connectedness and a probability of 1.0 in each agent having an additional random short-cut. Self-loops and multi-edges are not allowed. Included to analyse the influence of randomness in ascending-connected topologies.
 
 \begin{figure}[H]
 	\centering
@@ -175,11 +173,11 @@ Included to analyse the influence of randomness in ascending-connected topologie
 	\end{tabular}
 \end{table}
 
+\pagebreak
+
 \section{Hub-based topologies}
 \subsection{3 Hubs}
-The agents are separated into 3 groups based upon their optimism-factor. Group 1 ranges from 0.0 to 0.33, group 2 from 0.33 to 0.66 and group 3 from 0.66 to 1.0. All agents within a group are fully-connected where the groups are interconnected between each other through a hub which is the agent with the highest optimism-factor of each group that is: 0.33, 0.66 and 1.0.
-\medskip
-Included as a point-of-reference as this topology was discussed too in \cite{Breuer2015}.
+The agents are separated into 3 groups based upon their optimism-factor. Group 1 ranges from 0.0 to 0.33, group 2 from 0.33 to 0.66 and group 3 from 0.66 to 1.0. All agents within a group are fully-connected where the groups are interconnected between each other through a hub which is the agent with the highest optimism-factor of each group that is: 0.33, 0.66 and 1.0. Included as a point-of-reference as this topology was discussed too in \cite{Breuer2015}.
 
 \begin{figure}[H]
 	\centering
@@ -202,10 +200,10 @@ Included as a point-of-reference as this topology was discussed too in \cite{Bre
 	\end{tabular}
 \end{table}
 
+\pagebreak
+
 \subsection{3 Median Hubs}
-There are 3 agents which act as median hubs which are the agent with the median optimism-factor and the next lower and higher ones. All three are connected to each other where the rest of the agents are randomly connected to one hub so that each hub has the same amount of agents.
-\medskip
-Included to see what happens if all agents can only trade through median agents which are the most active ones in the Fully-Connected topology.
+There are 3 agents which act as median hubs which are the agent with the median optimism-factor and the next lower and higher ones. All three are connected to each other where the rest of the agents are randomly connected to one hub so that each hub has the same amount of agents. Included to see what happens if all agents can only trade through median agents which are the most active ones in the Fully-Connected topology.
 
 \begin{figure}[H]
 	\centering
@@ -228,10 +226,10 @@ Included to see what happens if all agents can only trade through median agents 
 	\end{tabular}
 \end{table}
 
+\pagebreak
+
 \subsection{Median Hub}
-All agents are connected to the agent with the median optimism-factor.
-\medskip
-Included for the same reason as in 3 median hubs but with just one median hub.
+All agents are connected to the agent with the median optimism-factor. Included for the same reason as in 3 median hubs but with just one median hub.
 
 \begin{figure}[H]
 	\centering
@@ -255,15 +253,13 @@ Included for the same reason as in 3 median hubs but with just one median hub.
 \end{table}
 
 \subsection{Maximum Hub}
-Looks the same as 1 Median Hub but all edges are connected to the agent with the highest optimism-value. Has thus also the same metrics as the optimism-values have no functional influence on the metrics.
-\medskip
-Included just out of curiosity and has no real value as it is obviously clear that equilibrium is impossible to be reached in this case.
+Looks the same as 1 Median Hub but all edges are connected to the agent with the highest optimism-value. Has thus also the same metrics as the optimism-values have no functional influence on the metrics. Included just out of curiosity and has no real value as it is obviously clear that equilibrium is impossible to be reached in this case.
+
+\pagebreak
 
 \section{Complex network-topologies}
 \subsection{Erods-Renyi}
-See section \ref{sec:theory_complexNetworks} for how this topology is created.
-\medskip
-Included to investigate the influence of randomness, small-world and scale-free effects upon equilibrium.
+See section \ref{sec:theory_complexNetworks} for how this topology is created. Included to investigate the influence of randomness, small-world and scale-free effects upon equilibrium.
 
 \begin{figure}[H]
 	\centering
@@ -328,10 +324,10 @@ Included to investigate the influence of randomness, small-world and scale-free 
 	\end{tabular}
 \end{table}
 
+\pagebreak
+
 \subsection{Barbasi-Albert}
-See section \ref{sec:theory_complexNetworks} for how this topology is created.
-\medskip
-Included to investigate the influence of randomness, small-world and scale-free effects upon equilibrium.
+See section \ref{sec:theory_complexNetworks} for how this topology is created. Included to investigate the influence of randomness, small-world and scale-free effects upon equilibrium.
 
 \begin{figure}[H]
 	\centering
@@ -373,10 +369,10 @@ Included to investigate the influence of randomness, small-world and scale-free 
 	\end{tabular}
 \end{table}
 
+\pagebreak
+
 \subsection{Watts-Strogatz}
-See section \ref{sec:theory_complexNetworks} for how this topology is created.
-\medskip
-Included to investigate the influence of randomness, small-world and scale-free effects upon equilibrium.
+See section \ref{sec:theory_complexNetworks} for how this topology is created. Included to investigate the influence of randomness, small-world and scale-free effects upon equilibrium.
 
 \begin{figure}[H]
 	\centering

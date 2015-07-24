@@ -19,12 +19,12 @@ The author of this thesis had access to the software of \cite{Breuer2015} which 
 \item Step-through forward and backwards in a simulation-run.
 \item Run replications of simulations.
 \item Store results of replications to be opened again for later usage.
-\item Command-line mode to run previously defined number of replications.
+\item Command-line mode to run multiple experiments as replications.
 \end{itemize}
 
 \paragraph{Java based}
-The original software was written in C++ which offers very much power and highest speed if used correctly but comes with a very high responsibility regarding memory-management. Java offers a much more relaxed programming model regarding memory-management as it is garbage collected. This does not mean that the programmer can waste memory without giving thought to it but that not as many aufwand into it. debugging is easier.
-The most compelling argument for Java are the vast libraries which are included in the JDK which are missing in standard C++. As complete GUI-functionality for the whole software is a requirement Java is the way to go. Although multi-purpose libraries like Boost and GUI-frameworks like Qt are available for C++ too, it takes quite some time to set them up correctly for the target platform one develops for which implies that in C++ the development would always have been for just one platform whereas Java runs on every platform - if not platform-dependent stuff was used - without recompilation. As one will see later in the "Command-line mode"-Feature this is a major requirement to make this feature practical. Thus the reasons for using Java were:
+The original software was written in C++ which offers very much power and highest speed if used correctly but comes with a very high responsibility regarding memory-management. Java offers a much more relaxed programming model regarding memory-management as it is garbage collected. This does not mean that the programmer can waste memory without giving thought to it but that one has not to put so much emphasis into it thus debugging is easier.
+The most compelling argument for Java are the vast libraries which are included in the JDK which are missing in standard C++. As complete GUI-functionality for the whole software is a requirement Java is the way to go. Although multi-purpose libraries like Boost and GUI-frameworks like Qt are available for C++, it takes quite some time to set them up correctly for the target platform one develops for which implies that in C++ the development would always have been for just one platform whereas Java runs on every platform without recompilation - if no platform-dependent stuff was used. As one will see later in the "Command-line mode"-Feature this is a major requirement to make this feature practical. Thus the reasons for using Java were:
 
 \begin{itemize}
 \item Platform-independence which applies to 3rd party libraries too.
@@ -50,13 +50,13 @@ The software should support to go through a simulation-run step-by-step and stor
 The original C++ software didn't provide real-time information about the current wealth-distribution and market-dynamics and provided the user just with the numerical results in the end through the means of a command-line output. For better understanding of dynamics of both wealth and markets a real-time visualisation of both are necessary together with extensive information on the current state like the offering-book, agent-information, network-activity, history of matches and the current equilibrium. Also the real-time visualisation is necessary to provide this written part of the thesis with diagrams of various results and processes.
 
 \paragraph{Replications}
-Because the whole trading-process includes randomness the results are subject to noise thus replications are an absolute must-have feature to be able to give reliable results. Each replications is independent from all others thus it is a candidate for parallel programming to speed up the already very time-consuming process of running replications. According to the number of CPU-cores the software should spawn threads up to the number of cores and run replications in parallel thus speeding up by a considerable amount of time.
+Because the whole trading-process includes randomness the results are subject to noise thus replications are an absolute must-have feature to be able to give reliable results. Each replication is data-independent from all others thus it is a candidate for parallel programming to speed up the already very time-consuming process of running replications. According to the number of CPU-cores the software should spawn threads up to the number of cores and run replications in parallel thus speeding up by a considerable amount of time.
 
 \paragraph{Store results}
 When running a bunch of replications for a given set-up the results of it should be automatically stored as XML to be accessible for later inspection thus conserving state and eliminating the necessity to re-run time-consuming simulation-runs with a high number of replications.
 
 \paragraph{Command-line mode}
-As already described replications are required to be implemented for parallel processing where up to the number of CPU-cores replications can run in parallel. When running a vast number of replications one does not need to GUI-functionality and most probably the machine is so occupied by the heavy work-load that a fließender usage of GUI would be not possible any-more. Thus replications should be runnable through a separate command-line mode of the thesis-software which reads information from a XML-File in which one can specify multiple simulation set-ups for which replications should be run. The command-line mode iterates through all configurations and runs the required replications and writes the result out for a later inspection. Obviously the more CPU-cores the faster a simulation-run with e.g. 50 replications finishes. For this reason most of the final replication-runs were done on a 40-core machine of the FH Vorarlberg which runs on Linux on which the thesis-software could be run easily because of Java's platform-independence.
+As already described replications are required to be implemented for parallel processing where up to the number of CPU-cores replications can run in parallel. When running a vast number of replications one does not need to GUI-functionality and most probably the machine is so occupied by the heavy work-load that a smooth usage of GUI would be not possible any-more. Thus replications should be runnable through a separate command-line mode of the thesis-software which reads information from a XML-File in which one can specify multiple simulation set-ups for which replications should be run. The command-line mode iterates through all configurations and runs the required replications and writes the result out for a later inspection. Obviously the more CPU-cores the faster a simulation-run with e.g. 50 replications finishes. For this reason most of the final replication-runs were done on a 40-core machine of the FH Vorarlberg which runs on Linux on which the thesis-software runs without recompilation due to Java's platform-independence.
 
 \section{Functionality}
 In this section the functionality of the thesis-software is explained to get an understanding of the implemented features. All features are available through the GUI unless stated otherwise. For inspection, replications and experimenter an individual tab is available inside the main window so they can be used in parallel. The features were implemented in combination with emulating the functionality of the model introduced in chapter \ref{ch:leverageCycle} thus this thesis-software is a super-set of the software used in \cite{Breuer2015}.
@@ -73,7 +73,7 @@ To get robust results replications are used to reduce the influence of random no
 When replications are processed running ones can be inspected and information can be queried using the GUI. It is possible to cancel one replication, cancel a whole task which reduces thread-load, inspect wealth-distribution, see the failed and successful matches and statistics of already finished replications. Whenever a replication is finished it is added to the pool of results and the median result is re-calculated and visualized and informations updated. When all replications have finished the results are written to a new XML-file in the results-folder of the software. This result-file can be opened using the experiments-feature which is described next. A simulation-configuration can be saved as a separate new experiment-file or added to an existing experiment-file - see next section for experiments.
 
 \subsection{Experiments}
-The experiments-feature allows to open experiment-files and result-files of replication- and experiment-runs. An experiment-file is just a collection of simulation-configurations to be run for a given number of replications. When an experiment-file is opened all simulation-configurations are displayed in a list and each of them can be opened as a new replication-tab which in turn can be run as explained in section "Replications". To be able to conveniently run all simulation-configurations of an experiment-file without needing user-interaction a command-line feature was implemented.
+The experiments-feature allows to open experiment-files and result-files of replication- and experiment-runs. An experiment-file is just a collection of simulation-configurations to be run for a given number of replications. When an experiment-file is opened all simulation-configurations are displayed in a list and each of them can be opened in a new replication-tab which in turn can be run as explained in section "Replications". To be able to conveniently run all simulation-configurations of an experiment-file without needing user-interaction a command-line feature was implemented.
 
 \medskip
 
@@ -103,7 +103,7 @@ Theoretically the dependencies are top-down where the front-end includes only co
 \begin{figure}[H]
 	\centering
   \includegraphics[width=1.0\textwidth, angle=0]{PACKAGE_DIAGRAM_MINIMAL.png}
-	\caption{Package-diagram with most important classes and associations illustrating the architecture. (Note that the software contains many more classes and associations which are omitted for clarity reasons as this diagram should provide only a basic overview and would contain by far too much information if everything would have been included.)}
+	\caption{Package-diagram with most important classes and dependencies illustrating the architecture. (Note that the software contains many more classes and dependencies which are omitted for clarity reasons as this diagram should provide only a basic overview and would contain by far too much information if everything would have been included.)}
 	\label{fig:PACKAGE_DIAGRAM_MINIMAL}
 \end{figure}
 
@@ -128,14 +128,14 @@ The controller package is rather slim and contains the steering functionality to
 \end{itemize}
 
 \subsection{Backend}
-The back-end contains the domain-specific functionality for the simulation. The important classes can be seen in the package-diagram \ref{fig:PACKAGE_DIAGRAM_MINIMAL} but for better clarity each one is introduced briefly.
+The back-end contains the domain-specific functionality for the simulation. The important classes can be seen in the package-diagram \ref{fig:PACKAGE_DIAGRAM_MINIMAL} where each one is introduced briefly.
 
 \begin{itemize}
-\item Auction - holds the state and operations for a single simulation-run. This class does the sweeping and clearing discussed in section "Simulation", determines whether trading is still possible or not and calculates current equilibrium.  allows to run a matching-round
-\item Agent - encapsulates the functionality and state necessary for the agents in the simulation. See next section "Agents" for a more in-depth discussion.
-\item AgentNetwork - holds the connections between the agents and provides functionality to query neighbourhood, paths and connections between agents and random and sequential in-order iterator over all agents.
-\item Offering - encapsulates the data necessary for offerings where there are two subclasses \textit{BidOffering} and \textit{AskOffering} to differentiate between the two types of offerings. See the section "Markets" on details of offerings.
-\item Match - provides the functionality to create a match out of given offers and returning an instance of \textit{Match} through a factory-method. The \textit{Match} instance holds the price, amount and the offers which have matched. See section "Sweeping and Matching" on more details.
+\item Auction - holds the state and operations for a single simulation-run. This class does the sweeping and clearing discussed in section "Simulation", determines whether trading is still possible or not and calculates current equilibrium.
+\item Agent - encapsulates the functionality and state necessary for the agents in the simulation. See section \ref{sec:AGENTS} for a more in-depth discussion.
+\item AgentNetwork - holds the connections between the agents and provides functionality to query neighbourhood, paths and connections between agents and random and sequential in-order iterators over all agents.
+\item Offering - encapsulates the data necessary for offerings where there are two subclasses \textit{BidOffering} and \textit{AskOffering} to differentiate between the two types of offerings. See the section \ref{sec:MARKETS} on details of offerings.
+\item Match - provides the functionality to create a match out of given offers and returning an instance of \textit{Match} through a factory-method. The \textit{Match} instance holds the price, amount and the offers which have matched. See section \ref{sec:implementation_sweepingAndMatching} on more details.
 \item Transaction - encapsulates functionality to search for a match within a given neighbourhood, is used by \textit{Auction} class to sweep through the agents and is returned after a matching-round and provides necessary information about whether it was successful or not.
 \end{itemize}
 
@@ -153,11 +153,11 @@ Each agent is characterized by its state where the main variables are:
 \begin{equation}
 \textit{optimism-factor} = \frac{id}{\textit{number of agents} + 1}
 \end{equation}
-It is important that no agent has the optimism-factor of 0 because then the first derivation of the limit-function of the Asset/Bond market becomes undefined and thus the limit-function is not monotony increasing if \textit{h} = 0. This property is ensured by starting with id 1 and dividing by \textit{number of agents} + 1.
+It is important that no agent has the optimism-factor of 0 because then the first derivation of the limit-function of the Asset/Bond market becomes undefined and is not monotony increasing if \textit{h} = 0. This property is ensured by starting with id 1 and dividing by \textit{number of agents} + 1.
 \item Cash holdings - the current cash holdings of the agent.
 \item Assets holdings - the current asset holdings of the agent not including the assets granted as securities for giving loans.
-\item Loan given - the amount of loans bought from / granted to other agents. For a given amount of loans the equal amount of assets are granted as security to the buyer of the loan. Thus this variable increases the amount of assets the agent can trade with.
-\item Loan taken - the amount of loans sold to other agents. For a given amount of loans the equal amount of assets the equal amount of assets are granted as security to the buyer of the loan. Thus this variable decreases the amount of assets the agent can trade with as this amount of loans needs to be kept as securities.
+\item Loan given - the amount of loans bought from / granted to other agents. For a given amount of loans the equal amount of assets are granted as security to the buyer of the loan.
+\item Loan taken - the amount of loans sold to other agents. For a given amount of loans the equal amount of assets are granted as security to the buyer of the loan. Thus this variable decreases the amount of assets the agent can trade with as this amount of loans needs to be kept as securities.
 \end{itemize}
 
 \medskip
@@ -187,6 +187,7 @@ Thus this value is positive if the agent has granted more loans to other agents 
 Note that all variables cannot go negative except loans.
 
 \section{Markets}
+\label{sec:MARKETS}
 In this section all markets and their implementations are described. Each market is completely characterised by the following points:
 
 \begin{itemize}
@@ -207,14 +208,14 @@ Free assets are traded against cash. The buyer gets a specific amount of free as
 The minimum value of one asset in cash is the down-value pD tomorrow as defined in chapter \ref{ch:leverageCycle}. This value is obviously a constant for all agents.
 
 \begin{equation}
-\textit{min asset-price} = \textit{pD}
+min_{asset} = \textit{pD}
 \end{equation}
 
 \paragraph{maximum}
 The maximum value of one asset in cash is the up-value pU tomorrow as defined in chapter \ref{ch:leverageCycle}. This value is obviously a constant for all agents.
 
 \begin{equation}
-\textit{max asset-price} = \textit{pU}
+max_{asset} = \textit{pU}
 \end{equation}
 
 \paragraph{limit}
@@ -233,14 +234,14 @@ As amount one TRADING-UNIT of assets is selected but if there is not enough cash
 	\begin{tabular} { l c r }
 		\hline
 		Pre-Condition & $\textit{cash holdings} > \textit{price of TRADING-UNIT assets}$  \\
-		Asset-Price & $\mathrm{random}(\textit{min asset-price}, \textit{limit-price asset})$ \\
+		Asset-Price & $\mathrm{random}(min_{asset}, limit_{asset})$ \\
 		Asset-Amount & $\textit{TRADING-UNIT}$ \\
 		\hline
 	\end{tabular}
 \end{table}
 
 \subsubsection{Ask-Offering}
-Ask offers are generated only when the agent has at least one TRADING-UNIT of free assets left. As amount one TRADING-UNIT of assets is selected - in the thesis-implementation 0.1 - but if there are fewer free assets left then no offer is made.
+Ask offers are generated only when the agent has at least TRADING-UNIT of free assets left. As amount one TRADING-UNIT of assets is selected but if there are fewer free assets left then no offer is made.
 
 \begin{table}[H]
 	\centering
@@ -248,7 +249,7 @@ Ask offers are generated only when the agent has at least one TRADING-UNIT of fr
 	\begin{tabular} { l c r }
 		\hline
 		Pre-Condition & $\textit{free assets} > \textit{TRADING-UNIT}$  \\
-		Asset-Price & $\mathrm{random}(\textit{limit-price of asset}, \textit{max asset-price})$ \\
+		Asset-Price & $\mathrm{random}(limit_{asset}, max_{asset})$ \\
 		Asset-Amount & $\textit{TRADING-UNIT}$ \\
 		\hline
 	\end{tabular}
@@ -280,25 +281,25 @@ Bonds are traded against cash. The buyer grants the seller a loan in buying a bo
 The minimum value of one bond in cash is the down-value pD tomorrow as defined in chapter \ref{ch:leverageCycle}. This value is obviously a constant for all agents.
 
 \begin{equation}
-\textit{min bond-price} = \textit{pD}
+min_{bond} = \textit{pD}
 \end{equation}
  
 \paragraph{maximum}
 The maximum value of one bond in cash is the face-value V tomorrow as defined in chapter \ref{ch:leverageCycle}. This value is obviously a constant for all agents.
 
 \begin{equation}
-\textit{max bond-price} = \textit{facevalue V}
+max_{bond} = \textit{face-value V}
 \end{equation}
 
 \paragraph{limit}
-The limit-price of a bond in cash depends on the optimism-factor \textit{h} of the agent where the most optimistic agent assigns \textit{facevalue V} and the most pessimistic \textit{pD} as the price. Thus applying linear interpolation one receives the following equation.
+The limit-price of a bond in cash depends on the optimism-factor \textit{h} of the agent where the most optimistic agent assigns face-value \textit{V} and the most pessimistic \textit{pD} as the price. Thus applying linear interpolation one receives the following equation.
 
 \begin{equation}
 limit_{bond} = h \; V + ( 1.0 - h ) \; pD
 \end{equation}
 
 \subsubsection{Bid-Offering}
-Bid offers are generated only when the agent has any cash holdings. As amount one TRADING-UNIT of bonds is selected but if there is not enough cash left to buy one TRADING-UNIT of bonds then the amount of bonds is selected which can be bought with the remaining cash holdings.
+Bid offers are generated only when the agent has any cash holdings. As amount TRADING-UNIT of bonds is selected but if there is not enough cash left to buy TRADING-UNIT of bonds then the amount of bonds is selected which can be bought with the remaining cash holdings.
 
 \begin{table}[H]
 	\centering
@@ -306,14 +307,14 @@ Bid offers are generated only when the agent has any cash holdings. As amount on
 	\begin{tabular} { l c r }
 		\hline
 		Pre-Condition & $\textit{cash holdings} > 0$  \\
-		Bond-Price & $\mathrm{random}(\textit{min bond-price}, \textit{limit-price of bonds})$ \\
+		Bond-Price & $\mathrm{random}(min_{bond}, limit_{bond})$ \\
 		Bond-Amount & $\min (\frac{\textit{cash holdings} }{ \textit{Bond-Price} }, \textit{TRADING-UNIT} )$ \\
 		\hline
 	\end{tabular}
 \end{table}
 
 \subsubsection{Ask-Offering}
-Ask offers are generated only when the agent has a positive amount of loans. As amount one TRADING-UNIT of bonds is selected but if there are fewer loans left then the remaining amount of loans is selected.
+Ask offers are generated only when the agent has a positive amount of loans. As amount TRADING-UNIT of bonds is selected but if there are fewer loans left then the remaining amount of loans is selected.
 
 \begin{table}[H]
 	\centering
@@ -321,7 +322,7 @@ Ask offers are generated only when the agent has a positive amount of loans. As 
 	\begin{tabular} { l c r }
 		\hline
 		Pre-Condition & $\textit{loans} > 0$  \\
-		Bond-Price & $\mathrm{random}(\textit{limit-price of bonds}, \textit{max bond-price})$ \\
+		Bond-Price & $\mathrm{random}(limit_{bond}, max_{bond})$ \\
 		Bond-Amount & $\min ({\textit{free assets} }, \textit{TRADING-UNIT} )$ \\
 		\hline
 	\end{tabular}
@@ -353,14 +354,14 @@ Assets are traded against bonds. The buyer gets a specific amount of free assets
 The minimum value of one asset in bonds is defined as the ratio of the minimum asset-price in cash to the minimum bond-price in cash. This value is obviously a constant for all agents.
 
 \begin{equation}
-\textit{min asset/bond price} = \frac{\textit{minimum asset-price}}{\textit{minimum bond-price}} = \frac{pD}{pD} = 1
+min_{asset/bond} = \frac{min_{asset}}{min_{bond}} = \frac{pD}{pD} = 1
 \end{equation}
  
 \paragraph{maximum}
-The maximum value of one asset in bonds is defined in the ratio of the maximum asset-price in cash to the maximum bond-price in cash.
+The maximum value of one asset in bonds is defined in the ratio of the maximum asset-price in cash to the maximum bond-price in cash. This value is obviously a constant for all agents.
 
 \begin{equation}
-\textit{max asset/bond price} = \frac{\textit{maximum asset-price}}{\textit{maximum bond-price}} = \frac{pU}{V}
+max_{asset/bond} = \frac{max_{asset}}{max_{bond}} = \frac{pU}{V}
 \end{equation}
 
 \paragraph{limit}
@@ -371,7 +372,7 @@ limit_{asset/bond} = \frac{limit_{asset}}{limit_{bond}}
 \end{equation}
 
 \subsubsection{Bid-Offering}
-Bid offers are generated only when the agent is not negative on free assets after the trade. As amount one TRADING-UNIT of a assets is selected. To calculate the free assets after a match the following steps are performed:
+Bid offers are generated only when the agent is not negative on free assets after the trade. As amount TRADING-UNIT of a assets is selected. To calculate the free assets after a match the following steps are performed:
 
 \begin{enumerate}
 \item Start with current free assets holdings.
@@ -386,14 +387,14 @@ Bid offers are generated only when the agent is not negative on free assets afte
 	\begin{tabular} { l c r }
 		\hline
 		Pre-Condition & $\textit{free assets} >= \textit{0 after trade}$  \\
-		Asset/Bond-Price & $\mathrm{random}(\textit{min asset/bond price}, \textit{limit-price of asset/bond})$ \\
+		Asset/Bond-Price & $\mathrm{random}(min_{asset/bond}, limit_{asset/bond})$ \\
 		Asset/Bond-Amount & $\textit{TRADING-UNIT}$ \\
 		\hline
 	\end{tabular}
 \end{table}
 
 \subsubsection{Ask-Offering}
-Bid offers are generated only when the agent is not negative on free assets after the trade. As amount one TRADING-UNIT of bonds is selected. To calculate the free assets after a match the following steps are performed:
+Bid offers are generated only when the agent is not negative on free assets after the trade. As amount TRADING-UNIT of bonds is selected. To calculate the free assets after a match the following steps are performed:
 
 \begin{enumerate}
 \item Start with current free assets holdings.
@@ -408,7 +409,7 @@ Bid offers are generated only when the agent is not negative on free assets afte
 	\begin{tabular} { l c r }
 		\hline
 		Pre-Condition & $\textit{free assets} >= \textit{0 after trade}$  \\
-		Asset/Bond-Price & $\mathrm{random}(\textit{limit-price of asset/bond}, \textit{max asset/bond price})$ \\
+		Asset/Bond-Price & $\mathrm{random}(limit_{asset/bond}, max_{asset/bond})$ \\
 		Asset/Bond-Amount & $\textit{TRADING-UNIT}$ \\
 		\hline
 	\end{tabular}
@@ -444,20 +445,20 @@ In the next step the equation of the collateralized assets must include both the
 
 \medskip
 
-Another implication of BP is that it enables agents with a positive net-amount of loans to place ask-offers on the Bond/Cash market although they have no more free assets - see section \ref{sec:ASSET_BOND_MARKET}. The positive amount of loans is backed by the agents which have taken the loans by their securities thus one can view the positive amount of loans as an additional amount of assets which cannot be traded freely but are backing the loans. Thus it is allowed to sell a loan to another agent which is effectively just a transfer of the loan and its virtual security back-up to the buyer.
+Another implication of BP is that it enables agents with a positive net-amount of loans to place ask-offers on the Bond/Cash market although they have no more free assets - see section \ref{sec:ASSET_BOND_MARKET}. The positive amount of loans is backed by the agents which have taken the loans by their securities thus one can view the positive amount of loans as an additional amount of assets which cannot be traded freely but are backing the loans. Thus it is allowed to sell a loan to another agent which is effectively just a transfer of the loan and its virtual security backup to the buyer.
 
 \section{Simulation}
 In this section a few details of the simulation-implementation are discussed as they are not so obvious but interesting and important enough to be mentioned.
 
 \medskip
 
-As noted above in the section "Markets" bonds and assets are always traded in chunks of TRADING-UNITS which is 0.1 in case of assets and 0.2 in case of bonds. Note that it is nothing unusual to scale the initial wealth-endowments to 1.0 and trade fractions of them as in the end the absolute endowment does not matter but the distribution over the agents so a transformation to natural numbers would not gain anything. What is much more important is that the system conserves wealth: no wealth is lost and no wealth is created \textit{ex nihilo}. This is guaranteed by the equations and pre-conditions found in section "Markets". 
+As noted above in the section \ref{sec:MARKETS} bonds and assets are always traded in chunks of TRADING-UNITS which is 0.1 in case of assets and 0.2 in case of bonds. Note that it is nothing unusual to scale the initial wealth-endowments to 1.0 and trade fractions of them as in the end the absolute endowment does not matter but the distribution over the agents so a transformation to natural numbers would not gain anything. What is much more important is that the system conserves wealth: no wealth is lost and no wealth is created \textit{ex nihilo}. This is guaranteed by the equations and pre-conditions found in section \ref{sec:MARKETS}. 
 
 \subsection{Sweeping and Matching}
 \label{sec:implementation_sweepingAndMatching}
 
 \paragraph{Sweeping}
-Sweeping is the process of generating a successful match by running through the agents and apply matching between their offers. Because offering-prices are created randomly in specific ranges it could happen that no offers match. To elevate this problem not only 1 but up to 500 sweeps are done when calculating the next successful match.
+Sweeping is the process of searching a successful match by running through the agents and apply matching between their offers. Because offering-prices are created randomly in specific ranges it could happen that no offers match. To elevate this problem not only 1 but up to 500 sweeps are done when calculating the next successful match.
 
 \begin{algorithm}
 \caption{Sweeping Pseudocode}\label{euclid}
@@ -538,17 +539,17 @@ It is easy to see that the calculation of the best neighbourhood can be quite co
 \subsection{Matching probabilities}
 
 \paragraph{General matching}
-For a match to happen the buyer-price must be larger or equal the seller-price. Thus as shown in chapter \ref{ch:hypothesis} a price higher than the seller-price can only be placed by a buyer which has a strictly larger optimism-factor than the seller because only then their offering-ranges have a chance to cover each other partly. Thus matching in general works between a seller with lower optimism-factor and a buyer with higher optimism-factor. As noted in chapter \ref{ch:leverageCycle} agents place offering-prices randomly in their ranges which are specified in this chapter in section "Markets" so matching is also subject to randomness.
+For a match to happen the buyer-price must be larger or equal the seller-price. Thus as shown in chapter \ref{ch:hypothesis} a price higher than the seller-price can only be placed by a buyer which has a strictly larger optimism-factor than the seller because only then their offering-ranges have a chance to cover each other partly. Thus matching in general works between a seller with lower optimism-factor and a buyer with higher optimism-factor. As noted in chapter \ref{ch:leverageCycle} agents place offering-prices randomly in their ranges which are specified in this chapter in section \ref{sec:MARKETS} so matching is also subject to randomness.
 \medskip
-To investigate the matching-probabilities one must look at the coverage probabilities of the matching-ranges. The limit-price of bidders increase with rising optimism-factor and thus the width of the bidding-range decreases because bidders make their offers in the range of [limit-price..pU]. The situation is the inverse for askers as their limit-price increases too but the width of their asking-range increases because they place their offers in the range of [pD..limit-price]. Thus obviously the larger the difference in the optimism-factor between a seller and a buyer - again note that buyers optimism-factors are strictly larger than those of their corresponding sellers - the more likely a match will happen as both ranges increase and cover much more total distance thus increasing the probability that prices will be drawn which match.
+To investigate the matching-probabilities one must look at the coverage probabilities of the matching-ranges. The limit-price of bidders increase with rising optimism-factor and thus the width of the bidding-range decreases because bidders make their offers in the range of [limit..pU]. The situation is the inverse for askers as their limit-price increases too but the width of their asking-range increases because they place their offers in the range of [pD..limit]. Thus obviously the larger the difference in the optimism-factor between a seller and a buyer - again note that buyers optimism-factors are strictly larger than those of their corresponding sellers - the more likely a match will happen as both ranges increase and cover much more total distance thus increasing the probability that prices will be drawn which match.
 \medskip
 The following formulas derive the probabilities that an asker and a bider with a given limit-price will match on the Asset/Cash market. First the coverage-range is calculated by subtracting the limit-price of the asker from the one of the bidder as the one of the bidder must be larger. Then the probabilities of the asker and of the bider to fall into the range of the coverage-range is calculated. Finally the probability that both the asker and bider range will match is calculated by multiplying the previously calculated probabilities. Note that a division by 2 needs to be done because of symmetrical reasons because it does not matter where in the range the prices will meet but because the buy-price has to be larger or equal than the seller-price only the half-range is available.
 
 \begin{equation}
 \begin{split}
-\textit{coverage-range} = \textit{limit-price bidder} - \textit{limit-price asker} \\
-p(asker) = \frac{\textit{coverage-range}}{ pU - \textit{limit-price asker} } \\
-p(bider) = \frac{\textit{coverage-range}}{ \textit{limit-price bider} - pD } \\
+\textit{coverage-range} = \textit{limit bidder} - \textit{limit asker} \\
+p(asker) = \frac{\textit{coverage-range}}{ pU - \textit{limit asker} } \\
+p(bider) = \frac{\textit{coverage-range}}{ \textit{limit bider} - pD } \\
 p(asker | bider) = \frac{p(asker) * p(bider)}{2}
 \end{split}
 \end{equation}
@@ -591,7 +592,7 @@ Looking at these diagrams one can derive the following facts about the matching-
 \item The more agents in the network the lower the matching-probabilities.
 \end{enumerate}
 
-The lower matching-probabilities result in longer simulation-runs and more inefficiencies towards the end where free assets are kept by optimists instead of traded as the matching-probabilities decrease so much that no more trading will occur. To elevate this problem one can adjust the matching-probabilities by transforming the price-ranges. It is of very importance that the shape of the matching-probabilities distribution must be exactly the same. Only the absolute values of the probabilities are increased where the edges are at the maximum of 1.0. This is mathematically quite involved and was not developed by myself but by Supervisor Mr. Vollbrecht. The formulas and explanations have been moved to appendix \ref{app:increasingMatchingProbability} "Increasing the matching-probabilities in Ascending-Connected topology"
+The lower matching-probabilities result in longer simulation-runs and more inefficiencies towards the end where free assets are kept by optimists instead of traded as the matching-probabilities decrease so much that no more trading will occur. To elevate this problem one can adjust the matching-probabilities by transforming the price-ranges. It is of very importance that the shape of the matching-probabilities distribution must be exactly the same. Only the absolute values of the probabilities are increased where the edges are at the maximum of 1.0. This is mathematically quite involved and was developed by supervisor Mr. Vollbrecht. The formulas and explanations have been moved to appendix \ref{app:increasingMatchingProbability}.
 \medskip
 This variant is dubbed "Ascending-Connected topology with Importance Sampling". See chapter \ref{ch:results} for the performance and results of this variant.
 

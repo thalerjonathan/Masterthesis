@@ -11,7 +11,7 @@ In this chapter the results of the experiments are given. Each topology-type int
 Note: The numbers in tables resemble always a median-value with the standard-deviation given in parentheses.
 
 \section{Validating thesis-software}
-As  a point-of-reference and as an experimental proof for the correctness of the implementation of the thesis-software the results of a validation against both the theoretical equilibrium and the equilibrium found in \cite{Breuer2015} are given. Because equilibrium differs across the number of agents and the type of bond traded to be comparable the same amount of agents and the same bond-type has to be used in the experiments. Thus 1,000 agents and a bond with face-value of 0.5 were chosen because \cite{Breuer2015} report their equilibria for this number of agents and bonds with face-value between 0.1 to 0.5.
+As a point-of-reference and as an experimental proof for the correctness of the implementation of the thesis-software the result of a validation against the equilibrium found in \cite{Breuer2015} is given. Because equilibrium differs across the number of agents and the type of bond traded to be comparable the same amount of agents and the same bond-type has to be used in the experiments. Thus 1,000 agents and a bond with face-value of 0.5 were chosen because \cite{Breuer2015} report their equilibria for this number of agents and bonds with face-value between 0.1 to 0.5.
 
 \subsection{References for 1,000 agents with 0.5 bond}
 
@@ -22,8 +22,8 @@ As  a point-of-reference and as an experimental proof for the correctness of the
 		\hline
 		Asset-Price p & 0.716 \\
 		Bond-Price q & 0.375 \\
-		Marginal agent i1 & 0.583 \\
-		Marginal agent i2 & 0.801 \\
+		Marginal Agent i1 & 0.583 \\
+		Marginal Agent i2 & 0.801 \\
 		\hline
 		Pessimist Wealth & 1.716 \\
 		Medianist Wealth & 4.578 \\
@@ -46,14 +46,14 @@ As  a point-of-reference and as an experimental proof for the correctness of the
 	\caption{Equilibrium of thesis-implementation for 1,000 agents and 0.5 bond}
 	\begin{tabular} { l c r }
 		\hline
-		Asset-price p & 0.730 (0.011) \\
-		Bond-price q & 0.382 (0.000) \\
-		Marginal agent i1 & 0.605 (0.001) \\
-		Marginal agent i2 & 0.807 (0.001) \\
+		Asset-Price p & 0.730 (0.011) \\
+		Bond-Price q & 0.382 (0.000) \\
+		Marginal Agent i1 & 0.605 (0.001) \\
+		Marginal Agent i2 & 0.807 (0.001) \\
 		\hline
-		Pessimist wealth & 1.649 (0.001) \\
-		Medianist wealth & 4.895 (0.014) \\
-		Optimist wealth & 5.160 (0.018) \\
+		Pessimist Wealth & 1.649 (0.001) \\
+		Medianist Wealth & 4.895 (0.014) \\
+		Optimist Wealth & 5.160 (0.018) \\
 		\hline
 	\end{tabular}
 	\label{tab:equilibrium_THESIS_1000_50_REPL}
@@ -67,8 +67,8 @@ As  a point-of-reference and as an experimental proof for the correctness of the
 		\hline
 		Asset-Price p & 0.730 & 0.716 & +2.0\% \\
 		Bond-Price q & 0.382 & 0.375 & +1.9\% \\
-		Marginal agent i1 & 0.605  & 0.583 & +3.8\% \\
-		Marginal agent i2 & 0.807 & 0.801 & +0.7\% \\
+		Marginal Agent i1 & 0.605  & 0.583 & +3.8\% \\
+		Marginal Agent i2 & 0.807 & 0.801 & +0.7\% \\
 		\hline
 		Pessimist Wealth  & 1.649 & 1.716 & -3.9\% \\
 		Medianist Wealth & 4.895 & 4.578 & +6.9\% \\
@@ -77,7 +77,7 @@ As  a point-of-reference and as an experimental proof for the correctness of the
 	\end{tabular}
 \end{table} 
 
-Although marginal agent i1 and bond-price q are quite different than from theoretical equilibrium and the pessimists wealth is 7.8\% less than given in \cite{Breuer2015} these results are nonetheless accepted as reaching the equilibrium. The differences emerge from the reasons that the thesis-simulation runs were terminated earlier than in \cite{Breuer2015} which results in the i1 and i2 edges to be not as sharp as reported in \cite{Breuer2015}. It would be necessary to run the simulation an order of magnitude longer as the matching probabilities are reduced rapidly when only direct neighbours are able to trade any more within a network of 1000 agents. See section \ref{sec:implementation_performanceImprovement} for details on matching-probabilities.
+Although Marginal Agent i1 and Bond-Price q are quite different than from theoretical equilibrium and the pessimists wealth is 7.8\% less than given in \cite{Breuer2015} these results are nonetheless accepted as reaching the equilibrium. The differences emerge from the reasons that the thesis-simulation runs were terminated earlier than in \cite{Breuer2015} which results in the i1 and i2 edges to be not as sharp as reported in \cite{Breuer2015}. It would be necessary to run the simulation an order of magnitude longer as the matching probabilities are reduced rapidly when only direct neighbours are able to trade any more within a network of 1000 agents. See section \ref{sec:implementation_performanceImprovement} for details on matching-probabilities.
 
 \section{Performance and termination measurements}
 As noted in section \ref{sec:implementation_sweepingAndMatching} a matching-round performs up to 500 offering-rounds where during one round all agents make an offer to find a match. If a match occurs during one offering-round the current matching-round is terminated and marked as successful. If no match occurs during all 500 offering-rounds the current matching-round is terminated too but marked as failed. Thus the following terminology is defined:
@@ -102,7 +102,7 @@ As noted in section \ref{sec:implementation_sweepingAndMatching} a matching-roun
 \end{table}
 
 \section{Experiments configuration}
-In the following experiments 100 agents were used, all markets (Asset/Cash, Bond/Cash, Asset/Bond) were enabled, a bond with face-value of 0.5 was selected and in each experiment 50 replications were run. A replication was terminated after 1000 failed matching-rounds in a row. Note that if trading is not possible any more before this criteria is met the simulation is terminated and thus it is possible that it halts earlier as can be seen for the Ascending-Connected topology with Importance Sampling.
+In the following experiments 100 agents were used, all markets (Asset/Cash, Bond/Cash, Asset/Bond) were enabled, a bond with face-value of 0.5 was selected and in each experiment 50 replications were run. A replication was terminated after 1,000 failed matching-rounds in a row. Note that if trading is not possible any more before this criteria is met the simulation is terminated and thus it is possible that it halts earlier as can be seen for the Ascending-Connected topology with Importance Sampling.
 
 \bigskip 
 
@@ -110,7 +110,7 @@ In the following experiments 100 agents were used, all markets (Asset/Cash, Bond
 
 \medskip
 
-As already described in section \ref{sec:implementation_sweepingAndMatching} the simulation is a random-process thus one needs replications to reduce noise. The number of 50 replications was chosen because it is a good match between processing-power requirements and overall reduction of noise. Thus increasing the number e.g. to 100 or 200 would not result in much better results - both visual and numerical - but would need much longer to run. All facts can already be seen and derived when using 50 replications thus for all figures 50 replications were used unless stated otherwise e.g. a single run.
+As already described in section \ref{sec:implementation_sweepingAndMatching} the simulation is a random-process thus one needs replications to reduce noise. The number of 50 replications was chosen because it is a good match between processing-power requirements and overall reduction of noise. Thus increasing the number e.g. to 100 or 200 would not result in much better results - both visual and numerical - but would need much longer to run. All facts can already be seen and derived when using 50 replications thus for all figures this number was used unless stated otherwise e.g. a single run.
 
 \begin{table}[H]
 	\centering
@@ -133,8 +133,8 @@ As already described in section \ref{sec:implementation_sweepingAndMatching} the
 		\hline
 		Asset-Price p & 0.717 \\
 		Bond-Price q & 0.375 \\
-		Marginal agent i1 & 0.584 \\
-		Marginal agent i2 & 0.802 \\
+		Marginal Agent i1 & 0.584 \\
+		Marginal Agent i2 & 0.802 \\
 		\hline
 	\end{tabular}
 	\label{tab:theoretical_equilibrium_100Agents_05Bond}
@@ -155,14 +155,14 @@ This topology serves as the major point-of-reference for the other experiments a
 	\centering
 	\begin{tabular} { l c r }
 		\hline
-		Asset-price p & 0.717 (0.015) \\
-		Bond-price q & 0.382 (0.001) \\
-		Marginal agent i1 & 0.596 (0.004) \\
-		Marginal agent i2 & 0.810 (0.004) \\
+		Asset-Price p & 0.717 (0.015) \\
+		Bond-Price q & 0.382 (0.001) \\
+		Marginal Agent i1 & 0.596 (0.004) \\
+		Marginal Agent i2 & 0.810 (0.004) \\
 		\hline
-		Pessimist wealth & 1.646 (0.004) \\
-		Medianist wealth & 4.736 (0.089) \\
-		Optimist wealth & 5.179 (0.082) \\
+		Pessimist Wealth & 1.646 (0.004) \\
+		Medianist Wealth & 4.736 (0.089) \\
+		Optimist Wealth & 5.179 (0.082) \\
 		\hline
 	\end{tabular}
 	\label{tab:fullyconnected_equilibrium_100Agents_05Bond}
@@ -191,8 +191,8 @@ This topology serves as the major point-of-reference for the other experiments a
 		\hline
 		Asset-Price p & 0.717 & 0.717 & 0.0\% \\
 		Bond-Price q & 0.382 & 0.375 & +1.9\% \\
-		Marginal agent i1 & 0.596  & 0.584 & +2.0\% \\
-		Marginal agent i2 & 0.810 & 0.802 & +1.0\% \\
+		Marginal Agent i1 & 0.596  & 0.584 & +2.0\% \\
+		Marginal Agent i2 & 0.810 & 0.802 & +1.0\% \\
 		\hline
 	\end{tabular}
 \end{table}
@@ -211,14 +211,14 @@ This topology serves as the major point-of-reference for the other experiments a
 	\centering
 	\begin{tabular} { l c r }
 		\hline
-		Asset-price p & 0.698 (0.034) \\
-		Bond-price q & 0.375 (0.018) \\
-		Marginal agent i1 & 0.629 (0.054) \\
-		Marginal agent i2 & 0.675 (0.130) \\
+		Asset-Price p & 0.698 (0.034) \\
+		Bond-Price q & 0.375 (0.018) \\
+		Marginal Agent i1 & 0.629 (0.054) \\
+		Marginal Agent i2 & 0.675 (0.130) \\
 		\hline
-		Pessimist wealth & 1.545 (0.147) \\
-		Medianist wealth & 4.628 (0.632) \\
-		Optimist wealth & 3.428 (1.293) \\
+		Pessimist Wealth & 1.545 (0.147) \\
+		Medianist Wealth & 4.628 (0.632) \\
+		Optimist Wealth & 3.428 (1.293) \\
 		\hline
 	\end{tabular}
 	\label{tab:ascendingconnected_equilibrium_100Agents_05Bond}
@@ -247,8 +247,8 @@ This topology serves as the major point-of-reference for the other experiments a
 		\hline
 		Asset-Price p & 0.698 & 0.717 & -2.6\% \\
 		Bond-Price q & 0.375 & 0.375 & 0.0\% \\
-		Marginal agent i1 & 0.629  & 0.584 & +7.7\% \\
-		Marginal agent i2 & 0.675 & 0.802 & -15.8\% \\
+		Marginal Agent i1 & 0.629  & 0.584 & +7.7\% \\
+		Marginal Agent i2 & 0.675 & 0.802 & -15.8\% \\
 		\hline
 	\end{tabular}
 \end{table}
@@ -261,8 +261,8 @@ This topology serves as the major point-of-reference for the other experiments a
 		\hline
 		Asset-Price p & 0.698 (0.034) & 0.717 (0.015) & -2.6\% (+126\%) \\
 		Bond-Price q & 0.375 (0.018) & 0.382 (0.001) & -1.8\% (+1700\%) \\
-		Marginal agent i1 & 0.675 (0.054) & 0.596 (0.004) & +13.2\% (+1250\%) \\
-		Marginal agent i2 & 0.850 (0.130) & 0.810 (0.004) & +4.9\% (+3150\%) \\
+		Marginal Agent i1 & 0.675 (0.054) & 0.596 (0.004) & +13.2\% (+1250\%) \\
+		Marginal Agent i2 & 0.850 (0.130) & 0.810 (0.004) & +4.9\% (+3150\%) \\
 		\hline
 		Pessimist Wealth & 1.545 (0.147) & 1.646 (0.004) & -6.1\% (+3575\%) \\
 		Medianist Wealth & 4.628 (0.632) & 4.736 (0.089) & -2.2\% (+610\%) \\
@@ -284,14 +284,14 @@ This topology serves as the major point-of-reference for the other experiments a
 	\centering
 	\begin{tabular} { l c r }
 		\hline
-		Asset-price p & 0.710 (0.006) \\
-		Bond-price q & 0.379 (0.002) \\
-		Marginal agent i1 & 0.586 (0.014) \\
-		Marginal agent i2 & 0.779 (0.022) \\
+		Asset-Price p & 0.710 (0.006) \\
+		Bond-Price q & 0.379 (0.002) \\
+		Marginal Agent i1 & 0.586 (0.014) \\
+		Marginal Agent i2 & 0.779 (0.022) \\
 		\hline
-		Pessimist wealth & 1.666 (0.035) \\
-		Medianist wealth & 5.094 (0.109) \\
-		Optimist wealth & 4.501 (0.291) \\
+		Pessimist Wealth & 1.666 (0.035) \\
+		Medianist Wealth & 5.094 (0.109) \\
+		Optimist Wealth & 4.501 (0.291) \\
 		\hline
 	\end{tabular}
 \end{table} 
@@ -321,8 +321,8 @@ Note that in this case the matching-probabilities are such that upon the first f
 		\hline
 		Asset-Price p & 0.710 & 0.717 & -0.9\% \\
 		Bond-Price q & 0.379 & 0.375 & +1.0\% \\
-		Marginal agent i1 & 0.586 & 0.584 & +0.3\% \\
-		Marginal agent i2 & 0.779 & 0.802 & -2.8\% \\
+		Marginal Agent i1 & 0.586 & 0.584 & +0.3\% \\
+		Marginal Agent i2 & 0.779 & 0.802 & -2.8\% \\
 		\hline
 	\end{tabular}
 \end{table}
@@ -335,8 +335,8 @@ Note that in this case the matching-probabilities are such that upon the first f
 		\hline
 		Asset-Price p & 0.710 (0.006) & 0.717 (0.015) & -0.9\% (-60\%) \\
 		Bond-Price q & 0.379 (0.002) & 0.384 (0.001) & -1.3\% (+100.0\%) \\
-		Marginal agent i1 & 0.586 (0.014) & 0.603 (0.004) & -2.8\% (+250\%) \\
-		Marginal agent i2 & 0.779 (0.022) & 0.803 (0.004) & -2.9\% (+450\%) \\
+		Marginal Agent i1 & 0.586 (0.014) & 0.603 (0.004) & -2.8\% (+250\%) \\
+		Marginal Agent i2 & 0.779 (0.022) & 0.803 (0.004) & -2.9\% (+450\%) \\
 		\hline
 		Pessimist Wealth & 1.666 (0.035) & 1.646 (0.004) & +1.2\% (+775\%) \\
 		Medianist Wealth & 5.094 (0.109) & 4.736 (0.089) & +7.5\% (+22\%) \\
