@@ -19,14 +19,14 @@ Collateralized assets are traded against cash. The buyer gets a specific amount 
 As with all other three markets the price-ranges of the offers must be defined. Note that all prices must be obviously in the unit of cash according to the previously defined products.
 
 \paragraph{minimum}
-When calculating the minimum price of a collateralized asset - that is how much is the collateralized asset minimally worth - it is important to include the collateral-aspect of the asset. Thus one starts with the minimum asset-price in cash which is the down-price \textit{pD} and subtracts the minimum amount of cash which is bound through a bond as collateral which is \textit{pD}. This value is a constant for all agents.
+When calculating the minimum price of a collateralized asset - that is how much is the collateralized asset minimally worth - it is important to include the collateral-aspect of the asset. Thus one starts with the minimum Asset-Price in cash which is the down-price \textit{pD} and subtracts the minimum amount of cash which is bound through a bond as collateral which is \textit{pD}. This value is a constant for all agents.
 
 \begin{equation}
 min_{collateral} = \textit{pD} - \textit{pD} = 0
 \end{equation}
  
 \paragraph{maximum}
-To calculate the maximum price of a collateralized asset - that is how much is the collateralized asset maximally worth - one needs to include the collateral-aspect of the asset too. Equal to calculating the minimum one starts now with the maximum asset-price in cash which is the up-price \textit{pU} and subtracts the maximum possible amount of cash which is bound through a bond as collateral which is the face-value \textit{V}. This value is a constant for all agents.
+To calculate the maximum price of a collateralized asset - that is how much is the collateralized asset maximally worth - one needs to include the collateral-aspect of the asset too. Equal to calculating the minimum one starts now with the maximum Asset-Price in cash which is the up-price \textit{pU} and subtracts the maximum possible amount of cash which is bound through a bond as collateral which is the face-value \textit{V}. This value is a constant for all agents.
 
 \begin{equation}
 max_{collateral} = \textit{pU} - \textit{V}
@@ -36,11 +36,11 @@ max_{collateral} = \textit{pU} - \textit{V}
 Applying the same rules as in minimum and maximum to the limit price calculation one needs to subract the limit-price of bonds from the limit-price of asset to receive the limit-price of a collateralized asset. This value is individual for each agent as the limit-prices differ across the agents both for assets and bonds.
 
 \begin{equation}
-limit_{collateral} = limit_{asset} - limit_{loan}
+limit_{collateral} = limit_{asset} - limit_{bond}
 \end{equation}
 
 \subsection{Bid-Offering}
-The way bid-offers are generated is very similar to the Bond/Cash market. Bid offers are generated only when the agent has any cash holdings. The price is drawn randomly between the minimum price and the limit-price because when buying one wants to buy below the expected value to make a profit. As amount one TRADING-UNIT of an asset is selected - in the thesis-implementation 0.1 - but if there is not enough cash left to buy one TRADING-UNIT of assets then the amount of assets is selected which can be bought with the remaining cash holdings.
+The way bid-offers are generated is very similar to the Bond/Cash market. Bid offers are generated only when the agent has any cash holdings. The price is drawn randomly between the minimum price and the limit-price because when buying one wants to buy below the expected value to make a profit. As amount TRADING-UNIT of assets is selected but if there is not enough cash left to buy TRADING-UNIT of assets then the amount of assets is selected which can be bought with the remaining cash holdings.
 
 \begin{table}[H]
 	\centering
@@ -49,15 +49,14 @@ The way bid-offers are generated is very similar to the Bond/Cash market. Bid of
 		\hline
 		Pre-Condition & $\textit{cash holdings} > 0$  \\
 		Asset-Price & $\mathrm{random}(min_{collateral}, limit_{collateral})$ \\
-		Asset-Amount & $\min ( \frac{ \textit{cash holdings} }{ \textit{asset-price} }, \textit{TRADING-UNIT} )$ \\
+		Asset-Amount & $\min ( \frac{ \textit{cash holdings} }{ \textit{Asset-Price} }, \textit{TRADING-UNIT} )$ \\
 		\hline
 	\end{tabular}
 \end{table}
 
 
 \subsection{Ask-Offering}
-The way ask-offers are generated is very similar to the Bond/Cash market. Ask offers are generated only when the agent has any collateralized assets. The price is drawn randomly between the limit-price and maximum price because when selling one wants to sell above the expected value to make a profit. As amount one TRADING-UNIT of an asset is selected - in the thesis-implementation 0.1 - but if there are fewer collateralized assets left then the remaining amount of collateral is selected.
-See chapter \ref{ch:implementation} for the equation of the amount of collateralized assets.
+The way ask-offers are generated is very similar to the Bond/Cash market. Ask offers are generated only when the agent has any collateralized assets. The price is drawn randomly between the limit-price and maximum price because when selling one wants to sell above the expected value to make a profit. As amount TRADING-UNIT of assets is selected but if there are fewer collateralized assets left then the remaining amount of collateral is selected. See chapter \ref{ch:implementation} for the equation of the amount of collateralized assets.
 
 \begin{table}[H]
 	\centering
@@ -65,7 +64,7 @@ See chapter \ref{ch:implementation} for the equation of the amount of collateral
 	\begin{tabular} { l c r }
 		\hline
 		Pre-Condition & $\textit{collateral} > 0$  \\
-		Asset-Price & $\mathrm{random}(\textit{limit-price of coll. asset}, \textit{max coll. asset-price})$ \\
+		Asset-Price & $\mathrm{random}(limit_{collateral}, max_{collateral})$ \\
 		Asset-Amount & $\min ( { \textit{collateralized assets} }, \textit{TRADING-UNIT} )$ \\
 		\hline
 	\end{tabular}
@@ -126,14 +125,14 @@ As experiment-configuration the same is used as given in chapter \ref{ch:results
 	\centering
 	\begin{tabular} { l c r }
 		\hline
-		Asset-price p & 0.718 (0.016) \\
-		Bond-price q & 0.383 (0.000) \\
-		Marginal agent i1 & 0.603 (0.003) \\
-		Marginal agent i2 & 0.812 (0.000) \\
+		Asset-Price p & 0.718 (0.016) \\
+		Bond-Price q & 0.383 (0.000) \\
+		Marginal Agent i1 & 0.603 (0.003) \\
+		Marginal Agent i2 & 0.812 (0.000) \\
 		\hline
-		Pessimist wealth & 1.640 (0.002) \\
-		Medianist wealth & 4.808 (0.074) \\
-		Optimist wealth & 5.171 (0.023) \\
+		Pessimist Wealth & 1.640 (0.002) \\
+		Medianist Wealth & 4.808 (0.074) \\
+		Optimist Wealth & 5.171 (0.023) \\
 		\hline
 	\end{tabular}
 \end{table} 
@@ -198,14 +197,14 @@ As experiment-configuration the same is used as given in chapter \ref{ch:results
 	\centering
 	\begin{tabular} { l c r }
 		\hline
-		Asset-price p & 0.729 (0.004) \\
-		Bond-price q & 0.380 (0.001) \\
-		Marginal agent i1 & 0.594 (0.001) \\
-		Marginal agent i2 & 0.792 (0.000) \\
+		Asset-Price p & 0.729 (0.004) \\
+		Bond-Price q & 0.380 (0.001) \\
+		Marginal Agent i1 & 0.594 (0.001) \\
+		Marginal Agent i2 & 0.792 (0.000) \\
 		\hline
-		Pessimist wealth & 1.647 (0.003) \\
-		Medianist wealth & 4.999 (0.032) \\
-		Optimist wealth & 4.581 (0.013) \\
+		Pessimist Wealth & 1.647 (0.003) \\
+		Medianist Wealth & 4.999 (0.032) \\
+		Optimist Wealth & 4.581 (0.013) \\
 		\hline
 	\end{tabular}
 \end{table} 
@@ -267,7 +266,7 @@ When interpreting the results the following questions must be answered:
 \end{itemize}
 
 \paragraph{Does the Fully-Connected topology reach the theoretical equilibrium as well with Collateral/Cash market enabled?}
-Yes it does. Both visual and statistical results show that it reaches the theoretical equilibrium. The medianist wealth is slightly higher with the new market but that difference, as well as the variations in the other variables are not statistically significant.
+Yes it does. Both visual and statistical results show that it reaches the theoretical equilibrium. The Medianist wealth is slightly higher with the new market but that difference, as well as the variations in the other variables are not statistically significant.
 
 \paragraph{Does the new market repair the miss-allocation of wealth in the pessimists-range of the Ascending-Connected topology?}
 Yes it does. The visual results are clear with no miss-allocations showing up within 50 replications. If there would have been miss-allocations within any replication they would have shown up in the final result.
@@ -490,6 +489,6 @@ This can be seen clearly in the market-activity diagrams.
 They have less share on the overall activity and thus the new market is quite a heavy competitor in the overall share. The Asset/Bond market though is still the market on which the final trades occur.
 
 \section{Conclusions on new Market}
-The equilibrium of the Ascending-Connected topology with the new market is different than the Fully-Connected one which reaches the theoretical equilibrium. Thus the property of the hypothesis is still not sufficient because it predicted the Ascending-Connected topology to reach the theoretical equilibrium. This thesis can only speculate on the reason for this it is most probably rooted in the fundamental different trading dynamics of Ascending-Connected topology compared to Fully-Connected as can be seen in the market-dynamics. This thesis leaves the question of market-dynamics open for further research.
+The equilibrium of the Ascending-Connected topology with the new market is different than the Fully-Connected one which reaches the theoretical equilibrium. Thus the property of the hypothesis is still not sufficient because it predicted the Ascending-Connected topology to reach the theoretical equilibrium. This thesis can only speculate on the reason for this but it is most probably rooted in the fundamental different trading dynamics of Ascending-Connected topology compared to Fully-Connected as can be seen in the market-dynamics. This thesis leaves the question of market-dynamics open for further research.
 
 \end{document}
