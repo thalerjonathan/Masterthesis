@@ -17,7 +17,7 @@ The motivation behind the hypothesis is the fact that according to the double-au
 
 \medskip
 
-In figure \ref{fig:MATCHING_BUYER_SELLER_RANGES} the price-ranges of both a seller and buyer are given where limit(s) and limit(b) denote the limit-price of the seller and buyer respectively which are determined by their optimism-factor \textit{h}. The seller places its offerings in the price-range of [limit(s)..pU] as it wants to sell the good above the expected price to make a profit. The buyer places its offerings in the price-range of [pD..limit(b)] as it wants to buy the goods below the expected price to make a profit. The resulting matching-range on which the prices can meet - again buyer-price $\geq$ seller-price - is marked by the red rectangle. It is easy to see that a match with these mechanics can occur only if the optimism-factor of the buyer limit(b) is strictly higher than the one of the seller limit(s).
+In figure \ref{fig:MATCHING_BUYER_SELLER_RANGES} the price-ranges of both a seller and buyer are given where limit(s) and limit(b) denote the limit-price of the seller and buyer respectively, which are determined by their optimism-factor \textit{h}. The seller places its offerings in the price-range of [limit(s)..pU] as it wants to sell the goods above the expected price to make a profit. The buyer places its offerings in the price-range of [pD..limit(b)] as it wants to buy the goods below the expected price to make a profit. The resulting matching-range on which the prices can meet - again buyer-price $\geq$ seller-price - is marked by the red rectangle. It is easy to see that a match with these mechanics can occur only if the optimism-factor of the buyer limit(b) is strictly higher than the one of the seller limit(s).
 
 \begin{figure}[H]
 	\centering
@@ -27,7 +27,7 @@ In figure \ref{fig:MATCHING_BUYER_SELLER_RANGES} the price-ranges of both a sell
 \end{figure}
 
 \section{Proof buyer more optimistic than seller}
-Proofing that the optimism of a buyer must be greater or equal than the optimism of the seller $h_B \geq h_S$ by using that the limit-price of the buyer must be greater or equal the limit-price of the seller $limit_B \geq limit_S$ and then showing that this can only be the case if $h_B \geq h_S$.
+Proving that the optimism of a buyer must be greater than or equal to the optimism of the seller $h_B \geq h_S$ by using the fact that the limit-price of the buyer must be greater than or equal to the limit-price of the seller $limit_B \geq limit_S$ and then showing that this can only be the case if $h_B \geq h_S$.
 
 \subsection{Asset/Cash}
 $limit_B = h_B \, pU + (1-h_B) \, pD = h_B + \frac{1}{5} - \frac{h_B}{5}$ \\
@@ -90,7 +90,7 @@ $limit_S = \frac{h_S + \frac{1}{5} - \frac{h_S}{5}}{h_S \, V + \frac{1}{5} - \fr
 \end{proof}
 
 \section{Proof of monotony of limit-functions}
-The property that the optimism-factor of the buyer has to be larger or equal to the one of the seller is not enough for a match to occur. Additionally the limit-function must be monotony increasing in the defined range [0..1] of the optimism-factor \textit{h} because if it is not then no matching would be possible. It is proofed by showing that $limit' > 0$ in the range of \textit{h} = [0..1].
+The property that the optimism-factor of the buyer has to be greater than or equal to the one of the seller is not enough for a match to occur. Additionally the limit-function must be monotonically increasing in the defined range [0..1] of the optimism-factor \textit{h} because if it is not then no matching would be possible. It is proven by showing that $limit' > 0$ in the range of \textit{h} = [0..1].
 
 \subsection{Asset/Cash market}
 \begin{proof}
@@ -101,7 +101,7 @@ The property that the optimism-factor of the buyer has to be larger or equal to 
 	\\ = 1 - \frac{1}{5}
 		&= \frac{4}{5}
 \end{align*}
-Constant $\Rightarrow$ limit-function is monotony increasing over the real numbers. QED
+Constant $\Rightarrow$ limit-function is monotonically increasing over the real numbers. QED
 \end{proof}
 
 \subsection{Bond/Cash market}
@@ -112,7 +112,7 @@ Constant $\Rightarrow$ limit-function is monotony increasing over the real numbe
 	\\ = h \, V + pD - h\,pD		\tag*{$\frac{\mathrm d}{\mathrm d h}$}
 	\\ = V - pD
 \end{align*}
-V is a constant in range of [0..1] $\Rightarrow$ limit-function is monotony increasing were $V > pD$. QED
+V is a constant in range of [0..1] $\Rightarrow$ limit-function is monotonically increasing were $V > pD$. QED
 \end{proof}
 
 Note that this implies that a bond with face-value \textit{V = pD} cannot be traded as the limit-function is constant for all \textit{h}. This needs to be covered in the implementation.
@@ -149,7 +149,7 @@ If and only if for all agents exists a path between two agents in which each vis
 In this section it is proven that the given property is \textit{necessary} to reach theoretical equilibrium but it is open to question whether it is \textit{sufficient} or not. This will be investigated by computer-simulation.
 
 \subsection{Most minimal topology satisfying hypothesis}
-As proven above the buyer optimism must be larger than the seller optimism. Each agent acts both as a buyer and a seller thus the optimism-factor \textit{h} is creating a total ordering on the agents where $h_i \leq h_{i+1}$. When now the agent with $h_i$ is connected to $h_{i+1}$ a Hamiltonian path is created which is per definition a spanning tree because it visits each vertex exactly once. If we now assign to each edge the weight of 1 it is clear to see that this graph must also be the minimal spanning tree. An example for such a graph is the Ascending-Connected topology - see appendix \ref{app:topologies} - which is the major network of interest in this thesis (besides the fully-connected one) as it is the most minimal topology which satisfies the property of the hypothesis.
+As proven above the buyer optimism must be larger than the seller optimism. Each agent acts both as a buyer and a seller thus the optimism-factor \textit{h} is creating a total ordering on the agents where $h_i \leq h_{i+1}$. When now the agent with $h_i$ is connected to $h_{i+1}$ a Hamiltonian path is created which is per definition a spanning tree because it visits each vertex exactly once. If we now assign to each edge the weight of 1, it is clear to see that this graph must also be the minimal spanning tree. An example for such a graph is the Ascending-Connected topology - see appendix \ref{app:topologies} - which is the major network of interest in this thesis (besides the fully-connected one) as it is the most minimal topology which satisfies the property of the hypothesis.
 
 \begin{figure}[H]
 	\centering
@@ -159,11 +159,11 @@ As proven above the buyer optimism must be larger than the seller optimism. Each
 \end{figure}
 
 \subsection{Violation of property}
-To show that the property of the hypothesis is necessary to reach equilibrium it is now shown that a violation of the property must lead to a miss-allocation because of inability to trade and thus missing equilibrium.
+To show that the property of the hypothesis is necessary to reach equilibrium it is now shown that a violation of the property must lead to a miss-allocation because of inability to trade, thus missing equilibrium.
 
 \medskip
 
-A failure in reaching equilibrium is equivalent in miss-allocation of goods to agents which don't value the good as much as others would. Trading with another agent could lead to an increased utility of both agents but trading is impossible due to a violation of the property through an invalid network. To see when and how miss-allocations could occur one must investigate the flow-direction of goods.
+A failure in reaching equilibrium is equivalent in miss-allocation of goods to agents who don't value the goods as much as others would. Trading with another agent could lead to an increased utility of both agents but trading is impossible due to a violation of the property through an invalid network. To see when and how miss-allocations could occur one must investigate the flow-direction of goods.
 
 \paragraph{Asset/Cash} In this market the buyer $h_{i+1}$ gets assets and gives cash to the seller $h_i$. Thus the flow is as follows:
 \begin{center}
@@ -203,7 +203,7 @@ There are basically 3 violations possible within the most minimal network. Note 
 In figure \ref{fig:OPTIMISM_VIOLATION_SELLER} the seller $h_{i+1}$ is unable to sell to $h_i$ because of the lower optimism-factor and is unable to sell to $h_{i+2}$ obviously because of a non-existent connection. Depending on whether this violation happens in the pessimists, medianists or optimists different miss-allocations will happen.
 
 \begin{itemize}
-\item Asset/Cash - $h_{i+1}$ buys assets against cash but cannot sell them further up to $h_{i+2}$ because of the missing link. This is a problem in the range of pessimists as they try to get minimal on assets and maximal on cash. For medianists this is a problem too as they also try to get minimal on assets but maximal on bonds. Optimists try to get as much assets as possible thus no miss-allocation will show up there.
+\item Asset/Cash - $h_{i+1}$ buys assets against cash but cannot sell them further up to $h_{i+2}$ because of the missing link. This is a problem in the range of pessimists as they try to get minimal on assets and maximal on cash. For medianists this is a problem too as they also try to get minimal on assets but maximal on bonds. Optimists try to get as many assets as possible thus no miss-allocation will show up there.
 \item Bond/Cash market - $h_{i+1}$ buys bonds but cannot sell them further up to $h_{i+2}$ because of the missing link. This is a problem in the range of pessimists as they try to get minimal on bonds but maximal on assets. This is also a problem in the range of optimimsts.
 \item Asset/Bond market - $h_{i+1}$ buys assets against bonds but cannot sell them further up to $h_{i+2}$ because of the missing link. This is a problem in the range of pessimists and medianists as they try to get maximally short on assets.
 \end{itemize}
@@ -215,7 +215,7 @@ In figure \ref{fig:OPTIMISM_VIOLATION_SELLER} the seller $h_{i+1}$ is unable to 
 	\label{fig:OPTIMISM_VIOLATION_BUYER}
 \end{figure}
 
-In figure \ref{fig:OPTIMISM_VIOLATION_BUYER} the buyer $h_{i+2}$ is unable to buy from $h_{i+1}$ because of a non-existent connection. Depending on whether this violation happens in the pessimists, medianists or optimists different things happen.
+In figure \ref{fig:OPTIMISM_VIOLATION_BUYER} the buyer $h_{i+2}$ is unable to buy from $h_{i+1}$ because of a non-existent connection. Depending on whether this violation happens in the pessimists, medianists or optimists different miss-allocations happen.
 
 \begin{itemize}
 \item Asset/Cash - $h_{i+2}$ sells assets up to $h_{i+3}$ transforming to cash but can't use the cash to buy goods because of the missing link to seller $h_{i+1}$. This is a problem in the range of optimists as they try to maximise their assets and minimize their cash. Its also a problem in the range of medianists as they try to maximise their bonds and minimize their cash. Pessimists try to sell all assets and get as much cash as possible thus no miss-allocation will show up there.
@@ -247,6 +247,6 @@ If the hypothesis is valid and the property is sufficient these topologies will 
 
 \medskip
 
-See chapter \ref{ch:results} and \ref{ch:interpretation} whether the property is sufficient or not. 
+See chapter \ref{ch:results} and \ref{ch:interpretation} where it is explained whether the property is sufficient or not. 
 
 \end{document}

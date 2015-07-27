@@ -9,7 +9,7 @@
 For this thesis a software was written to be able to investigate the behaviour and results of the different types of networks and get visual and numerical results to be embedded in this written text. In this chapter the implementation-details of the software are discussed.
 
 \section{Requirements}
-The author of this thesis had access to the software of \cite{Breuer2015} which was written in C++ therefore the question is why a new software had to be written and why not the original could be used. The reason for it was that the original software supported only a very narrow feature-set focusing only on the numerical results of a fully-connected network. Thus a complete redevelopment in Java was the option used. The following requirements were identified:
+The author of this thesis had access to the software of \cite{Breuer2015} which was written in C++ therefore the question is why a new software had to be written and why the original could not be used. The reason for it was that the original software supported only a very narrow feature-set focusing only on the numerical results of a fully-connected network. Thus a complete redevelopment in Java was the option used. The following requirements were identified:
 
 \begin{itemize}
 \item Java based.
@@ -23,8 +23,8 @@ The author of this thesis had access to the software of \cite{Breuer2015} which 
 \end{itemize}
 
 \paragraph{Java based}
-The original software was written in C++ which offers very much power and highest speed if used correctly but comes with a very high responsibility regarding memory-management. Java offers a much more relaxed programming model regarding memory-management as it is garbage collected. This does not mean that the programmer can waste memory without giving thought to it but that one has not to put so much emphasis into it thus debugging is easier.
-The most compelling argument for Java are the vast libraries which are included in the JDK which are missing in standard C++. As complete GUI-functionality for the whole software is a requirement Java is the way to go. Although multi-purpose libraries like Boost and GUI-frameworks like Qt are available for C++, it takes quite some time to set them up correctly for the target platform one develops for which implies that in C++ the development would always have been for just one platform whereas Java runs on every platform without recompilation - if no platform-dependent stuff was used. As one will see later in the "Command-line mode"-Feature this is a major requirement to make this feature practical. Thus the reasons for using Java were:
+The original software was written in C++ which is very powerful and provides the highest speed if used correctly but comes with a very high responsibility regarding memory-management. Java offers a much more relaxed programming model regarding memory-management as it is garbage collected. This does not mean that the programmer can waste memory without giving thought to it but that one has not to put so much emphasis into it thus debugging is easier.
+The most compelling argument for Java are the vast libraries which are included in the JDK which are missing in standard C++. As complete GUI-functionality for the whole software is a requirement Java is the way to go. Although multi-purpose libraries like Boost and GUI-frameworks like Qt are available for C++, it takes quite some time to set them up correctly for the target platform one develops for which implies that in C++ the development would always have been for just one platform whereas Java runs on every platform without recompilation - if no platform-dependent stuff was used. As one will see later in the command-line mode feature this is a major requirement to make it practical. Thus the reasons for using Java were:
 
 \begin{itemize}
 \item Platform-independence which applies to 3rd party libraries too.
@@ -41,47 +41,47 @@ All functionality should be accessible through a GUI where some features e.g. "I
 Of course the whole software should be a super-set of the functionality of the one found in \cite{Breuer2015} so this was the point to start from.
 
 \paragraph{Arbitrary networks}
-It should be possible to restrict trading between the agents to arbitrary networks. As network-modelling and -visualization library JUNG is used.
+It should be possible to restrict trading between the agents to arbitrary networks. As network-modelling and visualization library JUNG is used.
 
 \paragraph{Step-through simulation}
-The software should support to go through a simulation-run step-by-step and storing all steps of the simulation to jump back and forth between steps.
+The software should support going through a simulation-run step-by-step and storing all steps of the simulation in order to jump back and forth between them.
 
 \paragraph{Real-time visualisation and information}
-The original C++ software didn't provide real-time information about the current wealth-distribution and market-dynamics and provided the user just with the numerical results in the end through the means of a command-line output. For better understanding of dynamics of both wealth and markets a real-time visualisation of both are necessary together with extensive information on the current state like the offering-book, agent-information, network-activity, history of matches and the current equilibrium. Also the real-time visualisation is necessary to provide this written part of the thesis with diagrams of various results and processes.
+The original C++ software didn't provide real-time information about the current wealth-distribution and market-dynamics and provided the user just with the numerical results in the end through the means of a command-line output. For better understanding of dynamics of both wealth and markets a real-time visualisation of both are necessary together with extensive information on the current state like the offering-book, agent-information, network-activity, history of matches and the current equilibrium. Also the real-time visualization is necessary to provide this written part of the thesis with diagrams of various results and processes.
 
 \paragraph{Replications}
-Because the whole trading-process includes randomness the results are subject to noise thus replications are an absolute must-have feature to be able to give reliable results. Each replication is data-independent from all others thus it is a candidate for parallel programming to speed up the already very time-consuming process of running replications. According to the number of CPU-cores the software should spawn threads up to the number of cores and run replications in parallel thus speeding up by a considerable amount of time.
+Because the whole trading-process includes randomness, the results are subject to noise thus replications are an absolute must-have feature in order to give reliable results. Each replication is data-independent from all others thus it is a candidate for parallel programming to speed up the already very time-consuming process of running replications. According to the number of CPU-cores the software should spawn threads up to the number of cores and run replications in parallel thus speeding up by a considerable amount of time.
 
 \paragraph{Store results}
 When running a bunch of replications for a given set-up the results of it should be automatically stored as XML to be accessible for later inspection thus conserving state and eliminating the necessity to re-run time-consuming simulation-runs with a high number of replications.
 
 \paragraph{Command-line mode}
-As already described replications are required to be implemented for parallel processing where up to the number of CPU-cores replications can run in parallel. When running a vast number of replications one does not need to GUI-functionality and most probably the machine is so occupied by the heavy work-load that a smooth usage of GUI would be not possible any-more. Thus replications should be runnable through a separate command-line mode of the thesis-software which reads information from a XML-File in which one can specify multiple simulation set-ups for which replications should be run. The command-line mode iterates through all configurations and runs the required replications and writes the result out for a later inspection. Obviously the more CPU-cores the faster a simulation-run with e.g. 50 replications finishes. For this reason most of the final replication-runs were done on a 40-core machine of the FH Vorarlberg which runs on Linux on which the thesis-software runs without recompilation due to Java's platform-independence.
+As already described replications are required to be implemented for parallel processing where up to the number of CPU-cores replications can run in parallel. When running a vast number of replications one does not need GUI-functionality and most probably the machine is so occupied by the heavy work-load that a smooth usage of GUI would not be possible anymore. Thus replications should be runnable through a separate command-line mode of the thesis-software which reads information from a XML-File in which one can specify multiple simulation set-ups for which replications should be run. The command-line mode iterates through all configurations, runs the required replications and writes the result out for later inspection. Obviously the more CPU-cores the faster a simulation-run with e.g. 50 replications finishes. For this reason most of the final replication-runs were done on a 40-core machine of the FH Vorarlberg which runs on Linux on which the thesis-software runs without recompilation due to Java's platform-independence.
 
 \section{Functionality}
-In this section the functionality of the thesis-software is explained to get an understanding of the implemented features. All features are available through the GUI unless stated otherwise. For inspection, replications and experimenter an individual tab is available inside the main window so they can be used in parallel. The features were implemented in combination with emulating the functionality of the model introduced in chapter \ref{ch:leverageCycle} thus this thesis-software is a super-set of the software used in \cite{Breuer2015}.
+In this section the functionality of the thesis-software is explained to get an understanding of the implemented features. All features are available through the GUI unless stated otherwise. For inspection, replications and experiments an individual tab is available inside the main window so they can be used in parallel. The features were implemented in combination with emulating the functionality of the model introduced in chapter \ref{ch:leverageCycle} thus this thesis-software is a super-set of the software used in \cite{Breuer2015}.
 
 \subsection{Inspection}
-Inspection allows for a given simulation-configuration to step through the whole process match-by-match, keep track of the successful matches and the wealth-distribution of the agents at this time and to jump back to each successful match. Through an offer-book the state and current offerings of all agents at a given time of the simulation (including past successful matches) can be inspected and compared by opening multiple offer-book windows. Furthermore this feature provides the user with statistics of successful, failed and total matches and the current equilibrium. Very much attention was paid to the implementation of the real-time visualisation of the agents wealth-distribution and the market-activities as visualisation is of very importance for a successful inspection and interpretation of a dynamic process. To be able to compare the visual results of 2 different simulation-configurations there exist 2 "Inspection" tabs in the main window.
+Inspection allows for a given simulation-configuration to step through the whole process match-by-match, keep track of the successful matches and the wealth-distribution of the agents at this time and to jump back to each successful match. Through an offer-book the state and current offerings of all agents at a given time of the simulation (including past successful matches) can be inspected and compared by opening multiple offer-book windows. Furthermore this feature provides the user with statistics of successful, failed and total matches and the current equilibrium. A great deal of attention was paid to the implementation of the real-time visualization of the agents wealth-distribution and the market-activities as visualization is of great importance for a successful inspection and interpretation of a dynamic process. To be able to compare the visual results of 2 different simulation-configurations there exist 2 "Inspection" tabs in the main window.
 
 \subsection{Networks}
-This functionality allows to model different kind of network-topologies as described in appendix \ref{app:topologies} to restrict trading only to this kind of neighbourhood. Obviously network-topologies are graphs and thus it would have been required to implement a graph-library but that was not implemented self but the graph-library JUNG was used as it supported all the required features like visualisation, neighbourhood- and path-queries.
+This functionality allows the modelling of different kinds of network-topologies as described in appendix \ref{app:topologies} to restrict trading only to this kind of neighbourhood. Obviously network-topologies are graphs and thus it would have been required to implement a graph-library but that was not implemented. Instead the graph-library JUNG was used as it supported all the required features like visualisation, neighbourhood- and path-queries.
 
 \subsection{Replications}
 \label{sec:REPLICATIONS}
-To get robust results replications are used to reduce the influence of random noise. This feature allows to let run a specific simulation configuration for a given number of replications in parallel. The specific simulation-configuration serves as a template - especially the network-topology - and each replication does a clone of the network together with the agents to be able to run in parallel without the need of synchronization. It was tried to implement the network as a shared network between all replications but because the agents serve as nodes this was not feasible and would have required a very fundamental re-factoring of already existing functionality. Thus the higher requirements in memory and time for cloning was accepted for a more elegant solution.
-When replications are processed running ones can be inspected and information can be queried using the GUI. It is possible to cancel one replication, cancel a whole task which reduces thread-load, inspect wealth-distribution, see the failed and successful matches and statistics of already finished replications. Whenever a replication is finished it is added to the pool of results and the median result is re-calculated and visualized and informations updated. When all replications have finished the results are written to a new XML-file in the results-folder of the software. This result-file can be opened using the experiments-feature which is described next. A simulation-configuration can be saved as a separate new experiment-file or added to an existing experiment-file - see next section for experiments.
+To get robust results replications are used to reduce the influence of random noise. This feature allows a specific simulation configuration for a given number of replications to be run in parallel. The specific simulation-configuration serves as a template - especially the network-topology - and each replication does a clone of the network together with the agents to be able to run in parallel without the need of synchronization. An attempt was made to implement the network as a shared network between all replications but because the agents serve as nodes this was not feasible and would have required a very fundamental re-factoring of already existing functionality. Thus the higher requirements in memory and time for cloning was accepted for a more elegant solution.
+When replications are processed, running ones can be inspected and information can be queried using the GUI. It is possible to cancel one replication, cancel a whole task which reduces thread-load, inspect wealth-distribution, see the failed and successful matches and statistics of already finished replications. Whenever a replication is finished it is added to the pool of results and the median result is re-calculated and visualized and informations updated. When all replications have finished the results are written to a new XML-file in the results-folder of the software. This result-file can be opened using the experiments-feature which is described below. A simulation-configuration can be saved as a separate new experiment-file or added to an existing experiment-file - see the next section for experiments.
 
 \subsection{Experiments}
-The experiments-feature allows to open experiment-files and result-files of replication- and experiment-runs. An experiment-file is just a collection of simulation-configurations to be run for a given number of replications. When an experiment-file is opened all simulation-configurations are displayed in a list and each of them can be opened in a new replication-tab which in turn can be run as explained in section "Replications". To be able to conveniently run all simulation-configurations of an experiment-file without needing user-interaction a command-line feature was implemented.
+The experiments-feature allows the opening of experiment-files and result-files of replication- and experiment-runs. An experiment-file is just a collection of simulation-configurations to be run for a given number of replications. When an experiment-file is opened all simulation-configurations are displayed in a list and each of them can be opened in a new replication-tab which in turn can be run as explained in the section \ref{sec:REPLICATIONS}. To be able to conveniently run all simulation-configurations of an experiment-file without needing user-interaction, a command-line feature was implemented.
 
 \medskip
 
 Each replication-run of a given simulation-configuration in the experiment-file produces a result-file with the name provided in the configuration. These result-files are dubbed result-files of experiment-runs as previously stated but are the same as the result-file of a replication-run as discussed in the section \ref{sec:REPLICATIONS}.
-When opening a result-file a new tab is added to the main-window and the statistics of the run together with equilibrium-statistics are displayed. Furthermore the wealth-distribution and market-activities are visualized and it is possible to view the statistics of each individual replication. Furthermore the user can display the network-topology used for this simulation-configuration which is important as random networks are different when created new.
+When opening a result-file a new tab is added to the main-window and the statistics of the run together with equilibrium-statistics are displayed. Furthermore the wealth-distribution and market-activities are visualized and it is possible to view the statistics of each individual replication. Furthermore the user can display the network-topology used for this simulation-configuration which is important as random networks are different when newly created.
 
 \subsection{Result-file}
-Because an experiment-run can take a lot of time to save the results for later investigation all necessary data is automatically stored as XML in a result-file when a replication has finished. Note that an experiment will thus write the result-file multiple times if it has multiple replications. It contains the following information:
+Because an experiment-run can take a lot of time to save the results for later investigation, all necessary data is automatically stored as XML in a result-file when a replication has finished. Note that an experiment will thus write the result-file multiple times if it has multiple replications. It contains the following information:
 
 \begin{itemize}
 \item Agents wealth-distribution - mean of final wealth-distribution of all agents over all replications.
@@ -96,33 +96,33 @@ Because an experiment-run can take a lot of time to save the results for later i
 \end{itemize}
 
 \section{Architecture}
-In this section the basic architecture of the thesis-software is discussed. It is important to note that this thesis is a fat-client and has its major emphasis not on the software-development aspect but on the visual- and numerical results where the accompanying software is just a tool for the means to calculate theses required results. Thus the architecture is guided by a simple division of layers into front-end, controller and back-end. The front-end is responsible for input and output of the user through GUI or command-line. The controller-layer provides encapsulated chunks of functionality of the back-end to the front-end. It is necessary to abstract, encapsulate and combine the stateful nature of communication with the back-end into a separate layer instead of polluting the front-end with it and creating unnecessary dependencies. The back-end layer provides the functionality where the real work is done e.g. simulation is executed.
+In this section the basic architecture of the thesis-software is discussed. It is important to note that this thesis is a fat-client and has its major emphasis not on the software-development aspect but on the visual- and numerical results where the accompanying software is just a tool for the means to calculate the required results. Thus the architecture is guided by a simple division of layers into front-end, controller and back-end. The front-end is responsible for input and output of the user through GUI or command-line. The controller-layer provides encapsulated chunks of functionality of the back-end to the front-end. It is necessary to abstract, encapsulate and combine the stateful nature of communication with the back-end into a separate layer instead of polluting the front-end with it and creating unnecessary dependencies. The back-end layer provides the functionality where the real work is done e.g. simulation is executed.
 \medskip
-Theoretically the dependencies are top-down where the front-end includes only controller-functionality, the controller includes only back-end functionality and the back-end has no dependencies to the preceding layers. In this thesis-software a more pragmatic approach was chosen so this dogma was not followed where over-engineering and over-complication would have resulted when sticking strictly to the separation of dependencies. Thus in very few cases the controller- and back-end layer include front-end layer functionality to create different types of network topologies in a more convenient way. Also the front-end accesses instances of pure back-end classes for graphical visualisation and information purposes. Despite the seemingly flawed architecture the development-process has proven to be very smooth and expansions and refactorings went quite smoothly and always resulted in a better and clearer structure with reduced code-smell which is always a sign for a good architecture.
+Theoretically the dependencies are top-down where the front-end includes only controller-functionality, the controller includes only back-end functionality and the back-end has no dependencies to the preceding layers. In this thesis-software a more pragmatic approach was chosen so this dogma was not followed where over-engineering and over-complication would have resulted when sticking strictly to the separation of dependencies. Thus in very few cases the controller- and back-end layer include front-end layer functionality to create different types of network topologies in a more convenient way. Also the front-end accesses instances of pure back-end classes for graphical visualization and information purposes. Despite the seemingly flawed architecture the development-process has proven to be very smooth - expansions and refactorings went quite smoothly and always resulted in a better and clearer structure with reduced code-smell which is always a sign for a good architecture.
 
 \begin{figure}[H]
 	\centering
   \includegraphics[width=1.0\textwidth, angle=0]{PACKAGE_DIAGRAM_MINIMAL.png}
-	\caption{Package-diagram with most important classes and dependencies illustrating the architecture. (Note that the software contains many more classes and dependencies which are omitted for clarity reasons as this diagram should provide only a basic overview and would contain by far too much information if everything would have been included.)}
+	\caption{Package-diagram with most important classes and dependencies illustrating the architecture. (Note that the software contains many more classes and dependencies which are omitted for clarity reasons as this diagram should provide only a basic overview and would contain far too much information if everything would have been included.)}
 	\label{fig:PACKAGE_DIAGRAM_MINIMAL}
 \end{figure}
 
 \subsection{Frontend}
-The front-end contains the GUI functionality through which the user interacts with the program and the real-time visualisation of wealth-distribution and market-activity. Because data like the offer-book, agent/replication/equilibrium-information and network-visualization is required in different contexts much emphasis was put on massive re-use of GUI components through the use of sub-classing and aggregation already provided by SWING. Thus many small components were implemented and aggregated together to create bigger chunks of logical functionality. In the package-diagram \ref{fig:PACKAGE_DIAGRAM_MINIMAL} only the most important panels are shown. Those provide the main entry-point for the user to the given functionality as indicated by their names.
+The front-end contains the GUI functionality through which the user interacts with the program and the real-time visualization of wealth-distribution and market-activity. Because data like the offer-book, agent/replication/equilibrium-information and network-visualization is required in different contexts, much emphasis was put on massive re-use of GUI components through the use of sub-classing and aggregation already provided by SWING. Thus many small components were implemented and aggregated together to create bigger chunks of logical functionality. In the package-diagram \ref{fig:PACKAGE_DIAGRAM_MINIMAL} only the most important panels are shown. Those provide the main entry-point for the user to the given functionality as indicated by their names.
 
 \begin{itemize}
 \item InspectionPanel - Is the entry-point for the inspection-functionality. There exist 2 instances during run-time to be able to compare two inspection-runs.
 \item ReplicationPanel - Is the entry-point for the replication-functionality.
 \item ExperimentsPanel - Is the entry-point for the experiments-functionality. Results of replications and experiment-files can be loaded there.
 \item AgentInfoFrame - Displays the information of agents: current wealth, optimism and its price-ranges.
-\item OfferBook - Is only available in the inspection-functionality and allows to inspect the current offerings of each agent on all markets and the agent-information of each agent the same way as in \textit{AgentInfoFrame}. Multiple instances can be created simultaneously by the user to compare the data of multiple agents.
+\item OfferBook - Is only available in the inspection-functionality and allows inspection of the current offerings of each agent on all markets and the agent-information of each agent the same way as in \textit{AgentInfoFrame}. Multiple instances can be created simultaneously by the user to compare the data of multiple agents.
 \end{itemize}
 
 \subsection{Controller}
 The controller package is rather slim and contains the steering functionality to drive inspections, replications and experiments. 
 
 \begin{itemize}
-\item InspectionThread - Inspections are driven by this class which allows to advance the simulation step-by-step using the consumer-producer paradigm through lock and wait functionality provided by Java through the use of its monitors.
+\item InspectionThread - Inspections are driven by this class which allows the advancement of the simulation step-by-step using the consumer-producer paradigm through lock and wait functionality provided by Java through the use of its monitors.
 \item ReplicationsRunner and ReplicationTask - These classes encapsulate functionality to run a number of replications for a given simulation-configuration in parallel, calculating the current median for all important values on-line and writing results to xml-files.
 \item ExperimentCMDRunner - Experiments are executed from the command-line through the use of this class where it cycles through all simulation-configurations of a experiment-configuration and uses \textit{ReplicationsRunner} to execute it in parallel. 
 \end{itemize}
@@ -135,13 +135,13 @@ The back-end contains the domain-specific functionality for the simulation. The 
 \item Agent - encapsulates the functionality and state necessary for the agents in the simulation. See section \ref{sec:AGENTS} for a more in-depth discussion.
 \item AgentNetwork - holds the connections between the agents and provides functionality to query neighbourhood, paths and connections between agents and random and sequential in-order iterators over all agents.
 \item Offering - encapsulates the data necessary for offerings where there are two subclasses \textit{BidOffering} and \textit{AskOffering} to differentiate between the two types of offerings. See the section \ref{sec:MARKETS} on details of offerings.
-\item Match - provides the functionality to create a match out of given offers and returning an instance of \textit{Match} through a factory-method. The \textit{Match} instance holds the price, amount and the offers which have matched. See section \ref{sec:implementation_sweepingAndMatching} on more details.
+\item Match - provides the functionality to create a match out of given offers and returning an instance of \textit{Match} through a factory-method. The \textit{Match} instance holds the price, amount and the offers which have been matched. See section \ref{sec:implementation_sweepingAndMatching} for more details.
 \item Transaction - encapsulates functionality to search for a match within a given neighbourhood, is used by \textit{Auction} class to sweep through the agents and is returned after a matching-round and provides necessary information about whether it was successful or not.
 \end{itemize}
 
 \section{Agents}
 \label{sec:AGENTS}
-Although agents are used in this software it is not an agent-based simulation in the classical way as these agents are zero-intelligence ones and have no states of behaviour. That is each agent makes bid- and ask-offers on all markets if the constraints allow it where the prices are selected from random ranges which improve the utility of the agent - that means it makes always offers which would result in a profit.
+Although agents are used in this software it is not an agent-based simulation in the classical way as these agents are zero-intelligence ones and have no states of behaviour. That is each agent makes bid- and ask-offers on all markets if the constraints allow it where the prices are selected from random ranges which improve the utility of the agent - that means it always makes offers which would result in a profit.
 
 \medskip
 
@@ -157,7 +157,7 @@ It is important that no agent has the optimism-factor of 0 because then the firs
 \item Cash holdings - the current cash holdings of the agent.
 \item Assets holdings - the current asset holdings of the agent not including the assets granted as securities for giving loans.
 \item Loan given - the amount of loans bought from / granted to other agents. For a given amount of loans the equal amount of assets are granted as security to the buyer of the loan.
-\item Loan taken - the amount of loans sold to other agents. For a given amount of loans the equal amount of assets are granted as security to the buyer of the loan. Thus this variable decreases the amount of assets the agent can trade with as this amount of loans needs to be kept as securities.
+\item Loan taken - the amount of loans sold to other agents. For a given amount of loans the equal amount of assets are granted as security to the buyer of the loan. Thus this variable decreases the amount of assets the agent can trade with as this amount of loans needs to be kept as security.
 \end{itemize}
 
 \medskip
@@ -184,7 +184,7 @@ There are three important derived variables which are calculated from the previo
 Thus this value is positive if the agent has granted more loans to other agents than received and it is negative if the agent has received more loans from other agents than granted.
 \end{itemize}
 
-Note that all variables cannot go negative except loans.
+Note that all variables cannot be negative except loans.
 
 \section{Markets}
 \label{sec:MARKETS}
@@ -194,7 +194,7 @@ In this section all markets and their implementations are described. Each market
 \item Products - the products traded on the corresponding market.
 \item Price-ranges - the price-ranges in which an agent places profit-making offers on the market. A range is defined by a minimum and maximum where the limit-prices vary across this range. This implies that the most pessimistic agent is at the minimum end of the range and the most optimistic agent is at the maximum end of the range.
 \item Bid- and Ask-Offerings - define the pre-conditions for an agent to make offerings on the market and the amount and the prices generated during an offer. \medskip
-Note that in case of bid-offerings the price of the profit-making offer is drawn randomly between the minimum price and the limit-price because when buying one wants to buy below the expected value to make a profit where in case of ask-offerings the price is drawn randomly between the limit-price and maximum price because when selling one wants to sell above the expected value to make a profit.
+Note that in case of bid-offerings the price of the profit-making offer is drawn randomly between the minimum price and the limit-price because when buying, one wants to buy below the expected value to make a profit where in case of ask-offerings the price is drawn randomly between the limit-price and maximum price because when selling one wants to sell above the expected value to make a profit.
 \item Match-Table - In case of a match between two agents the wealth-exchange is declared where the wealth is increased/decreased as indicated by the +/- signs.
 \end{itemize}
 
@@ -226,7 +226,7 @@ limit_{asset} = h \; pU + ( 1.0 - h ) \; pD
 \end{equation}
 
 \subsubsection{Bid-Offering}
-As amount one TRADING-UNIT of assets is selected but if there is not enough cash left to buy one TRADING-UNIT of assets then no bid-offer is made.
+An amount of TRADING-UNIT of assets is selected but if there is not enough cash left to buy TRADING-UNIT of assets then no bid-offer is made.
 
 \begin{table}[H]
 	\centering
@@ -241,7 +241,7 @@ As amount one TRADING-UNIT of assets is selected but if there is not enough cash
 \end{table}
 
 \subsubsection{Ask-Offering}
-Ask offers are generated only when the agent has at least TRADING-UNIT of free assets left. As amount one TRADING-UNIT of assets is selected but if there are fewer free assets left then no offer is made.
+Ask offers are generated only when the agent has at least TRADING-UNIT of free assets left. As amount TRADING-UNIT assets is selected but if there are fewer free assets left then no offer is made.
 
 \begin{table}[H]
 	\centering
@@ -270,10 +270,10 @@ Ask offers are generated only when the agent has at least TRADING-UNIT of free a
 \end{table}
 
 \subsection{Bond/Cash}
-In chapter \ref{ch:hypothesis} it was proven that the limit-function of the Bond/Cash market is not monotony increasing if the face-value of the bond available is \textit{V = pD}. This needs to be covered by the implementation by ensuring no Bond/Cash market activity in this case as mathematically no match is possible as proven.
+In chapter \ref{ch:hypothesis} it was proven that the limit-function of the Bond/Cash market is not monotony increasing if the face-value of the bond available is \textit{V = pD}. This needs to be covered by the implementation through ensuring no Bond/Cash market activity in this case as mathematically no match is possible as proven.
 
 \subsubsection{Products}
-Bonds are traded against cash. The buyer grants the seller a loan in buying a bond from the seller thus the buyer gets a given bond-amount from the seller and gives a given cash-amount to the seller. For a given amount of sold bonds the equal amount of assets need to be hold as securities.
+Bonds are traded against cash. The buyer grants the seller a loan in buying a bond from the seller thus the buyer gets a given bond-amount from the seller and gives a given cash-amount to the seller. For a given amount of sold bonds the equal amount of assets needs to be held as security.
 
 \subsubsection{Price-Range}
 
@@ -299,7 +299,7 @@ limit_{bond} = h \; V + ( 1.0 - h ) \; pD
 \end{equation}
 
 \subsubsection{Bid-Offering}
-Bid offers are generated only when the agent has any cash holdings. As amount TRADING-UNIT of bonds is selected but if there is not enough cash left to buy TRADING-UNIT of bonds then the amount of bonds is selected which can be bought with the remaining cash holdings.
+Bid offers are generated only when the agent has any cash holdings. An amount of TRADING-UNIT bonds is selected but if there is not enough cash left to buy TRADING-UNIT of bonds then the amount of bonds is selected which can be bought with the remaining cash holdings.
 
 \begin{table}[H]
 	\centering
@@ -314,7 +314,7 @@ Bid offers are generated only when the agent has any cash holdings. As amount TR
 \end{table}
 
 \subsubsection{Ask-Offering}
-Ask offers are generated only when the agent has a positive amount of loans. As amount TRADING-UNIT of bonds is selected but if there are fewer loans left then the remaining amount of loans is selected.
+Ask offers are generated only when the agent has a positive amount of loans. An amount of TRADING-UNIT bonds is selected but if there are fewer loans left then the remaining amount of loans is selected.
 
 \begin{table}[H]
 	\centering
@@ -372,7 +372,7 @@ limit_{asset/bond} = \frac{limit_{asset}}{limit_{bond}}
 \end{equation}
 
 \subsubsection{Bid-Offering}
-Bid offers are generated only when the agent is not negative on free assets after the trade. As amount TRADING-UNIT of a assets is selected. To calculate the free assets after a match the following steps are performed:
+Bid offers are generated only when the agent is not negative on free assets after the trade. An amount of TRADING-UNIT assets is selected. To calculate the free assets after a match the following steps are performed:
 
 \begin{enumerate}
 \item Start with current free assets holdings.
@@ -394,7 +394,7 @@ Bid offers are generated only when the agent is not negative on free assets afte
 \end{table}
 
 \subsubsection{Ask-Offering}
-Bid offers are generated only when the agent is not negative on free assets after the trade. As amount TRADING-UNIT of bonds is selected. To calculate the free assets after a match the following steps are performed:
+Bid offers are generated only when the agent is not negative on free assets after the trade. An amount of TRADING-UNIT bonds is selected. To calculate the free assets after a match the following steps are performed:
 
 \begin{enumerate}
 \item Start with current free assets holdings.
@@ -452,7 +452,7 @@ In this section a few details of the simulation-implementation are discussed as 
 
 \medskip
 
-As noted above in the section \ref{sec:MARKETS} bonds and assets are always traded in chunks of TRADING-UNITS which is 0.1 in case of assets and 0.2 in case of bonds. Note that it is nothing unusual to scale the initial wealth-endowments to 1.0 and trade fractions of them as in the end the absolute endowment does not matter but the distribution over the agents so a transformation to natural numbers would not gain anything. What is much more important is that the system conserves wealth: no wealth is lost and no wealth is created \textit{ex nihilo}. This is guaranteed by the equations and pre-conditions found in section \ref{sec:MARKETS}. 
+As noted above in the section \ref{sec:MARKETS} bonds and assets are always traded in chunks of TRADING-UNITS which is 0.1 in case of assets and 0.2 in case of bonds. Note that it is nothing unusual to scale the initial wealth-endowments to 1.0 and trade fractions of them as in the end the absolute endowment does not matter but the distribution over the agents so a transformation to natural numbers would not gain anything. What is much more important is that the system conserves wealth: no wealth is lost and no wealth is created \textit{ex nihilo}. This is guaranteed by the equations and pre-conditions found in the section \ref{sec:MARKETS}. 
 
 \subsection{Sweeping and Matching}
 \label{sec:implementation_sweepingAndMatching}
@@ -534,16 +534,16 @@ Also note that if one match is found on any market then the sweeping and matchin
 \label{sec:implementation_performanceImprovement}
 
 \subsection{Local and Global Offer-book}
-It is easy to see that the calculation of the best neighbourhood can be quite costly the more neighbours an agent has. For of the ascending-connected topology this is not a big deal but in the case of the fully-connected topology the impact is serious. Because fully-connected is an important topology as it serves as a benchmark for the others an optimisation was implemented specially suited for this kind of topology: the introduction of a global offer-book. Instead of calculating the best offerings within the neighbourhood all offers are checked against each other in a global offering-list during the time of offering-creation. After all offers have been generated this list contains only the best sell and ask offerings for each market. The step of calculating the best neighbourhood can then be omitted in the case of fully-connectedness because it would be the same as the global best-offerings list thus saving a substantial amount of processing time.
+It is easy to see that the calculation of the best neighbourhood can be quite costly the more neighbours an agent has. For the Ascending-Connected topology this is not a big deal but in the case of the fully-connected topology the impact is serious. Because fully-connected is an important topology as it serves as a benchmark for the others an optimization was implemented specially suited for this kind of topology: the introduction of a global offer-book. Instead of calculating the best offerings within the neighbourhood all offers are checked against each other in a global offering-list during the time of offering-creation. After all offers have been generated this list contains only the best sell and ask offerings for each market. The step of calculating the best neighbourhood can then be omitted in the case of fully-connectedness because it would be the same as the global best-offerings list thus saving a substantial amount of processing time.
 
 \subsection{Matching probabilities}
 
 \paragraph{General matching}
-For a match to happen the buyer-price must be larger or equal the seller-price. Thus as shown in chapter \ref{ch:hypothesis} a price higher than the seller-price can only be placed by a buyer which has a strictly larger optimism-factor than the seller because only then their offering-ranges have a chance to cover each other partly. Thus matching in general works between a seller with lower optimism-factor and a buyer with higher optimism-factor. As noted in chapter \ref{ch:leverageCycle} agents place offering-prices randomly in their ranges which are specified in this chapter in section \ref{sec:MARKETS} so matching is also subject to randomness.
+For a match to happen the buyer-price must be larger or equal to the seller-price. Thus as shown in chapter \ref{ch:hypothesis} a price higher than the seller-price can only be placed by a buyer which has a strictly larger optimism-factor than the seller because only then their offering-ranges have a chance to cover each other partly. Thus matching in general works between a seller with a lower optimism-factor and a buyer with a higher optimism-factor. As noted in chapter \ref{ch:leverageCycle} agents place offering-prices randomly in their ranges which are specified in this chapter in the section \ref{sec:MARKETS} so matching is also subject to randomness.
 \medskip
-To investigate the matching-probabilities one must look at the coverage probabilities of the matching-ranges. The limit-price of bidders increase with rising optimism-factor and thus the width of the bidding-range decreases because bidders make their offers in the range of [limit..pU]. The situation is the inverse for askers as their limit-price increases too but the width of their asking-range increases because they place their offers in the range of [pD..limit]. Thus obviously the larger the difference in the optimism-factor between a seller and a buyer - again note that buyers optimism-factors are strictly larger than those of their corresponding sellers - the more likely a match will happen as both ranges increase and cover much more total distance thus increasing the probability that prices will be drawn which match.
+To investigate the matching-probabilities one must look at the coverage probabilities of the matching-ranges. The limit-price of bidders increases with rising optimism-factor and thus the width of the bidding-range decreases because bidders make their offers in the range of [limit..pU]. The situation is the inverse for askers as their limit-price increases too but the width of their asking-range increases because they place their offers in the range of [pD..limit]. Thus obviously the larger the difference in the optimism-factor between a seller and a buyer - again note that buyers optimism-factors are strictly larger than those of their corresponding sellers - the more likely a match will happen as both ranges increase and cover a greater total distance thus increasing the probability that prices will be drawn that match.
 \medskip
-The following formulas derive the probabilities that an asker and a bider with a given limit-price will match on the Asset/Cash market. First the coverage-range is calculated by subtracting the limit-price of the asker from the one of the bidder as the one of the bidder must be larger. Then the probabilities of the asker and of the bider to fall into the range of the coverage-range is calculated. Finally the probability that both the asker and bider range will match is calculated by multiplying the previously calculated probabilities. Note that a division by 2 needs to be done because of symmetrical reasons because it does not matter where in the range the prices will meet but because the buy-price has to be larger or equal than the seller-price only the half-range is available.
+The following formulae derive the probabilities that an asker and a bider with a given limit-price will match on the Asset/Cash market. First the coverage-range is calculated by subtracting the limit-price of the asker from the one of the bidder as the one of the bidder must be larger. Then the probabilities of the asker and of the bidder to fall into the range of the coverage-range is calculated. Finally the probability that both the asker and bidder range will match is calculated by multiplying the previously calculated probabilities. Note that a division by 2 needs to be done due to symmetry because it does not matter where in the range the prices will meet, but because the buy-price has to be greater than or equal to the seller-price only the half-range is available.
 
 \begin{equation}
 \begin{split}
@@ -555,7 +555,7 @@ p(asker | bider) = \frac{p(asker) * p(bider)}{2}
 \end{equation}
 
 \paragraph{Matching in ascending-connectedness}
-When considering the Ascending-Connected topology matching-probabilities become quite an issue as each agent has only 2 neighbours where the one with lower optimism-factor is the seller and the one with higher optimism-factor is the buyer. Thus compared to fully-connectedness where agents - depending on their optimism-factor - have multiple buyers and sellers the matching-probabilities are likely to be very low. To get a better understanding of the matching-probabilities in ascending-connectedness three diagrams visualizing them are shown below. Note that for clarity only 30 agents are considered on the Asset/Cash market.
+When considering the Ascending-Connected topology, matching-probabilities become quite an issue as each agent has only 2 neighbours where the one with lower optimism-factor is the seller and the one with higher optimism-factor is the buyer. Thus compared to fully-connectedness where agents - depending on their optimism-factor - have multiple buyers and sellers the matching-probabilities are likely to be very low. To get a better understanding of the matching-probabilities in ascending-connectedness three diagrams visualizing them are shown below. Note that for clarity only 30 agents are considered on the Asset/Cash market.
 \medskip
 The following figure \ref{fig:MATCHING_PROBABILITIES_30_INDIVIDUAL} visualizes the probabilities of pairwise neighbours to fall into their coverage-range as calculated by the formulas given above.
 
@@ -566,9 +566,9 @@ The following figure \ref{fig:MATCHING_PROBABILITIES_30_INDIVIDUAL} visualizes t
 	\label{fig:MATCHING_PROBABILITIES_30_INDIVIDUAL}
 \end{figure}
 
-The first bider with optimism-factor of 0.034 has a probability of 1.0 that the generated buy-prices fall into the range of its asker-neighbour with optimism-factor of 0. In turn the first asker with optimism-factor of 0 has a probability of 0.033 that its generated sell-prices fall into the range of its bid-neighbour with optimism-factor of 0.034. Thus the probabilities decrease for the bidders with increasing optimism-factor as their offering-range gets smaller and smaller where the probabilities increase for the askers with increasing optimism-factors as their offering-range gets wider and wider. This leads to the highest matching-probabilities at the edges and the lowest around the center.
+The first bidder with optimism-factor of 0.034 has a probability of 1.0 that the generated buy-prices fall into the range of its asker-neighbour with optimism-factor of 0. In turn the first asker with optimism-factor of 0 has a probability of 0.033 that its generated sell-prices fall into the range of its bid-neighbour with optimism-factor of 0.034. Thus the probabilities decrease for the bidders with increasing optimism-factor as their offering-range gets smaller and smaller where the probabilities increase for the askers with increasing optimism-factors as their offering-range gets wider and wider. This leads to the highest matching-probabilities at the edges and the lowest around the center.
 
-The following figure \ref{fig:MATCHING_PROBABILITIES_30_COMBINED} visualizes the combined probabilities that asker and bider match their ranges.
+The following figure \ref{fig:MATCHING_PROBABILITIES_30_COMBINED} visualizes the combined probabilities that asker and bidder match their ranges.
 
 \begin{figure}[H]
 	\centering
@@ -577,7 +577,7 @@ The following figure \ref{fig:MATCHING_PROBABILITIES_30_COMBINED} visualizes the
 	\label{fig:MATCHING_PROBABILITIES_30_COMBINED}
 \end{figure}
 
-To see the influence of incresing number of agents the following figure \ref{fig:MATCHING_PROBABILITIES_50_COMBINED} visualizes the combined probabilities of 50 agents.
+To see the influence of incresing number of agents, the following figure \ref{fig:MATCHING_PROBABILITIES_50_COMBINED} visualizes the combined probabilities of 50 agents.
 
 \begin{figure}[H]
 	\centering
@@ -592,7 +592,7 @@ Looking at these diagrams one can derive the following facts about the matching-
 \item The more agents in the network the lower the matching-probabilities.
 \end{enumerate}
 
-The lower matching-probabilities result in longer simulation-runs and more inefficiencies towards the end where free assets are kept by optimists instead of traded as the matching-probabilities decrease so much that no more trading will occur. To elevate this problem one can adjust the matching-probabilities by transforming the price-ranges. It is of very importance that the shape of the matching-probabilities distribution must be exactly the same. Only the absolute values of the probabilities are increased where the edges are at the maximum of 1.0. This is mathematically quite involved and was developed by supervisor Mr. Vollbrecht. The formulas and explanations have been moved to appendix \ref{app:increasingMatchingProbability}.
+The lower matching-probabilities result in longer simulation-runs and more inefficiencies towards the end where free assets are kept by optimists instead of traded as the matching-probabilities decrease so much that no more trading will occur. To elevate this problem one can adjust the matching-probabilities by transforming the price-ranges. It is of great importance that the shape of the matching-probabilities distribution must be exactly the same. Only the absolute values of the probabilities are increased where the edges are at the maximum of 1.0. This is mathematically quite involved and was developed by supervisor Mr. Vollbrecht. The formulae and explanations have been moved to appendix \ref{app:increasingMatchingProbability}.
 \medskip
 This variant is dubbed "Ascending-Connected topology with Importance Sampling". See chapter \ref{ch:results} for the performance and results of this variant.
 

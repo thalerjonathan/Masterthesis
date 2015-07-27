@@ -16,31 +16,31 @@ The initial idea for this market was by the supervisor of this thesis Mr. Hans-J
 Collateralized assets are traded against cash. The buyer gets a specific amount of collateralized assets for a given amount of cash where the seller gives away the specific amount of collateralized assets and gets the given amount of cash.
 
 \subsection{Price-Range}
-As with all other three markets the price-ranges of the offers must be defined. Note that all prices must be obviously in the unit of cash according to the previously defined products.
+As with all other three markets the price-ranges of the offers must be defined. Note that all prices must obviously be in the unit of cash according to the previously defined products.
 
 \paragraph{minimum}
-When calculating the minimum price of a collateralized asset - that is how much is the collateralized asset minimally worth - it is important to include the collateral-aspect of the asset. Thus one starts with the minimum Asset-Price in cash which is the down-price \textit{pD} and subtracts the minimum amount of cash which is bound through a bond as collateral which is \textit{pD}. This value is a constant for all agents.
+When calculating the minimum price of a collateralized asset - that is how much is the collateralized asset is minimally worth - it is important to include the collateral-aspect of the asset. Thus one starts with the minimum Asset-Price in cash which is the down-price \textit{pD} and subtracts the minimum amount of cash which is bound through a bond as collateral which is \textit{pD}. This value is a constant for all agents.
 
 \begin{equation}
 min_{collateral} = \textit{pD} - \textit{pD} = 0
 \end{equation}
  
 \paragraph{maximum}
-To calculate the maximum price of a collateralized asset - that is how much is the collateralized asset maximally worth - one needs to include the collateral-aspect of the asset too. Equal to calculating the minimum one starts now with the maximum Asset-Price in cash which is the up-price \textit{pU} and subtracts the maximum possible amount of cash which is bound through a bond as collateral which is the face-value \textit{V}. This value is a constant for all agents.
+To calculate the maximum price of a collateralized asset - that is how much is the collateralized asset is maximally worth - one needs to include the collateral-aspect of the asset too. Equal to calculating the minimum, one starts now with the maximum Asset-Price in cash which is the up-price \textit{pU} and subtracts the maximum possible amount of cash which is bound through a bond as collateral which is the face-value \textit{V}. This value is a constant for all agents.
 
 \begin{equation}
 max_{collateral} = \textit{pU} - \textit{V}
 \end{equation}
 
 \paragraph{limit}
-Applying the same rules as in minimum and maximum to the limit price calculation one needs to subract the limit-price of bonds from the limit-price of asset to receive the limit-price of a collateralized asset. This value is individual for each agent as the limit-prices differ across the agents both for assets and bonds.
+Applying the same rules as in minimum and maximum to the limit price calculation one needs to subract the limit-price of bonds from the limit-price of assets to receive the limit-price of a collateralized asset. This value is individual for each agent as the limit-prices differ across the agents both for assets and bonds.
 
 \begin{equation}
 limit_{collateral} = limit_{asset} - limit_{bond}
 \end{equation}
 
 \subsection{Bid-Offering}
-The way bid-offers are generated is very similar to the Bond/Cash market. Bid offers are generated only when the agent has any cash holdings. The price is drawn randomly between the minimum price and the limit-price because when buying one wants to buy below the expected value to make a profit. As amount TRADING-UNIT of assets is selected but if there is not enough cash left to buy TRADING-UNIT of assets then the amount of assets is selected which can be bought with the remaining cash holdings.
+The way bid-offers are generated is very similar to the Bond/Cash market. Bid offers are generated only when the agent has any cash holdings. The price is drawn randomly between the minimum price and the limit-price because when buying one wants to buy below the expected value to make a profit. An amount of TRADING-UNIT assets is selected but if there is not enough cash left to buy TRADING-UNIT of assets then the amount of assets that can be bought with the remaining cash holdings is selected.
 
 \begin{table}[H]
 	\centering
@@ -56,7 +56,7 @@ The way bid-offers are generated is very similar to the Bond/Cash market. Bid of
 
 
 \subsection{Ask-Offering}
-The way ask-offers are generated is very similar to the Bond/Cash market. Ask offers are generated only when the agent has any collateralized assets. The price is drawn randomly between the limit-price and maximum price because when selling one wants to sell above the expected value to make a profit. As amount TRADING-UNIT of assets is selected but if there are fewer collateralized assets left then the remaining amount of collateral is selected. See chapter \ref{ch:implementation} for the equation of the amount of collateralized assets.
+The way ask-offers are generated is very similar to the Bond/Cash market. Ask offers are generated only when the agent has any collateralized assets. The price is drawn randomly between the limit-price and maximum price because when selling one wants to sell above the expected value to make a profit. An amount of TRADING-UNIT assets is selected but if there are fewer collateralized assets left then the remaining amount of collateral is selected. See chapter \ref{ch:implementation} for the equation of the amount of collateralized assets.
 
 \begin{table}[H]
 	\centering
@@ -87,14 +87,14 @@ Below the wealth-exchange table is given in case of a match between two agents o
 	\end{tabular}
 \end{table}
 
-Note that regarding these formulas it is clear that the Collateral/Cash market can't work without the BP-mechanism because only with it is it allowed to increment the net-loans variable \textit{loan} by incrementing \textit{loans given}. Without the BP-mechanism incrementing \textit{loans given} would simply be forbidden thus making this market unable to work. Because of this the thesis has the BP-mechanism hard-wired into the implementation and does not provide the user with an option to run the simulation without it.
+Note that regarding these formulae it is clear that the Collateral/Cash market can't work without the BP-mechanism because only with it is it allowed to increment the net-loans variable \textit{loan} by incrementing \textit{loans given}. Without the BP-mechanism incrementing \textit{loans given} would simply be forbidden thus making this market unable to work. Because of this the thesis has the BP-mechanism hard-wired into the implementation and does not provide the user with an option to run the simulation without it.
 
 \section{Results}
 The plain results of the simulation with using the new market are given in this section where the interpretation of the results are given in the following one.
 
 \medskip
 
-As experiment-configuration the same is used as given in chapter \ref{ch:results} except that the new market is now activated too.
+The same experiment-configuration is used as given in chapter \ref{ch:results} except that the new market is now also activated.
 
 \begin{table}[H]
 	\centering
@@ -272,14 +272,14 @@ Yes it does. Both visual and statistical results show that it reaches the theore
 Yes it does. The visual results are clear with no miss-allocations showing up within 50 replications. If there would have been miss-allocations within any replication they would have shown up in the final result.
 
 \paragraph{If yes, does the Ascending-Connected topology approach theoretical equilibrium now?}
-The miss-allocations are repaired but it does does not approach theoretical equilibrium. Both visual and statistical results show that it misses to reach the theoretical and Fully-Connected topology. Although p,q,i1 and i2 do not differ significant the wealth of the optimists and medianists are substantially different and show a different shape than in the Fully-Connected case and thus the theoretical equilibrium is not reached.
+The miss-allocations are repaired but it does does not approach theoretical equilibrium. Both visual and statistical results show that it fails to reach the theoretical and Fully-Connected topology. Although p,q,i1 and i2 do not differ significantly, the wealth of the optimists and medianists are substantially different and show a different shape than in the Fully-Connected case and thus the theoretical equilibrium is not reached.
 
 \section{Simulation and Market dynamics}
-When implementing a new market the market-dynamics are of very importance and thus the following questions must be answered.
+When implementing a new market the market-dynamics are of great importance and thus the following questions must be answered.
 
 \begin{itemize}
 \item Can the trading stages 1-4 be identified too as given in \cite{Breuer2015}?
-\item How does trading progresses with this new market? Is it the same as without the new market?
+\item How does trading progress with this new market? Is it the same as without the new market?
 \item How does the new market resolve the miss-allocation (with and without deferred activation)?
 \item When and how much is each market active? 
 \item How do the market-activities change when a new market is introduced?
@@ -307,7 +307,7 @@ To answer these questions one must look closely at the market-dynamics. There ar
 
 
 \paragraph{Stage 1}
-In this stage the pessimists become visible rapidly as they sell their assets and increase their cash wealth. One can get also a sense of the more optimistic range of agents as they gather assets both free and collateralized. The medianists are not visible yet. This picture is in stark contrast to the one given in Ascending-Connected topology where the wealth stabilizes from both the left and right ends towards the marginal agent i2. This is obviously due to the different topology as in the fully-connected one all agents can trade with each other thus the wealth-distribution approaches the theoretical equilibrium over all agents and not only on two frontiers from left and right.
+In this stage the pessimists become visible rapidly as they sell their assets and increase their cash wealth. One can also get a sense of the more optimistic range of agents as they gather assets both free and collateralized. The medianists are not visible yet. This picture is in stark contrast to the one given in Ascending-Connected topology where the wealth stabilizes from both the left and right ends towards the marginal agent i2. This is obviously due to the different topology as in the fully-connected one all agents can trade with each other thus the wealth-distribution approaches the theoretical equilibrium over all agents and not only on two frontiers from left and right.
 
 \medskip
 
@@ -325,7 +325,7 @@ The bonds, free- and collateralized assets are all traded from the pessimists to
 
 \medskip
 
-The Asset/Cash market continues to go down as the cash holdings of the pessimists begin to decline. The Bond/Cash market raises even further as agents switch to this market because the pessimists have ran out of cash. The Collateral/Cash market is still in the range of the 10\% share because its not really needed in the Fully-Connected topology. The Asset/Bond market raises fast towards the end of the stage as the optimists are then out of cash and need to distribute the collateralized assets between each other and the yet to come medianists.
+The Asset/Cash market continues to go down as the cash holdings of the pessimists begin to decline. The Bond/Cash market raises even further as agents switch to this market because the pessimists have run out of cash. The Collateral/Cash market is still in the range of the 10\% share because it is not really needed in the Fully-Connected topology. The Asset/Bond market raises fast towards the end of the stage as the optimists are then out of cash and need to distribute the collateralized assets between each other and the yet to come medianists.
 
 \begin{figure}[H]
 	\centering
@@ -339,7 +339,7 @@ The pessimists are now nearly inactive as only the more optimistic pessimists ho
 
 \medskip
 
-Because the pessimists are nearly inactive now and hold no more assets and cash the Asset/Cash and Collateral/Cash markets go down and decline completely. The Bond/Cash market goes down but does not decline as bonds are still traded because of the emerging of medianists. The medianists and pure optimists which are emerging have no other possibility than to trade on the Asset/Bond market to further distribute their collateralized assets among each other which is the reason for the rise of the Asset/Bond market above all others and its heavy domination. Despite the heavy domination of the Asset/Bond market still a few bonds are traded against cash between the most optimistic pessimists and the medianist to refine the i1 point.
+Because the pessimists are nearly inactive now and hold no more assets and cash the Asset/Cash and Collateral/Cash markets go down and decline completely. The Bond/Cash market goes down but does not decline as bonds are still traded because of the emerging of medianists. The medianists and pure optimists that are emerging have no other possibility than to trade on the Asset/Bond market to further distribute their collateralized assets among each other which is the reason for the rise of the Asset/Bond market above all others and its heavy domination. Despite the heavy domination of the Asset/Bond market a few bonds are still traded against cash between the most optimistic pessimists and the medianists to refine the i1 point.
 
 \begin{figure}[H]
 	\centering
@@ -353,7 +353,7 @@ The pessimists are finally inactive except a couple of most optimistic pessimist
 
 \medskip
 
-Only the Bond/Cash and Asset/Bond markets are active any more. The Bond/Cash market is active due to the final transactions between the most optimistic pessimists which want to sell their final bonds to the medianists which is only possible through cash which the most pessimistic medianists still own. The Asset/Bond market is active due to the final transactions between the most optimistic medianists which want to sell their free assets to the optimists which is only possible through bonds because the most pessimistic optimists have no more cash left thus they have to trade assets against bonds.
+Only the Bond/Cash and Asset/Bond markets are active any more. The Bond/Cash market is active due to the final transactions between the most optimistic pessimists that want to sell their final bonds to the medianists which is only possible through cash which the most pessimistic medianists still own. The Asset/Bond market is active due to the final transactions between the most optimistic medianists that want to sell their free assets to the optimists which is only possible through bonds because the most pessimistic optimists have no more cash left thus they have to trade assets against bonds.
 
 \begin{figure}[H]
 	\centering
@@ -395,7 +395,7 @@ The free- and collateralized assets and bonds are traded by the pessimists towar
 
 \medskip
 
-The Collateral/Cash market kicks in and allows the blocked goods to be traded again thus changing the activity of the other markets too. The Asset/Bond market initially drops rapidly just to recover shortly after. The Asset/Cash market previously dormant becomes active again because the pessimists have freed their collateral first because of selling it through the Collateral/Cash market and then through the Asset/Bond market or Bond/Cash market. Thus they have free assets they don't want and thus trade them against cash towards the medianists.
+The Collateral/Cash market kicks in and allows the blocked goods to be traded again thus changing the activity of the other markets too. The Asset/Bond market initially drops rapidly only to recover shortly after. The Asset/Cash market, previously dormant, becomes active again because the pessimists have freed their collateral first due to selling it through the Collateral/Cash market and then through the Asset/Bond market or Bond/Cash market. This results in them having free assets they don't want and thus trade them against cash towards the medianists.
 
 \begin{figure}[H]
 	\centering
@@ -433,7 +433,7 @@ The i1-point has finalized as no more pessimists are able to trade with their ne
 3 stages were identified as can be seen in the Market-Dynamics diagram in figure \ref{fig:markets_ASCENDINGCONNECTED_100_WITHCOLLATERALMARKET_MARKET_STAGES}.
 
 \paragraph{Stage 1}
-Pessimists and optimists are emerge where the pessimists are gathering cash and selling all other goods. The optimists are buying assets against cash and against bonds. There are no medianists visible yet.
+Pessimists and optimists emerge where the pessimists are gathering cash and selling all other goods. The optimists are buying assets against cash and against bonds. There are no medianists visible yet.
 
 \medskip
 The Bond/Cash market is slightly increasing as pessimists trade their bonds towards the later emerging medianists and the optimists. The Asset/Bond market is already very active as optimists trade assets against bonds after they have ran out of cash. Collateral/Cash market is rising slightly until the end where it drops as it is used by the pessimists to trade their collateral gathered on the other markets towards the optimists. The Asset/Cash market starts quite high because optimists trade their assets first towards the pessimists against cash but is declining slowly as fewer and fewer pessimists trade on this market.
@@ -446,10 +446,10 @@ The Bond/Cash market is slightly increasing as pessimists trade their bonds towa
 \end{figure}
 
 \paragraph{Stage 2}
-The pessimists are nearly final and hold only a few bonds which they trade towards the now emerging medianists. The medianists and optimists are approaching each other by trading towards the i2-point on the Asset/Bond market because both are out of cash and thus are only able to trade on this market with each other.
+The wealth of the pessimists has nearly reached final equilibrium and the pessimists hold only a few bonds which they trade towards the now emerging medianists. The medianists and optimists are approaching each other by trading towards the i2-point on the Asset/Bond market because both are out of cash and thus are only able to trade on this market with each other.
 
 \medskip
-Due to the remaining bonds in the pessimists range the Bond/Cash markets activity rises just to drop towards the end of this stage when all bonds have been traded up to the medianists and the pessimists have become dormant. The Asset/Bond market rises too due to increased activity between the medianists and optimists which can only trade between each other on this market because they are both out of cash making the other markets impossible choices. The Asset/Cash and Collateral/Cash markets activities decline as the pessimists which are the only agents which hold cash finally become inactive.
+Due to the remaining bonds in the pessimists' range the Bond/Cash market's activity rises only to drop towards the end of this stage where all bonds have been traded up to the medianists and the pessimists have become dormant. The Asset/Bond market rises too due to increased activity between the medianists and optimists which can only trade between each other on this market because they are both out of cash making the other markets impossible choices. The Asset/Cash and Collateral/Cash market activities decline as the pessimists which are the only agents that hold cash finally become inactive.
 
 \begin{figure}[H]
 	\centering
@@ -462,7 +462,7 @@ Due to the remaining bonds in the pessimists range the Bond/Cash markets activit
 Pessimists are now final and won't change any more and the i1-point has emerged and is final. Medianists and optimists trade on the Asset/Bond market to finalize i2-point which can be seen in the final wealth-distribution in figure \ref{fig:wealth_ASCENDINGCONNECTED_100_WITHCOLLATERALMARKET_SINGLE}
 
 \medskip
-The only market which is active in this stage is the Asset/Bond market. The pessimists are already inactive and final thus generating no more activities on the Asset/Cash, Bond/Cash or Collateral/Cash markets. The medianists as well as the optimists have no more cash thus are only able to trade on the Asset/Bond market to finally trade the remaining assets in the range of the medianists towards the optimists until the i2-point has finalized.
+The only market which is active in this stage is the Asset/Bond market. The pessimists are already inactive and final thus generating no more activities on the Asset/Cash, Bond/Cash or Collateral/Cash markets. The medianists as well as the optimists have no more cash thus are only able to trade on the Asset/Bond market, to finally trade the remaining assets in the range of the medianists towards the optimists until the i2-point has finalized.
 
 \begin{figure}[H]
 	\centering
@@ -471,7 +471,7 @@ The only market which is active in this stage is the Asset/Bond market. The pess
 	\label{fig:wealth_ASCENDINGCONNECTED_100_WITHCOLLATERALMARKET_WEALTH_STAGE_3}
 \end{figure}
 
-After these observations made one can answer the questions.
+Following these observations one can answer the questions.
 
 \paragraph{Can the trading stages 1-4 be identified too as given in \cite{Breuer2015}?}
 There are 4 stages in the case of both Fully-Connected and Ascending-Connected topology with the new market which are not the ones given in \cite{Breuer2015} but show up by pure chance and depend also a bit on the point-of-view on how to separate the stages from each other. 
@@ -480,7 +480,7 @@ There are 4 stages in the case of both Fully-Connected and Ascending-Connected t
 The progression of the trading is obviously very different with the new market as compared to the market-activities without as the usage of the new market changes the dynamics completely.
 
 \paragraph{How does the new market resolve the miss-allocation (with and without deferred activation)?}
-It becomes active during the formation of the pessimists agents as they gather collateralized assets wealth which must be traded towards the optimists. The collateralized assets are traded from neighbour to neighbour until they reach the optimists-region.
+It becomes active during the formation of the pessimists agents as they gather wealth from collateralized assets which must be traded towards the optimists. The collateralized assets are traded from neighbour to neighbour until they reach the optimists-region.
 
 \paragraph{When and how much is each market active?}
 This can be seen clearly in the market-activity diagrams.

@@ -6,12 +6,12 @@
 \chapter{Results}
 \label{ch:results}
 
-In this chapter the results of the experiments are given. Each topology-type introduced in appendix \ref{app:topologies} was simulated where in this chapter only Fully-Connected and Ascending-Connected topologies are handled as the Ascending-Connected topology - both with and without importance sampling - is the most minimal network which satisfies the requirements for the hypothesis. The results for the other topologies can be found in appendix \ref{app:results}.
+In this chapter the results of the experiments are given. Each topology-type introduced in appendix \ref{app:topologies} was simulated whereas in this chapter only Fully-Connected and Ascending-Connected topologies are handled as the Ascending-Connected topology - both with and without importance sampling - is the most minimal network which satisfies the requirements for the hypothesis. The results for the other topologies can be found in appendix \ref{app:results}.
 
-Note: The numbers in tables resemble always a median-value with the standard-deviation given in parentheses.
+Note: The numbers in tables always represent a median-value with the standard-deviation given in parentheses.
 
 \section{Validating thesis-software}
-As a point-of-reference and as an experimental proof for the correctness of the implementation of the thesis-software the result of a validation against the equilibrium found in \cite{Breuer2015} is given. Because equilibrium differs across the number of agents and the type of bond traded to be comparable the same amount of agents and the same bond-type has to be used in the experiments. Thus 1,000 agents and a bond with face-value of 0.5 were chosen because \cite{Breuer2015} report their equilibria for this number of agents and bonds with face-value between 0.1 to 0.5.
+As a point-of-reference and as an experimental proof for the correctness of the implementation of the thesis-software the result of a validation against the equilibrium found in \cite{Breuer2015} is given. Because equilibrium differs across the number of agents and the type of bond traded, to be comparable the same amount of agents and the same bond-type has to be used in the experiments. Thus 1,000 agents and a bond with face-value of 0.5 were chosen because \cite{Breuer2015} report their equilibria for this number of agents and bonds with face-value between 0.1 to 0.5.
 
 \subsection{References for 1,000 agents with 0.5 bond}
 
@@ -106,11 +106,11 @@ In the following experiments 100 agents were used, all markets (Asset/Cash, Bond
 
 \bigskip 
 
-\cite{Breuer2015} showed that equilibrium can be reached already with 30 agents so this was the minimum number of agents to start with but for a smoother visual result 100 were chosen. Also one simulation-run takes not very much time with 100 as compared to the 1,000 agents thus it is a very good match between visual accurateness and processing-power requirements.
+\cite{Breuer2015} showed that equilibrium can be reached already with 30 agents so this was the minimum number of agents to start with but for a smoother visual result 100 were chosen. Also one simulation-run does not take much time with 100 as compared to the 1,000 agents thus it is a very good match between visual accuracy and processing-power requirements.
 
 \medskip
 
-As already described in section \ref{sec:implementation_sweepingAndMatching} the simulation is a random-process thus one needs replications to reduce noise. The number of 50 replications was chosen because it is a good match between processing-power requirements and overall reduction of noise. Thus increasing the number e.g. to 100 or 200 would not result in much better results - both visual and numerical - but would need much longer to run. All facts can already be seen and derived when using 50 replications thus for all figures this number was used unless stated otherwise e.g. a single run.
+As already described in section \ref{sec:implementation_sweepingAndMatching} the simulation is a random-process thus one needs replications to reduce noise. The number of 50 replications was chosen because it is a good match between processing-power requirements and overall reduction of noise. Thus increasing the number e.g. to 100 or 200 would not provide much better results - both visual and numerical - but would need much longer to run. All facts can already be seen and derived when using 50 replications thus for all figures this number was used unless stated otherwise e.g. a single run.
 
 \begin{table}[H]
 	\centering
@@ -311,7 +311,7 @@ This topology serves as the major point-of-reference for the other experiments a
 	\end{tabular}
 \end{table}
 
-Note that in this case the matching-probabilities are such that upon the first failed matching-round the equilibrium is reached as no agent can trade with each other any more which results in just on single failed matching-round.
+Note that in this case the matching-probabilities are such that upon the first failed matching-round the equilibrium is reached as no agent can trade with each other any more which results in just one single failed matching-round.
 
 \begin{table}[H]
 	\caption{Difference to theoretical equilibrium}

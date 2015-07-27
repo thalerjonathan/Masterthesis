@@ -114,10 +114,10 @@ The continuous double-auction (CDA) is a type of auction upon which the model of
 \end{quote}
 
 \subsection{Definition}
-To explain the details of a \textit{continuous} double-auction one has to start with the double-auction (DA) alone. Generally speaking the DA is a \gls{market institution} which defines rules how traders can exchange \gls{good} for some \gls{numeraire} between each other. It is an \gls{auction} process which coordinates messages between traders which include some price information. Thus a DA is a multilateral process in which during multiple \glspl{round} traders can enter \glspl{offer} into an \gls{offer-book} and accept offers made by others. Traders can be distinguished between \gls{seller} and \gls{buyer} and send their messages/place their offers in a given price-range according to their \gls{limit-price}. Depending on the type of the DA at some point a \gls{clearing} of the market happens thus leading to the actual exchange between the traders and thus a change in the allocation of their goods and cash. \cite{Parsons2006}
+To explain the details of a \textit{continuous} double-auction one has to start with the double-auction (DA) alone. Generally speaking the DA is a \gls{market institution} which defines rules how traders can exchange \glspl{good} for some \gls{numeraire} between each other. It is an \gls{auction} process that coordinates messages between traders which includes some price information. Thus a DA is a multilateral process in which during multiple \glspl{round}, traders can enter \glspl{offer} into an \gls{offer-book} and accept offers made by others. Traders can be distinguished between \gls{seller} and \gls{buyer} and send their messages/place their offers in a given price-range according to their \gls{limit-price}. Depending on the type of the DA, at some point a \gls{clearing} of the market happens leading to the actual exchange between the traders and a change in the allocation of their goods and cash. \cite{Parsons2006}
 
 \subsection{Characterization}
-It is important to note that there does not exist such a single thing as the "double auction" as there are many variants of it where they can all be differentiated in the way when and how traders place their offers and when and how the auction clears the market. According to \cite{Parsons2006} the following questions must be answered when characterizing a double-auction instance:
+It is important to note that the \textit{double auction} does not exist as a single concept, as there are many variants which can all be differentiated in the process by which traders place their offers and when and how the auction clears the market. According to \cite{Parsons2006} the following questions must be answered when characterizing a double-auction instance:
 
 \begin{itemize}
 \item When does the clearing happen? Is it periodic or continuous?
@@ -129,17 +129,17 @@ It is important to note that there does not exist such a single thing as the "do
 \end{itemize}
 
 
-\paragraph{When does the clearing happen? Is it periodic or continuous?} Clearing happens at the end of a round where the first match of two random traders on a random market is searched. It is continuous because traders agree on each others offers and exchange the traded goods immediately. In a periodic DA clearing happens at discrete time slots during the trading-process after multiple rounds.
+\paragraph{When does the clearing happen? Is it periodic or continuous?} Clearing happens at the end of a round where the first match of two random traders on a random market is searched. It is continuous because traders agree on each others' offers and exchange the traded goods immediately. In a periodic DA, clearing happens at discrete time slots during the trading-process after multiple rounds.
 
 \paragraph{When do offers of traders arrive? Do offers arrive over time?} Traders place their offers simultaneously at the beginning of each round. Offers do not arrive over time as time advances only from round to round and is not modelled explicitly as a time-flow.
 
 \paragraph{What information is available to each trader about current offers and other traders?} None. The traders are not able to look into the offer-book or to communicate with other traders. They act only as \gls{zero-intelligence agents} as introduced in section \ref{sec:ZERO_INTELLIGENCE_AGENTS}.
 
-\paragraph{How are unmatched offers treated? What happens to unmatched bids and asks when a match occurs?} They are deleted. Prices are placed randomly as will be seen in \ref{ch:leverageCycle} and if they haven't matched in the current round the won't match in the future ones thus they are all deleted from the offer-book.
+\paragraph{How are unmatched offers treated? What happens to unmatched bids and asks when a match occurs?} They are deleted. Prices are placed randomly as will be seen in \ref{ch:leverageCycle} and if they haven't matched in the current round they won't match in the future ones which results in them all being deleted from the offer-book.
 
-\paragraph{How are the trades priced? Are trades priced using discriminatory or uniform pricing and how are the uniform or discriminatory prices determined?} Discriminatory pricing is used. In uniform pricing one price is chosen and applied to all trades which clears the market where in discriminatory pricing the prices are determined individually for each trade. The \gls{transaction-price} where the buyer and seller meet is the half-way price between the offers of both. Another possibility for the transaction-price as reported in \cite{GodeSunder1993} is to select the price of the offer which was placed first.
+\paragraph{How are the trades priced? Are trades priced using discriminatory or uniform pricing and how are the uniform or discriminatory prices determined?} Discriminatory pricing is used. In uniform pricing one price is chosen and applied to all trades which clears the market where in discriminatory pricing the prices are determined individually for each trade. The \gls{transaction-price}, where the buyer and seller meet, is the half-way price between the offers of both. Another possibility for the transaction-price as reported in \cite{GodeSunder1993} is to select the price of the offer which was placed first.
 
-\paragraph{Are there one or multiple trading-periods? Is the market one-shot or repeated?} A repeated DA comprises of multiple trading-periods where traders are endowed with new allocations and may or may not keep their final allocations after each period. This is not the case in this thesis where only one trading-period is simulated thus the market is one-shot. Note that this is not to be confused with \Gls{round} as there are many rounds within one trading-period.
+\paragraph{Are there one or multiple trading-periods? Is the market one-shot or repeated?} A repeated DA comprises of multiple trading-periods where traders are endowed with new allocations and may or may not keep their final allocations after each period. This is not the case in this thesis where only one trading-period is simulated thus the market is one-shot. Note that this is not to be confused with a \gls{round} as there are many rounds within one trading-period.
 
 \subsection{The continuous double-auction process}
 
@@ -158,7 +158,7 @@ The following points summarise the workings of the instance of CDA used in this 
 
 \subsection{Zero-intelligence agents}
 \label{sec:ZERO_INTELLIGENCE_AGENTS}
-The traders in this thesis are modelled as zero-intelligence agents as introduced by \cite{GodeSunder1993}. These are traders which place offers strictly in a range which increases their utility and do neither learn nor can adopt to the behaviour of other agents or changing conditions on the market. They are completely deterministic in a way that they never change their behaviour. 
+The traders in this thesis are modelled as zero-intelligence agents as introduced by \cite{GodeSunder1993}. These are traders which place offers strictly in a range which increases their utility and can neither learn nor adapt to the behaviour of other agents or changing conditions on the market. They are completely deterministic in a way that they never change their behaviour. 
 
 \medskip
 When using zero-intelligence agents the question about the \gls{allocative efficiency} of the market must be raised: "Are zero-intelligence agents able to achieve or come close to 100\% allocative efficiency?". According to \cite{GodeSunder1993} this is the case if:
@@ -167,6 +167,6 @@ When using zero-intelligence agents the question about the \gls{allocative effic
 Imposing a budget constraint [...] is sufficient to raise the allocative efficiency of these auctions close to 100 percent. Allocative efficiency of a double auction derives largely from its structure, independent of traders' motivation, intelligence, or learning.
 \end{quote}
 
-Because the model used in this thesis which is presented in chapter \ref{ch:leverageCycle} is "imposing a budget constraint" the potential of coming close to 100\% allocative efficiency is given. Results given in chapter \ref{ch:results} show that this is really the case.
+Because the model used in this thesis which is presented in chapter \ref{ch:leverageCycle} is "imposing a budget constraint", the potential of coming close to 100\% allocative efficiency is given. Results given in chapter \ref{ch:results} show that this is really the case.
 
 \end{document}
