@@ -3,6 +3,12 @@
 
 \graphicspath{{./figures/implementation/}}	%specifying the folder for the figures
 
+\newglossaryentry{transaction}{
+	name=transaction,
+	description={},
+	plural=transactions
+}
+
 \chapter{Implementation}
 \label{ch:implementation}
 
@@ -87,7 +93,7 @@ Because an experiment-run can take a lot of time to save the results for later i
 \item Agents wealth-distribution - mean of final wealth-distribution of all agents over all replications.
 \item Starting-, ending-time and duration in seconds of experiment.
 \item Experiment-configuration.
-\item Mean and standard-deviation of equilibrium.
+\item Mean and standard-deviation of marginal agents i1 and i2.
 \item Graph-structure - some topologies create random-graphs thus the structure is stored to allow an inspection.
 \item Mean of successful, failed and total matching-rounds.
 \item Mean duration of a replication.
@@ -96,7 +102,7 @@ Because an experiment-run can take a lot of time to save the results for later i
 \end{itemize}
 
 \section{Architecture}
-In this section the basic architecture of the thesis-software is discussed. It is important to note that this thesis is a fat-client and has its major emphasis not on the software-development aspect but on the visual- and numerical results where the accompanying software is just a tool for the means to calculate the required results. Thus the architecture is guided by a simple division of layers into front-end, controller and back-end. The front-end is responsible for input and output of the user through GUI or command-line. The controller-layer provides encapsulated chunks of functionality of the back-end to the front-end. It is necessary to abstract, encapsulate and combine the stateful nature of communication with the back-end into a separate layer instead of polluting the front-end with it and creating unnecessary dependencies. The back-end layer provides the functionality where the real work is done e.g. simulation is executed.
+In this section the basic architecture of the thesis-software is discussed. It is important to note that the software of this thesis is a fat-client and has its major emphasis not on the software-development aspect but on the visual- and numerical results where the accompanying software is just a tool for the means to calculate the required results. Thus the architecture is guided by a simple division of layers into front-end, controller and back-end resembling a MVC architecture. The front-end is responsible for input and output of the user through GUI or command-line. The controller-layer provides encapsulated chunks of functionality of the back-end to the front-end. It is necessary to abstract, encapsulate and combine the stateful nature of communication with the back-end into a separate layer instead of polluting the front-end with it and creating unnecessary dependencies. The back-end layer provides the functionality where the real work is done e.g. simulation is executed.
 \medskip
 Theoretically the dependencies are top-down where the front-end includes only controller-functionality, the controller includes only back-end functionality and the back-end has no dependencies to the preceding layers. In this thesis-software a more pragmatic approach was chosen so this dogma was not followed where over-engineering and over-complication would have resulted when sticking strictly to the separation of dependencies. Thus in very few cases the controller- and back-end layer include front-end layer functionality to create different types of network topologies in a more convenient way. Also the front-end accesses instances of pure back-end classes for graphical visualization and information purposes. Despite the seemingly flawed architecture the development-process has proven to be very smooth - expansions and refactorings went quite smoothly and always resulted in a better and clearer structure with reduced code-smell which is always a sign for a good architecture.
 
@@ -136,12 +142,12 @@ The back-end contains the domain-specific functionality for the simulation. The 
 \item AgentNetwork - holds the connections between the agents and provides functionality to query neighbourhood, paths and connections between agents and random and sequential in-order iterators over all agents.
 \item Offering - encapsulates the data necessary for offerings where there are two subclasses \textit{BidOffering} and \textit{AskOffering} to differentiate between the two types of offerings. See the section \ref{sec:MARKETS} on details of offerings.
 \item Match - provides the functionality to create a match out of given offers and returning an instance of \textit{Match} through a factory-method. The \textit{Match} instance holds the price, amount and the offers which have been matched. See section \ref{sec:implementation_sweepingAndMatching} for more details.
-\item Transaction - encapsulates functionality to search for a match within a given neighbourhood, is used by \textit{Auction} class to sweep through the agents and is returned after a matching-round and provides necessary information about whether it was successful or not.
+\item \Gls{transaction} - encapsulates functionality to search for a match within a given neighbourhood, is used by \textit{Auction} class to sweep through the agents and is returned after a matching-round and provides necessary information about whether it was successful or not.
 \end{itemize}
 
 \section{Agents}
 \label{sec:AGENTS}
-Although agents are used in this software it is not an agent-based simulation in the classical way as these agents are zero-intelligence ones and have no states of behaviour. That is each agent makes bid- and ask-offers on all markets if the constraints allow it where the prices are selected from random ranges which improve the utility of the agent - that means it always makes offers which would result in a profit.
+Although agents are used in this software it is not an agent-based simulation in the classical way as these agents are zero-intelligence ones. That is each agent makes bid- and ask-offers on all markets if the constraints allow it where the prices are selected from random ranges which improve the utility of the agent - that means it always makes offers which would result in a profit.
 
 \medskip
 
@@ -153,9 +159,9 @@ Each agent is characterized by its state where the main variables are:
 \begin{equation}
 \textit{optimism-factor} = \frac{id}{\textit{number of agents} + 1}
 \end{equation}
-It is important that no agent has the optimism-factor of 0 because then the first derivation of the limit-function of the Asset/Bond market becomes undefined and is not monotony increasing if \textit{h} = 0. This property is ensured by starting with id 1 and dividing by \textit{number of agents} + 1.
+It is important that no agent has the optimism-factor of 0 because then the first derivative of the limit-function of the Asset/Bond market becomes undefined and is not monotony increasing if \textit{h} = 0. This property is ensured by starting with id 1 and dividing by \textit{number of agents} + 1.
 \item Cash holdings - the current cash holdings of the agent.
-\item Assets holdings - the current asset holdings of the agent not including the assets granted as securities for giving loans.
+\item Assets holdings - the current asset holdings of the agent including the assets granted as securities for giving loans.
 \item Loan given - the amount of loans bought from / granted to other agents. For a given amount of loans the equal amount of assets are granted as security to the buyer of the loan.
 \item Loan taken - the amount of loans sold to other agents. For a given amount of loans the equal amount of assets are granted as security to the buyer of the loan. Thus this variable decreases the amount of assets the agent can trade with as this amount of loans needs to be kept as security.
 \end{itemize}
@@ -219,7 +225,7 @@ max_{asset} = \textit{pU}
 \end{equation}
 
 \paragraph{limit}
-The limit-price of an asset in cash depends on the optimism-factor \textit{h} of the agent where the most optimistic agent assigns pU and the most pessimistic pD as the price. Thus applying linear interpolation one receives the following equation.
+The limit-price of an asset in cash depends on the optimism-factor \textit{h} of the agent where the most optimistic agent assigns pU and the most pessimistic pD as the price.
 
 \begin{equation}
 limit_{asset} = h \; pU + ( 1.0 - h ) \; pD
@@ -375,7 +381,7 @@ limit_{asset/bond} = \frac{limit_{asset}}{limit_{bond}}
 Bid offers are generated only when the agent is not negative on free assets after the trade. An amount of TRADING-UNIT assets is selected. To calculate the free assets after a match the following steps are performed:
 
 \begin{enumerate}
-\item Start with current free assets holdings.
+\item Start with current assets holdings.
 \item Subtract current collateral obligations.
 \item Subtract taken loans after trade.
 \item Add assets bought through trade.
@@ -397,7 +403,7 @@ Bid offers are generated only when the agent is not negative on free assets afte
 Bid offers are generated only when the agent is not negative on free assets after the trade. An amount of TRADING-UNIT bonds is selected. To calculate the free assets after a match the following steps are performed:
 
 \begin{enumerate}
-\item Start with current free assets holdings.
+\item Start with current assets holdings.
 \item Subtract current collateral obligations.
 \item Add given loans after trade.
 \item Subtract assets sold through trade.
@@ -452,13 +458,13 @@ In this section a few details of the simulation-implementation are discussed as 
 
 \medskip
 
-As noted above in the section \ref{sec:MARKETS} bonds and assets are always traded in chunks of TRADING-UNITS which is 0.1 in case of assets and 0.2 in case of bonds. Note that it is nothing unusual to scale the initial wealth-endowments to 1.0 and trade fractions of them as in the end the absolute endowment does not matter but the distribution over the agents so a transformation to natural numbers would not gain anything. What is much more important is that the system conserves wealth: no wealth is lost and no wealth is created \textit{ex nihilo}. This is guaranteed by the equations and pre-conditions found in the section \ref{sec:MARKETS}. 
+As noted above in the section \ref{sec:MARKETS} bonds and assets are always traded in chunks of TRADING-UNITS which is 0.1 in case of assets and 0.2 in case of bonds which are the same values used in the implementation of \cite{Breuer2015}. Note that it is nothing unusual to scale the initial wealth-endowments to 1.0 and trade fractions of them as in the end the absolute endowment does not matter but the distribution over the agents so a transformation to natural numbers would not gain anything. What is much more important is that the system conserves wealth: no wealth is lost and no wealth is created \textit{ex nihilo}. This is guaranteed by the equations and pre-conditions found in the section \ref{sec:MARKETS}. 
 
 \subsection{Sweeping and Matching}
 \label{sec:implementation_sweepingAndMatching}
 
 \paragraph{Sweeping}
-Sweeping is the process of searching a successful match by running through the agents and apply matching between their offers. Because offering-prices are created randomly in specific ranges it could happen that no offers match. To elevate this problem not only 1 but up to 500 sweeps are done when calculating the next successful match.
+Sweeping is the process of searching a successful match by running through the agents and apply matching between their offers. Because offering-prices are created randomly in specific ranges it could happen that no offers match. To elevate this problem not only 1 but up to 500 sweeps are done when calculating the next successful match. The number of 500 was chosen empirically through experiments as it turned out to be a good compromise between responsiveness of the GUI and efficiency. It is important to note that if a user initiates to cancel the simulation the current matching-round needs to be finished finished thus the lower this value the quicker the response but the more failed matching-rounds will happen.
 
 \begin{algorithm}
 \caption{Sweeping Pseudocode}\label{euclid}
@@ -489,7 +495,7 @@ Matching is the process of finding a match of a given agent in the sweeping-proc
 \caption{Matching Pseudocode}\label{euclid}
 \begin{algorithmic}[1]
 \State \textit{get best offerings of neighbourhood}
-\ForAll{neighbourhood offerings}
+\ForAll{best neighbourhood offerings}
 	\State \textit{randomly check sell or buy offerings first}
 	\If{ $\textit{buy-price} \geq \textit{sell-price}$ }
 		\State $m \gets \textbf{new Match}$
@@ -502,7 +508,18 @@ Matching is the process of finding a match of a given agent in the sweeping-proc
 \end{algorithmic}
 \end{algorithm}
 
+Note that as defined in the double-auction theory - see chapter \ref{ch:theory} - the agents meet at the half-way price. This guarantees that not more than the previously defined amount is traded which again conserves the wealth. Care must be taken when calculating the real price of the match as all offering prices are for 1.0 Unit of the traded good. Thus to obtain the real matching-price the previously calculated half-way price needs to be scaled by the matching-amount to obtain the price for the given matching-amount.
+\medskip
+Also note that if one match is found on any market then the sweeping and matching is terminated and a successful match is returned thus the agents can place offers on all markets although the sum of the offers would be infeasible because only one offer will be satisfied and the other ones are thrown away.
+
+\section{Performance improvement}
+\label{sec:implementation_performanceImprovement}
+
+\subsection{Local and Global Offer-book}
+The pseudo-code presented in algorithm \ref{alg:BEST_OFFERINGS_NEIGHBOURHOOD} shows how to get the best offerings within a neighbourhood. One starts with the current agent and iterates over all neighbours and compares their offerings with the current best offerings. If any of the neighbour offerings is better than the current best then the current best is replaced by the one of the neighbour. It is easy to see that the calculation of the best neighbourhood can be quite costly the more neighbours an agent has. For the Ascending-Connected topology this is not a big deal but in the case of the fully-connected topology the impact is serious. Because fully-connected is an important topology as it serves as a benchmark for the others an optimization was implemented specially suited for this kind of topology: the introduction of a global offer-book. Instead of calculating the best offerings within the neighbourhood all offers are checked against each other in a global offering-list during the time of offering-creation. After all offers have been generated this list contains only the best sell and ask offerings for each market. The step of calculating the best neighbourhood can then be omitted in the case of fully-connectedness because it would be the same as the global best-offerings list thus saving a substantial amount of processing time.
+
 \begin{algorithm}
+\label{alg:BEST_OFFERINGS_NEIGHBOURHOOD}
 \caption{Get Best Offerings of Neighbourhood Pseudocode}\label{euclid}
 \begin{algorithmic}[1]
 \State $\textit{bestOfferings} \gets \textit{null}$
@@ -526,31 +543,21 @@ Matching is the process of finding a match of a given agent in the sweeping-proc
 \end{algorithmic}
 \end{algorithm}
 
-Note that as defined in the double-auction theory - see chapter \ref{ch:theory} - the agents meet at the half-way price. This guarantees that not more than the previously defined amount is traded which again conserves the wealth. Care must be taken when calculating the real price of the match as all offering prices are for 1.0 Unit of the traded good. Thus to obtain the real matching-price the previously calculated half-way price needs to be scaled by the matching-amount to obtain the price for the given matching-amount.
-\medskip
-Also note that if one match is found on any market then the sweeping and matching is terminated and a successful match is returned thus the agents can place offers on all markets although the sum of the offers would be infeasible because only one offer will be satisfied and the other ones are thrown away.
-
-\section{Performance improvement}
-\label{sec:implementation_performanceImprovement}
-
-\subsection{Local and Global Offer-book}
-It is easy to see that the calculation of the best neighbourhood can be quite costly the more neighbours an agent has. For the Ascending-Connected topology this is not a big deal but in the case of the fully-connected topology the impact is serious. Because fully-connected is an important topology as it serves as a benchmark for the others an optimization was implemented specially suited for this kind of topology: the introduction of a global offer-book. Instead of calculating the best offerings within the neighbourhood all offers are checked against each other in a global offering-list during the time of offering-creation. After all offers have been generated this list contains only the best sell and ask offerings for each market. The step of calculating the best neighbourhood can then be omitted in the case of fully-connectedness because it would be the same as the global best-offerings list thus saving a substantial amount of processing time.
-
 \subsection{Matching probabilities}
 
 \paragraph{General matching}
 For a match to happen the buyer-price must be larger or equal to the seller-price. Thus as shown in chapter \ref{ch:hypothesis} a price higher than the seller-price can only be placed by a buyer which has a strictly larger optimism-factor than the seller because only then their offering-ranges have a chance to cover each other partly. Thus matching in general works between a seller with a lower optimism-factor and a buyer with a higher optimism-factor. As noted in chapter \ref{ch:leverageCycle} agents place offering-prices randomly in their ranges which are specified in this chapter in the section \ref{sec:MARKETS} so matching is also subject to randomness.
 \medskip
-To investigate the matching-probabilities one must look at the coverage probabilities of the matching-ranges. The limit-price of bidders increases with rising optimism-factor and thus the width of the bidding-range decreases because bidders make their offers in the range of [limit..pU]. The situation is the inverse for askers as their limit-price increases too but the width of their asking-range increases because they place their offers in the range of [pD..limit]. Thus obviously the larger the difference in the optimism-factor between a seller and a buyer - again note that buyers optimism-factors are strictly larger than those of their corresponding sellers - the more likely a match will happen as both ranges increase and cover a greater total distance thus increasing the probability that prices will be drawn that match.
+To investigate the matching-probabilities one must look at the coverage probabilities of the matching-ranges. The limit-price of bidders increases with rising optimism-factor and thus the width of the bidding-range decreases because bidders make their offers in the range of [pD..limit]. The situation is the inverse for askers as their limit-price increases too but the width of their asking-range increases because they place their offers in the range of [limit..pU]. Thus obviously the larger the difference in the optimism-factor between a seller and a buyer - again note that buyers optimism-factors are strictly larger than those of their corresponding sellers - the more likely a match will happen as both ranges increase and cover a greater total distance thus increasing the probability that prices will be drawn that match.
 \medskip
 The following formulae derive the probabilities that an asker and a bider with a given limit-price will match on the Asset/Cash market. First the coverage-range is calculated by subtracting the limit-price of the asker from the one of the bidder as the one of the bidder must be larger. Then the probabilities of the asker and of the bidder to fall into the range of the coverage-range is calculated. Finally the probability that both the asker and bidder range will match is calculated by multiplying the previously calculated probabilities. Note that a division by 2 needs to be done due to symmetry because it does not matter where in the range the prices will meet, but because the buy-price has to be greater than or equal to the seller-price only the half-range is available.
 
 \begin{equation}
 \begin{split}
 \textit{coverage-range} = \textit{limit bidder} - \textit{limit asker} \\
-p(asker) = \frac{\textit{coverage-range}}{ pU - \textit{limit asker} } \\
-p(bider) = \frac{\textit{coverage-range}}{ \textit{limit bider} - pD } \\
-p(asker | bider) = \frac{p(asker) * p(bider)}{2}
+p_{asker}(match) = \frac{\textit{coverage-range}}{ pU - \textit{limit asker} } \\
+p_{bidder}(match) = \frac{\textit{coverage-range}}{ \textit{limit bider} - pD } \\
+p_{asker\&bidder}(match) = \frac{p(asker) * p(bider)}{2}
 \end{split}
 \end{equation}
 
@@ -562,7 +569,7 @@ The following figure \ref{fig:MATCHING_PROBABILITIES_30_INDIVIDUAL} visualizes t
 \begin{figure}[H]
 	\centering
   \includegraphics[width=1.0\textwidth, angle=0]{MATCHING_PROBABILITIES_30_INDIVIDUAL.png}
-	\caption{Pairwise probabilities of falling into coverage-range of 30 agents in Ascending-Connected topology on Asset/Cash market}
+	\caption{Single probabilities of falling into coverage-range of 30 agents in Ascending-Connected topology on Asset/Cash market}
 	\label{fig:MATCHING_PROBABILITIES_30_INDIVIDUAL}
 \end{figure}
 
@@ -592,7 +599,7 @@ Looking at these diagrams one can derive the following facts about the matching-
 \item The more agents in the network the lower the matching-probabilities.
 \end{enumerate}
 
-The lower matching-probabilities result in longer simulation-runs and more inefficiencies towards the end where free assets are kept by optimists instead of traded as the matching-probabilities decrease so much that no more trading will occur. To elevate this problem one can adjust the matching-probabilities by transforming the price-ranges. It is of great importance that the shape of the matching-probabilities distribution must be exactly the same. Only the absolute values of the probabilities are increased where the edges are at the maximum of 1.0. This is mathematically quite involved and was developed by supervisor Mr. Vollbrecht. The formulae and explanations have been moved to appendix \ref{app:increasingMatchingProbability}.
+The lower matching-probabilities result in longer simulation-runs and more inefficiencies towards the end where free assets are kept by optimists instead of traded as the matching-probabilities decrease so much that no more trading will occur. To alleviate this problem one can adjust the matching-probabilities by transforming the price-ranges. It is of great importance that the shape of the matching-probabilities distribution must be exactly the same. Only the absolute values of the probabilities are increased where the edges are at the maximum of 1.0. This is mathematically quite involved and was developed by supervisor Mr. Vollbrecht. The formulae and explanations have been moved to appendix \ref{app:increasingMatchingProbability}.
 \medskip
 This variant is dubbed "Ascending-Connected topology with Importance Sampling". See chapter \ref{ch:results} for the performance and results of this variant.
 

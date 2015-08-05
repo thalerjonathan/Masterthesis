@@ -5,7 +5,7 @@
 
 \section{Complex Networks}
 \label{sec:theory_complexNetworks}
-This thesis lays its main focus on the influence of network-topologies on the equilibrium found in continuous double-auction. The networks define the neighbourhood between agents and determine which pair of agents can trade with each other. All graph-related definitions in the following sections are provided through \cite{Drmota2007}.
+Networks play an important role in trading-processes and in the context of double auctions as they define which trader is able to interact with others thus influencing the process fundamentally. This thesis lays its main focus on the influence of network-topologies on the equilibrium found in continuous double-auction. The networks define the neighbourhood between agents and determine which pair of agents can trade with each other. All graph-related definitions in the following sections are provided through \cite{Drmota2007}.
 
 \medskip
 
@@ -34,26 +34,26 @@ Since the first proof in network-theory by Euler in 1735 the analysis of network
 One of the simplest network models studied was the random graph which was investigated first by \cite{ErdosRenyi1959}. The motivation behind random graphs is to assume a random-process of network formation and to study the resulting networks. Such networks are constructed by having \textit{N} unconnected vertices and then adding at random each possible edge with a given probability \textit{p} where the distribution of \textit{p} follows a specific model, e.g. uniform, poisson, gaussian and so on. Thus random graphs can be reduced to a "binomial model of link formation" \cite{Jackson2008} where out of all the possible random graphs with \textit{N} nodes one graph is selected with a probability of 
 
 \begin{equation}
-p^m(1-p) \frac{n(n-1)}{2} - m
+p^m(1-p) \frac{N(N-1)}{2} - m
 \end{equation}
 
 as reported in \cite{Jackson2008}.
 
 \subsection{Small-World effects}
-In the 1960s Stanley Milgram conducted an experiment in which he demonstrated that a letter can reach a destination person by an average of just 6 intermediate steps in between. In his papers on this experiment \cite{TraverMilgram_StudySmallWorld} and \cite{Milgram_SmallWorld}, he termed this phenomenon the \textit{small-world effect}. Although the results of his work have been questioned - more specifically that the world is really a small one e.g. by \cite{Kleinfeld_BigWorld} - it had big influences within the network-research community and led to the development of the small-world property. It is of great importance e.g. in social networks because this property implies that information spreads very quickly in the network as it needs very few steps to reach all nodes. This can also be applied to trading networks where it enables traders to trade goods within very few intermediary steps to traders which value the goods the most.
+In the 1960s Stanley Milgram conducted an experiment in which he demonstrated that a letter can reach any destination person by an average of just 6 intermediate steps in between. In his papers on this experiment \cite{TraverMilgram_StudySmallWorld} and \cite{Milgram_SmallWorld}, he termed this phenomenon the \textit{small-world effect}. Although the results of his work have been questioned - more specifically that the world is really a small one e.g. by \cite{Kleinfeld_BigWorld} - it had big influences within the network-research community and led to the development of the small-world property. It is of great importance e.g. in social networks because this property implies that information spreads very quickly in the network as it needs very few steps to reach all nodes. This can also be applied to trading networks where it enables traders to trade goods within very few intermediary steps to traders which value the goods the most.
 
 \medskip
 
 To calculate whether a network has the small-world property, one starts with the formula given by \cite{Newman_ComplexNetworks} for calculating the average path length in a network
 
 \begin{equation}
-\ell = \frac{1}{\frac{1}{2}n(n+1)} \displaystyle\sum_{i \geq j }^{} d_{ij}
+\ell = \frac{1}{\frac{1}{2}N(N+1)} \displaystyle\sum_{i \geq j }^{} d_{ij}
 \end{equation}
 
 where $d_{ij}$ is the shortest distance from vertex i to vertex j. Networks then exhibit the small-world property if $\ell$ scales at max logarithmically with network size of mean degree.
 
 \subsection{Scale-free networks}
-\cite{BarabasiAlbert_EmergenceScaling} found that real-world networks in contrast to random graphs are non-random which led to the discovery of the phenomena of scale-free networks which are networks whose vertex-degree distribution follows a power-law.
+\cite{BarabasiAlbert_EmergenceScaling} found that real-world networks in contrast to random graphs are non-random which led to the discovery of the phenomena of scale-free networks which are networks whose vertex-degree distribution follows a power-law as defined below.
 
 \subsubsection{Degree distribution}
 In an undirected Graph \textit{G} the edges adjacent to $v$ $\in$ $V(G)$ 

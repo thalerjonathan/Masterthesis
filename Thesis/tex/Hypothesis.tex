@@ -98,7 +98,7 @@ The property that the optimism-factor of the buyer has to be greater than or equ
 	limit_{asset} = h \, pU + (1-h) pD		\tag*{pU = 1, pD = 0.2}
 	\\ = h + (1 - h)0.2
 	\\ = h + \frac{1}{5} - \frac{h}{5}		\tag*{$\frac{\mathrm d}{\mathrm d h}$}
-	\\ = 1 - \frac{1}{5}
+	\\ \frac{\mathrm d limit_{asset}}{\mathrm d h} = 1 - \frac{1}{5}
 		&= \frac{4}{5}
 \end{align*}
 Constant $\Rightarrow$ limit-function is monotonically increasing over the real numbers. QED
@@ -110,7 +110,7 @@ Constant $\Rightarrow$ limit-function is monotonically increasing over the real 
 	limit_{bond} = h \, V + (1-h) pD			
 	\\ = h \, V + (1 - h)pD
 	\\ = h \, V + pD - h\,pD		\tag*{$\frac{\mathrm d}{\mathrm d h}$}
-	\\ = V - pD
+	\\ \frac{\mathrm d limit_{bond}}{\mathrm d h} = V - pD
 \end{align*}
 V is a constant in range of [0..1] $\Rightarrow$ limit-function is monotonically increasing were $V > pD$. QED
 \end{proof}
@@ -122,7 +122,7 @@ Note that this implies that a bond with face-value \textit{V = pD} cannot be tra
 \begin{align*}
 	limit_{asset/bond} = \frac{h \, pU + (1-h) pD}{h \, V + (1-h) pD} 				\tag*{pU = 1, pD = 0.2}
 	\\ = \frac{h + \frac{1}{5} - \frac{h}{5}}{h \, V + \frac{1}{5} - \frac{h}{5}}	\tag*{$\frac{\mathrm d}{\mathrm d h}$}
-	\\ = - \frac{5(V-1)}{(h(5V-1)+1)^2}									\tag*{assume h and V in range [0..1]}
+	\\ \frac{\mathrm d limit_{asset/bond}}{\mathrm d h} = - \frac{5(V-1)}{(h(5V-1)+1)^2}									\tag*{assume h and V in range [0..1]}
 	\\ \Rightarrow 5(V-1) \leq 0
 	\\ \Rightarrow (h(5V-1)+1)^2 \geq 0
 	\\ \Rightarrow - \frac{5(V-1)}{(h(5V-1)+1)^2} \geq 0 			\tag*{for h and V in range [0..1]}
