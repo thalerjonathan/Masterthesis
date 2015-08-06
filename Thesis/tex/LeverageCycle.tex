@@ -4,7 +4,7 @@
 \chapter{The Leverage Cycle}
 \label{ch:leverageCycle}
 
-In this chapter the model for the simulation is given. All the following chapters build upon this model where the thesis-software is an implementation of it. 
+In this chapter the model for the simulation is given which goal is to simulate the formation of the equilibrium prices and wealth-distribution of traders. All the following chapters build upon this model where the thesis-software is an implementation of it. In section \ref{sec:LEVERAGE_CYCLE_SIMULATION} a short overview of the dynamics of the simulation is given where chapter \ref{ch:implementation} gives a deeper introductions of the dynamic process and implementation-details of the simulation.
 
 \section{Geanakoplos}
 The model of \cite{Breuer2015} which is discussed in the next section is based upon the works of John Geanakoplos article \cite{Geanakoplos2009} "The Leverage Cycle", thus for a better understanding a short overview of the innovations and influences found therein is given.
@@ -14,20 +14,20 @@ The model of \cite{Breuer2015} which is discussed in the next section is based u
 The work of Geanakoplos focuses on asset-pricing, the influence of leverage on asset-prices and how leverage affects crises. He claims that because of leverage during boom times the asset-prices are too high due to massive leverage and during bad times the asset-prices are too low due to a massive drop in leverage. That is what he terms "the leverage cycle". Further he predicts that leverage cycles will occur despite people remembering past ones unless the central bank tries to stop those cycles by regulating leverage. Geanakoplos proposes a theory of equilibrium leverage and asset pricing which gives a central bank a tool for regulating leverage during boom times to prevent asset-prices skyrocketing and reinforce leverage in down times to lift the asset-prices which are too low to a reasonable level.
 
 \subsection{The natural buyer}
-For Geanakoplos all crises start with bad news which are then the reason why asset-prices drop below a price which is lower than everyone expected. He introduces the so-called "natural buyer" which is an agent who values the asset more than the public. This can be because the agent is less risk averse, gets more utility out of it and uses the asset more efficiently. In the end the details do not matter, the natural buyer is just more optimistic than the public.
-To prevent a too specific distinction between the natural buyer and the public Geanakoplos introduces a range of optimism \textit{h} $\in$ \textit{H} = [0..1] in which all agents are ordered by their optimism \textit{h} where the extreme pessimists reside at the lower end at 0 and the extreme optimists at the upper end at 1. Each agent assigns the probability that good news will occur according to its optimism \textit{h} where the extreme optimist thinks that good news will happen for sure and the extreme pessimist thinks that it will never occurs - thus the more optimistic an agent, the more a natural buyer it is. If the natural buyers drop out of the business then the asset-prices drop as the natural buyers are the only ones willing to drive asset-prices up through leverage because they value the asset-prices the highest. Thus the natural buyers buy as many assets they can both by cash, through borrowing and using the assets as security thus creating leverage. Because of these mechanics Geanakoplos emphasises that it is very important to note who lost money in a crisis - the public or the natural buyers whereas a loss for the natural buyers is the real catastrophe as no one is willing to drive up the asset-prices any more.
+For Geanakoplos all crises start with bad news which are then the reason why asset-prices drop below a price which is lower than everyone expected. He introduces the so-called "natural buyer" which is an trader who values the asset more than the public. This can be because the trader is less risk averse, gets more utility out of it and uses the asset more efficiently. In the end the details do not matter, the natural buyer is just more optimistic than the public.
+To prevent a too specific distinction between the natural buyer and the public Geanakoplos introduces a range of optimism \textit{h} $\in$ \textit{H} = [0..1] in which all traders are ordered by their optimism \textit{h} where the extreme pessimists reside at the lower end at 0 and the extreme optimists at the upper end at 1. Each trader assigns the probability that good news will occur according to its optimism \textit{h} where the extreme optimist thinks that good news will happen for sure and the extreme pessimist thinks that it will never occurs - thus the more optimistic an trader, the more a natural buyer it is. If the natural buyers drop out of the business then the asset-prices drop as the natural buyers are the only ones willing to drive asset-prices up through leverage because they value the asset-prices the highest. Thus the natural buyers buy as many assets they can both by cash, through borrowing and using the assets as security thus creating leverage. Because of these mechanics Geanakoplos emphasises that it is very important to note who lost money in a crisis - the public or the natural buyers whereas a loss for the natural buyers is the real catastrophe as no one is willing to drive up the asset-prices any more.
 
 \subsection{Two-period economy}
-Geanakoplos then introduces a two-period economy. In the first period each agent of the previously mentioned continuum \textit{H} is endowed with one consumption good C and one asset Y and can then trade with each other. The second period can be one of two states: U(p) and D(own) where in the up-state the asset Y is worth 1.0 and in the down-state only 0.2. The agents differ only in their optimism \textit{h} by which they assign the probability that the up-state will happen tomorrow in the second period. Consequently they trade on the market according to their utility-function which depends on their optimism \textit{h}. The following formula gives the limit-price of an agent according to Geanakoplos. It defines how much an agent values the asset - obviously the more optimistic the higher the price.
+Geanakoplos then introduces a two-period economy. In the first period each trader of the previously mentioned continuum \textit{H} is endowed with one consumption good C and one asset Y and can then trade with each other. The second period can be one of two states: U(p) and D(own) where in the up-state the asset Y is worth 1.0 and in the down-state only 0.2. The traders differ only in their optimism \textit{h} by which they assign the probability that the up-state will happen tomorrow in the second period. Consequently they trade on the market according to their utility-function which depends on their optimism \textit{h}. The following formula gives the limit-price of an trader according to Geanakoplos. It defines how much an trader values the asset - obviously the more optimistic the higher the price.
 
 \begin{equation}
 \textit{limit-price} = h + (1 - h) \; 0.2
 \end{equation}
 
-Now if the \textit{limit-price} is larger than some offered price \textit{p} then the agent is going to buy the asset for the offered price \textit{p} as the agent values it more, thus when buying the asset the agent will make an expected profit. If the \textit{price} is less than the offered price \textit{p} the agent is going to sell the asset as the value the agent assigns to it is lower than the offered price \textit{p}, thus the agent can make an expected profit in selling it.
+Now if the \textit{limit-price} is larger than some offered price \textit{p} then the trader is going to buy the asset for the offered price \textit{p} as the trader values it more, thus when buying the asset the trader will make an expected profit. If the \textit{price} is less than the offered price \textit{p} the trader is going to sell the asset as the value the trader assigns to it is lower than the offered price \textit{p}, thus the trader can make an expected profit in selling it.
 
 \subsection{Loan market}
-Geanakoplos introduces a loan market where agents can lend and borrow money through loans in order to further buy assets after they have run out of cash. A loan can be sold and bought for \textit{j} = 0.2 and needs to be paid back at the beginning of the second state. Because lenders worry about default, each loan needs to be backed up by an asset as security.
+Geanakoplos introduces a loan market where traders can lend and borrow money through loans in order to further buy assets after they have run out of cash. A loan can be sold and bought for \textit{j} = 0.2 and needs to be paid back at the beginning of the second state. Because lenders worry about default, each loan needs to be backed up by an asset as security.
 
 \medskip
 
@@ -35,11 +35,11 @@ In the up-state the borrower will pay back \textit{j} = 0.2 and in the down-stat
 
 \medskip
 
-Geanakoplos then predicts the so called \textit{marginal buyer} around \textit{h} = 0.69. All agents with \textit{h} $<$ 0.69 are pessimists and sell their assets. All agents above \textit{h} $>$ 0.69 are optimists and buy all the assets the pessimists sell, either through cash or by borrowing money from the pessimists through loans and using the borrowed money to buy further assets which then in turn act as security - the leverage is endogenous.
+Geanakoplos then predicts the so called \textit{marginal buyer} around \textit{h} = 0.69. In equilibrium all traders with \textit{h} $<$ 0.69 are pessimists and sell their assets. All traders above \textit{h} $>$ 0.69 are optimists and buy all the assets the pessimists sell, either through cash or by borrowing money from the pessimists through loans and using the borrowed money to buy further assets which then in turn act as security - the leverage is endogenous.
 
 \medskip
 
-Geanakoplos then introduces loans with \textit{j} $>$ 0.2 where in the up-state they promise their initial value \textit{j} and in the down-state they deliver only 0.2 - the collateral assets which is worth 0.2 in the down-state. Thus loans with \textit{j} $>$ 0.2 are risky loans because a lender can lose money depending on the occurring state. If a lender granted a bond of type \textit{j} = 0.5 and the down-state will occur the borrower will either return 0.2 cash or the security-asset which is now only worth 0.2 - the lender has lost 0.3 cash.
+Geanakoplos then introduces loans with \textit{j} $>$ 0.2 where in the up-state they promise their initial value \textit{j} and in the down-state they deliver only 0.2 - the collateral assets which is worth 0.2 in the down-state. Thus loans with \textit{j} $>$ 0.2 are risky loans because a lender can lose money depending on the occurring state. If a lender granted a bond of type \textit{j} = 0.5 and the down-state will occur the borrower will the security-asset which is now only worth 0.2 - the lender has lost 0.3 cash.
 
 \medskip
 
@@ -61,57 +61,67 @@ He then shows that if there exist markets for all type of bonds which include th
 Note that this is only a small part of the quite involved economic theory. Geanakoplos does not stop at this point but this overview is already enough to understand the basic influences found in the work of \cite{Breuer2015}.
 
 \section{Breuer et al.}
-As already outlined the model of Breuer is heavily influenced by the work of Geanakoplos with the major difference that it is not a pure static equilibrium theory but is a simulation-process which approaches the equilibrium iteratively over time. Also a major achievement is that not only assets and bonds are traded against cash but the model has been extended by an additional market which allows collateralized assets to be traded. According to \cite{Breuer2015} this is the first time that the trading of leveraged assets was investigated in a continuous double-auction environment. It is also of great importance to note that although the up- and down-states are part of this model, they are actually never realized and act only as a model - thus only the first period is simulated. Furthermore agents are not an infinite continuum but finite entities because the equilibrium-solving is done as an iterative simulation-process in software and thus finite agents are required.
+As already outlined the model of Breuer is heavily influenced by the work of Geanakoplos with the major difference that it is not a pure static equilibrium theory but is a simulation-process which approaches the equilibrium iteratively over time. Also a major achievement is that not only assets and bonds are traded against cash but the model has been extended by an additional market which allows assets to be traded against bonds. According to \cite{Breuer2015} this is the first time that the trading of leveraged assets was investigated in a continuous double-auction environment. It is also of great importance to note that although the up- and down-states are part of this model, they are actually never realized and act only as a model - thus only the first period is simulated. Furthermore traders are not an infinite continuum but a finite number of entities because the equilibrium-solving is done as an iterative simulation-process in software and thus finite traders are required.
 
 The major differences to the approach of Geanakoplos are:
 \begin{enumerate}
-\item Collateralized assets are traded in addition to the other markets.
+\item Leveraged assets are traded in addition to the other markets.
 \item Up- and down-states are never realized but only the first period is simulated.
 \item Equilibrium in the case of only a risky-bond available is treated.
-\item There is a finite number of agents as opposed to a continuum.
+\item There is a finite number of traders as opposed to a continuum.
 \item It is an auction-process over time which iteratively approaches theoretical equilibrium where Geanakoplos is a static equilibrium theory. The mechanism used in this auction is a continuous double-auction as introduced in chapter \ref{ch:theory}
 \end{enumerate}
 
 In the following sections some details which are different to the model of Geanakoplos or need more explanation are discussed.
 
 \subsection{States}
-Both the up- and the down-state are the same as in Geanakoplos where the up-state is denoted with pU and the down-state is denoted as pD and assets are worth 1 in pU and 0.2 in pD. Agents are endowed with 1 unit of cash and 1 unit of assets today and are then able to trade between each other. The tomorrow-state will not be drawn - agents trade only today.
+Both the up- and the down-state are the same as in Geanakoplos where the up-state is denoted with pU and the down-state is denoted as pD and assets are worth 1 in pU and 0.2 in pD. traders are endowed with 1 unit of cash and 1 unit of assets today and are then able to trade between each other. The tomorrow-state will not be drawn - traders trade only today.
 
 \subsection{Markets and limit-functions}
 \label{sec:LIMIT_FUNCTIONS}
 
-\paragraph{Asset/Cash market}
-The asset market is the same as in \cite{Geanakoplos2009} where assets are just bought and sold against cash.
+\cite{Breuer2015} define 3 Markets on which products are traded according to a limit-price specific to each market.
 
-\begin{equation}
-limit_{asset} = h + ( 1 - h ) \; pD
-\end{equation}
+\paragraph{Asset/Cash market}
+The asset market is the same as in \cite{Geanakoplos2009}. Free assets are traded against cash. The buyer gets a specific amount of free assets for a given amount of cash where the seller gives away the specific amount of free assets and gets the given amount of cash. The limit-price of a trader in this market is defined as follows:
+
+\begin{center}
+$limit_{asset} = pU \; h + ( 1 - h ) \; pD$
+\end{center}
+
+This guarantees that the most pessimistic trader values the asset with pD and the most optimistic trader with pU.
 
 \paragraph{Bond/Cash market}
-The bond market acts the same way as described in \cite{Geanakoplos2009}. Collateral acts as enforcement of financial promises and thus for a given amount of loans the same amount of assets must be held as securities. A loan can be bought for a given price which is the face-value \textit{V}. This face-value has to be paid by the borrower in up-state whereas only pD has to be paid in down-state. Again note that up- and down-states are never realized but influence the utility-functions.
+The bond market acts the same way as described in \cite{Geanakoplos2009}. Bonds are traded against cash. The buyer grants the seller a loan in buying a bond from the seller thus the buyer gets a given bond-amount from the seller and gives a given cash-amount to the seller. For a given amount of sold bonds the equal amount of assets needs to be held as security. Collateral acts as enforcement of financial promises and thus for a given amount of loans the same amount of assets must be held as securities. A loan can be bought for a given price \textit{q}. The value which has to be re-paid by the borrower in the up-state is \textit{q} which is also called the face-value \textit{V} whereas in the down-state pD has to be paid. Again note that up- and down-states are never realized but influence the utility-functions.
 \medskip
 Risk-less as well as risky bonds are available in the model of \cite{Breuer2015} where the risky bonds are those with face-value \textit{V} $>$ 0.2. Although Breuer et al. allowed more than one bond-type simultaneously in their model, this is not implemented in the thesis-software as it is not the primary focus of this work and would have required substantial changes in the software.
+\medskip
+The limit-price of a trader in this market is defined as follows:
 
-\begin{equation}
-limit_{bond} = h V + ( 1 - h ) \; pD
-\end{equation}
+\begin{center}
+$limit_{bond} = h \; V + ( 1 - h ) \; pD$
+\end{center}
+
+This guarantees that the most pessimistic trader values the bond with pD and the most optimistic trader with V.
 
 \paragraph{Asset/Bond market}
-The Asset/Bond market trades assets against bonds thus the utility-function is just the ratio of the Asset/Cash utility to the Bond/Cash utility which gives the amount of bonds one asset is worth for a given optimism \textit{h}.
+Assets are traded against bonds. The buyer gets a specific amount of free assets for a given amount of bonds where the seller gives away the specific amount of free assets and gets the given amount of bonds. Thus the limit-price of a trader in this market is just the ratio of the Asset/Cash limit to the Bond/Cash limit which gives the amount of bonds one asset is worth for a given optimism \textit{h}.
 
-\begin{equation}
-limit_{asset/bond} = \frac{limit_{asset}}{limit_{bond}}
-\end{equation}
+\begin{center}
+$limit_{asset/bond} = \frac{limit_{asset}}{limit_{bond}}$
+\end{center}
 
-\subsection{Agent utilitiy}
-The utility of an agent is a generic measure to calculate the trading-preferences of the agent. In the case of this thesis it calculates the potential earning of a given configuration of goods by multiplying the holdings of a good with its limit-function. In equilibrium theory a configuration is found which clears the markets.
+This guarantees that the most pessimistic trader values the asset with 1.0 bond and the most optimistic trader with $\frac{pU}{V}$ bonds.
+
+\subsection{trader utilitiy}
+The utility of an trader is a generic measure to calculate the trading-preferences of the trader. In the case of this thesis it calculates the potential earning of a given configuration of goods by multiplying the holdings of a good with its limit-function. In equilibrium theory a configuration is found which clears the markets.
 
 \medskip
 
-Agents can hold cash, assets and bonds thus for each of these goods a separate utility-function exists and thus the total utility of an agent is given as the sum of all separate utilities.
+traders can hold cash, assets and bonds thus for each of these goods a separate utility-function exists and thus the total utility of an trader is given as the sum of all separate utilities.
 
 \begin{equation}
-u_{agent} = u_{cash} + u_{asset} + u_{bond}
+u_{trader} = u_{cash} + u_{asset} + u_{bond}
 \end{equation}
 
 \subsubsection{Cash utility}
@@ -142,56 +152,57 @@ u_{bond} = h_{bond} * limit_{bond}
 \end{equation}
 
 \subsection{Collateralized asset market}
-One of the major inventions of the work of Breuer et al. is the introduction of a market for collateralized assets which has never been studied in continuous double-auction simulations so far. This market enables an agent which is out of cash but high on assets to buy additional assets by selling bonds and thus borrowing money which the agent uses to buy the desired assets and in return using them as security for collateral constraints. When implementing this mechanism Breuer et al. had to overcome two major difficulties.
+One of the major inventions of the work of Breuer et al. is the introduction of a market for collateralized assets which has never been studied in continuous double-auction simulations so far. This market enables an trader which is out of cash but high on assets to buy additional assets by selling bonds and thus borrowing money which the trader uses to buy the desired assets and in return using them as security for collateral constraints. When implementing this mechanism Breuer et al. had to overcome two major difficulties.
 
 \begin{enumerate}
 \item Coordination of asset and bond markets - the buying of an asset and the selling of a bond needs to be coordinated across both markets and must happen at the same time.
-\item Reversibility of suboptimal trades - earlier trades could have been suboptimal for an agent because it couldn't fully anticipate the behaviour of other agents and thus needs to get out of old trades. Technically speaking this would require freeing collateralized assets by unlocking them and transferring them in to the state of a real asset - no longer collateralized, thus being completely owned by the agent.
+\item Reversibility of suboptimal trades - earlier trades could have been suboptimal for an trader because it couldn't fully anticipate the behaviour of other traders and thus needs to get out of old trades. Technically speaking this would require freeing collateralized assets by unlocking them and transferring them in to the state of a real asset - no longer collateralized, thus being completely owned by the trader.
 \end{enumerate}
 
 Breuer et al. proposed solutions to these two difficulties:
 \paragraph{ABM mechanism}
-The solution to the coordination of the asset and bond markets would be to condition a buy offer of an asset to a sell offer of a bond. Breuer et al. reported that "Separate utility improvement in each of the coupled trades is more restrictive than a net sum utility improvement of all coupled trades." which prevents theoretical equilibrium to be reached. Thus they define the market to trade assets directly against bonds thus reducing the involved agents from three to two and removing the coordination-problem because only one product with one price is traded. This resolves the problem with the restrictiveness of utility in the case of two products.
+The solution to the coordination of the asset and bond markets would be to condition a buy offer of an asset to a sell offer of a bond. Breuer et al. reported that "Separate utility improvement in each of the coupled trades is more restrictive than a net sum utility improvement of all coupled trades." which prevents theoretical equilibrium to be reached. Thus they define the market to trade assets directly against bonds thus reducing the involved traders from three to two and removing the coordination-problem because only one product with one price is traded. This resolves the problem with the restrictiveness of utility in the case of two products.
 
 \paragraph{Bond pledgeability}
 The problem with the reversibility of suboptimal trades was solved in allowing the uncollateralization of an asset by buying a bond. Breuer et al. called this mechanism "bond pledgeability" (BP) and showed that without this mechanism the simulation never converges towards the theoretical equilibrium. See chapter \ref{ch:implementation} "Implementation" for details on the implementation of this mechanism.
 
 \subsection{Auction Mechanism}
-The auction mechanism used is a continuous double-auction on all markets open at the same time with a finite number of agents.
+\label{sec:AUCTION_MECHANISM}
+The auction mechanism used is a continuous double-auction on all markets open at the same time with a finite number of traders.
 
 \paragraph{Bidding}
-To prevent a bias one agent is picked at random and then submits offerings on all markets while respecting the following constraints.
+To prevent a bias one trader is picked at random and then submits offerings on all markets while respecting the following constraints.
 
 \begin{itemize}
-\item If the agent has no more assets it can't sell them either through cash or bonds.
-\item The agent cannot buy more assets or bonds than it owns cash.
-\item When placing sell-offers of bonds or assets there must not remain bonds which have no collateral as security. 
+\item If the trader has no more assets it can't sell them either through cash or bonds.
+\item The trader can only buy as much assets or bonds as it can afford by the current cash holdings.
+\item The trader must respect the collateral requirements: for each sold bond the equal amount of assets needs to be kept as security. Those assets are not allowed to be sold and if all assets act as a security the trader is not allowed to sell any more bonds.
 \end{itemize}
 
 \paragraph{Matching}
-Again to prevent a bias pick one market at random and pick at random the buy or sell offers on this market and compare them with the offers of the previously selected random agent. A match occurs only if:
+Again to prevent a bias pick one market at random and pick at random the buy or sell offers on this market and compare them with the offers of the previously selected random trader. A match occurs only if:
 
 \begin{equation}
 \textit{buy-price} \geq \textit{sell-price}
 \end{equation}
 
-In this case the offers of all other agents which have not matched are deleted from the offering-book and the matching-price is calculated at the half-way price:
+In this case the offers of all other traders which have not matched are deleted from the offering-book and the matching-price is calculated at the half-way price:
 \begin{equation}
 \textit{matching-price} = \frac{\textit{buyer-price} + \textit{seller-price}}{2}
 \end{equation}
 
-If no match occurs with the current random agent pick another agent at random and continue with submitting its offers on all markets.
+If no match occurs with the current random trader pick another trader at random and continue with submitting its offers on all markets.
 
 \subsection{Equilibrium}
 \label{sec:EQUILIBRIUM}
 Breuer et al. reported equilibria for prices and allocations both of bonds and assets where the equilibria are fundamentally different whether a risk-free bond is available or not.
 
 \paragraph{Risk-free bond}
-If a risk-free bond with a face-value of \textit{V} $\leq$ 0.2 is available then the agents are divided into two subgroups by $i^*$:
+If a risk-free bond with a face-value of \textit{V} $\leq$ 0.2 is available then the traders are divided into two subgroups by $i^*$:
 
 \begin{enumerate}
-\item Agents with $0 < i \leq i^*$ are pessimists and hold only cash or the risk-free bond with highest face-value.
-\item Agents with $i^* < i \leq 1$ are optimists and are maximally short in risk-free bonds with highest face-value and hold only assets.
+\item traders with $0 < i \leq i^*$ are pessimists and hold only cash or the risk-free bond with highest face-value.
+\item traders with $i^* < i \leq 1$ are optimists and are maximally short in risk-free bonds with highest face-value and hold only assets.
 \end{enumerate}
 
 Below the formulas reported in \cite{Breuer2015} are given for calculating $i^*$, the asset-price \textit{p} and the bond-price \textit{q} in equilibrium.
@@ -209,12 +220,12 @@ q = 0.2
 \end{equation}
 
 \paragraph{Risky bond}
-When only a risky bond with face-value \textit{V} $>$ 0.2 is available then the agents divide into three instead of two subgroups separated by $i_{1}$ and $i_{2}$:
+When only a risky bond with face-value \textit{V} $>$ 0.2 is available then the traders divide into three instead of two subgroups separated by $i_{1}$ and $i_{2}$:
 
 \begin{enumerate}
-\item Agents with $0 < i \leq i_{1}$ are pessimists and hold only cash.
-\item Agents with $i_{1} < i \leq i_{2}$ are median agents and hold only bonds with the lowest face-value.
-\item Agents with $i_{2} < i \leq 1$ are optimists and hold only assets and are maximally short in risky bonds with the lowest face-value.
+\item traders with $0 < i \leq i_{1}$ are pessimists and hold only cash.
+\item traders with $i_{1} < i \leq i_{2}$ are median traders and hold only bonds with the lowest face-value.
+\item traders with $i_{2} < i \leq 1$ are optimists and hold only assets and are maximally short in risky bonds with the lowest face-value.
 \end{enumerate} 
 
 Below the formulas reported in \cite{Breuer2015} are given for calculating $i_{1}$, $i_{2}$, the asset-price \textit{p} and the bond-price \textit{q} in equilibrium. Note that in this thesis equilibria are always calculated for a risky bond with a face-value of \textit{V} = 0.5.
@@ -238,11 +249,11 @@ q = p \frac{i_{2} - i{1}}{1 - i_{1}}
 Note that this case is not discussed in \cite{Geanakoplos2009} where it is excluded by assumption.
 
 \subsubsection{Calculating theoretical Equilibrium}
-Theoretical equilibrium can be calculated through the previously given equations for an infinite number of agents. In the simulation a finite set of agents is used for which the theoretical equilibrium must found in order to compare the results of the simulation with the theoretical equilibrium. For this purpose \cite{Breuer2015} developed an algorithm in MATLAB which searches the finite solution-space for the given equilibrium. Mr. Martin Jandacka wrote a short, unpublished documentation on the approach for risky bonds which is summarized here.
+Theoretical equilibrium can be calculated through the previously given equations for an infinite number of traders. In the simulation a finite set of traders is used for which the theoretical equilibrium must found in order to compare the results of the simulation with the theoretical equilibrium. For this purpose \cite{Breuer2015} developed an algorithm in MATLAB which searches the finite solution-space for the given equilibrium. Mr. Martin Jandacka wrote a short, unpublished documentation on the approach for risky bonds which is summarized here.
 
 \medskip
 
-For given asset prices \textit{q} and bond-prices \textit{q} each agent optimises its expected utility. As can be seen in the section \ref{sec:LIMIT_FUNCTIONS} the utility-functions are linear which makes this optimization problem a linear one which can be solved through Linear Programming (LP). Thus the two agents \textit{i1} and \textit{i2} are searched where \textit{i1} marks the end of the pessimists and \textit{i2} the beginning of the optimists. This is done by iterating through all possible combinations of \textit{i1} and \textit{i2} and checking if they generate equilibrium on the market or not. The time dependence is $O(N^2)$ where \textit{N} is the amount of agents. 
+For given asset prices \textit{p} and bond-prices \textit{q} each trader optimises its expected utility. As can be seen in the section \ref{sec:LIMIT_FUNCTIONS} the utility-functions are linear which makes this optimization problem a linear one which can be solved through Linear Programming (LP). Thus the two traders \textit{i1} and \textit{i2} are searched where \textit{i1} marks the end of the pessimists and \textit{i2} the beginning of the optimists. This is done by iterating through all possible combinations of \textit{i1} and \textit{i2} and checking if they generate equilibrium on the market or not. The time dependence is $O(N^2)$ where \textit{N} is the amount of traders. 
 
 \subsection{Endogenous leverage}
 Endogenous leverage is the central topic of the models both of Geanakoplos and of Breuer et al. Because it may not seem immediately clear where and how leverage is endogenous in the model of Breuer et al., this section outlines where this is the case and how it is implemented. 
@@ -259,13 +270,14 @@ and furthermore
 Leverage, the percentage of the value of the real asset that can be borrowed to purchase it, is determined by contract selection through the market. Leverage is endogenous.
 \end{quote}
 
-\textit{Contract selection} amounts to the selection of the bond-types used by the agents to finance their trades. Geanakoplos and Breuer report that if multiple bonds are available which include risk-free bonds the agents will select the risk-free bond with the highest face-value which is 0.2. The reason is that buyers which are more optimistic towards the up-state expect that they would have to pay the face-value so they try to select a bond with the lowest possible face-value the sellers would accept. The sellers which are more pessimistic towards the up-state expect that they will more likely get back the down-state value of 0.2 and don't want to trade above this value as they expect to lose money in this case. So buyers and sellers select the risk-free bond with face-value of 0.2 endogenously through the mechanics of the model and not by parameters which are set exogenous by an experimenter. Thus Leverage is regarded as endogenous, coming from within the simulation-model itself.
+\textit{Contract selection} amounts to the selection of the bond-types used by the traders to finance their trades. Geanakoplos and Breuer report that if multiple bonds are available which include risk-free bonds the traders will select the risk-free bond with the highest face-value which is 0.2. The reason is that buyers which are more optimistic towards the up-state expect that they would have to pay the face-value so they try to select a bond with the lowest possible face-value the sellers would accept. The sellers which are more pessimistic towards the up-state expect that they will more likely get back the down-state value of 0.2 and don't want to trade above this value as they expect to lose money in this case. So buyers and sellers select the risk-free bond with face-value of 0.2 endogenously through the mechanics of the model and not by parameters which are set exogenous by an experimenter. Thus Leverage is regarded as endogenous, coming from within the simulation-model itself.
 
 \medskip
 
 Note that the prices of assets and debts are distorted through leverage because optimists value the goods more and are willing to drive the prices up through the use of leverage. This was a major finding by both Geanakoplos and Breuer.
 
 \subsection{Equilibrium of trading-process}
+\label{sec:LEVERAGE_CYCLE_EQUILIBRIUM_TRADINGPROCESS}
 As already noted the model given above is a dynamic process which approaches an equilibrium over time. The equilibrium is established if the system does not change any more over time: the process has come to a halt and all time dependent variables stay constant. Due to its design the process of this model will always come to a halt at some point - and will thus have some equilibrium - which is the case when all traders have become unable to trade:
 
 \begin{itemize}
@@ -275,4 +287,33 @@ As already noted the model given above is a dynamic process which approaches an 
 
 It is of great importance to note that if the process has come to a halt \textit{some} equilibrium has been established but the established equilibrium \textit{must not} necessarily be the theoretical one as given by the equations in section \ref{sec:EQUILIBRIUM}.
 
+\section{Simulation}
+\label{sec:LEVERAGE_CYCLE_SIMULATION}
+The sections above define the model of the simulation found in this thesis which goal is to simulate the formation of the equilibrium prices and wealth-distribution between the traders in a dynamic process over time until some equilibrium has been reached where traders cannot trade anymore. Algorithm \ref{alg:SIMULATION_WORKINGS_PSEUDO} gives a short description of the simulation process in pseudo-code:
+
+\begin{algorithm}
+\caption{Simulation process}
+\label{alg:SIMULATION_WORKINGS_PSEUDO}
+\begin{algorithmic}[1]
+\State $\textit{endow all traders with 1.0 unit of cash and assets}$
+\State $\textit{open all 3 markets and begin trading}$
+\While{traders can trade}
+	\State $\textit{clear old offerings of each trader}$
+	\State $\textit{bidding: each trader places offers on all markets respecting constraints}$
+	\State $\textit{matching: find two traders which offers match}$
+	\If{matching offers found}
+		\State $\textit{transfer wealth between matching traders}$
+	\EndIf
+\EndWhile
+\end{algorithmic}
+\end{algorithm}
+
+All markets defined in section \ref{sec:LIMIT_FUNCTIONS} are opened and traders place offers on them respecting their individual budgets and constraints defined in section \ref{sec:AUCTION_MECHANISM}. It is important to note that during the bidding traders always place both bid- and ask-offerings if the constraints allow it. The prices of the offerings are determined by the given limit-prices as defined in section \ref{sec:LIMIT_FUNCTIONS}. See chapter \ref{ch:implementation} for a more in-depth discussion and definition of the price-ranges of the traders. After bidding has occurred, matching is applied to find a pair of two matching traders where a bid-offer matches an ask-offer as defined in section \ref{sec:AUCTION_MECHANISM}. If a match was found wealth is transferred between the buyer and seller according to the definition in section \ref{sec:LIMIT_FUNCTIONS}. See chapter \ref{ch:implementation} for a detailed overview of the wealth-transfer between buyer and seller in case of a match. A match must not necessarily occur because traders could have drawn their offering-prices in a way that no match occurs which leads to a new bidding and matching which repeats until traders are no more able to trade with each other any more. Two traders are unable to trade with each other if
+
+\begin{itemize}
+\item The buyer can not place any more bid-offers on all markets the seller places its ask-offers upon.
+\item The seller can not place any more ask-offers on all markets the buyer places its bid-offers upon.
+\end{itemize}
+
+If this applies to all pairs of traders then trading has become impossible as without offerings which could potentially match no matching can happen at all. In this case some equilibrium as already outlined in section \ref{sec:LEVERAGE_CYCLE_EQUILIBRIUM_TRADINGPROCESS} has been reached and the simulation stops. See chapter \ref{ch:implementation} for a more detailed discussion on the termination of the simulation. When the simulation has stopped the prices of the last trades determine the equilibrium prices, traders may be divided into pessimists, medianists and optimists and show some characteristic allocations of wealth depending on the topology and the bond type. Section \ref{sec:EQUILIBRIUM} gives formulas for calculating the equilibrium prices and the marginal traders which divide the range into pessimists, medianists and optimists in the case that all traders know each other. See section \ref{ch:results} for the results of the equilibrium prices, marginal traders and wealth-allocations in case of different topologies where not all traders know each other.
 \end{document}
