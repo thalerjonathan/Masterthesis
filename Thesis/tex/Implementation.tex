@@ -460,7 +460,7 @@ As noted above in the section \ref{sec:MARKETS} bonds and assets are always trad
 \label{sec:implementation_sweepingAndMatching}
 
 \paragraph{Sweeping}
-Sweeping is the process of searching a successful match by running through the agents and apply matching between their offers. Because offering-prices are created randomly in specific ranges it could happen that no offers match. To elevate this problem not only 1 but up to 500 sweeps are done when calculating the next successful match. The number of 500 was chosen empirically through experiments as it turned out to be a good compromise between responsiveness of the GUI and efficiency. It is important to note that if a user initiates to cancel the simulation the current matching-round needs to be finished finished thus the lower this value the quicker the response but the more failed matching-rounds will happen.
+Sweeping is the process of searching a successful match by running through the agents and apply matching between their offers. Because offering-prices are created randomly in specific ranges it could happen that no offers match. To elevate this problem not only 1 but up to 500 sweeps are done when calculating the next successful match. The number of 500 was chosen empirically through experiments as it turned out to be a good compromise between responsiveness of the GUI and efficiency. It is important to note that if a user initiates to cancel the simulation the current matching-round needs to be finished thus the lower this value the quicker the response but the more failed matching-rounds will happen.
 
 \begin{algorithm}
 \caption{Sweeping Pseudocode}
@@ -504,7 +504,7 @@ Matching is the process of finding a match of a given agent in the sweeping-proc
 \end{algorithmic}
 \end{algorithm}
 
-Note that as defined in the double-auction theory - see chapter \ref{ch:theory} - the agents meet at the half-way price. This guarantees that not more than the previously defined amount is traded which again conserves the wealth. Care must be taken when calculating the real price of the match as all offering prices are for 1.0 Unit of the traded good. Thus to obtain the real matching-price the previously calculated half-way price needs to be scaled by the matching-amount to obtain the price for the given matching-amount.
+Note that as defined in the double-auction theory - see chapter \ref{ch:theory} - the agents meet at the half-way price. This guarantees that not more than the previously defined amount is traded which again conserves the wealth. Care must be taken when calculating the real price of the match as all offering prices are for 1.0 unit of the traded good. Thus to obtain the real matching-price the previously calculated half-way price needs to be scaled by the matching-amount to obtain the price for the given matching-amount.
 \medskip
 Also note that if one match is found on any market then the sweeping and matching is terminated and a successful match is returned thus the agents can place offers on all markets although the sum of the offers would be infeasible because only one offer will be satisfied and the other ones are thrown away.
 
