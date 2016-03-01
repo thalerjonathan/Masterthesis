@@ -161,7 +161,7 @@ public class MarketsTimeOfflineVisualizer extends MarketsVisualizer {
 		
 		// synchronize on preprocessed coords because preprocessData is synchronized and 
 		// is working on preprocessedCoords
-		synchronized( this.preprocessedCoords ) {
+		synchronized( this ) {
 			// don't visit each transaction: do steps of txToWidthRatio, will do moving average anyway
 			for ( DoublePoint[] marketCoords : this.preprocessedCoords ) {
 				for ( int m = 0; m < MarketType.values().length; ++m ) {

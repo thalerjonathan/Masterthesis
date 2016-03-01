@@ -10,7 +10,7 @@ import backend.offers.AskOffering;
 import backend.offers.BidOffering;
 import backend.tx.Match;
 
-public class Agent {
+public class Agent implements Cloneable {
 	private int id;
 	// optimism factor
 	private double h;
@@ -332,7 +332,16 @@ public class Agent {
 	
 	@Override
 	public Object clone() {
-		Agent clone = new Agent( this.id, this.h, this.markets );
+		Agent clone;
+		
+		try {
+			clone = (Agent) super.clone();
+		} catch (CloneNotSupportedException e) {
+			// MUST NOT OCCUR
+			throw new RuntimeException();
+		}
+		
+		// Agent clone = new Agent( this.id, this.h, this.markets );
 		clone.assets = this.assets;
 		clone.cash = this.cash;
 		clone.loansGiven = this.loansGiven;

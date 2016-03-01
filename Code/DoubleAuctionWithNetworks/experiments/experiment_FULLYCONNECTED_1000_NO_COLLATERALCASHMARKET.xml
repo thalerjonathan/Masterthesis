@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<experiments>
+    <experiment>
+        <agentCount>1000</agentCount>
+        <assetLoanMarket>true</assetLoanMarket>
+        <collateralCashMarket>false</collateralCashMarket>
+        <importanceSampling>false</importanceSampling>
+        <loanCashMarket>true</loanCashMarket>
+        <loanType>LOAN_05</loanType>
+        <maxTx>100</maxTx>
+        <name>Fully-Connected 1000 50Repl</name>
+        <replications>50</replications>
+        <terminationMode>FAIL_SUCCESSIVE_TX</terminationMode>
+        <topology class="frontend.networkCreators.FullyConnectedCreator"/>
+    </experiment>
+</experiments>
