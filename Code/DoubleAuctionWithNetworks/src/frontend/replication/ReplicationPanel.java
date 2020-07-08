@@ -31,7 +31,6 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 
-import utils.Utils;
 import backend.EquilibriumStatistics;
 import backend.agents.Agent;
 import backend.agents.AgentFactoryImpl;
@@ -51,8 +50,8 @@ import frontend.networkCreators.AscendingFullShortcutsCreator;
 import frontend.networkCreators.AscendingRandomShortcutsCreator;
 import frontend.networkCreators.AscendingRegularShortcutsCreator;
 import frontend.networkCreators.BarbasiAlbertCreator;
-import frontend.networkCreators.BuyersAnd2SellersCreator;
 import frontend.networkCreators.BuyerHas2SellersCreator;
+import frontend.networkCreators.BuyersAnd2SellersCreator;
 import frontend.networkCreators.ErdosRenyiCreator;
 import frontend.networkCreators.FullyConnectedCreator;
 import frontend.networkCreators.HalfFullyConnectedCreator;
@@ -69,6 +68,7 @@ import frontend.replication.info.ReplicationInfoFrame;
 import frontend.visualisation.MarketsAccuOfflineVisualizer;
 import frontend.visualisation.MarketsTimeOfflineVisualizer;
 import frontend.visualisation.WealthVisualizer;
+import utils.Utils;
 
 @SuppressWarnings( value = {"serial" } )
 public class ReplicationPanel extends JPanel {

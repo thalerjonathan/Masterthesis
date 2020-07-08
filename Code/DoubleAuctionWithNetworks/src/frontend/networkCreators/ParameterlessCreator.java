@@ -4,7 +4,6 @@ import java.util.Map;
 
 import backend.agents.network.AgentNetwork;
 import backend.markets.Markets;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 public abstract class ParameterlessCreator extends NetworkCreator {
 
@@ -13,7 +12,7 @@ public abstract class ParameterlessCreator extends NetworkCreator {
 	}
 	
 	public void deferCreation( Runnable okCallback ) {
-		throw new NotImplementedException();
+		throw new RuntimeException();
 	}
 	
 	public boolean createImportanceSampling( AgentNetwork agents, Markets markets ) {

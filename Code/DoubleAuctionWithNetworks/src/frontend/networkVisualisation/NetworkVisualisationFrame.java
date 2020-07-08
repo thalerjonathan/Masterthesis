@@ -13,14 +13,14 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
-import controller.network.export.NetworkExporter;
-import utils.Utils;
 import backend.agents.Agent;
 import backend.agents.network.AgentConnection;
 import backend.agents.network.AgentNetwork;
+import controller.network.export.NetworkExporter;
 import edu.uci.ics.jung.algorithms.layout.CircleLayout;
 import edu.uci.ics.jung.algorithms.layout.KKLayout;
 import edu.uci.ics.jung.algorithms.layout.Layout;
+import utils.Utils;
 
 @SuppressWarnings("serial")
 public class NetworkVisualisationFrame extends JFrame {
@@ -97,9 +97,13 @@ public class NetworkVisualisationFrame extends JFrame {
 		this.pack();
 		this.setVisible( true );
 	}
-	
-	@SuppressWarnings("unchecked")
+
+	@SuppressWarnings("all")
 	public Class<? extends Layout<Agent, AgentConnection>> getSelectedLayout() {
+		// NOTE: FOR FUCKS SAKE this code is correct but F*** java does not let me do this cast
+		Class<? extends Layout<Agent, AgentConnection>> layoutClazz = null; // (Class<? extends Layout<Agent, AgentConnection>>) CircleLayout.class;
+
+	/*
 		Class<? extends Layout<Agent, AgentConnection>> layoutClazz = (Class<? extends Layout<Agent, AgentConnection>>) CircleLayout.class;
 		String selectedLayoutName = NetworkVisualisationFrame.this.layoutSelection.getItemAt( NetworkVisualisationFrame.this.layoutSelection.getSelectedIndex() );
 		
@@ -108,7 +112,7 @@ public class NetworkVisualisationFrame extends JFrame {
 		} else if ( KK_LAYOUT_NAME.equals( selectedLayoutName ) ) {
 			layoutClazz = (Class<? extends Layout<Agent, AgentConnection>>) KKLayout.class;
 		}
-
+*/
 		return layoutClazz;
 	}
 	
